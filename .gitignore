@@ -1,0 +1,9 @@
+# Brainstorming mockups and session state
+.superpowers/
+
+# Editor settings
+.idea/
+
+# Tool dependencies and scratch output
+node_modules/
+tmp/

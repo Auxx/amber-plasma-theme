@@ -1,0 +1,103 @@
+# Amber — Roadmap
+
+> Status: **Accepted** on 2026-11-11
+
+The work is done in steps. Each step is split into small plans. A plan has one
+result that can be tested on its own, and is small enough to build and check in
+one sitting.
+
+## How plans are used
+
+- A plan is written just before its work starts, not all at once, so that it
+  can use what the plans before it taught us.
+- Plan files live in `docs/superpowers/plans/`, named
+  `P<step>.<number>-<short-name>.md`, for example `P1.3-gallery-buttons.md`.
+- A plan is finished only when its "done when" line below is true and has been
+  checked.
+- When a plan is finished, set its status here in the same change. When a plan
+  changes what the documents say, update the documents in the same change.
+- If a plan turns out too large, split it and renumber here.
+
+Status values: **todo**, **in progress**, **done**, **dropped**.
+
+## Step 0 — Foundations and spikes
+
+Answers the open questions about the platform before the look is fixed, so
+that the prototype never promises something the system cannot draw.
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; folders of the layout appear with their first file | done |
+| P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | todo |
+| P0.3 Spike: widget glow | Finding on coloured, blurred shadows under Union | A button in a Qt Widgets application shows a glow, or the reason it cannot is written in the platform document | todo |
+| P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | todo |
+
+P0.3 and P0.4 are spikes: their code is thrown away and their findings go into
+[platform](../architecture/platform.md). A failed spike goes back to the owner
+before the next step.
+
+## Step 1 — Prototype
+
+The gate for everything after it: the owner approves the look here.
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P1.1 Tokens and contrast pairs | Tokens file, contrast pairs, `tokens` tool | `tokens pairs` runs in the tests and every pair passes | todo |
+| P1.2 Window shell | Mock file-manager window: title bar, toolbar, sidebar, list, status area | The page opens from disk and shows every surface by tone alone | todo |
+| P1.3 Gallery: buttons and inputs | Buttons, tool buttons, text fields, combo boxes in every state | Each state is shown side by side and reacts to pointer and keyboard | todo |
+| P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | todo |
+| P1.5 Gallery: navigation and popups | Tabs, menus, popups, tooltips, list items | As P1.3 | todo |
+| P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour has a contrast pair and passes | todo |
+| P1.7 Owner review | Tuned values; the owner's choice of tones for controls identified only by tone (open question O-1) | The owner approves the prototype and O-1 is closed in the decisions | todo |
+
+P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
+with candidate tones and their measured contrast side by side, so that the
+owner can decide O-1 by eye in P1.7.
+
+## Step 2 — Colour scheme
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P2.1 Role mapping | Table of which token feeds which colour-scheme role | Every role of a `.colors` file has a token or a written rule | todo |
+| P2.2 Generator | `Amber.colors` generated from the tokens | Running the generator twice gives the same file; tests pass | todo |
+| P2.3 Check in applications | The scheme seen in Dolphin, Kate and Konsole | No cool grey is visible; findings are written down | todo |
+
+## Step 3 — Union style
+
+One widget family per plan, each checked in a real application before the
+next starts.
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | todo |
+| P3.2 Global rules | Radius zero, borders removed, glow variables | No rounded corner or outline on the widgets not yet restyled | todo |
+| P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
+| P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
+| P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
+| P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | todo |
+| P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
+| P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
+| P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
+
+## Step 4 — Terminal colours and editor theme
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | todo |
+| P4.2 Editor theme | Kate theme generated from the tokens | Kate shows it; it matches the prototype's sample | todo |
+
+## Step 5 — Window decoration
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P5.1 Frame and title bar | Square, borderless frame with a tone 0 title bar | Matches the prototype for active and inactive windows | todo |
+| P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype, or the missing glow is a known gap | todo |
+| P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line appears at any window edge in any state | todo |
+
+## Step 6 — Packaging
+
+| Plan | Result | Done when | Status |
+|---|---|---|---|
+| P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | todo |
+| P6.2 README | How to install, select, change a token; known gaps | A reader can do all three from the README alone | todo |
+| P6.3 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
