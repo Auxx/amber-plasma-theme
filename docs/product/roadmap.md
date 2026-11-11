@@ -29,8 +29,13 @@ that the prototype never promises something the system cannot draw.
 |---|---|---|---|
 | P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; the first commit exists | done |
 | P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | done |
-| P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | todo |
+| P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | done |
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | todo |
+
+P0.3 is done by its second clause: the glow cannot be drawn in Qt Widgets
+applications, and the reason is in the platform document. It is a failed
+spike and has gone back to the owner as open question O-2 in the
+[decisions](../architecture/decisions.md).
 
 The folders of the repository layout are not created empty: each appears with
 its first file, in the plan that fills it.

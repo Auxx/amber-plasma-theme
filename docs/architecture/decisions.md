@@ -71,3 +71,4 @@ text in other documents.
 | ID | Question | Whose |
 |---|---|---|
 | O-1 | Controls identified only by tone (empty text field, unchecked check box, slider track) do not reach 3:1. Which tones and gaps do they get? Deferred by the owner on 2026-11-11 to the prototype, where the tones can be seen: plans P1.3 and P1.4 show candidates, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |
+| O-2 | Union 6.8.2 draws no `box-shadow` and no `outline` in Qt Widgets applications, so the glow (D-4) cannot be shown in Dolphin, Kate or Konsole; it does work in Qt Quick applications. Found by spike P0.3 on 2026-11-11, see [platform](platform.md#p03-widget-glow--2026-11-11). What shows hovered and focused widgets there instead, and does Amber go on? | Owner |
