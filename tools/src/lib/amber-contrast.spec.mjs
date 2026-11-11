@@ -20,7 +20,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 45);
+    assert.equal(pairs.length, 53);
   });
 
   it('resolves every token of every pair', () => {
@@ -86,5 +86,20 @@ describe('Amber contrast pairs', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('toggle-focus on tone-2'), '1.25');
     assert.equal(ratio('toggle-focus on toggle'), '1.45');
+  });
+
+  it('marks a selected item at 3:1', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('accent on selected'), '6.54');
+    assert.equal(ratio('accent on well-focus'), '6.13');
+    assert.equal(ratio('selected on tone-2'), '1.17');
+    assert.equal(ratio('selected on tone-1'), '1.28');
+  });
+
+  it('keeps secondary text on selections and popups', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('text-dim on selected'), '5.34');
+    assert.equal(ratio('text-dim on popup'), '5.34');
+    assert.equal(ratio('text on popup'), '10.58');
   });
 });

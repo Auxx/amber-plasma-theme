@@ -42,4 +42,11 @@
   --toggle-focus: #393226;        /* a focused toggle: accent 16 % over tone 1, as the focused well (O-3) */
   --track: var(--tone-0);         /* the track of a slider or progress bar (O-1) */
   --scroll-thumb: var(--tone-4);  /* a scrollbar's thumb at rest */
+  --selected: var(--tone-3);      /* a selected item of a list, tree, table or sidebar */
+  --marker-width: 3px;            /* the block marker on a selected item or tab (D-21: at least 3 px) */
+
+  /* Popups: menus, combo box lists, tooltips */
+  --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */
+  --popup-shadow-size: 12px;      /* how far a popup's shadow fades to nothing */
+  --popup-shadow-offset: 4px;     /* how far the shadow sits below the popup */
 }
