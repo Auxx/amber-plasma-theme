@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import {
   checkPairs,
   describePair,
+  formatTokenValue,
   parseOverrides,
   parsePairs,
   parseTokens,
@@ -17,6 +18,8 @@ const SOURCE = `/* Amber tokens */
   --text: #e8e3da;
   --label: var(--text);
   --veil: rgb(0 0 0 / 50%);
+  --gap: 1px;
+  --haze: color-mix(in srgb, var(--text) 50%, transparent);
 }
 `;
 
@@ -26,17 +29,29 @@ describe('tokens', () => {
   it('parses token values', () => {
     assert.equal(parseTokenValue('#151413').colour.mode, 'rgb');
     assert.deepEqual(parseTokenValue('var( --text )'), { ref: 'text' });
-    assert.throws(() => parseTokenValue('1px'), /Not a colour: 1px/);
+    assert.deepEqual(parseTokenValue('1px'), { length: { value: 1, unit: 'px' } });
+    assert.deepEqual(parseTokenValue('color-mix(in srgb,var( --accent ) 28%,transparent)'), { ref: 'accent', alpha: 0.28 });
+    assert.throws(() => parseTokenValue('1em'), /Not a colour or a length in px: 1em/);
   });
 
   it('reads the :root block', () => {
     const tokens = parseTokens(SOURCE);
-    assert.equal(tokens.size, 5);
+    assert.equal(tokens.size, 7);
     assert.deepEqual(tokens.get('label'), { ref: 'text' });
   });
 
   it('refuses what it does not understand', () => {
-    assert.throws(() => parseTokens(':root {\n  --gap: 1px;\n}'), /tokens.css:2:/);
+    assert.throws(() => parseTokens(':root {\n  --gap: 1em;\n}'), /tokens.css:2:/);
+    for (const value of [
+      'calc(1px + 1px)',
+      'color-mix(in oklch, var(--b) 28%, transparent)',
+      'color-mix(in srgb, var(--b) 28%, white)',
+      'color-mix(in srgb, var(--b) 0%, transparent)',
+      'color-mix(in srgb, var(--b) 120%, transparent)',
+      '-1px'
+    ]) {
+      assert.throws(() => parseTokens(`:root {\n  --a: ${value};\n}`), /tokens.css:2:/, value);
+    }
     assert.throws(() => parseTokens(':root {\n  color: red;\n}'), /tokens.css:2:/);
     assert.throws(() => parseTokens(':root { --a: #000; }\n.x { --b: #fff; }'), /outside :root/);
     assert.throws(() => parseTokens('--a: #000;'), /no :root/);
@@ -47,6 +62,35 @@ describe('tokens', () => {
     const { colour, chain } = resolveToken(parseTokens(SOURCE), '--label');
     assert.deepEqual(chain, [ 'label', 'text' ]);
     assert.ok(Math.abs(colour.r - 232 / 255) < 1e-9);
+  });
+
+  it('resolves part-transparent tokens', () => {
+    const tokens = parseTokens(SOURCE);
+    const { colour, chain } = resolveToken(tokens, 'haze');
+    assert.deepEqual(chain, [ 'haze', 'text' ]);
+    assert.equal(colour.alpha, 0.5);
+    assert.equal(resolveToken(tokens, 'text').colour.alpha ?? 1, 1);
+    const dusk = new Map([ ...tokens, [ 'dusk', { ref: 'veil', alpha: 0.5 } ] ]);
+    assert.equal(resolveToken(dusk, 'dusk').colour.alpha, 0.25);
+    assert.equal(resolveToken(dusk, 'veil').colour.alpha, 0.5);
+  });
+
+  it('refuses a length as a colour', () => {
+    const tokens = new Map([ ...parseTokens(SOURCE), [ 'spacing', { ref: 'gap' } ] ]);
+    assert.throws(() => resolveToken(tokens, 'gap'), /Not a colour: gap is a length \(1px\)/);
+    assert.throws(() => resolveToken(tokens, 'spacing'), /Not a colour: gap is a length \(1px\)/);
+    assert.equal(checkPairs(tokens, [ pair('gap', [ 'tone-2' ], 1.3) ])[0].status, 'missing');
+  });
+
+  it('formats token values', () => {
+    assert.equal(formatTokenValue(parseTokenValue('var(--text)')), 'var(--text)');
+    assert.equal(
+      formatTokenValue(parseTokenValue('color-mix(in srgb, var(--accent) 28%, transparent)')),
+      'color-mix(in srgb, var(--accent) 28%, transparent)'
+    );
+    assert.equal(formatTokenValue(parseTokenValue('1px')), '1px');
+    assert.equal(formatTokenValue(parseTokenValue('#151413')), '#151413');
+    assert.equal(formatTokenValue(parseTokenValue('rgb(0 0 0 / 50%)')), '#000000 / 50%');
   });
 
   it('names unknown tokens and cycles', () => {

@@ -2,7 +2,7 @@
 // The reader of the tokens file and the pairs file are Amber's own.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { isClose, measureContrast, parseColour } from './colour.mjs';
+import { describeColour, isClose, measureContrast, parseColour } from './colour.mjs';
 
 /** The tokens file: the single source of Amber's look (D-30). */
 export const TOKENS_FILE = fileURLToPath(new URL('../../../prototype/tokens.css', import.meta.url));
@@ -14,14 +14,51 @@ const NAME = '[a-z0-9]+(?:-[a-z0-9]+)*';
 
 const stripName = name => name.replace(/^--/, '');
 
-/** Parses a token value: `var(--name)`, or a CSS colour. */
+/**
+ * Parses a token value: `var(--name)`; a part-transparent token
+ * `color-mix(in srgb, var(--name) N%, transparent)`; a length in px; or a CSS
+ * colour.
+ */
 export function parseTokenValue(text) {
   const value = text.trim();
   const ref = value.match(new RegExp(`^var\\(\\s*--(${NAME})\\s*\\)$`));
   if (ref) {
     return { ref: ref[1] };
   }
-  return { colour: parseColour(value) };
+  const mix = value.match(
+    new RegExp(`^color-mix\\(\\s*in srgb\\s*,\\s*var\\(\\s*--(${NAME})\\s*\\)\\s+(\\d+(?:\\.\\d+)?)%\\s*,\\s*transparent\\s*\\)$`)
+  );
+  if (mix) {
+    const percent = Number(mix[2]);
+    if (!(percent > 0 && percent <= 100)) {
+      throw new Error(`The amount of a color-mix must be above 0 % and at most 100 %: ${value}`);
+    }
+    return { ref: mix[1], alpha: percent / 100 };
+  }
+  const length = value.match(/^(\d+(?:\.\d+)?)px$/);
+  if (length) {
+    return { length: { value: Number(length[1]), unit: 'px' } };
+  }
+  try {
+    return { colour: parseColour(value) };
+  } catch {
+    throw new Error(`Not a colour or a length in px: ${value}`);
+  }
+}
+
+/** Writes a token value back as the tokens file would: `var(--x)`, a mix, `1px` or a hex. */
+export function formatTokenValue(value) {
+  if (value.length) {
+    return `${value.length.value}${value.length.unit}`;
+  }
+  if (value.ref) {
+    return value.alpha === undefined
+      ? `var(--${value.ref})`
+      : `color-mix(in srgb, var(--${value.ref}) ${+(value.alpha * 100).toFixed(4)}%, transparent)`;
+  }
+  const { hex } = describeColour(value.colour);
+  const alpha = value.colour.alpha ?? 1;
+  return alpha < 1 ? `${hex} / ${+(alpha * 100).toFixed(4)}%` : hex;
 }
 
 /** Replaces each comment with the newlines it spans, so line numbers hold. */
@@ -98,24 +135,33 @@ export function loadTokens({ overrides = [], file = TOKENS_FILE } = {}) {
 }
 
 /**
- * Resolves a token to a colour, following `var()`. Returns the culori colour
+ * Resolves a token to a colour, following `var()` and multiplying in the
+ * alpha of each `color-mix` on the way. Returns the culori colour
  * and the chain of tokens it went through.
  */
 export function resolveToken(tokens, name) {
   const chain = [];
+  let alpha = 1;
   let value = { ref: stripName(name) };
   while (value.ref) {
     if (chain.includes(value.ref)) {
       throw new Error(`Token cycle: ${[ ...chain, value.ref ].join(' → ')}`);
     }
     chain.push(value.ref);
+    alpha *= value.alpha ?? 1;
     const next = tokens.get(value.ref);
     if (!next) {
       throw new Error(`Unknown token: ${value.ref}${chain.length > 1 ? ` (via ${chain.join(' → ')})` : ''}`);
     }
     value = next;
   }
-  return { colour: value.colour, chain };
+  if (value.length) {
+    throw new Error(`Not a colour: ${chain.at(-1)} is a length (${formatTokenValue(value)})`);
+  }
+  if (alpha === 1) {
+    return { colour: value.colour, chain };
+  }
+  return { colour: { ...value.colour, alpha: (value.colour.alpha ?? 1) * alpha }, chain };
 }
 
 const isName = value => typeof value === 'string' && new RegExp(`^${NAME}$`).test(value);
