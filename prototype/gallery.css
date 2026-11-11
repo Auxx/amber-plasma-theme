@@ -73,3 +73,52 @@ body {
   padding: 4px;
   background: var(--tone-0);
 }
+
+/* Candidates: a tone 1 band, each vignette a patch of the tone 2 surface. */
+.candidates {
+  padding: 8px 24px 32px;
+  background: var(--tone-1);
+}
+
+.candidates h2 {
+  margin: 24px 0 4px;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.candidates > p {
+  margin: 0 0 16px;
+}
+
+.candidate-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.candidate {
+  margin: 0;
+  width: 300px;
+}
+
+.vignette {
+  display: flex;
+  gap: 12px;
+  padding: 24px 20px;
+  background: var(--tone-2);
+}
+
+.vignette .text-field {
+  width: 124px;
+}
+
+.candidate figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 8px;
+}
+
+.candidate data {
+  color: var(--text-dim);
+}

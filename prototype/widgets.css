@@ -83,6 +83,8 @@
 .spin {
   width: 100%;
   background-color: var(--well);
+  /* The well edge (O-1): none at the start, where its width is 0. */
+  background-image: linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
 }
 
 .text-field {

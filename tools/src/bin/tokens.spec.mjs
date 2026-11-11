@@ -62,7 +62,7 @@ describe('tokens tool', () => {
   });
 
   it('tries a darker well', () => {
-    const { status, stdout } = tokens('try', 'well=#0b0a09', '--json');
+    const { status, stdout } = tokens('try', 'well=#0c0a07', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
     assert.equal(result.changed.length, 4);

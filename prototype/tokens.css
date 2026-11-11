@@ -32,7 +32,8 @@
 
   /* Widgets (O-1 and O-3: starting values) */
   --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (O-1) */
-  --well-edge: var(--well);       /* the well edge, a 3 px bar at the foot of a well; the well's own tone, so none shows (O-1) */
+  --well-edge: var(--well);       /* the well edge, a bar at the foot of a well (O-1) */
+  --well-edge-width: 0px;         /* its height; none at the start (O-1) */
   --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (O-3) */
   --well-focus: #393226;          /* a focused well: accent 16 % over tone 1 (O-3) */
   --accent-hover: #debc7d;        /* a hovered or focused primary button: accent at OKLCH lightness 81 % */
