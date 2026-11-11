@@ -372,6 +372,7 @@
  */
 
 .slider {
+  --value: 0%; /* set from the slider's value by gallery.js (D-48) */
   --thumb: var(--tone-3);
   --fill: var(--accent);
   appearance: none;

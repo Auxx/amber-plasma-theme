@@ -130,11 +130,11 @@ Warm, never cool.</textarea></div>
   <p class="dim">Fills are accent on a track below the surface. A slider's thumb is a raised widget.</p>
 
   <div class="state-row" data-widget="slider">
-    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"></div>
-    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><input type="range" class="slider is-hovered" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"></div>
-    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><input type="range" class="slider is-focused" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"></div>
-    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><input type="range" class="slider is-pressed" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"></div>
-    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume" disabled></div>
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><input type="range" class="slider is-hovered" min="0" max="100" step="10" value="40" aria-label="Volume"></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><input type="range" class="slider is-focused" min="0" max="100" step="10" value="40" aria-label="Volume"></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><input type="range" class="slider is-pressed" min="0" max="100" step="10" value="40" aria-label="Volume"></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume" disabled></div>
   </div>
 
   <div class="state-row" data-widget="progress">
@@ -150,7 +150,7 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="scrollbar"><span class="scroll-thumb is-pressed"></span></div></div>
   </div>
 
-  <div class="live"><span class="state-label dim">Live</span><div class="scroll-area" aria-label="Files"><div>amber-notes.md</div><div>colours.txt</div><div>decisions.md</div><div>design-language.md</div><div>gallery.html</div><div>glossary.md</div><div>index.html</div><div>notes-2026-11.md</div><div>platform.md</div><div>roadmap.md</div><div>shell.css</div><div>tokens.css</div><div>tooling.md</div><div>vision.md</div><div>widgets.css</div><div>window.css</div></div></div>
+  <div class="live"><span class="state-label dim">Live</span><div class="scroll-area" role="region" aria-label="Files"><div>amber-notes.md</div><div>colours.txt</div><div>decisions.md</div><div>design-language.md</div><div>gallery.html</div><div>glossary.md</div><div>index.html</div><div>notes-2026-11.md</div><div>platform.md</div><div>roadmap.md</div><div>shell.css</div><div>tokens.css</div><div>tooling.md</div><div>vision.md</div><div>widgets.css</div><div>window.css</div></div></div>
 </section>
 
 <!-- Candidates for O-3 and O-1: each figure changes one token from the starting values. -->
@@ -356,7 +356,7 @@ Warm, never cool.</textarea></div>
   <p class="dim">An empty track against its surface, and the fill against its track (O-1). A track at 3:1 drops the fill below 3:1.</p>
   <div class="candidate-row">
   <figure class="candidate">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
     <figcaption>
       Start
       <span class="dim">tone 0</span>
@@ -365,7 +365,7 @@ Warm, never cool.</textarea></div>
     </figcaption>
   </figure>
   <figure class="candidate" style="--track: var(--tone-4)">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
     <figcaption>
       Lighter track, tone 4
       <span class="dim">tone 4</span>
@@ -374,7 +374,7 @@ Warm, never cool.</textarea></div>
     </figcaption>
   </figure>
   <figure class="candidate" style="--track: #585248">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
     <figcaption>
       Track 2:1
       <span class="dim">#585248</span>
@@ -383,7 +383,7 @@ Warm, never cool.</textarea></div>
     </figcaption>
   </figure>
   <figure class="candidate" style="--track: #746e63">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
     <figcaption>
       Track 3:1
       <span class="dim">#746e63</span>

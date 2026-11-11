@@ -216,15 +216,17 @@ describe('prototype gallery', () => {
     const source = readFileSync(SOURCE, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
     const offences = [];
     let count = 0;
-    for (const [ tag ] of source.matchAll(/<(?:input|div)\b[^>]*\bclass="(?:slider|progress)\b[^"]*"[^>]*>/g)) {
+    for (const [ tag ] of source.matchAll(/<div\b[^>]*\bclass="progress\b[^"]*"[^>]*>/g)) {
       count++;
-      const value = tag.match(/\s(?:value|aria-valuenow)="([^"]*)"/)?.[1];
+      const value = tag.match(/\saria-valuenow="([^"]*)"/)?.[1];
       const fill = tag.match(/style="--value: ([^";]*)"/)?.[1];
       if (value === undefined || fill !== `${value}%`) {
         offences.push(`${tag}: --value ${fill}, value ${value}`);
       }
     }
-    assert.ok(count > 0, 'no slider or progress bar');
+    assert.ok(count > 0, 'no progress bar');
+    // A slider's fill is set by gallery.js from its value, so no slider repeats it.
+    assert.deepEqual(source.match(/<input\b[^>]*class="slider[^>]*style=[^>]*>/g) ?? [], []);
     assert.deepEqual(offences, []);
     const values = readRows()
       .get('progress')
@@ -233,40 +235,37 @@ describe('prototype gallery', () => {
   });
 
   it('styles the real scrollbars as the drawn ones', () => {
-    // A real thumb in a state shares its rule with the drawn thumb in that
-    // state and with its forced copy, so the two cannot drift apart.
+    // A drawn thumb and a real one in the same state get the same background.
+    // They sit in separate rules: a browser that does not know a
+    // ::-webkit- pseudo-element drops every rule that names one.
     const rules = [ ...readFileSync(SCROLLBARS_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g) ].map(
       ([ , selector, body ]) => ({ selectors: selector.split(',').map(part => part.trim()), body })
     );
-    const DRAWN = {
-      '': [ '.scroll-thumb' ],
-      ':hover': [ '.scroll-thumb:hover', '.scroll-thumb.is-hovered' ],
-      ':active': [ '.scroll-thumb:active', '.scroll-thumb.is-pressed' ]
-    };
-    const offences = [];
-    const seen = new Set();
-    for (const { selectors } of rules) {
-      for (const selector of selectors) {
-        const state = selector.match(/^::-webkit-scrollbar-thumb(:hover|:active)?$/)?.[1];
-        if (state === undefined && !selector.startsWith('::-webkit-scrollbar-thumb')) {
-          continue;
-        }
-        const key = state ?? '';
-        seen.add(key);
-        for (const drawn of DRAWN[key] ?? [ '(a known state)' ]) {
-          if (!selectors.includes(drawn)) {
-            offences.push(`${selector}: no ${drawn} in the same rule`);
-          }
-        }
-      }
-    }
-    assert.deepEqual([ ...seen ].sort(), Object.keys(DRAWN).sort());
+    const offences = rules
+      .filter(({ selectors }) => selectors.some(sel => sel.includes('::-webkit-')) && selectors.some(sel => !sel.includes('::-webkit-')))
+      .map(({ selectors }) => `${selectors.join(', ')}: mixes ::-webkit- with other selectors`);
     const declared = (selector, property) =>
       rules
         .filter(rule => rule.selectors.includes(selector))
         .map(rule => rule.body.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`))?.[1].trim())
         .filter(Boolean)
         .at(-1);
+    const STATES = {
+      '::-webkit-scrollbar-thumb': [ '.scroll-thumb' ],
+      '::-webkit-scrollbar-thumb:hover': [ '.scroll-thumb:hover', '.scroll-thumb.is-hovered' ],
+      '::-webkit-scrollbar-thumb:active': [ '.scroll-thumb:active', '.scroll-thumb.is-pressed' ]
+    };
+    for (const [ real, drawn ] of Object.entries(STATES)) {
+      const background = declared(real, 'background');
+      if (!background) {
+        offences.push(`${real}: no background`);
+      }
+      for (const selector of drawn) {
+        if (declared(selector, 'background') !== background) {
+          offences.push(`${selector}: background ${declared(selector, 'background')}, real thumb ${background}`);
+        }
+      }
+    }
     for (const part of [ '::-webkit-scrollbar', '::-webkit-scrollbar-track', '::-webkit-scrollbar-corner' ]) {
       if (declared(part, 'background') !== 'transparent') {
         offences.push(`${part}: background ${declared(part, 'background')}, expected transparent`);
@@ -275,7 +274,18 @@ describe('prototype gallery', () => {
     if (declared('::-webkit-scrollbar-button', 'display') !== 'none') {
       offences.push('::-webkit-scrollbar-button: shown');
     }
+    // On a focused scroll area (well focus) the thumb at rest would measure
+    // 1.09:1, so it rises to dim text there, which keeps 5.01:1.
+    if (declared('.scroll-area:focus-visible::-webkit-scrollbar-thumb', 'background') !== 'var(--text-dim)') {
+      offences.push('.scroll-area:focus-visible::-webkit-scrollbar-thumb: expected var(--text-dim)');
+    }
     assert.deepEqual(offences, []);
+  });
+
+  it('names the scroll area', () => {
+    const tag = readFileSync(SOURCE, 'utf8').match(/<div class="scroll-area"[^>]*>/)?.[0] ?? '';
+    assert.match(tag, /\srole="region"/);
+    assert.match(tag, /\saria-label="Files"/);
   });
 
   it('forces each state on its copy', () => {
@@ -400,6 +410,28 @@ describe('prototype gallery', () => {
     await label.click({ position });
     assert.ok(await page.locator(box).isChecked(), 'a click on the label checks the box');
     assert.match(nameColour((await coloursOf(page, box))[0], names), /accent-hover/, 'checked and hovered');
+  });
+
+  withChrome('fills each slider to its value on load', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.slider') ].map(element => [ element.value, getComputedStyle(element).getPropertyValue('--value').trim() ])
+    );
+    assert.ok(shown.length > 0);
+    assert.deepEqual(shown.filter(([ value, fill ]) => fill !== `${value}%`), []);
+  });
+
+  withChrome('fills a slider of any range', async () => {
+    const { page } = await gallery();
+    const fill = await page.locator(targetOf('slider', 'rest')).evaluate(element => {
+      element.min = '20';
+      element.max = '30';
+      element.step = '1';
+      element.value = '25';
+      element.dispatchEvent(new Event('input'));
+      return getComputedStyle(element).getPropertyValue('--value').trim();
+    });
+    assert.equal(fill, '50%');
   });
 
   withChrome('moves the fill with the value', async () => {

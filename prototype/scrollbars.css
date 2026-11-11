@@ -1,8 +1,9 @@
 /*
  * Amber's scrollbars (P1.4), linked by every page: a thumb on no track, with
- * no arrow buttons. The drawn thumb of the gallery and the real scrollbars of
- * every scroller, each page included, share each rule, so they cannot differ
- * and Chrome's grey scrollbars never show.
+ * no arrow buttons, so Chrome's grey scrollbars never show. The drawn thumb of
+ * the gallery and the real thumb take the same tone in each state; they are
+ * kept in separate rules, because a browser that does not know a ::-webkit-
+ * pseudo-element drops every rule naming one. The gallery spec checks both.
  */
 
 ::-webkit-scrollbar {
@@ -32,19 +33,34 @@
   margin-top: 16px;
 }
 
-.scroll-thumb,
+.scroll-thumb {
+  background: var(--scroll-thumb);
+}
+
 ::-webkit-scrollbar-thumb {
   background: var(--scroll-thumb);
 }
 
 .scroll-thumb:hover,
-.scroll-thumb.is-hovered,
+.scroll-thumb.is-hovered {
+  background: var(--text-dim);
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-dim);
 }
 
 .scroll-thumb:active,
-.scroll-thumb.is-pressed,
+.scroll-thumb.is-pressed {
+  background: var(--text);
+}
+
 ::-webkit-scrollbar-thumb:active {
   background: var(--text);
+}
+
+/* On a focused scroll area (well focus) the thumb at rest would measure
+   1.09:1, so it rises to dim text there, which keeps 5.01:1. */
+.scroll-area:focus-visible::-webkit-scrollbar-thumb {
+  background: var(--text-dim);
 }

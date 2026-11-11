@@ -24,6 +24,12 @@
     "why": "Accessibility rule 1: on-accent text reaches 4.5:1 on accent"
   },
   {
+    "foreground": "accent-hover",
+    "on": ["tone-2"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: a hovered or focused checked toggle is filled with accent hover, which reaches 3:1 against the surface it marks"
+  },
+  {
     "foreground": "on-danger",
     "on": ["danger"],
     "minimum": 4.5,
