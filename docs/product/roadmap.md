@@ -68,7 +68,7 @@ The gate for everything after it: the owner approves the look here.
 | P1.3 Gallery: buttons and inputs | Buttons, tool buttons, combo boxes, text fields, spin boxes, text areas in every state | Each state is shown side by side and reacts to pointer and keyboard | done |
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | done |
 | P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | done |
-| P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | todo |
+| P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | done |
 | P1.7 Owner review | Tuned values; the owner's choices for the open questions O-1, O-3 and O-4 | The owner approves the prototype and O-1, O-3 and O-4 are closed in the decisions | todo |
 
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks

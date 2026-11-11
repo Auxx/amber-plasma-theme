@@ -63,6 +63,9 @@ text in other documents.
 | D-47 | Widget tones that are not tones, such as the focused tones, are opaque tokens; a mix they come from is written in the token's comment, not as `color-mix` with a second colour | Designer | The colour scheme and the Union style need plain colours, and the tokens reader stays as small as D-44 left it. 2026-11-11, P1.3 |
 | D-48 | The prototype may hold a script only to copy a value into a custom property, such as a slider's fill. A script sets no colour and no class: `scriptOffences` allows it only the names a slider needs and the names it declares | Designer | A fill that does not follow a dragged thumb shows what Amber will not do, and CSS cannot read a range input's live value. 2026-11-11, P1.4 |
 | D-49 | Popups (menus, combo box lists and tooltips) are tone 3 and carry a dark shadow offset downwards, drawn in the prototype as the window's shadow is. Whether Union draws it in Qt Widgets applications is answered in P3.8; if it cannot, the shadow is dropped or listed as a known gap | Designer | The design language gives popups depth, and the prototype shows a "No shadow" candidate beside it. 2026-11-11, P1.5 |
+| D-56 | The terminal and editor backgrounds are tone 2, the window's main surface | Designer | Vision goal 7: the terminal and editor areas match the frame around them. The samples page shows tones 1 and 0 as candidates for the owner. 2026-11-11, P1.6 |
+| D-57 | The syntax colours are the ANSI colours, by reference; ANSI yellow is the accent | Designer | Kate and Konsole share one palette of muted, warm-shifted hues (D-20), and a token changed once changes both. 2026-11-11, P1.6 |
+| D-58 | The text selection is accent 14 % over tone 2 (`#3d362b`) | Designer | The current line already uses tone 3; more accent makes comments in dim text fail 4.5:1 on the selection (4.50:1 at 16 %). 2026-11-11, P1.6 |
 
 ## Accessibility
 
