@@ -414,6 +414,17 @@ describe('prototype gallery', () => {
     assert.deepEqual(problems, []);
   });
 
+  withChrome('shows focus on the scroll area', async () => {
+    // The keyboard walk ends at the scroll area, which Chrome makes a stop.
+    const { page } = await gallery();
+    const before = (await coloursOf(page, '.scroll-area'))[0];
+    await page.locator(targetOf('slider', 'pressed')).focus();
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => document.activeElement?.className), 'scroll-area');
+    const [ background ] = await coloursOf(page, '.scroll-area');
+    assert.ok(isToken(background, 'well-focus'), `focused scroll area: ${nameColour(background, names)}, at rest ${nameColour(before, names)}`);
+  });
+
   withChrome('scrolls the scroll area', async () => {
     const { page } = await gallery();
     const area = page.locator('.scroll-area');

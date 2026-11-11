@@ -502,6 +502,12 @@
   background: var(--tone-2);
 }
 
+/* A scroller takes keyboard focus in Chrome; focused, it is tinted like a
+   focused well, which text on it keeps 4.5:1 against. */
+.scroll-area:focus-visible {
+  background: var(--well-focus);
+}
+
 .scroll-area > div {
   padding: 4px 8px;
 }
