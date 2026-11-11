@@ -147,6 +147,14 @@ describe('browser tool', () => {
     assert.deepEqual(offences, [ 'div.oval: border-radius 50%' ]);
   });
 
+  withChrome('finds a line drawn as a box', () => {
+    const { status, stdout } = browser('check', 'tools/src/bin/fixtures/line-page.html', '--json');
+    assert.equal(status, 1);
+    const { problems, offences } = JSON.parse(stdout);
+    assert.deepEqual(problems, []);
+    assert.deepEqual(offences, [ 'div.rule: a line 200 × 1 px', 'div.post: a line 2 × 40 px' ]);
+  });
+
   withChrome('checks a page in a state', () => {
     const { status, stdout } = browser('check', 'tools/src/bin/fixtures/round-page.html', '--focus', '.plain', '--json');
     assert.equal(status, 1);

@@ -170,8 +170,10 @@ export async function applyState(page, { hover, focus, press } = {}) {
 /**
  * The anti-goals as Chrome draws them: a border, a rounded corner (a circle
  * of 50 % on a square element is a round widget and passes), a box
- * shadow, an underline, or an outline anywhere but on a `.window`. Looks at
- * every element and at its ::before and ::after.
+ * shadow, an underline, an outline anywhere but on a `.window`, or a line
+ * drawn as a box: an element less than 3 px thick (the least size of a block
+ * marker or a well edge) that paints a background. Looks at every element and
+ * at its ::before and ::after.
  */
 export function renderedOffences(page) {
   return page.evaluate(() => {
@@ -207,6 +209,12 @@ export function renderedOffences(page) {
         }
         if (style.outlineStyle !== 'none' && !(pseudo === null && element.classList.contains('window'))) {
           report(`outline ${style.outlineWidth} ${style.outlineStyle}`);
+        }
+        if (box && box.width > 0 && box.height > 0 && Math.min(box.width, box.height) < 3) {
+          const painted = style.backgroundImage !== 'none' || !/^rgba\(\d+, \d+, \d+, 0\)$|^transparent$/.test(style.backgroundColor);
+          if (painted) {
+            report(`a line ${Math.round(box.width)} × ${Math.round(box.height)} px`);
+          }
         }
       }
     }
