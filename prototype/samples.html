@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber samples</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="window.css">
+<link rel="stylesheet" href="widgets.css">
+<link rel="stylesheet" href="gallery.css">
+<link rel="stylesheet" href="samples.css">
+</head>
+<body>
+
+<nav class="pages" aria-label="Pages">
+  <a href="index.html">Window shell</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="samples.html" aria-current="page">Samples</a>
+</nav>
+
+<!-- The samples (roadmap P1.6): the terminal colours and the editor theme on
+     realistic content. Each coloured span has one class, named for its token. -->
+<section class="family" aria-label="Terminal">
+  <h2>Terminal</h2>
+  <p class="dim">Konsole's terminal colours on the window's main surface. Every colour but ANSI black reaches 4.5:1.</p>
+
+  <div class="sample-scene">
+    <div class="window is-active sample konsole">
+      <div class="title-bar"><span class="title">amber : bash — Konsole</span></div>
+      <div class="tab-bar" role="tablist"><button class="tab is-selected" role="tab" aria-selected="true">amber</button><button class="tab" role="tab" aria-selected="false">tools</button></div>
+<pre class="terminal"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ ls --color
+<span class="ansi-blue">docs/</span>  <span class="ansi-blue">parts/</span>  <span class="ansi-blue">prototype/</span>  <span class="ansi-blue">tools/</span>  <span class="ansi-green">install.sh*</span>  <span class="ansi-cyan">latest -&gt; docs/</span>  README.md
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git status --short
+ <span class="ansi-red">M</span> prototype/tokens.css
+<span class="ansi-green">A</span>  prototype/samples.html
+<span class="ansi-red">??</span> notes.txt
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ npm --prefix tools test
+<span class="ansi-green">✔</span> tokens pairs (12 ms)
+<span class="ansi-yellow">⚠ 1 close pair</span>
+<span class="ansi-bright-red">✖ samples: span with no token</span>
+<span class="ansi-cyan">ℹ tests 214</span>
+<span class="ansi-bright-black">ℹ duration_ms 8042</span>
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ journalctl --user -p warning -n 2
+<span class="ansi-magenta">Nov 11 09:14:02</span> forge kwin_wayland[1402]: No decoration plugin found, using the default
+<span class="ansi-magenta">Nov 11 09:14:05</span> forge konsole[2210]: Colour scheme "Amber" not found
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git<span class="ansi-bright-black"> push</span></pre>
+    </div>
+
+    <div class="ansi-palette terminal" aria-label="The 16 ANSI colours"><span class="ansi-black">black (exempt)</span><span class="ansi-red">red</span><span class="ansi-green">green</span><span class="ansi-yellow">yellow</span><span class="ansi-blue">blue</span><span class="ansi-magenta">magenta</span><span class="ansi-cyan">cyan</span><span class="ansi-white">white</span><span class="ansi-bright-black">bright black</span><span class="ansi-bright-red">bright red</span><span class="ansi-bright-green">bright green</span><span class="ansi-bright-yellow">bright yellow</span><span class="ansi-bright-blue">bright blue</span><span class="ansi-bright-magenta">bright magenta</span><span class="ansi-bright-cyan">bright cyan</span><span class="ansi-bright-white">bright white</span></div>
+  </div>
+</section>
+
+</body>
+</html>
