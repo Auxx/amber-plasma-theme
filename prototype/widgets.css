@@ -268,3 +268,99 @@
   color: var(--text-dim);
   background: transparent;
 }
+
+/*
+ * Toggles: check boxes and radio buttons (P1.4). An unchecked toggle sits
+ * below the surface, like a well; checked, it fills with accent. The mark (the
+ * tick or the dot) takes its colour from --mark. A toggle has no pressed tone:
+ * held down, it stays hovered. Every state rule names :enabled and the checked
+ * state, so that the rules weigh the same and the later one wins: focused over
+ * hovered. A disabled toggle never changes.
+ */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  color: var(--text);
+}
+
+.toggle:has(:disabled) {
+  color: var(--text-dim);
+}
+
+.check-box,
+.radio {
+  --mark: transparent;
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  flex: none;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  cursor: default;
+  background-color: var(--toggle);
+}
+
+/* The dot of a radio button: a round widget, drawn on the button itself. */
+.radio {
+  border-radius: 50%;
+  background-image: radial-gradient(circle, var(--mark) 3px, transparent 3.5px);
+}
+
+/* The tick: two bars with square ends, turned 45 degrees. */
+.check-box::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  background:
+    linear-gradient(var(--mark), var(--mark)) right / 2px 100% no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom / 100% 2px no-repeat;
+  transform: rotate(45deg);
+}
+
+:is(.check-box, .radio):checked {
+  --mark: var(--on-accent);
+  background-color: var(--accent);
+}
+
+/* Hovered, from the toggle or from its label */
+
+:is(.check-box, .radio):not(:checked):enabled:hover,
+.toggle:where(:hover) > :is(.check-box, .radio):not(:checked):enabled,
+:is(.check-box, .radio):not(:checked):enabled.is-hovered {
+  background-color: var(--tone-1);
+}
+
+:is(.check-box, .radio):checked:enabled:hover,
+.toggle:where(:hover) > :is(.check-box, .radio):checked:enabled,
+:is(.check-box, .radio):checked:enabled.is-hovered {
+  background-color: var(--accent-hover);
+}
+
+/* Focused */
+
+:is(.check-box, .radio):not(:checked):enabled:focus-visible,
+:is(.check-box, .radio):not(:checked):enabled.is-focused {
+  background-color: var(--toggle-focus);
+}
+
+:is(.check-box, .radio):checked:enabled:focus-visible,
+:is(.check-box, .radio):checked:enabled.is-focused {
+  background-color: var(--accent-hover);
+}
+
+/* Disabled */
+
+:is(.check-box, .radio):checked:disabled {
+  --mark: var(--text-dim);
+  background-color: var(--toggle);
+}

@@ -32,9 +32,29 @@ const WELL = {
   disabled: [ 'well', 'text-dim' ]
 };
 
+const TOGGLE_OFF = {
+  rest: [ 'toggle', 'transparent' ],
+  hovered: [ 'tone-1', 'transparent' ],
+  focused: [ 'toggle-focus', 'transparent' ],
+  disabled: [ 'toggle', 'transparent' ]
+};
+
+const TOGGLE_ON = {
+  rest: [ 'accent', 'on-accent' ],
+  hovered: [ 'accent-hover', 'on-accent' ],
+  focused: [ 'accent-hover', 'on-accent' ],
+  disabled: [ 'toggle', 'text-dim' ]
+};
+
+const MARKED = [ 'background-color', '--mark' ];
+
 // Each widget: `control`, the element whose colours are read; `target`, the
-// element that is put in a state (the control when left out); and `states`,
-// each state's [background, text] as tokens. The order is the page's.
+// element that is put in a state (the control when left out); `read`, the two
+// properties read (background and text when left out; a name starting with
+// `--` is a custom property); `checked`, whether every cell is checked; and
+// `states`, each state's tokens for `read`, in order. A state with one token
+// checks only the first property. The order is the page's. A widget is in the
+// keyboard order when it has a `focused` state.
 const WIDGETS = {
   button: { control: '.button', states: RAISED },
   primary: {
@@ -64,8 +84,14 @@ const WIDGETS = {
     states: { rest: WELL.rest, filled: [ 'well', 'text' ], hovered: WELL.hovered, focused: WELL.focused, disabled: WELL.disabled }
   },
   spin: { control: '.spin', target: '.spin .spin-field', states: WELL },
-  'text-area': { control: '.text-area', states: WELL }
+  'text-area': { control: '.text-area', states: WELL },
+  'check-box': { control: '.check-box', read: MARKED, states: TOGGLE_OFF },
+  'check-box-on': { control: '.check-box', read: MARKED, checked: true, states: TOGGLE_ON },
+  radio: { control: '.radio', read: MARKED, states: TOGGLE_OFF },
+  'radio-on': { control: '.radio', read: MARKED, checked: true, states: TOGGLE_ON }
 };
+
+const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
 
 const FORCED = { hovered: 'is-hovered', focused: 'is-focused', pressed: 'is-pressed', checked: 'is-checked' };
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
@@ -73,6 +99,7 @@ const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
 const targetOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].target ?? WIDGETS[widget].control}`;
+const readOf = widget => WIDGETS[widget].read ?? [ 'background-color', 'color' ];
 
 /** The rows of the gallery outside any candidate: widget → [{ state, body }]. */
 function readRows() {
@@ -115,11 +142,14 @@ function isToken(computed, expected) {
   return (named.match(/\((.*)\)$/)?.[1].split(', ') ?? []).includes(expected);
 }
 
-const coloursOf = (page, selector) =>
-  page.locator(selector).evaluate(element => {
-    const style = getComputedStyle(element);
-    return [ style.backgroundColor, style.color ];
-  });
+/** The computed values of `read` on the element; custom properties are trimmed. */
+const coloursOf = (page, selector, read = [ 'background-color', 'color' ]) =>
+  page
+    .locator(selector)
+    .evaluate((element, names) => {
+      const style = getComputedStyle(element);
+      return names.map(name => style.getPropertyValue(name).trim());
+    }, read);
 
 // The tests that need Chrome are skipped, with the reason, when it cannot start.
 let chrome = {};
@@ -172,8 +202,11 @@ describe('prototype gallery', () => {
         }
         const target = WIDGETS[widget]?.target?.split(' ').at(-1);
         const disabledOn = target ? controlTag(body, target)?.tag ?? '' : found.tag;
-        if (/\sdisabled\b/.test(disabledOn) !== (state === 'disabled')) {
+        if (/\sdisabled\b|\saria-disabled="true"/.test(disabledOn) !== (state === 'disabled')) {
           offences.push(`${widget} ${state}: disabled is ${state === 'disabled' ? 'missing' : 'set'}`);
+        }
+        if (/\schecked\b/.test(found.tag) !== Boolean(WIDGETS[widget]?.checked)) {
+          offences.push(`${widget} ${state}: checked is ${WIDGETS[widget]?.checked ? 'missing' : 'set'}`);
         }
       }
     }
@@ -184,14 +217,14 @@ describe('prototype gallery', () => {
     const { page } = await gallery();
     const offences = [];
     for (const [ widget, { states } ] of Object.entries(WIDGETS)) {
-      for (const [ state, [ background, text ] ] of Object.entries(states)) {
-        const [ shownBackground, shownText ] = await coloursOf(page, controlOf(widget, state));
-        if (!isToken(shownBackground, background)) {
-          offences.push(`${widget} ${state}: background ${nameColour(shownBackground, names)}, expected ${background}`);
-        }
-        if (!isToken(shownText, text)) {
-          offences.push(`${widget} ${state}: text ${nameColour(shownText, names)}, expected ${text}`);
-        }
+      const read = readOf(widget);
+      for (const [ state, expected ] of Object.entries(states)) {
+        const shown = await coloursOf(page, controlOf(widget, state), read);
+        expected.forEach((token, index) => {
+          if (!isToken(shown[index], token)) {
+            offences.push(`${widget} ${state}: ${read[index]} ${nameColour(shown[index], names)}, expected ${token}`);
+          }
+        });
       }
     }
     assert.deepEqual(offences, []);
@@ -202,9 +235,9 @@ describe('prototype gallery', () => {
     for (const [ widget, { states } ] of Object.entries(WIDGETS)) {
       for (const state of Object.keys(states).filter(s => LIVE[s])) {
         const { page } = await gallery();
-        const forced = await coloursOf(page, controlOf(widget, state));
+        const forced = await coloursOf(page, controlOf(widget, state), readOf(widget));
         await applyState(page, { [LIVE[state]]: targetOf(widget, 'rest') });
-        const live = await coloursOf(page, controlOf(widget, 'rest'));
+        const live = await coloursOf(page, controlOf(widget, 'rest'), readOf(widget));
         if (live.join() !== forced.join()) {
           offences.push(`${widget} ${state}: live ${live.map(c => nameColour(c, names)).join(' / ')}, forced ${forced.map(c => nameColour(c, names)).join(' / ')}`);
         }
@@ -230,6 +263,66 @@ describe('prototype gallery', () => {
     await page.locator(disabled).hover({ force: true });
     const [ background, text ] = await coloursOf(page, disabled);
     assert.ok(isToken(background, 'tone-3') && isToken(text, 'text-dim'), `disabled and hovered: ${nameColour(background, names)}`);
+
+    const box = targetOf('check-box', 'rest');
+    const boxBackground = async () => nameColour((await coloursOf(page, box, MARKED))[0], names);
+    ({ page } = await gallery());
+    await applyState(page, { focus: box, hover: box });
+    assert.match(await boxBackground(), /toggle-focus/, 'check box focused and hovered');
+
+    ({ page } = await gallery());
+    await applyState(page, { press: box });
+    assert.match(await boxBackground(), /tone-1/, 'check box pressed');
+    await page.mouse.up();
+
+    ({ page } = await gallery());
+    const off = targetOf('check-box-on', 'disabled');
+    await page.locator(off).hover({ force: true });
+    const [ offBackground, mark ] = await coloursOf(page, off, MARKED);
+    assert.ok(isToken(offBackground, 'toggle') && isToken(mark, 'text-dim'), `disabled checked and hovered: ${nameColour(offBackground, names)}`);
+  });
+
+  withChrome('dims the label of a disabled toggle', async () => {
+    const { page } = await gallery();
+    const offences = [];
+    for (const widget of TOGGLES) {
+      for (const state of Object.keys(WIDGETS[widget].states)) {
+        const [ colour ] = await coloursOf(page, `${cell(widget, state)} .toggle`, [ 'color' ]);
+        const expected = state === 'disabled' ? 'text-dim' : 'text';
+        if (!isToken(colour, expected)) {
+          offences.push(`${widget} ${state}: label ${nameColour(colour, names)}, expected ${expected}`);
+        }
+      }
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('hovers the box from its label', async () => {
+    const { page } = await gallery();
+    const label = page.locator(`${cell('check-box', 'rest')} .toggle`);
+    const { width, height } = await label.boundingBox();
+    const position = { x: width - 4, y: height / 2 };
+    const box = targetOf('check-box', 'rest');
+    await label.hover({ position });
+    assert.match(nameColour((await coloursOf(page, box))[0], names), /tone-1/, 'hovered from the label');
+    await label.click({ position });
+    assert.ok(await page.locator(box).isChecked(), 'a click on the label checks the box');
+    assert.match(nameColour((await coloursOf(page, box))[0], names), /accent-hover/, 'checked and hovered');
+  });
+
+  withChrome('draws toggles with no native look', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.check-box, .radio') ].map(element => {
+        const style = getComputedStyle(element);
+        return [ element.classList.contains('radio') ? 'radio' : 'check-box', style.appearance, style.borderRadius ];
+      })
+    );
+    assert.ok(shown.length > 0);
+    const offences = shown
+      .filter(([ kind, appearance, radius ]) => appearance !== 'none' || radius !== (kind === 'radio' ? '50%' : '0px'))
+      .map(entry => entry.join(' '));
+    assert.deepEqual(offences, []);
   });
 
   withChrome('shows placeholders in dim text', async () => {
@@ -251,7 +344,9 @@ describe('prototype gallery', () => {
   withChrome('takes the keyboard in order', async () => {
     const { page } = await gallery();
     // The pressed copy stays pressed when focused: pressed wins over focused.
-    const expected = Object.entries(WIDGETS).flatMap(([ widget, { states } ]) =>
+    const expected = Object.entries(WIDGETS)
+      .filter(([ , { states } ]) => states.focused)
+      .flatMap(([ widget, { states } ]) =>
       Object.keys(states)
         .filter(state => state !== 'disabled')
         .map(state => `${widget} ${state}`)
@@ -280,7 +375,7 @@ describe('prototype gallery', () => {
       }
       const [ widget, state ] = where.label.split(' ');
       if (state !== 'pressed') {
-        const [ background ] = await coloursOf(page, controlOf(widget, state));
+        const [ background ] = await coloursOf(page, controlOf(widget, state), readOf(widget));
         const focused = WIDGETS[widget].states.focused[0];
         if (!isToken(background, focused)) {
           offences.push(`${where.label}: focused shows ${nameColour(background, names)}, expected ${focused}`);
