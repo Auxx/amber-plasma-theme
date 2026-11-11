@@ -76,7 +76,7 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "37 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "45 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
 # Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
@@ -127,16 +127,27 @@ node tools/src/bin/tokens.mjs resolve text-dim
   window outline on `.window`, `column-rule`, `text-decoration`, a
   `drop-shadow` filter, a `round` clip, an at-rule, and any colour written out
   (CSS named colours included) except a warm `--desktop`. In the page it fails
-  on `<script>`, `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour in an
-  attribute, a `style` that sets anything but custom properties, and a colour
+  on `<script>` (except a linked `<script src="name.js" defer></script>`,
+  listed in the spec), `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour
+  in an attribute, a `style` that sets anything but custom properties, and a colour
   set outside a candidate. A colour written outside the tokens must be warm:
-  OKLCH hue 30 to 110, or black (my call). `prototype-candidates.spec.mjs`
+  OKLCH hue 30 to 110, or black (my call). A script (`prototype/*.js`) may
+  only copy a value into `--value` (D-48). It is read against an allowlist:
+  it may use only the names a slider needs (`document`, `querySelectorAll`,
+  `addEventListener`, `setProperty`, `value`, `min`, `max`, `Number` and a few
+  more, in `SCRIPT_NAMES`) and the names it declares itself. It fails on any
+  other name, on bracket access, on `var(`, on a colour, and on any `.style`
+  use but `.style.setProperty('--value'`. A page also fails on an `on…`
+  attribute or a `javascript:` URL, quoted or not, entities decoded, and on
+  `<script>` or `<style>` in any case. `prototype-candidates.spec.mjs`
   measures every ratio printed under a candidate again, with that figure's
   `style` overrides, and fails when one is stale; it lists how many figures
   and ratios each page has. `prototype-gallery.spec.mjs` reads the gallery's
   rows of states and, in Chrome, checks that each state is drawn in its
   tokens, that a live control in a real state matches its forced copy, the
-  keyboard order, the placeholder colour and the rendered anti-goals.
+  keyboard order, the placeholder colour and the rendered anti-goals; and
+  that a slider's fill follows its value and that the real scrollbars share
+  their rules with the drawn ones.
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,
   or a value is not a colour; 2 the command line was wrong, including an
   override that is not `token=value`.
@@ -150,7 +161,7 @@ path from the repository root, opened as `file://`.
 
 | Command | Does |
 | --- | --- |
-| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full]` | Saves a PNG of one element, the viewport, or the whole page with `--full` |
+| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides |
 | `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
 

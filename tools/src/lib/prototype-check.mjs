@@ -113,7 +113,20 @@ export function cssOffences(file, source) {
   return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
 }
 
+// A script linked from its own file, which scriptOffences reads (D-48).
+const LINKED_SCRIPT = /^<script src="[a-z][a-z0-9-]*\.js" defer><\/script>/;
+
 const FORBIDDEN = [ '<script', '<style', '<hr', '<line', ' rx=', ' ry=' ];
+
+/** An attribute value as a browser reads it as a URL: entities decoded, blanks gone. */
+function decodeUrl(value) {
+  return value
+    .replace(/&#x([0-9a-f]+);?/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);?/g, (_, decimal) => String.fromCodePoint(Number(decimal)))
+    .replace(/&colon;/gi, ':')
+    .replace(/&(?:tab|newline);/gi, '')
+    .replace(/[\u0000-\u0020]/g, '');
+}
 
 /**
  * The anti-goal offences of the page, as `file:line: text`: a script, a style
@@ -124,18 +137,31 @@ const FORBIDDEN = [ '<script', '<style', '<hr', '<line', ' rx=', ' ry=' ];
  */
 export function pageOffences(file, source) {
   const text = stripComments(source, /<!--[\s\S]*?-->/g);
+  // Tags are found in any case; a linked script must be written as LINKED_SCRIPT.
+  const lower = text.toLowerCase();
   const offences = [];
   for (const word of FORBIDDEN) {
-    for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) {
+    for (let index = lower.indexOf(word); index >= 0; index = lower.indexOf(word, index + 1)) {
+      if (word === '<script' && LINKED_SCRIPT.test(text.slice(index))) {
+        continue;
+      }
       offences.push({ index: index + (word.startsWith(' ') ? 1 : 0), text: word.trim() });
     }
   }
   for (const tag of text.matchAll(/<[a-z][^>]*>/gi)) {
     const isCandidate = /^<figure class="candidate"/.test(tag[0]);
-    for (const attribute of tag[0].matchAll(/\s([\w:-]+)=(?:"([^"]*)"|'([^']*)')/g)) {
-      const [ , name, double, single ] = attribute;
-      const value = double ?? single;
+    for (const attribute of tag[0].matchAll(/\s([\w:-]+)=(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g)) {
+      const [ raw, name, double, single, bare ] = attribute;
+      const value = double ?? single ?? bare;
       const index = tag.index + attribute.index + 1;
+      if (/^on/i.test(name)) {
+        offences.push({ index, text: name });
+        continue;
+      }
+      if (/^javascript:/i.test(decodeUrl(value))) {
+        offences.push({ index, text: raw.trim() });
+        continue;
+      }
       if (name !== 'style') {
         if (colourLiterals(value).length) {
           offences.push({ index, text: `${name}="${value}"` });
@@ -158,6 +184,101 @@ export function pageOffences(file, source) {
         }
       }
     }
+  }
+  return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
+}
+
+// The only names a script may use (D-48): what copying a slider's position
+// into --value needs. Any other name, such as one that changes a class, an
+// attribute, state, markup or a style sheet, or reaches the network, is an
+// offence, as is a name the script does not declare itself.
+const SCRIPT_NAMES = new Set([
+  'const',
+  'let',
+  'for',
+  'of',
+  'if',
+  'else',
+  'return',
+  'document',
+  'window',
+  'querySelector',
+  'querySelectorAll',
+  'addEventListener',
+  'forEach',
+  'style',
+  'setProperty',
+  'value',
+  'min',
+  'max',
+  'Number'
+]);
+
+// The one use of the style object a script may make (D-48).
+const ALLOWED_STYLE = ".style.setProperty('--value'";
+
+// A string literal or a comment: `//` inside a string does not start one.
+const STRING_OR_COMMENT = /('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+
+const blank = text => text.replace(/[^\n]/g, ' ');
+
+/** The names a script declares: constants, variables, functions and arrow parameters. */
+function declaredNames(code) {
+  const names = new Set();
+  for (const [ , name ] of code.matchAll(/\b(?:const|let|function)\s+([A-Za-z_$][\w$]*)/g)) {
+    names.add(name);
+  }
+  for (const [ , name ] of code.matchAll(/([A-Za-z_$][\w$]*)\s*=>/g)) {
+    names.add(name);
+  }
+  for (const [ , list ] of code.matchAll(/\(([^()]*)\)\s*=>/g)) {
+    for (const name of list.split(',').map(part => part.trim()).filter(Boolean)) {
+      names.add(name);
+    }
+  }
+  return names;
+}
+
+/**
+ * The offences of a prototype script, as `file:line: text`. A script may only
+ * copy a value into `--value` (D-48), so it may use only SCRIPT_NAMES and the
+ * names it declares, no bracket access, no colour and no `var()`, and the
+ * style object only through `.style.setProperty('--value'`. Comments are not
+ * read; strings are read for colours and styles, not for names.
+ */
+export function scriptOffences(file, source) {
+  // `text` keeps strings and blanks comments; `code` also blanks what strings
+  // hold, keeping the expressions of a template.
+  const text = source.replace(STRING_OR_COMMENT, (match, string) => string ?? blank(match));
+  const code = source.replace(STRING_OR_COMMENT, (match, string) => {
+    if (!string) {
+      return blank(match);
+    }
+    if (!string.startsWith('`')) {
+      return string[0] + blank(string.slice(1, -1)) + string.at(-1);
+    }
+    return string.replace(/\$\{([^}]*)\}|[^\n`]/g, (part, expression) => (expression === undefined ? ' ' : `  ${expression} `));
+  });
+  const offences = [];
+  const declared = declaredNames(code);
+  for (const name of code.matchAll(/(?<![\w$])[A-Za-z_$][\w$]*/g)) {
+    if (!SCRIPT_NAMES.has(name[0]) && !declared.has(name[0])) {
+      offences.push({ index: name.index, text: name[0] });
+    }
+  }
+  for (const bracket of code.matchAll(/\[/g)) {
+    offences.push({ index: bracket.index, text: '[' });
+  }
+  for (let index = text.indexOf('var('); index >= 0; index = text.indexOf('var(', index + 1)) {
+    offences.push({ index, text: 'var(' });
+  }
+  for (const style of text.matchAll(/\.?\bstyle\b[.[]?/g)) {
+    if (!text.startsWith(ALLOWED_STYLE, style.index)) {
+      offences.push({ index: style.index, text: style[0] });
+    }
+  }
+  for (const literal of text.matchAll(LITERAL)) {
+    offences.push({ index: literal.index, text: literal[0] });
   }
   return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
 }

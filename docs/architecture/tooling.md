@@ -37,7 +37,7 @@ version.
 |---|---|---|
 | `colour` | `convert`, `contrast <fg> <bg...> [--min]`, `solve` | P0.2 |
 | `tokens` | `list [filter]`, `resolve <token...> [--set]`, `pairs [filter] [--failing] [--close] [--set]`, `try <token=value...>` | P1.1 |
-| `browser` | `shot <page> [--selector] [--hover] [--focus] [--press]`, `check <page>`, `colours <page> <selector>` | P0.7 |
+| `browser` | `shot <page> [--selector] [--hover] [--focus] [--press] [--scrollbars]`, `check <page>`, `colours <page> <selector>` | P0.7; `--scrollbars` P1.4 |
 | `generate` | one command per part; prints the result, writes with `--write` | P2.2, then each later step |
 
 The `browser` tool opens the prototype in the installed Google Chrome through

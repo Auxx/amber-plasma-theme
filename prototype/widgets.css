@@ -268,3 +268,197 @@
   color: var(--text-dim);
   background: transparent;
 }
+
+/*
+ * Toggles: check boxes and radio buttons (P1.4). An unchecked toggle sits
+ * below the surface, like a well; checked, it fills with accent. The mark (the
+ * tick or the dot) takes its colour from --mark. A toggle has no pressed tone:
+ * held down, it stays hovered. Every state rule names :enabled and the checked
+ * state, so that the rules weigh the same and the later one wins: focused over
+ * hovered. A disabled toggle never changes.
+ */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  color: var(--text);
+}
+
+.toggle:has(:disabled) {
+  color: var(--text-dim);
+}
+
+.check-box,
+.radio {
+  --mark: transparent;
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  flex: none;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  cursor: default;
+  background-color: var(--toggle);
+}
+
+/* The dot of a radio button: a round widget, drawn on the button itself. */
+.radio {
+  border-radius: 50%;
+  background-image: radial-gradient(circle, var(--mark) 3px, transparent 3.5px);
+}
+
+/* The tick: two bars with square ends, turned 45 degrees. */
+.check-box::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  background:
+    linear-gradient(var(--mark), var(--mark)) right / 2px 100% no-repeat,
+    linear-gradient(var(--mark), var(--mark)) bottom / 100% 2px no-repeat;
+  transform: rotate(45deg);
+}
+
+:is(.check-box, .radio):checked {
+  --mark: var(--on-accent);
+  background-color: var(--accent);
+}
+
+/* Hovered, from the toggle or from its label */
+
+:is(.check-box, .radio):not(:checked):enabled:hover,
+.toggle:where(:hover) > :is(.check-box, .radio):not(:checked):enabled,
+:is(.check-box, .radio):not(:checked):enabled.is-hovered {
+  background-color: var(--tone-1);
+}
+
+:is(.check-box, .radio):checked:enabled:hover,
+.toggle:where(:hover) > :is(.check-box, .radio):checked:enabled,
+:is(.check-box, .radio):checked:enabled.is-hovered {
+  background-color: var(--accent-hover);
+}
+
+/* Focused */
+
+:is(.check-box, .radio):not(:checked):enabled:focus-visible,
+:is(.check-box, .radio):not(:checked):enabled.is-focused {
+  background-color: var(--toggle-focus);
+}
+
+:is(.check-box, .radio):checked:enabled:focus-visible,
+:is(.check-box, .radio):checked:enabled.is-focused {
+  background-color: var(--accent-hover);
+}
+
+/* Disabled */
+
+:is(.check-box, .radio):checked:disabled {
+  --mark: var(--text-dim);
+  background-color: var(--toggle);
+}
+
+/*
+ * Ranges: sliders and progress bars (P1.4). A fill is accent on a track below
+ * the surface; its length is --value. A slider's thumb is a raised widget and
+ * takes the button's tones, through --thumb. A disabled fill is dim text.
+ */
+
+.slider {
+  --value: 0%; /* set from the slider's value by gallery.js (D-48) */
+  --thumb: var(--tone-3);
+  --fill: var(--accent);
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  display: block;
+  width: 100%;
+  height: 20px;
+  cursor: default;
+  background: transparent;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(to right, var(--fill) var(--value), var(--track) var(--value));
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 20px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 0;
+  background: var(--thumb);
+}
+
+.progress {
+  --fill: var(--accent);
+  display: block;
+  width: 100%;
+  height: 6px;
+  background-color: var(--track);
+  background-image: linear-gradient(to right, var(--fill) var(--value), transparent var(--value));
+}
+
+.slider:hover,
+.slider.is-hovered {
+  --thumb: var(--tone-4);
+}
+
+.slider:focus-visible,
+.slider.is-focused {
+  --thumb: var(--raised-focus);
+}
+
+.slider:active,
+.slider.is-pressed {
+  --thumb: var(--tone-1);
+}
+
+.slider:disabled {
+  --thumb: var(--tone-3);
+  --fill: var(--text-dim);
+}
+
+.progress[aria-disabled="true"] {
+  --fill: var(--text-dim);
+}
+
+/* A live list that scrolls, beside the drawn scrollbars. */
+.live {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 240px;
+}
+
+.scroll-area {
+  height: 120px;
+  overflow-y: auto;
+  outline: none;
+  background: var(--tone-2);
+}
+
+/* A scroller takes keyboard focus in Chrome; focused, it is tinted like a
+   focused well, which text on it keeps 4.5:1 against. */
+.scroll-area:focus-visible {
+  background: var(--well-focus);
+}
+
+.scroll-area > div {
+  padding: 4px 8px;
+}

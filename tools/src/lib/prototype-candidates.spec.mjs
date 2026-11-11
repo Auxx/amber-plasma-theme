@@ -18,7 +18,7 @@ const PAGES = readdirSync(PROTOTYPE).filter(name => name.endsWith('.html')).sort
 
 // Figures and printed ratios on each page. A new page is added here.
 const COUNTS = {
-  'gallery.html': [ 11, 32 ],
+  'gallery.html': [ 23, 52 ],
   'index.html': [ 9, 18 ]
 };
 

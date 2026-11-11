@@ -55,7 +55,7 @@ function page(positionals) {
 
 /** Opens the page, runs `work`, and always closes Chrome. */
 async function withPage(url, options, work) {
-  const { browser, page: opened, problems } = await openPage(url, viewport(options));
+  const { browser, page: opened, problems } = await openPage(url, { ...viewport(options), scrollbars: Boolean(options.scrollbars) });
   try {
     return await work(opened, problems);
   } finally {
@@ -88,12 +88,14 @@ main({
   summary: 'Opens a prototype page in the installed Google Chrome: screenshots, the rendered anti-goal check, computed colours.',
   commands: {
     shot: {
-      usage: '<page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--width n] [--height n] [--json]',
+      usage: '<page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--width n] [--height n] [--json]',
       summary: 'Saves a PNG of one element, the viewport, or the whole page (--full), in a state.',
       help: `${STATE_HELP}\n\n${SIZE_HELP}\n\n--out defaults to tmp/<page>-<selector>-<states>.png in the repository (gitignored). It may be
 another path inside the repository or inside the system's temporary folder, such as /tmp;
-links are followed before deciding.`,
-      options: { selector: { type: 'string' }, out: { type: 'string' }, full: { type: 'boolean' }, ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
+links are followed before deciding.
+
+--scrollbars shows the scrollbars, which headless Chrome hides.`,
+      options: { selector: { type: 'string' }, out: { type: 'string' }, full: { type: 'boolean' }, scrollbars: { type: 'boolean' }, ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
       async run(options, positionals) {
         const url = page(positionals);
         const file = outPath(options.out, { name: defaultName(positionals[0], options) });

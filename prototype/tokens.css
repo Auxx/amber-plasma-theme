@@ -38,4 +38,8 @@
   --well-focus: #393226;          /* a focused well: accent 16 % over tone 1 (O-3) */
   --accent-hover: #debc7d;        /* a hovered or focused primary button: accent at OKLCH lightness 81 % */
   --accent-pressed: #ba995b;      /* a pressed primary button: accent at OKLCH lightness 70 % */
+  --toggle: var(--tone-0);        /* an unchecked check box or radio button at rest (O-1) */
+  --toggle-focus: #393226;        /* a focused toggle: accent 16 % over tone 1, as the focused well (O-3) */
+  --track: var(--tone-0);         /* the track of a slider or progress bar (O-1) */
+  --scroll-thumb: var(--tone-4);  /* a scrollbar's thumb at rest */
 }

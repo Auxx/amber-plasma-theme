@@ -13,7 +13,7 @@
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track"],
     "minimum": 3,
     "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, block markers, fills on tracks)"
   },
@@ -22,6 +22,12 @@
     "on": ["accent", "accent-hover", "accent-pressed"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: on-accent text reaches 4.5:1 on accent"
+  },
+  {
+    "foreground": "accent-hover",
+    "on": ["tone-2"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: a hovered or focused checked toggle is filled with accent hover, which reaches 3:1 against the surface it marks"
   },
   {
     "foreground": "on-danger",
@@ -64,5 +70,29 @@
     "on": ["tone-2"],
     "minimum": 1.1,
     "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "toggle",
+    "on": ["tone-2"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "toggle-focus",
+    "on": ["tone-2", "toggle"],
+    "minimum": 1.2,
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+  },
+  {
+    "foreground": "track",
+    "on": ["tone-2"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "scroll-thumb",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a scrollbar's thumb is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
   }
 ]

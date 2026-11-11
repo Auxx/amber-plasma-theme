@@ -108,6 +108,10 @@ body {
   background: var(--tone-2);
 }
 
+.vignette.is-stacked {
+  flex-direction: column;
+}
+
 .vignette .text-field {
   width: 124px;
 }
