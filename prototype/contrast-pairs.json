@@ -1,25 +1,25 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus"],
     "minimum": 3,
     "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, block markers, fills on tracks)"
   },
   {
     "foreground": "on-accent",
-    "on": ["accent"],
+    "on": ["accent", "accent-hover", "accent-pressed"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: on-accent text reaches 4.5:1 on accent"
   },
@@ -40,5 +40,29 @@
     "on": ["tone-0", "tone-1", "tone-2"],
     "minimum": 1.3,
     "why": "Accessibility rule 5: the window glow marks the active window. 1.3 is provisional until O-4 sets the minimum."
+  },
+  {
+    "foreground": "raised-focus",
+    "on": ["tone-3", "tone-2"],
+    "minimum": 1.2,
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+  },
+  {
+    "foreground": "well-focus",
+    "on": ["tone-0", "tone-2"],
+    "minimum": 1.2,
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+  },
+  {
+    "foreground": "well",
+    "on": ["tone-2"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "well-edge",
+    "on": ["tone-2"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
   }
 ]
