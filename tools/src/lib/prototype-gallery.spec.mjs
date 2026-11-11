@@ -16,6 +16,7 @@ import { loadTokens } from './tokens.mjs';
 
 const GALLERY = 'prototype/gallery.html';
 const SOURCE = fileURLToPath(new URL(`../../../${GALLERY}`, import.meta.url));
+const WIDGETS_CSS = fileURLToPath(new URL('../../../prototype/widgets.css', import.meta.url));
 
 const RAISED = {
   rest: [ 'tone-3', 'text' ],
@@ -109,6 +110,10 @@ const WIDGETS = {
       full: [ 'track', 'accent' ],
       disabled: [ 'track', 'text-dim' ]
     }
+  },
+  scrollbar: {
+    control: '.scroll-thumb',
+    states: { rest: [ 'scroll-thumb' ], hovered: [ 'text-dim' ], pressed: [ 'text' ] }
   }
 };
 
@@ -225,6 +230,52 @@ describe('prototype gallery', () => {
       .get('progress')
       .map(({ state, body }) => [ state, body.match(/aria-valuenow="([^"]*)"/)?.[1] ]);
     assert.deepEqual(values.slice(0, 3), [ [ 'rest', '40' ], [ 'empty', '0' ], [ 'full', '100' ] ]);
+  });
+
+  it('styles the real scrollbars as the drawn ones', () => {
+    // A real thumb in a state shares its rule with the drawn thumb in that
+    // state and with its forced copy, so the two cannot drift apart.
+    const rules = [ ...readFileSync(WIDGETS_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g) ].map(
+      ([ , selector, body ]) => ({ selectors: selector.split(',').map(part => part.trim()), body })
+    );
+    const DRAWN = {
+      '': [ '.scroll-thumb' ],
+      ':hover': [ '.scroll-thumb:hover', '.scroll-thumb.is-hovered' ],
+      ':active': [ '.scroll-thumb:active', '.scroll-thumb.is-pressed' ]
+    };
+    const offences = [];
+    const seen = new Set();
+    for (const { selectors } of rules) {
+      for (const selector of selectors) {
+        const state = selector.match(/^::-webkit-scrollbar-thumb(:hover|:active)?$/)?.[1];
+        if (state === undefined && !selector.startsWith('::-webkit-scrollbar-thumb')) {
+          continue;
+        }
+        const key = state ?? '';
+        seen.add(key);
+        for (const drawn of DRAWN[key] ?? [ '(a known state)' ]) {
+          if (!selectors.includes(drawn)) {
+            offences.push(`${selector}: no ${drawn} in the same rule`);
+          }
+        }
+      }
+    }
+    assert.deepEqual([ ...seen ].sort(), Object.keys(DRAWN).sort());
+    const declared = (selector, property) =>
+      rules
+        .filter(rule => rule.selectors.includes(selector))
+        .map(rule => rule.body.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`))?.[1].trim())
+        .filter(Boolean)
+        .at(-1);
+    for (const part of [ '::-webkit-scrollbar', '::-webkit-scrollbar-track', '::-webkit-scrollbar-corner' ]) {
+      if (declared(part, 'background') !== 'transparent') {
+        offences.push(`${part}: background ${declared(part, 'background')}, expected transparent`);
+      }
+    }
+    if (declared('::-webkit-scrollbar-button', 'display') !== 'none') {
+      offences.push('::-webkit-scrollbar-button: shown');
+    }
+    assert.deepEqual(offences, []);
   });
 
   it('forces each state on its copy', () => {
@@ -361,6 +412,16 @@ describe('prototype gallery', () => {
     await page.keyboard.press('End');
     assert.equal(await fill(), '100%');
     assert.deepEqual(problems, []);
+  });
+
+  withChrome('scrolls the scroll area', async () => {
+    const { page } = await gallery();
+    const area = page.locator('.scroll-area');
+    const size = await area.evaluate(element => [ element.scrollHeight, element.clientHeight ]);
+    assert.ok(size[0] > size[1], `scroll height ${size[0]}, client height ${size[1]}`);
+    await area.hover();
+    await page.mouse.wheel(0, 60);
+    await page.waitForFunction(() => document.querySelector('.scroll-area').scrollTop > 0);
   });
 
   withChrome('draws toggles and sliders with no native look', async () => {

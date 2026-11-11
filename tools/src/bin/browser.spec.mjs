@@ -101,6 +101,26 @@ describe('browser tool', () => {
     }
   });
 
+  withChrome('hides scrollbars unless asked', async () => {
+    const gutter = async options => {
+      const { browser: opened, page } = await openPage(pageUrl('prototype/gallery.html'), options);
+      try {
+        return await page.locator('.scroll-area').evaluate(element => element.offsetWidth - element.clientWidth);
+      } finally {
+        await opened.close();
+      }
+    };
+    assert.equal(await gutter({}), 0);
+    assert.equal(await gutter({ scrollbars: true }), 12);
+  });
+
+  withChrome('saves a page with its scrollbars', () => {
+    const file = join(out, 'scroll.png');
+    const { status, stdout } = browser('shot', 'prototype/gallery.html', '--selector', '.scroll-area', '--scrollbars', '--out', file, '--json');
+    assert.equal(status, 0, stdout);
+    assert.deepEqual(readFileSync(file).subarray(0, 8), PNG);
+  });
+
   withChrome('refuses an ambiguous state', () => {
     const { status, stderr } = browser('colours', 'prototype/index.html', '.window', '--hover', '.window-button');
     assert.equal(status, 1);

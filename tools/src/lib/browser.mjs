@@ -102,15 +102,20 @@ export function nameColour(text, names) {
 }
 
 /**
- * Opens `url` in the installed Chrome, headless, at device scale 1. Returns
+ * Opens `url` in the installed Chrome, headless, at device scale 1. Headless
+ * Chrome hides scrollbars; `scrollbars: true` shows them. Returns
  * the browser (the caller closes it), the page, and the problems seen while
  * loading: failed requests, console errors and script errors.
  */
-export async function openPage(url, { width = 1300, height = 900 } = {}) {
+export async function openPage(url, { width = 1300, height = 900, scrollbars = false } = {}) {
   const { chromium } = await import('playwright-core');
   let browser;
   try {
-    browser = await chromium.launch({ channel: 'chrome', headless: true });
+    browser = await chromium.launch({
+      channel: 'chrome',
+      headless: true,
+      ignoreDefaultArgs: scrollbars ? [ '--hide-scrollbars' ] : []
+    });
   } catch (error) {
     throw new Error(
       `Google Chrome could not be started (playwright-core uses the installed Chrome): ${error.message.split('\n')[0]}`

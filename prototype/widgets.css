@@ -436,3 +436,72 @@
 .progress[aria-disabled="true"] {
   --fill: var(--text-dim);
 }
+
+/*
+ * Scrollbars (P1.4): a thumb on no track. The drawn thumb of the gallery and
+ * the real scrollbars of every scroller, the page included, share each rule,
+ * so they cannot differ. No arrow buttons.
+ */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+.scrollbar {
+  width: 12px;
+  height: 96px;
+}
+
+.scroll-thumb {
+  display: block;
+  width: 12px;
+  height: 32px;
+  margin-top: 16px;
+}
+
+.scroll-thumb,
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+}
+
+.scroll-thumb:hover,
+.scroll-thumb.is-hovered,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+.scroll-thumb:active,
+.scroll-thumb.is-pressed,
+::-webkit-scrollbar-thumb:active {
+  background: var(--text);
+}
+
+/* A live list that scrolls, beside the drawn scrollbars. */
+.live {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 240px;
+}
+
+.scroll-area {
+  height: 120px;
+  overflow-y: auto;
+  outline: none;
+  background: var(--tone-2);
+}
+
+.scroll-area > div {
+  padding: 4px 8px;
+}

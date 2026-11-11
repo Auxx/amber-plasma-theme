@@ -150,7 +150,7 @@ path from the repository root, opened as `file://`.
 
 | Command | Does |
 | --- | --- |
-| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full]` | Saves a PNG of one element, the viewport, or the whole page with `--full` |
+| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides |
 | `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
 
