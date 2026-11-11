@@ -49,6 +49,9 @@ const TOGGLE_ON = {
 
 const MARKED = [ 'background-color', '--mark' ];
 
+// Tabs and items: background, text, and the block marker's colour.
+const MARKED_ITEM = [ 'background-color', 'color', '--marker' ];
+
 // Each widget: `control`, the element whose colours are read; `target`, the
 // element that is put in a state (the control when left out); `read`, the two
 // properties read (background and text when left out; a name starting with
@@ -114,13 +117,45 @@ const WIDGETS = {
   scrollbar: {
     control: '.scroll-thumb',
     states: { rest: [ 'scroll-thumb' ], hovered: [ 'text-dim' ], pressed: [ 'text' ] }
+  },
+  tab: {
+    control: '.tab',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-1', 'text', 'transparent' ],
+      focused: [ 'well-focus', 'text', 'transparent' ],
+      selected: [ 'tone-2', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
+  },
+  item: {
+    control: '.item',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-3', 'text', 'transparent' ],
+      focused: [ 'raised-focus', 'text', 'transparent' ],
+      selected: [ 'selected', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
   }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
 
-const FORCED = { hovered: 'is-hovered', focused: 'is-focused', pressed: 'is-pressed', checked: 'is-checked' };
+const FORCED = {
+  hovered: 'is-hovered',
+  focused: 'is-focused',
+  pressed: 'is-pressed',
+  checked: 'is-checked',
+  selected: 'is-selected',
+  sorted: 'is-sorted'
+};
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
+
+// The focus stops allowed outside every state cell: the live areas.
+const LIVE_STOPS = [ '.scroll-area' ];
 
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
@@ -382,6 +417,28 @@ describe('prototype gallery', () => {
     await page.locator(off).hover({ force: true });
     const [ offBackground, mark ] = await coloursOf(page, off, MARKED);
     assert.ok(isToken(offBackground, 'toggle') && isToken(mark, 'text-dim'), `disabled checked and hovered: ${nameColour(offBackground, names)}`);
+
+    // Selected items and tabs keep their marker when hovered or focused.
+    const combined = [
+      [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
+      [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
+      [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
+      [ 'tab', { focus: 'selected' }, [ 'well-focus', 'text', 'accent' ] ],
+      [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ]
+    ];
+    for (const [ widget, state, expected ] of combined) {
+      ({ page } = await gallery());
+      const [ [ live, where ] ] = Object.entries(state);
+      const target = targetOf(widget, where);
+      if (live === 'hover') {
+        await page.locator(target).hover({ force: true });
+      } else {
+        await page.locator(target).focus();
+      }
+      const shown = await coloursOf(page, target, MARKED_ITEM);
+      const label = `${widget} ${where} ${live}: ${shown.map(c => nameColour(c, names)).join(' / ')}`;
+      assert.ok(expected.every((token, index) => isToken(shown[index], token)), label);
+    }
   });
 
   withChrome('dims the label of a disabled toggle', async () => {
@@ -504,6 +561,9 @@ describe('prototype gallery', () => {
   });
 
   withChrome('takes the keyboard in order', async () => {
+    // The walk runs on past the live areas (a scroll area, views, popups, a
+    // dialog) to the candidates, so that families after a live area are
+    // walked too. A stop outside every state cell must be a listed live stop.
     const { page } = await gallery();
     // The pressed copy stays pressed when focused: pressed wins over focused.
     const expected = Object.entries(WIDGETS)
@@ -516,20 +576,30 @@ describe('prototype gallery', () => {
     await page.locator('.pages a').last().focus();
     const seen = [];
     const offences = [];
-    for (let step = 0; step <= expected.length; step++) {
+    for (let step = 0; step < 300; step++) {
       await page.keyboard.press('Tab');
-      const where = await page.evaluate(() => {
+      const where = await page.evaluate(stops => {
         const element = document.activeElement;
-        const cell = element?.closest('.family [data-state]');
-        return cell
-          ? {
-              label: `${cell.closest('[data-widget]').dataset.widget} ${cell.dataset.state}`,
-              step: element.classList.contains('spin-step')
-            }
-          : null;
-      });
-      if (!where) {
+        if (!element || element === document.body || element.closest('.candidates')) {
+          return { end: true };
+        }
+        const cell = element.closest('.family [data-state]');
+        if (!cell) {
+          return { live: stops.some(stop => element.matches(stop)), html: element.outerHTML.slice(0, 80) };
+        }
+        return {
+          label: `${cell.closest('[data-widget]').dataset.widget} ${cell.dataset.state}`,
+          step: element.classList.contains('spin-step')
+        };
+      }, LIVE_STOPS);
+      if (where.end) {
         break;
+      }
+      if (!where.label) {
+        if (!where.live) {
+          offences.push(`an unlisted stop outside every cell: ${where.html}`);
+        }
+        continue;
       }
       seen.push(where.label);
       if (where.step) {
@@ -546,6 +616,46 @@ describe('prototype gallery', () => {
     }
     assert.deepEqual(seen, expected);
     assert.deepEqual(offences, []);
+  });
+
+  withChrome('keeps every column readable on a focused item', async () => {
+    // Dim text on raised focus measures 2.58:1, so a focused item shows its
+    // secondary columns in text.
+    let { page } = await gallery();
+    const offences = [];
+    for (const state of Object.keys(WIDGETS.item.states)) {
+      const [ colour ] = await coloursOf(page, `${cell('item', state)} .item-detail`, [ 'color' ]);
+      const expected = state === 'focused' ? 'text' : 'text-dim';
+      if (!isToken(colour, expected)) {
+        offences.push(`item ${state}: detail ${nameColour(colour, names)}, expected ${expected}`);
+      }
+    }
+    ({ page } = await gallery());
+    await page.locator(targetOf('item', 'rest')).focus();
+    const [ live ] = await coloursOf(page, `${cell('item', 'rest')} .item-detail`, [ 'color' ]);
+    if (!isToken(live, 'text')) {
+      offences.push(`item rest, live focus: detail ${nameColour(live, names)}, expected text`);
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('marks the selected item in the window shell', async () => {
+    const { browser, page } = await openPage(pageUrl('prototype/index.html'));
+    try {
+      const shown = await page.evaluate(() =>
+        [ ...document.querySelectorAll('.is-selected') ].map(element => {
+          const style = getComputedStyle(element);
+          return [ style.backgroundColor, style.getPropertyValue('--marker').trim() ];
+        })
+      );
+      assert.ok(shown.length > 0);
+      const offences = shown
+        .filter(([ background, marker ]) => !isToken(background, 'selected') || !isToken(marker, 'accent'))
+        .map(pair => pair.map(c => nameColour(c, names)).join(' / '));
+      assert.deepEqual(offences, []);
+    } finally {
+      await browser.close();
+    }
   });
 
   withChrome('draws no well edge at the start', async () => {

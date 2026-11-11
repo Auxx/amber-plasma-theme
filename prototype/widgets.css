@@ -462,3 +462,115 @@
 .scroll-area > div {
   padding: 4px 8px;
 }
+
+/*
+ * Navigation (P1.5): tabs and items. A selected one carries the block marker,
+ * a gradient in --marker, --marker-width thick: on the leading edge of an
+ * item, on the top edge of a tab. It is not a border, so it is no hairline.
+ * Clicking a live copy does not select it: that needs a script that sets a
+ * class, which D-48 forbids. Selected copies are forced.
+ */
+
+.tab-bar {
+  display: flex;
+  align-self: stretch;
+  background: var(--tone-0);
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 12px;
+  cursor: default;
+  color: var(--text);
+  --marker: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, var(--marker) var(--marker-width), transparent var(--marker-width));
+}
+
+.item-view {
+  align-self: stretch;
+  background: var(--tone-2);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  outline: none;
+  cursor: default;
+  color: var(--text);
+  --marker: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(to right, var(--marker) var(--marker-width), transparent var(--marker-width));
+}
+
+.item-detail {
+  margin-left: auto;
+  color: var(--text-dim);
+}
+
+/* Hovered. A selected tab joins its page and does not change. */
+
+.tab:enabled:not(.is-selected):is(:hover, .is-hovered) {
+  background-color: var(--tone-1);
+}
+
+.item:not([aria-disabled="true"]):is(:hover, .is-hovered) {
+  background-color: var(--tone-3);
+}
+
+/* Focused: accent over the hovered tone. Dim text on raised focus measures
+   2.58:1, so a focused item shows its secondary columns in text. */
+
+.tab:enabled:not(.is-selected):is(:focus-visible, .is-focused) {
+  background-color: var(--well-focus);
+}
+
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) {
+  background-color: var(--raised-focus);
+}
+
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) .item-detail {
+  color: var(--text);
+}
+
+/* Selected: the block marker in accent, kept when hovered or focused. */
+
+.tab.is-selected {
+  --marker: var(--accent);
+  background-color: var(--tone-2);
+}
+
+.tab.is-selected:enabled:is(:focus-visible, .is-focused) {
+  background-color: var(--well-focus);
+}
+
+.item.is-selected {
+  --marker: var(--accent);
+  background-color: var(--selected);
+}
+
+.item.is-selected:not([aria-disabled="true"]):is(:hover, .is-hovered) {
+  background-color: var(--tone-4);
+}
+
+.item.is-selected:not([aria-disabled="true"]):is(:focus-visible, .is-focused) {
+  background-color: var(--raised-focus);
+}
+
+/* Disabled */
+
+.tab:disabled,
+.item[aria-disabled="true"] {
+  color: var(--text-dim);
+}
