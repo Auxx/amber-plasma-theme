@@ -7,6 +7,7 @@ Run every tool from the repository root:
 | ------------------- | ------------------------------------------------------------------ |
 | [`colour`](#colour) | Converting colours, WCAG contrast, finding a lightness that passes |
 | [`tokens`](#tokens) | Reading Amber's tokens, checking and trying their contrast pairs   |
+| [`browser`](#browser) | Screenshots of the prototype in a state, the rendered anti-goal check, computed colours |
 
 ## `colour`
 
@@ -133,3 +134,56 @@ node tools/src/bin/tokens.mjs resolve text-dim
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,
   or a value is not a colour; 2 the command line was wrong, including an
   override that is not `token=value`.
+
+## `browser`
+
+Opens a prototype page in the installed Google Chrome through
+[playwright-core](https://playwright.dev/). Nothing is downloaded; Firefox is
+not driven, since playwright-core needs its own Firefox build. A page is a
+path from the repository root, opened as `file://`.
+
+| Command | Does |
+| --- | --- |
+| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full]` | Saves a PNG of one element, the viewport, or the whole page with `--full` |
+| `check <page>` | Lists load problems and anti-goals as Chrome draws the page; exits 1 if there is any |
+| `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
+
+Every command takes `--width` and `--height` (200 to 4000; default
+1300 × 900, device scale 1) and `--json`.
+
+```shell
+# The rendered anti-goals: prints "0 load problems, 0 anti-goal offences.", exits 0
+node tools/src/bin/browser.mjs check prototype/index.html
+
+# The active window: prints "Saved tmp/index-scene-front.png (900 × 560)", exits 0
+node tools/src/bin/browser.mjs shot prototype/index.html --selector .scene-front
+
+# A hovered window button: prints a row "span.window-button.is-minimise  #1c1a18 (tone-1)  #e8e3da (text)", exits 0
+node tools/src/bin/browser.mjs colours prototype/index.html '.scene-front .is-minimise' --hover '.scene-front .is-minimise'
+```
+
+Look at a screenshot with the Read tool.
+
+- **States.** `--hover`, `--focus` and `--press` each take a selector that must
+  match exactly one element, or the command exits 1 naming the count. Focus is
+  given as by the keyboard, so `:focus-visible` applies; press holds the mouse
+  button down, so `:active` applies. `--selector` for `shot` must match one
+  element too.
+- **Where screenshots go.** By default `tmp/<page>-<selector>-<states>.png` in
+  the repository, which is gitignored. `--out` may name another `.png` inside
+  the repository, or one outside the home folder, such as `/tmp/a.png`. Any
+  other path under the home folder is refused (exit 2).
+- **`check`** reports a file that fails to load, a console error and a script
+  error, then each element (or its `::before` / `::after`) with a border, a
+  rounded corner, a box shadow, an underline, or an outline anywhere but on
+  `.window`. It complements `prototype-anti-goals.spec.mjs`, which reads the
+  source; `check` sees what the browser's defaults and the cascade add.
+- **`colours`** names an opaque colour by every token that resolves to it, such
+  as `#3c3832 (tone-4, outline)`, or prints the bare hex. Fully transparent is
+  `transparent`; part-transparent is `rgb(r g b / N%)`, with no token name.
+- **Chrome missing.** Every command that opens a page exits 1 with "Google
+  Chrome could not be started …". The specs that need Chrome are skipped with
+  that reason.
+- **Exit codes.** 0 success; 1 a check found something, a page or element is
+  missing, a state selector does not match exactly one element, or Chrome did
+  not start; 2 the command line was wrong, including a bad size or `--out`.

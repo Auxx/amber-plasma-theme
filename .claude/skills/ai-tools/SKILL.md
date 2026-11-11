@@ -2,11 +2,14 @@
 name: ai-tools
 description: |
   Ready-made command-line tools for jobs that would otherwise need a
-  throwaway script: colour conversion, WCAG contrast and checking Amber's
-  tokens and contrast pairs now, with generating Amber's parts to follow. Use BEFORE writing any one-off
-  script (node -e, python, a heredoc in the scratchpad) to compute, check or
-  generate something in this repository, and when a task needs a tool that
-  does not exist yet: this skill says how to add one.
+  throwaway script: colour conversion, WCAG contrast, checking Amber's tokens
+  and contrast pairs, and opening the prototype in Chrome (screenshots in a
+  hovered, focused or pressed state, the rendered anti-goal check, computed
+  colours named as tokens), with generating Amber's parts to follow. Use
+  BEFORE writing any one-off script (node -e, python, a heredoc in the
+  scratchpad) to compute, check, look at or generate something in this
+  repository, and when a task needs a tool that does not exist yet: this
+  skill says how to add one.
 ---
 
 The repository has a folder of tools written for the agent and the owner:
