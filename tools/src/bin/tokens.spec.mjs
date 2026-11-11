@@ -25,7 +25,7 @@ describe('tokens tool', () => {
   it('filters the list', () => {
     const { status, stdout } = tokens('list', 'text', '--json');
     assert.equal(status, 0);
-    assert.deepEqual(JSON.parse(stdout).map(row => row.name), [ 'text', 'text-dim' ]);
+    assert.deepEqual(JSON.parse(stdout).map(row => row.name), [ 'text', 'text-dim', 'terminal-text' ]);
   });
 
   it('resolves a token', () => {
@@ -93,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('54 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('99 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 54);
+    assert.equal(result.total, 99);
     assert.equal(result.failing, 0);
   });
 
@@ -123,8 +123,8 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'text-dim=#9c958a', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 2);
-    assert.equal(result.changed.length, 9);
+    assert.equal(result.failing, 3);
+    assert.equal(result.changed.length, 14);
   });
 
   it('shows no change', () => {

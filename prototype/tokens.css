@@ -49,4 +49,38 @@
   --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */
   --popup-shadow-size: 12px;      /* how far a popup's shadow fades to nothing */
   --popup-shadow-offset: 4px;     /* how far the shadow sits below the popup */
+
+  /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
+     Hues are OKLCH: normal at lightness 74-75 %, bright at 82-85 %. */
+  --terminal: var(--tone-2);              /* the terminal background: the window's main surface (D-56) */
+  --terminal-text: var(--text);           /* Konsole's foreground */
+  --ansi-black: var(--tone-0);            /* colour 0; exempt from contrast (D-53) */
+  --ansi-red: #e39383;                    /* oklch(74% 0.10 32), shifted towards orange */
+  --ansi-green: #9eb576;                  /* oklch(74% 0.09 125), shifted towards olive */
+  --ansi-yellow: var(--accent);           /* the accent is already a muted gold (D-57) */
+  --ansi-blue: #7fb2d1;                   /* oklch(74% 0.07 235) */
+  --ansi-magenta: #d296b2;                /* oklch(74% 0.08 350) */
+  --ansi-cyan: #82bbb3;                   /* oklch(75% 0.06 185) */
+  --ansi-white: var(--text);              /* colour 7 */
+  --ansi-bright-black: var(--text-dim);   /* colour 8: dim output and suggestions */
+  --ansi-bright-red: #f9afa0;             /* oklch(82% 0.09 32) */
+  --ansi-bright-green: #b7cf8e;           /* oklch(82% 0.09 125) */
+  --ansi-bright-yellow: #e6ca91;          /* oklch(85% 0.08 85) */
+  --ansi-bright-blue: #9fcbe6;            /* oklch(82% 0.06 235) */
+  --ansi-bright-magenta: #e8b2ca;         /* oklch(82% 0.07 350) */
+  --ansi-bright-cyan: #a3d2cb;            /* oklch(83% 0.05 185) */
+  --ansi-bright-white: #f5f1ea;           /* oklch(96% 0.01 82) */
+
+  /* Editor theme: Kate's editor area. The syntax colours are ANSI colours (D-57). */
+  --editor: var(--tone-2);                /* the editor background, as the terminal's (D-56) */
+  --editor-gutter: var(--tone-1);         /* the gutter, a tone below the editor */
+  --editor-current-line: var(--tone-3);   /* the current line, a tone above the editor */
+  --editor-selection: #3d362b;            /* the text selection: accent 14 % over tone 2 (D-58) */
+  --syntax-keyword: var(--ansi-magenta);  /* keywords: if, return, static, const */
+  --syntax-function: var(--ansi-blue);    /* function names */
+  --syntax-type: var(--ansi-cyan);        /* type names */
+  --syntax-string: var(--ansi-green);     /* strings and characters */
+  --syntax-number: var(--ansi-red);       /* numbers and constants */
+  --syntax-preprocessor: var(--ansi-yellow); /* #include and imports */
+  --syntax-comment: var(--ansi-bright-black); /* comments */
 }
