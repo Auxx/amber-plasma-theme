@@ -132,8 +132,8 @@ background / text, and the block marker or tick where the widget has one.
   focused, it takes raised focus; both keep the marker. A selected tab does
   not change when hovered, and takes well focus when focused. The focused
   tones follow the rule above: accent over the hovered tone.
-- **Secondary text on a focused item** is text, not dim text: dim text on
-  raised focus measures 2.58:1 (see [accessibility](accessibility.md)).
+- **Secondary text on a focused item**, and the chevron of a focused tree
+  folder, is text, not dim text: dim text on raised focus measures 2.58:1 (see [accessibility](accessibility.md)).
 - **Views** (my call, P1.5): a tree has no branch lines; it indents 20 px a
   level, and its chevron is dim text, turned when open. A table has no grid
   lines and no alternating rows. A header has no dividers: its sections are
@@ -191,7 +191,9 @@ token holds the plain colour (D-47).
   Whether Union draws one under menus and popups is unverified; see
   [platform](platform.md).
 - A popup's shadow (my call, P1.5; D-49) is drawn in the prototype as the
-  window's shadow is, as gradients, black, and sits below the popup. The
+  window's shadow is, as gradients, black, and sits below the popup: the
+  popup's own rectangle is cut out of it, so it never darkens the popup.
+  A combo box's list meets its combo box with no gap. The
   gallery shows a "No shadow" candidate beside it, for the case that Union
   cannot draw it.
 

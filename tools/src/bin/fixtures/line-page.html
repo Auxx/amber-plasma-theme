@@ -1,16 +1,18 @@
 <!doctype html>
 <!-- A line drawn as a thin filled box is a hairline: the rule and the post
-     are found, the 3 px bar and the empty gap are not. Used by
+     are found, and so is the divider drawn in a pseudo-element; the 3 px bar and the empty gap are not. Used by
      browser.spec.mjs. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Line page</title>
+<link rel="stylesheet" href="line-page.css">
 </head>
 <body>
 <div class="rule" style="width: 200px; height: 1px; background: #3c3832"></div>
 <div class="bar" style="width: 200px; height: 3px; background: #d1b072"></div>
 <div class="gap" style="width: 200px; height: 1px"></div>
 <div class="post" style="width: 2px; height: 40px; background: #3c3832"></div>
+<div class="divider"></div>
 </body>
 </html>

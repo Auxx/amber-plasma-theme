@@ -20,7 +20,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 53);
+    assert.equal(pairs.length, 54);
   });
 
   it('resolves every token of every pair', () => {
@@ -101,5 +101,6 @@ describe('Amber contrast pairs', () => {
     assert.equal(ratio('text-dim on selected'), '5.34');
     assert.equal(ratio('text-dim on popup'), '5.34');
     assert.equal(ratio('text on popup'), '10.58');
+    assert.equal(ratio('accent on popup'), '6.54');
   });
 });

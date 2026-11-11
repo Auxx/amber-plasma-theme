@@ -255,6 +255,18 @@ const withChrome = (name, test) => it(name, t => (chrome.skip ? t.skip(chrome.sk
 let opened;
 after(() => opened?.browser.close());
 
+/** The rendered colour of one pixel of the viewport, as [r, g, b]. */
+async function pixel(page, x, y) {
+  const png = await page.screenshot({ clip: { x: Math.floor(x), y: Math.floor(y), width: 1, height: 1 } });
+  return page.evaluate(async data => {
+    const blob = await (await fetch(`data:image/png;base64,${data}`)).blob();
+    const canvas = new OffscreenCanvas(1, 1);
+    const context = canvas.getContext('2d');
+    context.drawImage(await createImageBitmap(blob), 0, 0);
+    return [ ...context.getImageData(0, 0, 1, 1).data.slice(0, 3) ];
+  }, png.toString('base64'));
+}
+
 /** The gallery in Chrome, opened once and reset before each use. */
 async function gallery() {
   opened ??= await openPage(pageUrl(GALLERY));
@@ -674,6 +686,13 @@ describe('prototype gallery', () => {
     if (!isToken(live, 'text')) {
       offences.push(`item rest, live focus: detail ${nameColour(live, names)}, expected text`);
     }
+    // The chevron of a focused tree folder too: it shows open or closed.
+    ({ page } = await gallery());
+    await page.locator('.tree summary').first().focus();
+    const [ chevron ] = await coloursOf(page, '.tree > details > summary .chevron', [ 'color' ]);
+    if (!isToken(chevron, 'text')) {
+      offences.push(`tree summary, focused: chevron ${nameColour(chevron, names)}, expected text`);
+    }
     assert.deepEqual(offences, []);
   });
 
@@ -767,6 +786,46 @@ describe('prototype gallery', () => {
       }
     }
     assert.deepEqual(offences, []);
+  });
+
+  withChrome('draws each popup\'s shadow beneath it', async () => {
+    // Sampled on the screen: a popup's own top row keeps the popup tone, and
+    // the rows just below its foot are darker than the surface, with no
+    // bare strip between the popup and its shadow.
+    const { page } = await gallery();
+    const rgb = text => text.match(/\d+/g).slice(0, 3).map(Number);
+    const tones = {
+      popup: rgb((await coloursOf(page, '.family .popup >> nth=0'))[0]),
+      'tone-2': rgb(await page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+    };
+    const offences = [];
+    const popups = page.locator('.family .popup:not(.tooltip)');
+    for (let index = 0; index < (await popups.count()); index++) {
+      const popup = popups.nth(index);
+      await popup.scrollIntoViewIfNeeded();
+      const { x, y, width, height } = await popup.boundingBox();
+      const label = `${await popup.evaluate(element => element.getAttribute('aria-label'))} ${index}`;
+      const top = await pixel(page, x + width / 2, y + 1);
+      if (top.some((channel, i) => Math.abs(channel - tones.popup[i]) > 1)) {
+        offences.push(`${label}: top row ${top}, expected the popup tone ${tones.popup}`);
+      }
+      for (const below of [ 1, 3 ]) {
+        const shade = await pixel(page, x + width / 2, y + height + below);
+        if (!shade.every((channel, i) => channel < tones['tone-2'][i] - 3)) {
+          offences.push(`${label}: ${below} px below, ${shade}, not darker than tone 2`);
+        }
+      }
+    }
+    assert.ok((await popups.count()) >= 7, 'popups');
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('keeps the combo list against its combo box', async () => {
+    // A gap of surface between the two lighter boxes would read as a line.
+    const { page } = await gallery();
+    const combo = await page.locator('.combo-open .combo').boundingBox();
+    const list = await page.locator('.combo-open .popup').boundingBox();
+    assert.equal(list.y, combo.y + combo.height);
   });
 
   withChrome('shows a tooltip on hover and on focus', async () => {

@@ -170,7 +170,7 @@ describe('browser tool', () => {
     assert.equal(status, 1);
     const { problems, offences } = JSON.parse(stdout);
     assert.deepEqual(problems, []);
-    assert.deepEqual(offences, [ 'div.rule: a line 200 × 1 px', 'div.post: a line 2 × 40 px' ]);
+    assert.deepEqual(offences, [ 'div.rule: a line 200 × 1 px', 'div.post: a line 2 × 40 px', 'div.divider::after: a line 1 × 20 px' ]);
   });
 
   withChrome('checks a page in a state', () => {

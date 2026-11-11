@@ -11,6 +11,7 @@
   flex-direction: column;
   background: var(--tone-2);
   outline: var(--outline-width) solid var(--outline);
+  --centre: none;
 }
 
 /* The light outside the window: the window glow, or the shadow in its place. */
@@ -38,6 +39,7 @@
   pointer-events: none;
   --s: var(--light-size);
   background:
+    var(--centre),
     linear-gradient(to top, var(--light), transparent) top / calc(100% - 2 * var(--s)) var(--s) no-repeat,
     linear-gradient(to bottom, var(--light), transparent) bottom / calc(100% - 2 * var(--s)) var(--s) no-repeat,
     linear-gradient(to left, var(--light), transparent) left / var(--s) calc(100% - 2 * var(--s)) no-repeat,
@@ -54,7 +56,10 @@
 
 /*
  * A popup (a menu, a combo box list, a tooltip) is a window too, with no
- * window outline. Its shadow is dark and sits --popup-shadow-offset below it.
+ * window outline. Its shadow is dark and sits --popup-shadow-offset below it:
+ * the light's box is moved down, a centre layer fills the strip it opens
+ * under the popup, and the popup's own rectangle is cut out of it, so the
+ * shadow never paints over the popup.
  * Whether Union draws a shadow under a popup in a Qt Widgets application is
  * the question of P3.8 (D-49).
  */
@@ -63,6 +68,7 @@
   isolation: isolate;
   --light: var(--shadow);
   --light-size: var(--popup-shadow-size);
+  --centre: linear-gradient(var(--light), var(--light)) center / calc(100% - 2 * var(--light-size)) calc(100% - 2 * var(--light-size)) no-repeat;
 }
 
 .popup::before {
@@ -70,6 +76,16 @@
   bottom: calc(-1 * (var(--s) + var(--popup-shadow-offset)));
   left: calc(-1 * var(--s));
   right: calc(-1 * var(--s));
+  --o: var(--popup-shadow-offset);
+  clip-path: polygon(
+    evenodd,
+    0 0, 100% 0, 100% 100%, 0 100%, 0 0,
+    var(--s) calc(var(--s) - var(--o)),
+    var(--s) calc(100% - var(--s) - var(--o)),
+    calc(100% - var(--s)) calc(100% - var(--s) - var(--o)),
+    calc(100% - var(--s)) calc(var(--s) - var(--o)),
+    var(--s) calc(var(--s) - var(--o))
+  );
 }
 
 /* 30 px high: my call, settled with the decoration in P5.1. */

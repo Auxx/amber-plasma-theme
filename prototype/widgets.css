@@ -663,6 +663,12 @@
   transform: rotate(90deg);
 }
 
+/* Dim text on raised focus measures 2.58:1: the chevron of a focused folder
+   is text, as an item's secondary columns are. */
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) .chevron {
+  color: var(--text);
+}
+
 .table {
   width: 460px;
 }
@@ -766,10 +772,11 @@
   align-self: flex-start;
 }
 
+/* The list meets its combo box: a gap of surface between them would read as
+   a line. */
 .combo-open {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   width: 180px;
 }
 

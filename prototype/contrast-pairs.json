@@ -13,9 +13,9 @@
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "popup"],
     "minimum": 3,
-    "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, block markers, fills on tracks)"
+    "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, ticks in menus, block markers, fills on tracks)"
   },
   {
     "foreground": "on-accent",
