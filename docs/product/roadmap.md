@@ -34,8 +34,8 @@ that the prototype never promises something the system cannot draw.
 | P0.5 Spike: glow without a shadow | Finding on whether a glow can be made in a Qt Widgets application from what Union does draw there: a background image, `inset` and `margin` | Pictures show a hovered and a focused button with such a glow in a Qt Widgets application, or the reason it cannot is written in the platform document; what the glow costs in layout is written there | done |
 
 P0.3 is done by its second clause: the glow cannot be drawn in Qt Widgets
-applications, and the reason is in the platform document. It is a failed
-spike and has gone back to the owner as open question O-2 in the
+applications, and the reason is in the platform document. After P0.5 the
+owner decided that Amber has no glow: D-4 in the
 [decisions](../architecture/decisions.md).
 
 The folders of the repository layout are not created empty: each appears with
@@ -61,7 +61,8 @@ The gate for everything after it: the owner approves the look here.
 
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
 with candidate tones and their measured contrast side by side, so that the
-owner can decide O-1 by eye in P1.7.
+owner can decide O-1 by eye in P1.7. They show the focused tone the same
+way, for O-3.
 
 ## Step 2 — Colour scheme
 
@@ -79,7 +80,7 @@ next starts.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | todo |
-| P3.2 Global rules | Radius zero, borders removed, glow variables | No rounded corner or outline on the widgets not yet restyled | todo |
+| P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | todo |
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
@@ -100,7 +101,7 @@ next starts.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P5.1 Frame and title bar | Square, borderless frame with a tone 0 title bar | Matches the prototype for active and inactive windows | todo |
-| P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype, or the missing glow is a known gap | todo |
+| P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
 | P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line appears at any window edge in any state | todo |
 
 ## Step 6 — Packaging

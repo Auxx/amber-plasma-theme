@@ -14,7 +14,7 @@ project, which was read on 2026-11-11.
 
 | From front-burner | In Amber |
 |---|---|
-| `colour` tool: `convert`, `contrast`, `solve`, using culori | Ported nearly as it is. It already measures layered, partly transparent colours, which the glow rule needs |
+| `colour` tool: `convert`, `contrast`, `solve`, using culori | Ported nearly as it is. It already measures layered, partly transparent colours, which tones tinted with accent need |
 | `tokens` tool: `list`, `resolve`, `pairs`, `try` | Same commands, with a new reader: Amber's tokens are CSS custom properties, not SCSS maps, and there is one colour scheme, not two |
 | Contrast pairs declared in a model file, checked in the unit tests | Same idea; the pairs sit next to the tokens |
 | "Close" margin of 2 % | Kept as a warning. In front-burner it covers the gap between the tool and a browser measurement; Amber has no second measurement yet |

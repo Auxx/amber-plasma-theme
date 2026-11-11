@@ -14,8 +14,10 @@ updated.
 2. **Square.** Every corner radius is zero. (decided)
 3. **No lines.** No border, outline, separator or divider one pixel wide.
    Surfaces and widgets are told apart by tone. (decided)
-4. **State is light.** Hovered and focused widgets glow softly. (decided)
-5. **Quiet at rest.** A window full of widgets at rest shows no glow at all.
+4. **State is tone.** Hovered, focused and pressed widgets change tone.
+   Nothing glows. (decided)
+5. **Quiet at rest.** A window full of widgets at rest shows accent only on
+   what is selected, checked or filled.
    (my call)
 
 ## Starting tokens (my call)
@@ -29,7 +31,7 @@ updated.
 | tone 4 | `#3c3832` | hovered raised widgets |
 | text | `#e8e3da` | primary text and icons |
 | dim text | `#9c958a` | secondary text, placeholders, inactive titles |
-| accent | `#d1b072` | selection, checked, progress, primary button, glow |
+| accent | `#d1b072` | selection, checked, progress, primary button, the tint of a focused widget |
 | on-accent | `#1b160b` | text on accent |
 | danger | `#b5442f` | close button when hovered, negative states |
 | on-danger | `#fbf3e6` | text and icons on danger; the text token is too dark for it |
@@ -54,41 +56,35 @@ before they go into real files.
 
 | Widget kind | At rest | Hovered | Focused | Pressed | Disabled |
 |---|---|---|---|---|---|
-| Raised (button, tool button, combo box) | tone 3 | tone 4 and a faint glow | stronger glow | a darker tone, no glow | dim text, lowered opacity, no glow |
-| Well (text field, spin box) | tone 0 | faint glow | stronger glow | — | dim text, lowered opacity |
-| Toggle (check box, radio button) | tone 0 box | glow on the box | stronger glow on the box | — | lowered opacity |
-| Primary button | accent fill, on-accent text | accent glow | stronger accent glow | darker accent | lowered opacity |
-| Close button | as title bar | danger fill and danger glow | — | darker danger | — |
+| Raised (button, tool button, combo box) | tone 3 | tone 4 | tone 4 tinted with accent | a darker tone | dim text |
+| Well (text field, spin box, text area) | tone 0 | tone 1 | tone 1 tinted with accent | — | dim text |
+| Toggle (check box, radio button) | tone 0 box | a lighter box | a box tinted with accent | — | dim text |
+| Primary button | accent fill, on-accent text | lighter accent | settled in the prototype | darker accent | dim text |
+| Close button | as title bar | danger fill | — | darker danger | — |
 
-- A checked toggle fills with accent and carries a faint glow.
+- The states above are the starting point (my call), taken from the sample
+  the owner saw in spike P0.5. The exact tones are settled in the prototype;
+  how strong the focused tone must be is open question O-3 in the
+  [decisions](decisions.md).
+- A checked toggle fills with accent.
 - A selected list or sidebar item has a tone 3 background. It may carry a
   block marker in accent on its leading edge.
 - Progress and slider fills are accent on a tone 0 track.
 
-## Glow and shadow
+## Shadow
 
-- A glow is one outer, blurred shadow with no offset, in the accent colour;
-  on the close button it is in the danger colour.
-  Starting amounts (my call): hovered about 12–14 px blur at 20–28 % alpha;
-  focused about 18 px blur at 45 % alpha.
-- A glow must never read as a line. If it does at any size, it is too tight
-  or too strong.
-- **One shadow per widget, and no inner shadows.** Union CSS allows a single
-  outer shadow and has no `inset` (see [platform](platform.md)). So wells and
-  pressed widgets are shown by tone alone, and focus is a single stronger
-  glow, not a halo plus a glow. The prototype keeps to the same limit so that
-  it shows only what the system can draw.
-- **Open:** in Qt Widgets applications Union draws no shadow at all, so the
-  glow rules above hold only for Qt Quick applications until the owner
-  decides O-2 in the [decisions](decisions.md).
+- **No glow, and no shadow on a widget.** Union draws neither in Qt Widgets
+  applications (see [platform](platform.md)), so the prototype uses neither.
+  Wells and pressed widgets are shown by tone alone.
 - A shadow under a popup, menu or window is dark, soft and offset downwards.
+  Whether Union draws one under menus and popups is unverified; see
+  [platform](platform.md).
 
 ## Window decoration
 
 - Title bar in tone 0; square corners; no border line on any edge.
 - A soft drop shadow around the window.
-- Window buttons are flat. Hovered minimise and maximise move up a tone and
-  glow; hovered close turns danger.
+- Window buttons are flat. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
 
 ## What must not appear

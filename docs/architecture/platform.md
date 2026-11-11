@@ -119,13 +119,12 @@ Verified on 2026-11-10 unless marked.
 
 | Question | Tested in |
 |---|---|
-| Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. | not planned; depends on O-2 |
+| Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. | P3.8 |
 | How does the Breeze style show focus in a Qt Widgets application, given that its focus `outline` is not drawn? | P3.2 |
-| Does a later release of Union draw `box-shadow` in Qt Widgets? | not planned; depends on O-2 |
 | Which key selects the style for the whole system? | P6.2 |
 
-The glow cannot be drawn in Qt Widgets applications (P0.3). The work has
-stopped and gone back to the owner: see O-2 in the
+The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner
+decided on 2026-11-11 that Amber has none: D-4 in the
 [decisions](decisions.md).
 
 ## Window decoration
@@ -139,12 +138,10 @@ stopped and gone back to the owner: see O-2 in the
 | Question | Tested in |
 |---|---|
 | Can an Aurorae theme draw square corners, with no border line on any edge? | P0.4 |
-| Can its buttons show a glow when hovered? | P0.4 |
 | How does it draw its shadow, and does the shadow hide when maximised? | P5.3 |
 
-If the buttons cannot glow, Amber ships without it and lists a known gap. If
-square corners or a borderless frame cannot be done, the work stops and goes
-back to the owner. A compiled decoration, or Breeze's own decoration, is not
+If square corners or a borderless frame cannot be done, the work stops and
+goes back to the owner. A compiled decoration, or Breeze's own decoration, is not
 used without their say. (my call)
 
 ## Colour scheme
@@ -215,8 +212,8 @@ symbols that `UnionWidgetsStyle.so` imports were listed with `nm`.
 
 - Dolphin, Kate and Konsole are Qt Widgets applications, so with Union 6.8.2
   Amber's Union style cannot show a glow in any of them. Goal 4 of the
-  vision and D-4 cannot be met there as designed. This is open question O-2
-  and is the owner's to decide; no later plan starts before it is.
+  vision and D-4 could not be met there as designed. This was open question O-2
+  and was the owner's to decide; it is decided, see P0.5 below.
 - Whatever is decided, hovered, focused and pressed can still be shown by
   background colour, which is drawn.
 - P3.1 can use the install path, `UNION_STYLE_NAME` and the edit loop above
@@ -254,7 +251,7 @@ hovered and focused.
 - Not tried: a dithered mask, which could give a grainy fade but only on
   widgets of one fixed size, such as check boxes.
 
-**What it changes.** Nothing by itself: it gives the owner the pictures and
-the limits for O-2. If a rim or a band is chosen, it is a border several
-pixels wide, and the owner decides whether that sits with "no lines".
-
+**What it changes.** The owner saw the candidates and a live sample window
+of the tone-only one, with text inputs and buttons, and decided on
+2026-11-11: no glow anywhere, state by tone alone (D-4). The sample's tones
+are the starting point in the [design language](design-language.md).

@@ -22,8 +22,8 @@ word Amber uses for each.
 - Architecture: `docs/architecture/overview.md` — entry point: how the
   tokens, the prototype, the tools and the parts fit; repository layout;
   rules that hold everywhere.
-- Design language: `docs/architecture/design-language.md` — tones, states,
-  glow and shadow rules.
+- Design language: `docs/architecture/design-language.md` — tones, states
+  and shadow rules.
 - Accessibility: `docs/architecture/accessibility.md` — the WCAG contrast
   rules, the contrast pairs and how they are checked.
 - Platform: `docs/architecture/platform.md` — verified and unverified facts
