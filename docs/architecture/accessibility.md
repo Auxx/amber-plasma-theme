@@ -1,7 +1,8 @@
 # Amber — Accessibility: contrast
 
 > Status: **Accepted** on 2026-11-11. Three questions are deferred to
-> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md).
+> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md). O-5,
+> light text on ANSI colours, is open too.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -38,10 +39,15 @@ Disabled controls are exempt in WCAG, and are exempt here.
    is the hardest of these: comments in dim text measure 4.71:1 on it, and
    fail beyond a tint of about 14 % accent (4.50:1, FAIL, at 16 %; measured
    2026-11-11, P1.6). Programs such as `less` and `htop` also draw ANSI
-   colours as backgrounds, with the terminal background or ANSI black as
-   text. Contrast is symmetric, so those are the same ratios as the pairs on
+   colours as backgrounds. With the terminal background or ANSI black as
+   text, contrast is symmetric, so those are the same ratios as the pairs on
    the terminal, and ANSI black, darker than the terminal, passes wherever
-   they do; they need no pairs of their own. The text selection and the
+   they do; they need no pairs of their own. **Light text on an ANSI
+   colour is not checked and does not pass:** text measures 1.62:1 to
+   1.88:1 on the six normal colours, and bright white 1.84:1 to 2.13:1
+   (measured 2026-11-11, P1.6). Midnight Commander's blue panels, powerline
+   prompts and some `ls` colours draw that. It is open question O-5 in the
+   [decisions](decisions.md). The text selection and the
    current line are told apart by a floor of 1.1 (1.13:1) and by the
    accent's hue (my call).
 4. **Focused widgets: open.** A focused widget is shown by a tone tinted

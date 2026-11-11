@@ -264,6 +264,9 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
 - **A hue is not a grey.** "No cool grey" is about neutrals. Blue and cyan
   are hues with a chroma of at least 0.05; every neutral of the terminal is
   a warm tone or text token.
+- The normal colours are light enough to carry text on the terminal, so
+  light text on them as a background does not reach 4.5:1: open question
+  O-5 in the [decisions](decisions.md).
 - Konsole's intense and faint variants of the foreground and background,
   and the cursor (a profile setting), are settled in P4.1.
 - The prototype shows the terminal on `prototype/samples.html`, with the

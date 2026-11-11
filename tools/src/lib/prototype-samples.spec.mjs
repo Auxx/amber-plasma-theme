@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { isTokenColour, nameColour, openPage, pageUrl, renderedOffences, tokenNames } from './browser.mjs';
@@ -160,5 +161,43 @@ describe('prototype samples', () => {
     assert.equal(numbers.length, lines.length);
     const off = lines.map((top, index) => [ index + 1, numbers[index] - top ]).filter(([ , gap ]) => Math.abs(gap) > 0.5);
     assert.deepEqual(off, []);
+  });
+
+  withChrome('keeps the gutter against the code', async () => {
+    const { page } = await samples();
+    const box = selector => page.locator(selector).first().evaluate(element => {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      return { x, y, width, height };
+    });
+    const gutter = await box('.kate .gutter');
+    const code = await box('.kate .code');
+    const current = await box('.kate .current-line');
+    assert.equal(gutter.x + gutter.width, code.x, 'a gap between the gutter and the code');
+    assert.deepEqual([ gutter.y, gutter.height ], [ code.y, code.height ]);
+    assert.deepEqual([ current.x, current.width ], [ code.x, code.width ], 'the current line spans the code');
+  });
+
+  withChrome('allows only the sample classes inside a sample', async () => {
+    const { page } = await samples();
+    const classes = await page
+      .locator('.sample .terminal *, .kate .code *, .ansi-palette *, .vignette .terminal *, .vignette .code *')
+      .evaluateAll(elements => elements.map(element => ({ text: element.textContent.slice(0, 20), classes: [ ...element.classList ] })));
+    const ALLOWED = new Set([ 'line', 'current-line', 'text-selection' ]);
+    const offences = classes.flatMap(({ text, classes }) => {
+      const colour = classes.filter(name => /^(ansi|syn)-/.test(name));
+      const other = classes.filter(name => !ALLOWED.has(name) && !colour.includes(name));
+      return [
+        ...other.map(name => `"${text}": class ${name} is not a sample class`),
+        ...(colour.length > 1 ? [ `"${text}": two colour classes` ] : [])
+      ];
+    });
+    assert.deepEqual(offences, []);
+  });
+
+  it('gives every colour class a rule of its own', () => {
+    const css = readFileSync(fileURLToPath(new URL('../../../prototype/samples.css', import.meta.url)), 'utf8');
+    const expected = [ ...PALETTE, ...SYNTAX.map(kind => `syn-${kind}`) ];
+    const missing = expected.filter(name => !new RegExp(`^\\.${name} \\{ color: var\\(--${tokenOfClass(name)}\\); \\}$`, 'm').test(css));
+    assert.deepEqual(missing, []);
   });
 });
