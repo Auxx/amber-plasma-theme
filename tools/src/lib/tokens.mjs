@@ -82,7 +82,7 @@ export function parseOverrides(list = []) {
   return list.map(text => {
     const match = text.match(new RegExp(`^(?:--)?(${NAME})=(.+)$`));
     if (!match) {
-      throw new Error(`Not an override (token=value): ${text}`);
+      throw Object.assign(new Error(`Not an override (token=value): ${text}`), { code: 'NOT_AN_OVERRIDE' });
     }
     return { name: match[1], value: parseTokenValue(match[2]) };
   });
