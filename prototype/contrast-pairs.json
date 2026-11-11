@@ -1,21 +1,21 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "selected", "popup"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "selected", "popup"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "popup"],
     "minimum": 3,
-    "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, block markers, fills on tracks)"
+    "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, ticks in menus, block markers, fills on tracks)"
   },
   {
     "foreground": "on-accent",
@@ -94,5 +94,11 @@
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
     "why": "Accessibility, departure from WCAG: a scrollbar's thumb is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "selected",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "A selected item is grouped by tone; its block marker carries rule 2's 3:1. 1.1 is a floor that keeps the tone from fading (my call)."
   }
 ]

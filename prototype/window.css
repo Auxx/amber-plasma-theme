@@ -11,6 +11,7 @@
   flex-direction: column;
   background: var(--tone-2);
   outline: var(--outline-width) solid var(--outline);
+  --centre: none;
 }
 
 /* The light outside the window: the window glow, or the shadow in its place. */
@@ -27,16 +28,18 @@
 /*
  * Drawn as the Aurorae frame of spike P0.6 draws it: from the light's colour
  * at the window outline to nothing, straight on the edges, round on the
- * corners. The window's own corners stay square.
+ * corners. The window's own corners stay square. A popup's shadow is drawn
+ * the same way.
  */
-.window::before {
+.window::before,
+.popup::before {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
   --s: var(--light-size);
-  inset: calc(-1 * (var(--outline-width) + var(--s)));
   background:
+    var(--centre),
     linear-gradient(to top, var(--light), transparent) top / calc(100% - 2 * var(--s)) var(--s) no-repeat,
     linear-gradient(to bottom, var(--light), transparent) bottom / calc(100% - 2 * var(--s)) var(--s) no-repeat,
     linear-gradient(to left, var(--light), transparent) left / var(--s) calc(100% - 2 * var(--s)) no-repeat,
@@ -45,6 +48,46 @@
     radial-gradient(circle var(--s) at 0 100%, var(--light), transparent) top right / var(--s) var(--s) no-repeat,
     radial-gradient(circle var(--s) at 100% 0, var(--light), transparent) bottom left / var(--s) var(--s) no-repeat,
     radial-gradient(circle var(--s) at 0 0, var(--light), transparent) bottom right / var(--s) var(--s) no-repeat;
+}
+
+.window::before {
+  inset: calc(-1 * (var(--outline-width) + var(--s)));
+}
+
+/*
+ * A popup (a menu, a combo box list, a tooltip) is a window too, with no
+ * window outline. Its shadow is dark and sits --popup-shadow-offset below it:
+ * the light's box is moved down, a centre layer fills the strip it opens
+ * under the popup, and the popup's own rectangle and everything above its
+ * top edge are cut out of it, so the shadow never paints over the popup or
+ * over what the popup opens from.
+ * Whether Union draws a shadow under a popup in a Qt Widgets application is
+ * the question of P3.8 (D-49).
+ */
+.popup {
+  position: relative;
+  isolation: isolate;
+  --light: var(--shadow);
+  --light-size: var(--popup-shadow-size);
+  --centre: linear-gradient(var(--light), var(--light)) center / calc(100% - 2 * var(--light-size)) calc(100% - 2 * var(--light-size)) no-repeat;
+}
+
+.popup::before {
+  top: calc(var(--popup-shadow-offset) - var(--s));
+  bottom: calc(-1 * (var(--s) + var(--popup-shadow-offset)));
+  left: calc(-1 * var(--s));
+  right: calc(-1 * var(--s));
+  --o: var(--popup-shadow-offset);
+  /* Outside: from the popup's top edge down, so no shadow falls above it. */
+  clip-path: polygon(
+    evenodd,
+    0 calc(var(--s) - var(--o)), 100% calc(var(--s) - var(--o)), 100% 100%, 0 100%, 0 calc(var(--s) - var(--o)),
+    var(--s) calc(var(--s) - var(--o)),
+    var(--s) calc(100% - var(--s) - var(--o)),
+    calc(100% - var(--s)) calc(100% - var(--s) - var(--o)),
+    calc(100% - var(--s)) calc(var(--s) - var(--o)),
+    var(--s) calc(var(--s) - var(--o))
+  );
 }
 
 /* 30 px high: my call, settled with the decoration in P5.1. */

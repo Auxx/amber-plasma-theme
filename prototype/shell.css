@@ -130,9 +130,12 @@ body {
   color: var(--text-dim);
 }
 
-/* Selected: tone 3. The block marker comes with list items in P1.5. */
+/* Selected: the selected tone and the block marker on the leading edge, as
+   a selected item in widgets.css. */
 .is-selected {
-  background: var(--tone-3);
+  --marker: var(--accent);
+  background-color: var(--selected);
+  background-image: linear-gradient(to right, var(--marker) var(--marker-width), transparent var(--marker-width));
 }
 
 .status {

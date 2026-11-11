@@ -1,0 +1,16 @@
+/* A divider drawn in a pseudo-element: a line, though no element is one. */
+.divider {
+  position: relative;
+  width: 200px;
+  height: 20px;
+}
+
+.divider::after {
+  content: "";
+  position: absolute;
+  left: 100px;
+  top: 0;
+  width: 1px;
+  height: 20px;
+  background: #3c3832;
+}

@@ -76,10 +76,10 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "45 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "54 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
-# Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
+# Put dim text back to its old value: shows 9 changed pairs, two FAIL, exits 1
 node tools/src/bin/tokens.mjs try 'text-dim=#9c958a'
 
 # The colour of a token: prints "text-dim  -  oklch(71.5% 0.018 79.3)  #a9a297", exits 0
@@ -161,8 +161,8 @@ path from the repository root, opened as `file://`.
 
 | Command | Does |
 | --- | --- |
-| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides |
-| `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state; exits 1 if there is any |
+| `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--wait ms]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides; `--wait` waits up to 10000 ms after the state, for what shows late, such as a tooltip |
+| `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state, including a line drawn as a filled box (an element or a pseudo-element) less than 3 px thick; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
 
 Every command takes `--width` and `--height` (200 to 4000; default

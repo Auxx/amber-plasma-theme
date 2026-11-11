@@ -140,6 +140,23 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The part of a slider or a scrollbar that is dragged. _Avoid_ "handle"
   and "knob".
 
+**Item**
+: One entry of a list, tree or table view, or of a sidebar. In a table view
+  an item is a whole row.
+
+**Tab**
+: One of the buttons of a tab bar. The selected tab names the page shown
+  below it.
+
+**Header**
+: The row of column titles above a table or tree view. Each title is a
+  header section, which may carry a sort arrow. _Avoid_ "column header" for
+  the whole row.
+
+**Popup**
+: A small window that opens over a window and closes when it is done: a
+  menu, a combo box's list, a tooltip. A dialog is a window, not a popup.
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.
@@ -171,7 +188,8 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 
 **Block marker**
 : A solid accent rectangle at least three pixels wide on the leading edge of
-  a selected item. It is not a hairline.
+  a selected item, or on the top edge of a selected tab. It is not a
+  hairline.
 
 ## Widget states
 

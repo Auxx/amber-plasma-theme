@@ -49,6 +49,9 @@ const TOGGLE_ON = {
 
 const MARKED = [ 'background-color', '--mark' ];
 
+// Tabs and items: background, text, and the block marker's colour.
+const MARKED_ITEM = [ 'background-color', 'color', '--marker' ];
+
 // Each widget: `control`, the element whose colours are read; `target`, the
 // element that is put in a state (the control when left out); `read`, the two
 // properties read (background and text when left out; a name starting with
@@ -114,13 +117,72 @@ const WIDGETS = {
   scrollbar: {
     control: '.scroll-thumb',
     states: { rest: [ 'scroll-thumb' ], hovered: [ 'text-dim' ], pressed: [ 'text' ] }
+  },
+  tab: {
+    control: '.tab',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-1', 'text', 'transparent' ],
+      focused: [ 'well-focus', 'text', 'transparent' ],
+      selected: [ 'tone-2', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
+  },
+  item: {
+    control: '.item',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-3', 'text', 'transparent' ],
+      focused: [ 'raised-focus', 'text', 'transparent' ],
+      selected: [ 'selected', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
+  },
+  header: {
+    control: '.header-section',
+    states: {
+      rest: [ 'transparent', 'text-dim' ],
+      hovered: [ 'tone-3', 'text' ],
+      pressed: [ 'tone-1', 'text' ],
+      sorted: [ 'transparent', 'text' ]
+    }
+  },
+  'menu-item': {
+    control: '.menu-item',
+    read: [ 'background-color', 'color', '--mark' ],
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-4', 'text', 'transparent' ],
+      focused: [ 'tone-4', 'text', 'transparent' ],
+      checked: [ 'transparent', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
   }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
 
-const FORCED = { hovered: 'is-hovered', focused: 'is-focused', pressed: 'is-pressed', checked: 'is-checked' };
+const FORCED = {
+  hovered: 'is-hovered',
+  focused: 'is-focused',
+  pressed: 'is-pressed',
+  checked: 'is-checked',
+  selected: 'is-selected',
+  sorted: 'is-sorted'
+};
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
+
+// The focus stops allowed outside every state cell: the live areas.
+const LIVE_STOPS = [
+  '.scroll-area',
+  '.tree summary',
+  '.live .combo',
+  '.tooltip-anchor .tool-button',
+  '.dialog .text-field',
+  '.dialog .button'
+];
 
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
@@ -192,6 +254,18 @@ const withChrome = (name, test) => it(name, t => (chrome.skip ? t.skip(chrome.sk
 
 let opened;
 after(() => opened?.browser.close());
+
+/** The rendered colour of one pixel of the viewport, as [r, g, b]. */
+async function pixel(page, x, y) {
+  const png = await page.screenshot({ clip: { x: Math.floor(x), y: Math.floor(y), width: 1, height: 1 } });
+  return page.evaluate(async data => {
+    const blob = await (await fetch(`data:image/png;base64,${data}`)).blob();
+    const canvas = new OffscreenCanvas(1, 1);
+    const context = canvas.getContext('2d');
+    context.drawImage(await createImageBitmap(blob), 0, 0);
+    return [ ...context.getImageData(0, 0, 1, 1).data.slice(0, 3) ];
+  }, png.toString('base64'));
+}
 
 /** The gallery in Chrome, opened once and reset before each use. */
 async function gallery() {
@@ -288,6 +362,16 @@ describe('prototype gallery', () => {
     assert.match(tag, /\saria-label="Files"/);
   });
 
+  it('shows the sort arrow only on the sorted section', () => {
+    const source = readFileSync(SOURCE, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+    const sections = [ ...source.matchAll(/<div class="header-section([^"]*)"[^>]*>([\s\S]*?)<\/div>/g) ];
+    assert.ok(sections.length >= 7, `${sections.length} header sections`);
+    const offences = sections
+      .filter(([ , classes, body ]) => /\bis-sorted\b/.test(classes) !== /\bsort-arrow\b/.test(body))
+      .map(([ tag ]) => tag.slice(0, 80));
+    assert.deepEqual(offences, []);
+  });
+
   it('forces each state on its copy', () => {
     const offences = [];
     for (const [ widget, cells ] of readRows()) {
@@ -382,6 +466,29 @@ describe('prototype gallery', () => {
     await page.locator(off).hover({ force: true });
     const [ offBackground, mark ] = await coloursOf(page, off, MARKED);
     assert.ok(isToken(offBackground, 'toggle') && isToken(mark, 'text-dim'), `disabled checked and hovered: ${nameColour(offBackground, names)}`);
+
+    // Selected items and tabs keep their marker when hovered or focused.
+    const combined = [
+      [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
+      [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
+      [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
+      [ 'tab', { focus: 'selected' }, [ 'well-focus', 'text', 'accent' ] ],
+      [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ],
+      [ 'menu-item', { hover: 'checked' }, [ 'tone-4', 'text', 'accent' ] ]
+    ];
+    for (const [ widget, state, expected ] of combined) {
+      ({ page } = await gallery());
+      const [ [ live, where ] ] = Object.entries(state);
+      const target = targetOf(widget, where);
+      if (live === 'hover') {
+        await page.locator(target).hover({ force: true });
+      } else {
+        await page.locator(target).focus();
+      }
+      const shown = await coloursOf(page, target, readOf(widget));
+      const label = `${widget} ${where} ${live}: ${shown.map(c => nameColour(c, names)).join(' / ')}`;
+      assert.ok(expected.every((token, index) => isToken(shown[index], token)), label);
+    }
   });
 
   withChrome('dims the label of a disabled toggle', async () => {
@@ -504,6 +611,9 @@ describe('prototype gallery', () => {
   });
 
   withChrome('takes the keyboard in order', async () => {
+    // The walk runs on past the live areas (a scroll area, views, popups, a
+    // dialog) to the candidates, so that families after a live area are
+    // walked too. A stop outside every state cell must be a listed live stop.
     const { page } = await gallery();
     // The pressed copy stays pressed when focused: pressed wins over focused.
     const expected = Object.entries(WIDGETS)
@@ -516,20 +626,30 @@ describe('prototype gallery', () => {
     await page.locator('.pages a').last().focus();
     const seen = [];
     const offences = [];
-    for (let step = 0; step <= expected.length; step++) {
+    for (let step = 0; step < 300; step++) {
       await page.keyboard.press('Tab');
-      const where = await page.evaluate(() => {
+      const where = await page.evaluate(stops => {
         const element = document.activeElement;
-        const cell = element?.closest('.family [data-state]');
-        return cell
-          ? {
-              label: `${cell.closest('[data-widget]').dataset.widget} ${cell.dataset.state}`,
-              step: element.classList.contains('spin-step')
-            }
-          : null;
-      });
-      if (!where) {
+        if (!element || element === document.body || element.closest('.candidates')) {
+          return { end: true };
+        }
+        const cell = element.closest('.family [data-state]');
+        if (!cell) {
+          return { live: stops.some(stop => element.matches(stop)), html: element.outerHTML.slice(0, 80) };
+        }
+        return {
+          label: `${cell.closest('[data-widget]').dataset.widget} ${cell.dataset.state}`,
+          step: element.classList.contains('spin-step')
+        };
+      }, LIVE_STOPS);
+      if (where.end) {
         break;
+      }
+      if (!where.label) {
+        if (!where.live) {
+          offences.push(`an unlisted stop outside every cell: ${where.html}`);
+        }
+        continue;
       }
       seen.push(where.label);
       if (where.step) {
@@ -546,6 +666,286 @@ describe('prototype gallery', () => {
     }
     assert.deepEqual(seen, expected);
     assert.deepEqual(offences, []);
+  });
+
+  withChrome('keeps every column readable on a focused item', async () => {
+    // Dim text on raised focus measures 2.58:1, so a focused item shows its
+    // secondary columns in text.
+    let { page } = await gallery();
+    const offences = [];
+    for (const state of Object.keys(WIDGETS.item.states)) {
+      const [ colour ] = await coloursOf(page, `${cell('item', state)} .item-detail`, [ 'color' ]);
+      const expected = state === 'focused' ? 'text' : 'text-dim';
+      if (!isToken(colour, expected)) {
+        offences.push(`item ${state}: detail ${nameColour(colour, names)}, expected ${expected}`);
+      }
+    }
+    ({ page } = await gallery());
+    await page.locator(targetOf('item', 'rest')).focus();
+    const [ live ] = await coloursOf(page, `${cell('item', 'rest')} .item-detail`, [ 'color' ]);
+    if (!isToken(live, 'text')) {
+      offences.push(`item rest, live focus: detail ${nameColour(live, names)}, expected text`);
+    }
+    // The chevron of a focused tree folder too: it shows open or closed.
+    ({ page } = await gallery());
+    await page.locator('.tree summary').first().focus();
+    const [ chevron ] = await coloursOf(page, '.tree > details > summary .chevron', [ 'color' ]);
+    if (!isToken(chevron, 'text')) {
+      offences.push(`tree summary, focused: chevron ${nameColour(chevron, names)}, expected text`);
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('marks the selected item in the window shell', async () => {
+    const { browser, page } = await openPage(pageUrl('prototype/index.html'));
+    try {
+      const shown = await page.evaluate(() =>
+        [ ...document.querySelectorAll('.is-selected') ].map(element => {
+          const style = getComputedStyle(element);
+          return [ style.backgroundColor, style.getPropertyValue('--marker').trim() ];
+        })
+      );
+      assert.ok(shown.length > 0);
+      const offences = shown
+        .filter(([ background, marker ]) => !isToken(background, 'selected') || !isToken(marker, 'accent'))
+        .map(pair => pair.map(c => nameColour(c, names)).join(' / '));
+      assert.deepEqual(offences, []);
+    } finally {
+      await browser.close();
+    }
+  });
+
+  withChrome('opens and closes the tree', async () => {
+    const { page } = await gallery();
+    // The Invoices folder, closed at first. A selector by state would stop
+    // matching once it opens.
+    const details = page.locator('.tree details details').first();
+    const summary = details.locator('> summary');
+    const open = () => details.evaluate(element => element.open);
+    assert.equal(await open(), false, 'closed at first');
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await open(), true, 'Enter opens it');
+    const turn = await summary.locator('.chevron').evaluate(element => getComputedStyle(element).transform);
+    assert.notEqual(turn, 'none', 'the chevron turns when open');
+    await page.keyboard.press('Enter');
+    assert.equal(await open(), false, 'Enter closes it');
+    await summary.click();
+    assert.equal(await open(), true, 'a click opens it');
+  });
+
+  withChrome('draws no native marker on the tree', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.tree summary') ].map(element => {
+        const style = getComputedStyle(element);
+        return [ style.display, style.listStyleType ];
+      })
+    );
+    assert.ok(shown.length > 0);
+    assert.deepEqual(shown.filter(([ display, list ]) => display === 'list-item' || list !== 'none'), []);
+  });
+
+  withChrome('draws views with no line', async () => {
+    let { page } = await gallery();
+    await page.locator('.table .item').nth(1).hover();
+    const offences = (await renderedOffences(page)).map(o => `table row hovered: ${o}`);
+    ({ page } = await gallery());
+    await page.locator('.tree summary').first().focus();
+    offences.push(...(await renderedOffences(page)).map(o => `tree summary focused: ${o}`));
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('draws popups on the popup tone with a shadow', async () => {
+    // The shadow is the window's gradient, offset down: its box overhangs
+    // the popup by --popup-shadow-offset less at the top and more at the foot.
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.family .popup') ].map(element => {
+        const style = getComputedStyle(element);
+        const before = getComputedStyle(element, '::before');
+        return {
+          label: element.className,
+          background: style.backgroundColor,
+          image: before.backgroundImage,
+          offset: parseFloat(before.top) - parseFloat(before.bottom)
+        };
+      })
+    );
+    assert.ok(shown.length >= 7, `${shown.length} popups`);
+    const offences = [];
+    for (const { label, background, image, offset } of shown) {
+      if (!isToken(background, 'popup')) {
+        offences.push(`${label}: ${nameColour(background, names)}, expected popup`);
+      }
+      if (!image.includes('linear-gradient') || !image.includes('radial-gradient')) {
+        offences.push(`${label}: no shadow (${image.slice(0, 40)})`);
+      }
+      if (offset !== 8) {
+        offences.push(`${label}: shadow offset ${offset / 2} px, expected 4`);
+      }
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('draws each popup\'s shadow beneath it', async () => {
+    // Sampled on the screen: a popup's own top row keeps the popup tone, and
+    // the rows just below its foot are darker than the surface, with no
+    // bare strip between the popup and its shadow.
+    const { page } = await gallery();
+    const rgb = text => text.match(/\d+/g).slice(0, 3).map(Number);
+    const tones = {
+      popup: rgb((await coloursOf(page, '.family .popup >> nth=0'))[0]),
+      'tone-2': rgb(await page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+    };
+    const offences = [];
+    const popups = page.locator('.family .popup:not(.tooltip)');
+    for (let index = 0; index < (await popups.count()); index++) {
+      const popup = popups.nth(index);
+      await popup.scrollIntoViewIfNeeded();
+      const { x, y, width, height } = await popup.boundingBox();
+      const label = `${await popup.evaluate(element => element.getAttribute('aria-label'))} ${index}`;
+      const top = await pixel(page, x + width / 2, y + 1);
+      if (top.some((channel, i) => Math.abs(channel - tones.popup[i]) > 1)) {
+        offences.push(`${label}: top row ${top}, expected the popup tone ${tones.popup}`);
+      }
+      for (const below of [ 1, 3 ]) {
+        const shade = await pixel(page, x + width / 2, y + height + below);
+        if (!shade.every((channel, i) => channel < tones['tone-2'][i] - 3)) {
+          offences.push(`${label}: ${below} px below, ${shade}, not darker than tone 2`);
+        }
+      }
+    }
+    assert.ok((await popups.count()) >= 7, 'popups');
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('casts no shadow above a popup', async () => {
+    // A popup's shadow falls downwards: the foot of the combo box above its
+    // open list, and of the tool button above its tooltip, keep their tones.
+    let { page } = await gallery();
+    const rgb = text => text.match(/\d+/g).slice(0, 3).map(Number);
+    const footOf = async selector => {
+      const element = page.locator(selector);
+      await element.scrollIntoViewIfNeeded();
+      const { x, y, width, height } = await element.boundingBox();
+      return pixel(page, x + width / 2, y + height - 1);
+    };
+    const offences = [];
+    const combo = rgb((await coloursOf(page, '.combo-open .combo'))[0]);
+    const comboFoot = await footOf('.combo-open .combo');
+    if (comboFoot.some((channel, i) => Math.abs(channel - combo[i]) > 1)) {
+      offences.push(`combo box foot ${comboFoot}, expected its tone ${combo}`);
+    }
+    ({ page } = await gallery());
+    const button = '.tooltip-anchor .tool-button';
+    await page.locator(button).hover();
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('.live .tooltip')).visibility === 'visible');
+    const hovered = rgb((await coloursOf(page, button))[0]);
+    const buttonFoot = await footOf(button);
+    if (buttonFoot.some((channel, i) => Math.abs(channel - hovered[i]) > 1)) {
+      offences.push(`tool button foot ${buttonFoot} under its tooltip, expected its hovered tone ${hovered}`);
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('lines up the table header with its rows', async () => {
+    // Where the text of each header section starts, the text of its column
+    // starts in every row.
+    const { page } = await gallery();
+    const starts = await page.evaluate(() => {
+      const textStart = element => element.getBoundingClientRect().left + parseFloat(getComputedStyle(element).paddingLeft);
+      const header = [ ...document.querySelectorAll('.table .header-section') ].map(textStart);
+      const rows = [ ...document.querySelectorAll('.table .item.is-row') ].map(row => [ ...row.children ].map(textStart));
+      return { header, rows };
+    });
+    assert.equal(starts.header.length, 3);
+    const offences = starts.rows.flatMap((row, index) =>
+      row
+        .map((start, column) => [ column, start - starts.header[column] ])
+        .filter(([ , off ]) => Math.abs(off) > 0.5)
+        .map(([ column, off ]) => `row ${index} column ${column}: ${off} px from its header`)
+    );
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('places the tooltip whatever order the stylesheets come in', async () => {
+    // window.css gives every popup position: relative; a tooltip stays out
+    // of the flow even when window.css is read last.
+    const { page } = await gallery();
+    await page.evaluate(
+      () =>
+        new Promise(resolve => {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'window.css';
+          link.onload = resolve;
+          document.head.append(link);
+        })
+    );
+    const position = await page.locator('.live .tooltip').evaluate(element => getComputedStyle(element).position);
+    assert.equal(position, 'absolute');
+  });
+
+  withChrome('keeps the combo list against its combo box', async () => {
+    // A gap of surface between the two lighter boxes would read as a line.
+    const { page } = await gallery();
+    const combo = await page.locator('.combo-open .combo').boundingBox();
+    const list = await page.locator('.combo-open .popup').boundingBox();
+    assert.equal(list.y, combo.y + combo.height);
+  });
+
+  withChrome('shows a tooltip on hover and on focus', async () => {
+    const { page } = await gallery();
+    const tooltip = page.locator('.live .tooltip');
+    const visibility = () => tooltip.evaluate(element => getComputedStyle(element).visibility);
+    const waitFor = shown =>
+      page.waitForFunction(
+        shown => getComputedStyle(document.querySelector('.live .tooltip')).visibility === shown,
+        shown,
+        { timeout: 1000 }
+      );
+    assert.equal(await visibility(), 'hidden', 'hidden at rest');
+    await page.locator('.tooltip-anchor .tool-button').hover();
+    await waitFor('visible');
+    const [ background, text ] = await coloursOf(page, '.live .tooltip');
+    assert.ok(isToken(background, 'popup') && isToken(text, 'text'), `tooltip ${nameColour(background, names)} / ${nameColour(text, names)}`);
+    await page.mouse.move(0, 0);
+    await waitFor('hidden');
+    await page.locator('.live .combo').focus();
+    await page.keyboard.press('Tab');
+    await waitFor('visible');
+  });
+
+  withChrome('keeps the menu separator a gap', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.menu-gap') ].map(element => {
+        const style = getComputedStyle(element);
+        return [ style.backgroundColor, style.backgroundImage, element.getBoundingClientRect().height ];
+      })
+    );
+    assert.ok(shown.length > 0);
+    assert.deepEqual(shown.filter(([ colour, image, height ]) => !isToken(colour, 'transparent') || image !== 'none' || height !== 8), []);
+  });
+
+  withChrome('draws the dialog as a window', async () => {
+    const { page } = await gallery();
+    const outline = await page.locator('.dialog').evaluate(element => {
+      const style = getComputedStyle(element);
+      return [ style.outlineWidth, style.outlineStyle, style.outlineColor ];
+    });
+    assert.deepEqual(outline.slice(0, 2), [ '1px', 'solid' ]);
+    assert.ok(isToken(outline[2], 'outline'), `outline ${nameColour(outline[2], names)}`);
+    assert.ok(isToken((await coloursOf(page, '.dialog .title-bar'))[0], 'tone-0'), 'title bar');
+    assert.ok(isToken((await coloursOf(page, '.dialog .dialog-body'))[0], 'tone-2'), 'body');
+    await page.locator('.dialog .text-field').focus();
+    const order = [];
+    for (let step = 0; step < 2; step++) {
+      await page.keyboard.press('Tab');
+      order.push(await page.evaluate(() => document.activeElement?.textContent.trim()));
+    }
+    assert.deepEqual(order, [ 'Rename', 'Cancel' ]);
   });
 
   withChrome('draws no well edge at the start', async () => {

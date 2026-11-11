@@ -462,3 +462,352 @@
 .scroll-area > div {
   padding: 4px 8px;
 }
+
+/*
+ * Navigation (P1.5): tabs and items. A selected one carries the block marker,
+ * a gradient in --marker, --marker-width thick: on the leading edge of an
+ * item, on the top edge of a tab. It is not a border, so it is no hairline.
+ * Clicking a live copy does not select it: that needs a script that sets a
+ * class, which D-48 forbids. Selected copies are forced.
+ */
+
+.tab-bar {
+  display: flex;
+  align-self: stretch;
+  background: var(--tone-0);
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 12px;
+  cursor: default;
+  color: var(--text);
+  --marker: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, var(--marker) var(--marker-width), transparent var(--marker-width));
+}
+
+.item-view {
+  align-self: stretch;
+  background: var(--tone-2);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  outline: none;
+  cursor: default;
+  color: var(--text);
+  --marker: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(to right, var(--marker) var(--marker-width), transparent var(--marker-width));
+}
+
+.item-detail {
+  margin-left: auto;
+  color: var(--text-dim);
+}
+
+/* Hovered. A selected tab joins its page and does not change. */
+
+.tab:enabled:not(.is-selected):is(:hover, .is-hovered) {
+  background-color: var(--tone-1);
+}
+
+.item:not([aria-disabled="true"]):is(:hover, .is-hovered) {
+  background-color: var(--tone-3);
+}
+
+/* Focused: accent over the hovered tone. Dim text on raised focus measures
+   2.58:1, so a focused item shows its secondary columns in text. */
+
+.tab:enabled:not(.is-selected):is(:focus-visible, .is-focused) {
+  background-color: var(--well-focus);
+}
+
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) {
+  background-color: var(--raised-focus);
+}
+
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) .item-detail {
+  color: var(--text);
+}
+
+/* Selected: the block marker in accent, kept when hovered or focused. */
+
+.tab.is-selected {
+  --marker: var(--accent);
+  background-color: var(--tone-2);
+}
+
+.tab.is-selected:enabled:is(:focus-visible, .is-focused) {
+  background-color: var(--well-focus);
+}
+
+.item.is-selected {
+  --marker: var(--accent);
+  background-color: var(--selected);
+}
+
+.item.is-selected:not([aria-disabled="true"]):is(:hover, .is-hovered) {
+  background-color: var(--tone-4);
+}
+
+.item.is-selected:not([aria-disabled="true"]):is(:focus-visible, .is-focused) {
+  background-color: var(--raised-focus);
+}
+
+/* Disabled */
+
+.tab:disabled,
+.item[aria-disabled="true"] {
+  color: var(--text-dim);
+}
+
+/*
+ * Views (P1.5): header sections, a tree and a table. No line divides them:
+ * columns are kept apart by space, levels by indent. A tree has no branch
+ * lines, a table no grid lines, a header no dividers.
+ */
+
+.header {
+  display: flex;
+  align-self: stretch;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  cursor: default;
+  color: var(--text-dim);
+  background-color: transparent;
+}
+
+.header-section.is-sorted {
+  color: var(--text);
+}
+
+.header-section:is(:hover, .is-hovered) {
+  color: var(--text);
+  background-color: var(--tone-3);
+}
+
+.header-section:is(:active, .is-pressed) {
+  color: var(--text);
+  background-color: var(--tone-1);
+}
+
+.live.is-wide {
+  width: auto;
+}
+
+.live-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.tree,
+.table {
+  background: var(--tone-2);
+}
+
+.tree {
+  width: 240px;
+  --indent: 0px;
+}
+
+.tree .tree-level {
+  --indent: 20px;
+}
+
+.tree .tree-level .tree-level {
+  --indent: 40px;
+}
+
+.tree .item {
+  gap: 6px;
+  padding-left: calc(12px + var(--indent));
+}
+
+/* A leaf has no chevron: it starts where a folder's name does. */
+.tree div.item {
+  padding-left: calc(12px + 22px + var(--indent));
+}
+
+.tree summary {
+  list-style: none;
+}
+
+.chevron {
+  color: var(--text-dim);
+}
+
+.tree details[open] > summary .chevron {
+  transform: rotate(90deg);
+}
+
+/* Dim text on raised focus measures 2.58:1: the chevron of a focused folder
+   is text, as an item's secondary columns are. */
+.item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) .chevron {
+  color: var(--text);
+}
+
+.table {
+  width: 460px;
+}
+
+.table .header,
+.item.is-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 130px;
+}
+
+/* Each cell is padded as a header section is, so a column's text starts
+   under its title. */
+.item.is-row {
+  gap: 0;
+  padding: 0;
+}
+
+.item.is-row > * {
+  padding: 0 12px;
+}
+
+.item.is-row .item-detail {
+  margin-left: 0;
+}
+
+/*
+ * Popups (P1.5): menus, combo box lists and tooltips, on the popup tone. Their
+ * shadow is drawn in window.css. A menu item's keyboard highlight is its
+ * hovered tone: Qt does not tell the two apart. Space, not a line, divides a
+ * menu.
+ */
+
+.popup {
+  color: var(--text);
+  background: var(--popup);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-width: 180px;
+  padding: 4px 0;
+}
+
+.menu-item {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+  padding: 0 12px 0 6px;
+  white-space: nowrap;
+  text-align: left;
+  cursor: default;
+  color: var(--text);
+  --mark: transparent;
+  background-color: transparent;
+}
+
+/* The tick's column is 28 px: 6 px, the 16 px tick, 6 px. */
+.menu-tick {
+  margin-right: 6px;
+  stroke: var(--mark);
+}
+
+.menu-label {
+  flex: 1;
+}
+
+.menu-shortcut {
+  margin-left: 24px;
+  color: var(--text-dim);
+}
+
+.menu-arrow {
+  margin-left: 24px;
+  color: var(--text-dim);
+}
+
+.menu-gap {
+  height: 8px;
+}
+
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) {
+  background-color: var(--tone-4);
+}
+
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) :is(.menu-shortcut, .menu-arrow) {
+  color: var(--text);
+}
+
+.menu-item.is-checked {
+  --mark: var(--accent);
+}
+
+.menu-item:disabled {
+  color: var(--text-dim);
+}
+
+.live-row .toolbar-strip {
+  align-self: flex-start;
+}
+
+/* The list meets its combo box: a gap of surface between them would read as
+   a line. */
+.combo-open {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+}
+
+/* A tooltip shows 400 ms after its anchor is hovered or takes keyboard
+   focus, and hides at once. */
+.tooltip-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+/* .popup.tooltip outweighs window.css's .popup, whatever the link order. */
+.popup.tooltip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 1;
+  width: max-content;
+  max-width: 240px;
+  padding: 4px 8px;
+  visibility: hidden;
+  transition: visibility 0s;
+}
+
+.tooltip-anchor:is(:hover, :has(:focus-visible)) .tooltip {
+  visibility: visible;
+  transition-delay: 400ms;
+}

@@ -121,6 +121,26 @@ describe('browser tool', () => {
     assert.deepEqual(readFileSync(file).subarray(0, 8), PNG);
   });
 
+  withChrome('waits before a shot', () => {
+    // A wait can only make the command slower, so this holds on any machine.
+    const shot = (...extra) => {
+      const begun = Date.now();
+      const { status, stdout } = browser('shot', 'prototype/index.html', '--out', join(out, 'wait.png'), ...extra);
+      assert.equal(status, 0, stdout);
+      return Date.now() - begun;
+    };
+    const plain = shot();
+    const waited = shot('--wait', '1500');
+    assert.ok(waited >= 1500, `waited ${waited} ms`);
+    assert.ok(waited > plain, `waited ${waited} ms, plain ${plain} ms`);
+  });
+
+  it('refuses a bad wait', () => {
+    const { status, stderr } = browser('shot', 'prototype/gallery.html', '--wait', 'soon');
+    assert.equal(status, 2);
+    assert.match(stderr, /--wait must be a whole number of milliseconds from 0 to 10000: soon/);
+  });
+
   withChrome('refuses an ambiguous state', () => {
     const { status, stderr } = browser('colours', 'prototype/index.html', '.window', '--hover', '.window-button');
     assert.equal(status, 1);
@@ -145,6 +165,14 @@ describe('browser tool', () => {
     const { problems, offences } = JSON.parse(stdout);
     assert.deepEqual(problems, []);
     assert.deepEqual(offences, [ 'div.oval: border-radius 50%' ]);
+  });
+
+  withChrome('finds a line drawn as a box', () => {
+    const { status, stdout } = browser('check', 'tools/src/bin/fixtures/line-page.html', '--json');
+    assert.equal(status, 1);
+    const { problems, offences } = JSON.parse(stdout);
+    assert.deepEqual(problems, []);
+    assert.deepEqual(offences, [ 'div.rule: a line 200 × 1 px', 'div.post: a line 2 × 40 px', 'div.divider::after: a line 1 × 20 px' ]);
   });
 
   withChrome('checks a page in a state', () => {

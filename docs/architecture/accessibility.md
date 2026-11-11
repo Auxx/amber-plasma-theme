@@ -21,10 +21,16 @@ Disabled controls are exempt in WCAG, and are exempt here.
 
 1. **Text: 4.5:1.** Primary text and dim text reach 4.5:1 on every tone they
    can appear on; on-accent reaches it on accent, and on-danger on danger. The lower 3:1 for large text
-   is not used.
+   is not used. Dim text on raised focus measures 2.58:1 (measured
+   2026-11-11, P1.5), so a focused item shows its secondary columns, and a
+   focused tree folder its chevron, in text.
 2. **Indicators: 3:1.** Accent reaches 3:1 against every tone it marks: the
    check mark's fill against the surface, a block marker against its item, a
-   fill against its track.
+   fill against its track. The block marker is measured on the selected tone
+   (6.54:1), on a hovered selected item (tone 4, 5.63:1), on a focused one
+   (raised focus, 3.16:1) and on a focused selected tab (well focus,
+   6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
+   tonal step, kept above a floor of 1.1 (my call).
 3. **Syntax and terminal colours: 4.5:1** against the editor and terminal
    background. ANSI black is exempt, since it is meant to match a dark
    background.
@@ -100,7 +106,7 @@ Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plans P1.1, P1.2, P1.3 and P1.4. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1 to P1.5. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -151,7 +157,17 @@ falls below its minimum.
 | scroll thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
 | toggle focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
 | toggle focus | toggle | 1.45:1 | 1.2 (provisional) | pass |
+| text | selected | 10.58:1 | 4.5 | pass |
+| text | popup | 10.58:1 | 4.5 | pass |
+| dim text | selected | 5.34:1 | 4.5 | pass |
+| dim text | popup | 5.34:1 | 4.5 | pass |
+| accent | selected | 6.54:1 | 3 | pass |
+| accent | well focus | 6.13:1 | 3 | pass |
+| accent | popup | 6.54:1 | 3 | pass |
+| selected | tone 2 | 1.17:1 | 1.1 (floor) | pass |
+| selected | tone 1 | 1.28:1 | 1.1 (floor) | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
+| dim text | raised focus | 2.58:1 | 4.5 | fail: a focused item shows secondary text in text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |
 | tone 1 | tone 2 | 1.10:1 | — | tonal step |
