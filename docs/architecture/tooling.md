@@ -35,7 +35,7 @@ The only dependency is culori, pinned to an exact version.
 | Tool | Commands | Added in |
 |---|---|---|
 | `colour` | `convert`, `contrast <fg> <bg...> [--min]`, `solve` | P0.2 |
-| `tokens` | `list`, `resolve`, `pairs`, `try <token=value...>` | P1.1 |
+| `tokens` | `list [filter]`, `resolve <token...> [--set]`, `pairs [filter] [--failing] [--close] [--set]`, `try <token=value...>` | P1.1 |
 | `generate` | one command per part; prints the result, writes with `--write` | P2.2, then each later step |
 
 A tool for taking screenshots of the prototype may be added if comparing the

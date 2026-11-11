@@ -25,22 +25,24 @@ updated.
 
 ## Starting tokens (my call)
 
-| Token | Value | Used for |
-|---|---|---|
-| tone 0 | `#151413` | title bar, wells, tracks of sliders and progress bars |
-| tone 1 | `#1c1a18` | sidebars, secondary panels |
-| tone 2 | `#25221f` | the main surface of a window |
-| tone 3 | `#312e29` | raised widgets: buttons, selected items |
-| tone 4 | `#3c3832` | hovered raised widgets |
-| text | `#e8e3da` | primary text and icons |
-| dim text | `#9c958a` | secondary text, placeholders, inactive titles |
-| accent | `#d1b072` | selection, checked, progress, primary button, the tint of a focused widget |
-| on-accent | `#1b160b` | text on accent |
-| danger | `#b5442f` | close button when hovered, negative states |
-| on-danger | `#fbf3e6` | text and icons on danger; the text token is too dark for it |
+| Token | Name | Value | Used for |
+|---|---|---|---|
+| tone 0 | `--tone-0` | `#151413` | title bar, wells, tracks of sliders and progress bars |
+| tone 1 | `--tone-1` | `#1c1a18` | sidebars, secondary panels |
+| tone 2 | `--tone-2` | `#25221f` | the main surface of a window |
+| tone 3 | `--tone-3` | `#312e29` | raised widgets: buttons, selected items |
+| tone 4 | `--tone-4` | `#3c3832` | hovered raised widgets |
+| text | `--text` | `#e8e3da` | primary text and icons |
+| dim text | `--text-dim` | `#a9a297` | secondary text, placeholders, inactive titles. Lightened from `#9c958a` in P1.1 to reach 4.5:1 on tone 4 (my call) |
+| accent | `--accent` | `#d1b072` | selection, checked, progress, primary button, the tint of a focused widget |
+| on-accent | `--on-accent` | `#1b160b` | text on accent |
+| danger | `--danger` | `#b5442f` | close button when hovered, negative states |
+| on-danger | `--on-danger` | `#fbf3e6` | text and icons on danger; the text token is too dark for it |
 
-Token names, further tones and the terminal and syntax colours are settled in
-plan P1.1 and P1.6. Terminal and syntax colours are muted, warm-shifted hues
+The values live in [`prototype/tokens.css`](../../prototype/tokens.css); when
+this table and that file disagree, the file is right. Token names are written
+without a prefix (my call, D-43). Further tones and the terminal and syntax
+colours are settled in plan P1.6 and the gallery plans. Terminal and syntax colours are muted, warm-shifted hues
 that sit with the Sand palette; the owner approves them in the prototype
 before they go into real files.
 

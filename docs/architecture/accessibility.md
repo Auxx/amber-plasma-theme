@@ -72,8 +72,9 @@ tones and their measured ratios side by side, and the owner chooses in P1.7.
 
 ## First measurements
 
-Measured on 2026-11-11 on the starting tokens, with the `colour` tool (see
-the `ai-tools` skill). The tools' tests pin several of these values.
+Measured on 2026-11-11 on the tokens of plan P1.1. `node tools/src/bin/tokens.mjs
+pairs` gives the current ratios of every pair, and the tests fail when one
+falls below its minimum.
 
 | Foreground | Background | Ratio | Rule | Result |
 |---|---|---|---|---|
@@ -82,16 +83,17 @@ the `ai-tools` skill). The tools' tests pin several of these values.
 | text | tone 2 | 12.38:1 | 4.5 | pass |
 | text | tone 3 | 10.58:1 | 4.5 | pass |
 | text | tone 4 | 9.11:1 | 4.5 | pass |
-| dim text | tone 0 | 6.20:1 | 4.5 | pass |
-| dim text | tone 1 | 5.85:1 | 4.5 | pass |
-| dim text | tone 2 | 5.33:1 | 4.5 | pass |
-| dim text | tone 3 | 4.56:1 | 4.5 | pass (close) |
-| dim text | tone 4 | 3.92:1 | 4.5 | fail: settled in plan P1.1 |
+| dim text | tone 0 | 7.27:1 | 4.5 | pass |
+| dim text | tone 1 | 6.86:1 | 4.5 | pass |
+| dim text | tone 2 | 6.25:1 | 4.5 | pass |
+| dim text | tone 3 | 5.34:1 | 4.5 | pass |
+| dim text | tone 4 | 4.60:1 | 4.5 | pass |
 | on-accent | accent | 8.72:1 | 4.5 | pass |
 | accent | tone 0 | 8.91:1 | 3 | pass |
 | accent | tone 1 | 8.40:1 | 3 | pass |
 | accent | tone 2 | 7.66:1 | 3 | pass |
 | accent | tone 3 | 6.54:1 | 3 | pass |
+| accent | tone 4 | 5.63:1 | 3 | pass |
 | on-danger | danger | 4.97:1 | 4.5 | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
@@ -99,8 +101,9 @@ the `ai-tools` skill). The tools' tests pin several of these values.
 | tone 1 | tone 2 | 1.10:1 | — | tonal step |
 | tone 0 | tone 1 | 1.06:1 | — | tonal step |
 
-Dim text fails on tone 4, a hovered raised widget. Plan P1.1 settles it by
-lightening dim text or by not using it on tone 4.
+Plan P1.1 lightened dim text from `#9c958a` to `#a9a297`, the same hue and
+chroma, so that it passes on tone 4, a hovered raised widget. The old value
+measured 3.92:1 there and 4.56:1 (close) on tone 3.
 
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
 (`#695c45`), measures 2.07:1 against tone 3, 2.42:1 against tone 2, and
@@ -111,14 +114,17 @@ Not yet measured: the terminal and syntax colours, which do not exist yet.
 
 ## How the check works
 
-- **Contrast pairs are declared next to the tokens.** A pair names a
-  foreground token, the background tokens it appears on, and its minimum.
+- **Contrast pairs are declared next to the tokens**, in
+  `prototype/contrast-pairs.json` beside `prototype/tokens.css`. A pair names a
+  foreground token, the background tokens it appears on, its minimum and why
+  it exists.
   Adding a token that carries text or marks state means adding its pairs in
   the same change.
 - **A tool measures every pair**: `tokens pairs` (see [tooling](tooling.md)).
   It exits with an error when a pair fails.
 - **The same check runs in the tests**, so a token change that breaks a pair
-  fails them.
+  fails them. The tests also fail when a token other than a tone or `danger`
+  is the foreground of no pair.
 - **Try before changing.** `tokens try name=value` shows the pairs a change
   would affect, before and after.
 - **Find a value that passes.** `colour solve` gives the lightness range in
