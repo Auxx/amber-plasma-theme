@@ -60,6 +60,99 @@
   stroke-linecap: square;
 }
 
+/* Wells: text fields, spin boxes and text areas sit darker than the surface. */
+
+.text-field,
+.text-area,
+.spin,
+.spin-field,
+.spin-step {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  color: var(--text);
+  caret-color: var(--text);
+}
+
+.text-field,
+.text-area,
+.spin {
+  width: 100%;
+  background-color: var(--well);
+}
+
+.text-field {
+  height: 30px;
+  padding: 0 8px;
+}
+
+.text-area {
+  display: block;
+  padding: 6px 8px;
+  line-height: 1.4;
+  resize: none;
+}
+
+.spin {
+  display: flex;
+  height: 30px;
+}
+
+.spin-field {
+  appearance: textfield;
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+  color: inherit;
+  background: transparent;
+}
+
+.spin-field::-webkit-inner-spin-button,
+.spin-field::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.spin-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.spin-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 15px;
+  padding: 0;
+  cursor: default;
+  color: var(--text-dim);
+  background: transparent;
+}
+
+.spin-step .glyph {
+  width: 12px;
+  height: 12px;
+}
+
+.text-field::placeholder,
+.text-area::placeholder,
+.spin-field::placeholder {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+.text-field::selection,
+.text-area::selection,
+.spin-field::selection {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
 /* Hovered */
 
 .button:hover,
@@ -83,6 +176,20 @@
   background: var(--accent-hover);
 }
 
+.text-field:hover,
+.text-field.is-hovered,
+.text-area:hover,
+.text-area.is-hovered,
+.spin:hover,
+.spin.is-hovered {
+  background-color: var(--tone-1);
+}
+
+.spin-step:hover {
+  color: var(--text);
+  background: var(--tone-3);
+}
+
 /* Focused */
 
 .button:focus-visible,
@@ -98,6 +205,15 @@
 .button.is-primary:focus-visible,
 .button.is-primary.is-focused {
   background: var(--accent-hover);
+}
+
+.text-field:focus-visible,
+.text-field.is-focused,
+.text-area:focus-visible,
+.text-area.is-focused,
+.spin:has(.spin-field:focus-visible),
+.spin.is-focused {
+  background-color: var(--well-focus);
 }
 
 /* Pressed */
@@ -120,6 +236,10 @@
   background: var(--accent-pressed);
 }
 
+.spin-step:active {
+  background: var(--tone-2);
+}
+
 /* Disabled */
 
 .button:disabled,
@@ -130,6 +250,18 @@
 }
 
 .tool-button:disabled {
+  color: var(--text-dim);
+  background: transparent;
+}
+
+.text-field:disabled,
+.text-area:disabled,
+.spin:has(.spin-field:disabled) {
+  color: var(--text-dim);
+  background-color: var(--well);
+}
+
+.spin-step:disabled {
   color: var(--text-dim);
   background: transparent;
 }

@@ -55,5 +55,40 @@
   </div>
 </section>
 
+<section class="family" aria-label="Inputs">
+  <h2>Inputs</h2>
+  <p class="dim">Wells sit a tone below the surface. Hovered moves up a tone, focused is tinted with accent. A placeholder is in dim text.</p>
+
+  <div class="state-row" data-widget="text-field">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
+    <div class="state" data-state="filled"><span class="state-label dim">Filled</span><input class="text-field" type="text" placeholder="Search files" value="amber-notes.md" autocomplete="off" aria-label="Search"></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><input class="text-field is-hovered" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search" disabled></div>
+  </div>
+
+  <div class="state-row" data-widget="spin">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="spin"><input class="spin-field" type="number" value="12" autocomplete="off" aria-label="Copies"><span class="spin-steps"><button class="spin-step" tabindex="-1" aria-label="More"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></button><button class="spin-step" tabindex="-1" aria-label="Fewer"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></span></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="spin is-hovered"><input class="spin-field" type="number" value="12" autocomplete="off" aria-label="Copies"><span class="spin-steps"><button class="spin-step" tabindex="-1" aria-label="More"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></button><button class="spin-step" tabindex="-1" aria-label="Fewer"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></span></div></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="spin is-focused"><input class="spin-field" type="number" value="12" autocomplete="off" aria-label="Copies"><span class="spin-steps"><button class="spin-step" tabindex="-1" aria-label="More"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></button><button class="spin-step" tabindex="-1" aria-label="Fewer"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></span></div></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="spin"><input class="spin-field" type="number" value="12" autocomplete="off" aria-label="Copies" disabled><span class="spin-steps"><button class="spin-step" tabindex="-1" aria-label="More" disabled><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></button><button class="spin-step" tabindex="-1" aria-label="Fewer" disabled><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></span></div></div>
+  </div>
+
+  <div class="state-row" data-widget="text-area">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><textarea class="text-area" rows="4" placeholder="A note" autocomplete="off" aria-label="Note">Tones, not lines.
+No rounded corner.
+Warm, never cool.</textarea></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><textarea class="text-area is-hovered" rows="4" placeholder="A note" autocomplete="off" aria-label="Note">Tones, not lines.
+No rounded corner.
+Warm, never cool.</textarea></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><textarea class="text-area is-focused" rows="4" placeholder="A note" autocomplete="off" aria-label="Note">Tones, not lines.
+No rounded corner.
+Warm, never cool.</textarea></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><textarea class="text-area" rows="4" placeholder="A note" autocomplete="off" aria-label="Note" disabled>Tones, not lines.
+No rounded corner.
+Warm, never cool.</textarea></div>
+  </div>
+</section>
+
 </body>
 </html>

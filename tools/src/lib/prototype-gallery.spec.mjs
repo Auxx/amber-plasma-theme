@@ -25,6 +25,13 @@ const RAISED = {
   disabled: [ 'tone-3', 'text-dim' ]
 };
 
+const WELL = {
+  rest: [ 'well', 'text' ],
+  hovered: [ 'tone-1', 'text' ],
+  focused: [ 'well-focus', 'text' ],
+  disabled: [ 'well', 'text-dim' ]
+};
+
 // Each widget: `control`, the element whose colours are read; `target`, the
 // element that is put in a state (the control when left out); and `states`,
 // each state's [background, text] as tokens. The order is the page's.
@@ -51,7 +58,13 @@ const WIDGETS = {
       disabled: [ 'transparent', 'text-dim' ]
     }
   },
-  combo: { control: '.combo', states: RAISED }
+  combo: { control: '.combo', states: RAISED },
+  'text-field': {
+    control: '.text-field',
+    states: { rest: WELL.rest, filled: [ 'well', 'text' ], hovered: WELL.hovered, focused: WELL.focused, disabled: WELL.disabled }
+  },
+  spin: { control: '.spin', target: '.spin .spin-field', states: WELL },
+  'text-area': { control: '.text-area', states: WELL }
 };
 
 const FORCED = { hovered: 'is-hovered', focused: 'is-focused', pressed: 'is-pressed', checked: 'is-checked' };
@@ -157,7 +170,9 @@ describe('prototype gallery', () => {
         if (forced.join() !== expected.join()) {
           offences.push(`${widget} ${state}: forced ${forced.join(' ') || 'nothing'}, expected ${expected.join(' ') || 'nothing'}`);
         }
-        if (/\sdisabled\b/.test(found.tag) !== (state === 'disabled')) {
+        const target = WIDGETS[widget]?.target?.split(' ').at(-1);
+        const disabledOn = target ? controlTag(body, target)?.tag ?? '' : found.tag;
+        if (/\sdisabled\b/.test(disabledOn) !== (state === 'disabled')) {
           offences.push(`${widget} ${state}: disabled is ${state === 'disabled' ? 'missing' : 'set'}`);
         }
       }
@@ -215,6 +230,74 @@ describe('prototype gallery', () => {
     await page.locator(disabled).hover({ force: true });
     const [ background, text ] = await coloursOf(page, disabled);
     assert.ok(isToken(background, 'tone-3') && isToken(text, 'text-dim'), `disabled and hovered: ${nameColour(background, names)}`);
+  });
+
+  withChrome('shows placeholders in dim text', async () => {
+    const { page } = await gallery();
+    const offences = [];
+    for (const widget of [ 'text-field', 'text-area' ]) {
+      for (const state of [ 'rest', 'focused' ]) {
+        const colour = await page
+          .locator(controlOf(widget, state))
+          .evaluate(element => getComputedStyle(element, '::placeholder').color);
+        if (!isToken(colour, 'text-dim')) {
+          offences.push(`${widget} ${state}: placeholder ${nameColour(colour, names)}`);
+        }
+      }
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('takes the keyboard in order', async () => {
+    const { page } = await gallery();
+    // The pressed copy stays pressed when focused: pressed wins over focused.
+    const expected = Object.entries(WIDGETS).flatMap(([ widget, { states } ]) =>
+      Object.keys(states)
+        .filter(state => state !== 'disabled')
+        .map(state => `${widget} ${state}`)
+    );
+    await page.locator('.pages a').last().focus();
+    const seen = [];
+    const offences = [];
+    for (let step = 0; step <= expected.length; step++) {
+      await page.keyboard.press('Tab');
+      const where = await page.evaluate(() => {
+        const element = document.activeElement;
+        const cell = element?.closest('.family [data-state]');
+        return cell
+          ? {
+              label: `${cell.closest('[data-widget]').dataset.widget} ${cell.dataset.state}`,
+              step: element.classList.contains('spin-step')
+            }
+          : null;
+      });
+      if (!where) {
+        break;
+      }
+      seen.push(where.label);
+      if (where.step) {
+        offences.push(`${where.label}: a spin step takes focus`);
+      }
+      const [ widget, state ] = where.label.split(' ');
+      if (state !== 'pressed') {
+        const [ background ] = await coloursOf(page, controlOf(widget, state));
+        const focused = WIDGETS[widget].states.focused[0];
+        if (!isToken(background, focused)) {
+          offences.push(`${where.label}: focused shows ${nameColour(background, names)}, expected ${focused}`);
+        }
+      }
+    }
+    assert.deepEqual(seen, expected);
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('shows no spin buttons in a number field', async () => {
+    const { page } = await gallery();
+    const appearance = await page
+      .locator(controlOf('spin', 'rest'))
+      .locator('.spin-field')
+      .evaluate(element => getComputedStyle(element).appearance);
+    assert.equal(appearance, 'textfield');
   });
 
   withChrome('breaks no anti-goal in any state', async () => {
