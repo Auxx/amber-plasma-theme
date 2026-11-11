@@ -40,7 +40,9 @@ Disabled controls are exempt in WCAG, and are exempt here.
    window marks the same state. Until O-4 is closed, the pairs of
    `outline` and `glow` on tones 0 to 2 have a provisional minimum of 1.3
    (my call): a floor that keeps them from fading, not a WCAG rule. The
-   shadow shows no state and has no pair.
+   shadow shows no state and has no pair. On the active window the
+   outline also meets its own glow, against which it measures less (1.14:1
+   over tone 0); whether that is measured is part of O-4.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 

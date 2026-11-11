@@ -118,10 +118,16 @@ node tools/src/bin/tokens.mjs resolve text-dim
 - **Every foreground has a pair.** The test
   `tools/src/lib/amber-contrast.spec.mjs` fails when a colour token other
   than a tone, `danger` or `shadow` is the foreground of no pair.
-- **The prototype is checked too.** `prototype-anti-goals.spec.mjs` fails on
-  a rounded corner, border, `box-shadow`, outline other than the window
-  outline, or colour that is not a token in the prototype's CSS, and on a
-  `<script>`, `<style>` or `<hr>` in the page. `prototype-candidates.spec.mjs`
+- **The prototype is checked too.** `prototype-anti-goals.spec.mjs` runs
+  `tools/src/lib/prototype-check.mjs` over the real files. In the CSS it fails
+  on a rounded corner, a border, any `box-shadow`, `outline-*` other than the
+  window outline on `.window`, `column-rule`, `text-decoration`, a
+  `drop-shadow` filter, a `round` clip, an at-rule, and any colour written out
+  (CSS named colours included) except a warm `--desktop`. In the page it fails
+  on `<script>`, `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour in an
+  attribute, a `style` that sets anything but custom properties, and a colour
+  set outside a candidate. A colour written outside the tokens must be warm:
+  OKLCH hue 30 to 110, or black (my call). `prototype-candidates.spec.mjs`
   measures every ratio printed under a candidate again, with that figure's
   `style` overrides, and fails when one is stale.
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,

@@ -23,10 +23,9 @@ const figures = [ ...page.matchAll(/<figure class="candidate"(?: style="([^"]*)"
       .map(declaration => declaration.trim())
       .filter(Boolean)
       .map(declaration => declaration.replace(/^(--[a-z0-9-]+)\s*:\s*/, '$1=')),
-    ratios: [ ...body.matchAll(/<data class="ratio" data-pair="([^"]+)" value="([^"]+)">/g) ].map(([ , pair, value ]) => ({
-      pair,
-      value
-    }))
+    ratios: [ ...body.matchAll(/<data class="ratio" data-pair="([^"]+)" value="([^"]+)">([^<]*)<\/data>/g) ].map(
+      ([ , pair, value, shown ]) => ({ pair, value, shown })
+    )
   })
 );
 
@@ -47,6 +46,17 @@ describe('prototype candidates', () => {
         .map(o => `${f.caption}: no token ${o.name}`)
     ]);
     assert.deepEqual(unknown, []);
+  });
+
+  it('shows each ratio as its value says', () => {
+    // `outline on tone-2` with value 1.36 reads "1.36:1 on tone 2".
+    const offences = figures.flatMap(f =>
+      f.ratios
+        .map(r => ({ ...r, expected: `${r.value}:1 ${r.pair.replace(/^\S+ /, '').replaceAll('-', ' ')}` }))
+        .filter(r => r.shown.trim() !== r.expected)
+        .map(r => `${f.caption}: shows "${r.shown}", value says "${r.expected}"`)
+    );
+    assert.deepEqual(offences, []);
   });
 
   it('prints every ratio as measured', () => {
