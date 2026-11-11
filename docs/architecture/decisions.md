@@ -48,7 +48,7 @@ text in other documents.
 | D-32 | The Union style starts as a copy of the Breeze style and is changed file by file | Designer | The Breeze style covers every widget already |
 | D-33 | The Union style reads colours from the colour scheme where a role exists | Designer | As Breeze does; applications' own colours then agree with it |
 | D-34 | The window decoration is an Aurorae theme | Designer | No compiled code |
-| D-35 | The prototype is plain HTML and CSS, opened from disk, with no build step | Designer | Fast to change; nothing to install |
+| D-35 | The prototype is plain HTML and CSS, opened from disk, with no build step. Since P1.4 a page may also link a script that only copies a value into a custom property (D-48) | Designer | Fast to change; nothing to install |
 | D-36 | The prototype uses only effects Union can draw in Qt Widgets applications: flat colours, and no shadow on a widget | Designer | It must not promise what the system cannot draw. Changed on 2026-11-11 after spike P0.3 |
 | D-37 | Two spikes run before the prototype is approved: widget glow, square decoration | Designer | Both are goals that the platform might not allow |
 | D-38 | A decoration that cannot be square goes back to the owner | Designer | The fallback changes what Amber is. Changed on 2026-11-11: the glow is gone (D-4) and the decoration has a window outline (D-25) |
