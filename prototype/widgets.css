@@ -364,3 +364,75 @@
   --mark: var(--text-dim);
   background-color: var(--toggle);
 }
+
+/*
+ * Ranges: sliders and progress bars (P1.4). A fill is accent on a track below
+ * the surface; its length is --value. A slider's thumb is a raised widget and
+ * takes the button's tones, through --thumb. A disabled fill is dim text.
+ */
+
+.slider {
+  --thumb: var(--tone-3);
+  --fill: var(--accent);
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  display: block;
+  width: 100%;
+  height: 20px;
+  cursor: default;
+  background: transparent;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(to right, var(--fill) var(--value), var(--track) var(--value));
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 20px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 0;
+  background: var(--thumb);
+}
+
+.progress {
+  --fill: var(--accent);
+  display: block;
+  width: 100%;
+  height: 6px;
+  background-color: var(--track);
+  background-image: linear-gradient(to right, var(--fill) var(--value), transparent var(--value));
+}
+
+.slider:hover,
+.slider.is-hovered {
+  --thumb: var(--tone-4);
+}
+
+.slider:focus-visible,
+.slider.is-focused {
+  --thumb: var(--raised-focus);
+}
+
+.slider:active,
+.slider.is-pressed {
+  --thumb: var(--tone-1);
+}
+
+.slider:disabled {
+  --thumb: var(--tone-3);
+  --fill: var(--text-dim);
+}
+
+.progress[aria-disabled="true"] {
+  --fill: var(--text-dim);
+}

@@ -88,7 +88,28 @@ const WIDGETS = {
   'check-box': { control: '.check-box', read: MARKED, states: TOGGLE_OFF },
   'check-box-on': { control: '.check-box', read: MARKED, checked: true, states: TOGGLE_ON },
   radio: { control: '.radio', read: MARKED, states: TOGGLE_OFF },
-  'radio-on': { control: '.radio', read: MARKED, checked: true, states: TOGGLE_ON }
+  'radio-on': { control: '.radio', read: MARKED, checked: true, states: TOGGLE_ON },
+  slider: {
+    control: '.slider',
+    read: [ '--thumb', '--fill' ],
+    states: {
+      rest: [ 'tone-3', 'accent' ],
+      hovered: [ 'tone-4', 'accent' ],
+      focused: [ 'raised-focus', 'accent' ],
+      pressed: [ 'tone-1', 'accent' ],
+      disabled: [ 'tone-3', 'text-dim' ]
+    }
+  },
+  progress: {
+    control: '.progress',
+    read: [ 'background-color', '--fill' ],
+    states: {
+      rest: [ 'track', 'accent' ],
+      empty: [ 'track', 'accent' ],
+      full: [ 'track', 'accent' ],
+      disabled: [ 'track', 'text-dim' ]
+    }
+  }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
@@ -184,6 +205,26 @@ describe('prototype gallery', () => {
     for (const [ widget, { states } ] of Object.entries(WIDGETS)) {
       assert.deepEqual(rows.get(widget).map(c => c.state), Object.keys(states), widget);
     }
+  });
+
+  it('starts each fill at its value', () => {
+    const source = readFileSync(SOURCE, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+    const offences = [];
+    let count = 0;
+    for (const [ tag ] of source.matchAll(/<(?:input|div)\b[^>]*\bclass="(?:slider|progress)\b[^"]*"[^>]*>/g)) {
+      count++;
+      const value = tag.match(/\s(?:value|aria-valuenow)="([^"]*)"/)?.[1];
+      const fill = tag.match(/style="--value: ([^";]*)"/)?.[1];
+      if (value === undefined || fill !== `${value}%`) {
+        offences.push(`${tag}: --value ${fill}, value ${value}`);
+      }
+    }
+    assert.ok(count > 0, 'no slider or progress bar');
+    assert.deepEqual(offences, []);
+    const values = readRows()
+      .get('progress')
+      .map(({ state, body }) => [ state, body.match(/aria-valuenow="([^"]*)"/)?.[1] ]);
+    assert.deepEqual(values.slice(0, 3), [ [ 'rest', '40' ], [ 'empty', '0' ], [ 'full', '100' ] ]);
   });
 
   it('forces each state on its copy', () => {
@@ -310,7 +351,19 @@ describe('prototype gallery', () => {
     assert.match(nameColour((await coloursOf(page, box))[0], names), /accent-hover/, 'checked and hovered');
   });
 
-  withChrome('draws toggles with no native look', async () => {
+  withChrome('moves the fill with the value', async () => {
+    const { page, problems } = await gallery();
+    const slider = targetOf('slider', 'rest');
+    const fill = () => page.locator(slider).evaluate(element => getComputedStyle(element).getPropertyValue('--value').trim());
+    await page.locator(slider).focus();
+    await page.keyboard.press('ArrowRight');
+    assert.equal(await fill(), '50%');
+    await page.keyboard.press('End');
+    assert.equal(await fill(), '100%');
+    assert.deepEqual(problems, []);
+  });
+
+  withChrome('draws toggles and sliders with no native look', async () => {
     const { page } = await gallery();
     const shown = await page.evaluate(() =>
       [ ...document.querySelectorAll('.check-box, .radio') ].map(element => {
@@ -323,6 +376,11 @@ describe('prototype gallery', () => {
       .filter(([ kind, appearance, radius ]) => appearance !== 'none' || radius !== (kind === 'radio' ? '50%' : '0px'))
       .map(entry => entry.join(' '));
     assert.deepEqual(offences, []);
+    const sliders = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.slider') ].map(element => getComputedStyle(element).appearance)
+    );
+    assert.ok(sliders.length > 0);
+    assert.deepEqual(sliders.filter(appearance => appearance !== 'none'), []);
   });
 
   withChrome('shows placeholders in dim text', async () => {
