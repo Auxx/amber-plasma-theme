@@ -175,7 +175,14 @@ const FORCED = {
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 
 // The focus stops allowed outside every state cell: the live areas.
-const LIVE_STOPS = [ '.scroll-area', '.tree summary', '.live .combo', '.tooltip-anchor .tool-button' ];
+const LIVE_STOPS = [
+  '.scroll-area',
+  '.tree summary',
+  '.live .combo',
+  '.tooltip-anchor .tool-button',
+  '.dialog .text-field',
+  '.dialog .button'
+];
 
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
@@ -794,6 +801,25 @@ describe('prototype gallery', () => {
     );
     assert.ok(shown.length > 0);
     assert.deepEqual(shown.filter(([ colour, image, height ]) => !isToken(colour, 'transparent') || image !== 'none' || height !== 8), []);
+  });
+
+  withChrome('draws the dialog as a window', async () => {
+    const { page } = await gallery();
+    const outline = await page.locator('.dialog').evaluate(element => {
+      const style = getComputedStyle(element);
+      return [ style.outlineWidth, style.outlineStyle, style.outlineColor ];
+    });
+    assert.deepEqual(outline.slice(0, 2), [ '1px', 'solid' ]);
+    assert.ok(isToken(outline[2], 'outline'), `outline ${nameColour(outline[2], names)}`);
+    assert.ok(isToken((await coloursOf(page, '.dialog .title-bar'))[0], 'tone-0'), 'title bar');
+    assert.ok(isToken((await coloursOf(page, '.dialog .dialog-body'))[0], 'tone-2'), 'body');
+    await page.locator('.dialog .text-field').focus();
+    const order = [];
+    for (let step = 0; step < 2; step++) {
+      await page.keyboard.press('Tab');
+      order.push(await page.evaluate(() => document.activeElement?.textContent.trim()));
+    }
+    assert.deepEqual(order, [ 'Rename', 'Cancel' ]);
   });
 
   withChrome('draws no well edge at the start', async () => {

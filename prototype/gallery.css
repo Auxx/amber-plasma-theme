@@ -126,3 +126,42 @@ body {
 .candidate data {
   color: var(--text-dim);
 }
+
+/* The dialog: a window on the surface, with room on every side for its glow. */
+.dialog-scene {
+  position: relative;
+  height: 220px;
+}
+
+.dialog {
+  left: 32px;
+  top: 32px;
+  width: 360px;
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--tone-2);
+}
+
+.dialog-text {
+  margin: 0;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.vignette .item-view {
+  flex: 1;
+}
+
+/* Room below a popup for its shadow. */
+.vignette.has-popup {
+  padding-bottom: 32px;
+}
