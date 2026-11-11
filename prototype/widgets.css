@@ -574,3 +574,109 @@
 .item[aria-disabled="true"] {
   color: var(--text-dim);
 }
+
+/*
+ * Views (P1.5): header sections, a tree and a table. No line divides them:
+ * columns are kept apart by space, levels by indent. A tree has no branch
+ * lines, a table no grid lines, a header no dividers.
+ */
+
+.header {
+  display: flex;
+  align-self: stretch;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  cursor: default;
+  color: var(--text-dim);
+  background-color: transparent;
+}
+
+.header-section.is-sorted {
+  color: var(--text);
+}
+
+.header-section:is(:hover, .is-hovered) {
+  color: var(--text);
+  background-color: var(--tone-3);
+}
+
+.header-section:is(:active, .is-pressed) {
+  color: var(--text);
+  background-color: var(--tone-1);
+}
+
+.live.is-wide {
+  width: auto;
+}
+
+.live-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.tree,
+.table {
+  background: var(--tone-2);
+}
+
+.tree {
+  width: 240px;
+  --indent: 0px;
+}
+
+.tree .tree-level {
+  --indent: 20px;
+}
+
+.tree .tree-level .tree-level {
+  --indent: 40px;
+}
+
+.tree .item {
+  gap: 6px;
+  padding-left: calc(12px + var(--indent));
+}
+
+/* A leaf has no chevron: it starts where a folder's name does. */
+.tree div.item {
+  padding-left: calc(12px + 22px + var(--indent));
+}
+
+.tree summary {
+  list-style: none;
+}
+
+.chevron {
+  color: var(--text-dim);
+}
+
+.tree details[open] > summary .chevron {
+  transform: rotate(90deg);
+}
+
+.table {
+  width: 460px;
+}
+
+.table .header,
+.item.is-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 130px;
+}
+
+.item.is-row {
+  gap: 0;
+}
+
+.item.is-row .item-detail {
+  margin-left: 0;
+}

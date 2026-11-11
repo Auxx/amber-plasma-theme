@@ -175,6 +175,44 @@ Warm, never cool.</textarea></div>
   </div>
 </section>
 
+<section class="family" aria-label="Views">
+  <h2>Views</h2>
+  <p class="dim">Header sections, a tree and a table. No line divides them: columns are kept apart by space, levels by indent.</p>
+
+  <div class="state-row" data-widget="header">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="header" role="row"><div class="header-section" role="columnheader">Name</div></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="header" role="row"><div class="header-section is-hovered" role="columnheader">Name</div></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="header" role="row"><div class="header-section is-pressed" role="columnheader">Name</div></div></div>
+    <div class="state" data-state="sorted"><span class="state-label dim">Sorted</span><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div></div></div>
+  </div>
+
+  <div class="live is-wide"><span class="state-label dim">Live</span><div class="live-row">
+    <div class="tree" role="tree" aria-label="Folders">
+      <details open><summary class="item"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Documents</summary>
+        <div class="tree-level">
+          <details><summary class="item"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Invoices</summary>
+            <div class="tree-level">
+              <div class="item" tabindex="-1">invoice-1024.pdf</div>
+              <div class="item" tabindex="-1">invoice-1025.pdf</div>
+            </div>
+          </details>
+          <div class="item" tabindex="-1">Letters</div>
+          <div class="item is-selected" tabindex="-1" aria-selected="true">amber-notes.md</div>
+        </div>
+      </details>
+    </div>
+    <div class="table" role="grid" aria-label="Files">
+      <div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div><div class="header-section" role="columnheader">Size</div><div class="header-section" role="columnheader">Modified</div></div>
+      <div class="item is-row" role="row" tabindex="-1" aria-selected="false"><span class="item-name">Invoices</span><span class="item-detail">4 items</span><span class="item-detail">Today, 09:12</span></div>
+      <div class="item is-row" role="row" tabindex="-1" aria-selected="false"><span class="item-name">Letters</span><span class="item-detail">12 items</span><span class="item-detail">3 Nov, 16:45</span></div>
+      <div class="item is-row" role="row" tabindex="-1" aria-selected="false"><span class="item-name">Taxes</span><span class="item-detail">7 items</span><span class="item-detail">12 Oct, 11:20</span></div>
+      <div class="item is-row is-selected" role="row" tabindex="-1" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span><span class="item-detail">Today, 10:31</span></div>
+      <div class="item is-row" role="row" tabindex="-1" aria-selected="false"><span class="item-name">budget-2027.ods</span><span class="item-detail">38 KB</span><span class="item-detail">Yesterday, 20:05</span></div>
+      <div class="item is-row" role="row" tabindex="-1" aria-selected="false"><span class="item-name">contract.pdf</span><span class="item-detail">512 KB</span><span class="item-detail">8 Nov, 13:00</span></div>
+    </div>
+  </div></div>
+</section>
+
 <section class="candidates" aria-label="Candidates">
   <h2>Focused raised widget</h2>
   <p class="dim">How far the focused tone stands from the widget at rest and from the surface (O-3). A button at rest beside a focused one.</p>

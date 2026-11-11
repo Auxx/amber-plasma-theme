@@ -139,6 +139,15 @@ const WIDGETS = {
       selected: [ 'selected', 'text', 'accent' ],
       disabled: [ 'transparent', 'text-dim', 'transparent' ]
     }
+  },
+  header: {
+    control: '.header-section',
+    states: {
+      rest: [ 'transparent', 'text-dim' ],
+      hovered: [ 'tone-3', 'text' ],
+      pressed: [ 'tone-1', 'text' ],
+      sorted: [ 'transparent', 'text' ]
+    }
   }
 };
 
@@ -155,7 +164,7 @@ const FORCED = {
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 
 // The focus stops allowed outside every state cell: the live areas.
-const LIVE_STOPS = [ '.scroll-area' ];
+const LIVE_STOPS = [ '.scroll-area', '.tree summary' ];
 
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
@@ -321,6 +330,16 @@ describe('prototype gallery', () => {
     const tag = readFileSync(SOURCE, 'utf8').match(/<div class="scroll-area"[^>]*>/)?.[0] ?? '';
     assert.match(tag, /\srole="region"/);
     assert.match(tag, /\saria-label="Files"/);
+  });
+
+  it('shows the sort arrow only on the sorted section', () => {
+    const source = readFileSync(SOURCE, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+    const sections = [ ...source.matchAll(/<div class="header-section([^"]*)"[^>]*>([\s\S]*?)<\/div>/g) ];
+    assert.ok(sections.length >= 7, `${sections.length} header sections`);
+    const offences = sections
+      .filter(([ , classes, body ]) => /\bis-sorted\b/.test(classes) !== /\bsort-arrow\b/.test(body))
+      .map(([ tag ]) => tag.slice(0, 80));
+    assert.deepEqual(offences, []);
   });
 
   it('forces each state on its copy', () => {
@@ -656,6 +675,47 @@ describe('prototype gallery', () => {
     } finally {
       await browser.close();
     }
+  });
+
+  withChrome('opens and closes the tree', async () => {
+    const { page } = await gallery();
+    // The Invoices folder, closed at first. A selector by state would stop
+    // matching once it opens.
+    const details = page.locator('.tree details details').first();
+    const summary = details.locator('> summary');
+    const open = () => details.evaluate(element => element.open);
+    assert.equal(await open(), false, 'closed at first');
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await open(), true, 'Enter opens it');
+    const turn = await summary.locator('.chevron').evaluate(element => getComputedStyle(element).transform);
+    assert.notEqual(turn, 'none', 'the chevron turns when open');
+    await page.keyboard.press('Enter');
+    assert.equal(await open(), false, 'Enter closes it');
+    await summary.click();
+    assert.equal(await open(), true, 'a click opens it');
+  });
+
+  withChrome('draws no native marker on the tree', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.tree summary') ].map(element => {
+        const style = getComputedStyle(element);
+        return [ style.display, style.listStyleType ];
+      })
+    );
+    assert.ok(shown.length > 0);
+    assert.deepEqual(shown.filter(([ display, list ]) => display === 'list-item' || list !== 'none'), []);
+  });
+
+  withChrome('draws views with no line', async () => {
+    let { page } = await gallery();
+    await page.locator('.table .item').nth(1).hover();
+    const offences = (await renderedOffences(page)).map(o => `table row hovered: ${o}`);
+    ({ page } = await gallery());
+    await page.locator('.tree summary').first().focus();
+    offences.push(...(await renderedOffences(page)).map(o => `tree summary focused: ${o}`));
+    assert.deepEqual(offences, []);
   });
 
   withChrome('draws no well edge at the start', async () => {
