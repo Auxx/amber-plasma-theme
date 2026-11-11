@@ -102,6 +102,18 @@ export function nameColour(text, names) {
 }
 
 /**
+ * Whether a computed colour is the token expected: `transparent` for a colour
+ * with no alpha, or any token whose colour it is (a colour may have several).
+ */
+export function isTokenColour(computed, expected, names) {
+  const named = nameColour(computed, names);
+  if (expected === 'transparent') {
+    return named === 'transparent';
+  }
+  return (named.match(/\((.*)\)$/)?.[1].split(', ') ?? []).includes(expected);
+}
+
+/**
  * Opens `url` in the installed Chrome, headless, at device scale 1. Headless
  * Chrome hides scrollbars; `scrollbars: true` shows them. Returns
  * the browser (the caller closes it), the page, and the problems seen while

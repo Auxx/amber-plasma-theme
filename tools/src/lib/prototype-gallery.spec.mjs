@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { applyState, nameColour, openPage, pageUrl, renderedOffences, tokenNames } from './browser.mjs';
+import { applyState, isTokenColour, nameColour, openPage, pageUrl, renderedOffences, tokenNames } from './browser.mjs';
 import { loadTokens } from './tokens.mjs';
 
 /**
@@ -222,13 +222,7 @@ function controlTag(body, selector) {
 const names = tokenNames(loadTokens());
 
 /** Whether a computed colour is the token expected: `transparent`, or among its names. */
-function isToken(computed, expected) {
-  const named = nameColour(computed, names);
-  if (expected === 'transparent') {
-    return named === 'transparent';
-  }
-  return (named.match(/\((.*)\)$/)?.[1].split(', ') ?? []).includes(expected);
-}
+const isToken = (computed, expected) => isTokenColour(computed, expected, names);
 
 /** The computed values of `read` on the element; custom properties are trimmed. */
 const coloursOf = (page, selector, read = [ 'background-color', 'color' ]) =>

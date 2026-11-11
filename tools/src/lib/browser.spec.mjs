@@ -3,7 +3,7 @@ import { mkdtempSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
-import { nameColour, outPath, pageUrl, parseCssColour, tokenNames } from './browser.mjs';
+import { isTokenColour, nameColour, outPath, pageUrl, parseCssColour, tokenNames } from './browser.mjs';
 import { UsageError } from './cli.mjs';
 import { loadTokens } from './tokens.mjs';
 
@@ -64,5 +64,13 @@ describe('browser', () => {
     assert.match(nameColour('oklch(0.5 0.02 80)', names), /^#[0-9a-f]{6}$/);
     const all = [ ...names.values() ].flat();
     assert.ok(!all.includes('glow') && !all.includes('shadow'), all.join(', '));
+  });
+
+  it('names a colour as any of its tokens', () => {
+    const names = tokenNames(loadTokens());
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'text', names), true);
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'ansi-white', names), true);
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'text-dim', names), false);
+    assert.equal(isTokenColour('rgba(0, 0, 0, 0)', 'transparent', names), true);
   });
 });
