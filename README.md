@@ -2,8 +2,8 @@
 
 Amber is a dark theme for KDE Plasma 6 in warm tones. It is flat and quiet:
 the areas of an application are told apart by steps of tone, not by lines.
-Corners are square. A widget that is hovered or focused shows a soft glow
-instead of a hard outline.
+Corners are square. A widget that is hovered or focused changes tone; it
+gets no outline and no glow.
 
 ## Status
 

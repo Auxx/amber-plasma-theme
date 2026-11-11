@@ -29,13 +29,19 @@ that the prototype never promises something the system cannot draw.
 |---|---|---|---|
 | P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; the first commit exists | done |
 | P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | done |
-| P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | todo |
+| P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | done |
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | todo |
+| P0.5 Spike: glow without a shadow | Finding on whether a glow can be made in a Qt Widgets application from what Union does draw there: a background image, `inset` and `margin` | Pictures show a hovered and a focused button with such a glow in a Qt Widgets application, or the reason it cannot is written in the platform document; what the glow costs in layout is written there | done |
+
+P0.3 is done by its second clause: the glow cannot be drawn in Qt Widgets
+applications, and the reason is in the platform document. After P0.5 the
+owner decided that Amber has no glow: D-4 in the
+[decisions](../architecture/decisions.md).
 
 The folders of the repository layout are not created empty: each appears with
 its first file, in the plan that fills it.
 
-P0.3 and P0.4 are spikes: their code is thrown away and their findings go into
+P0.3, P0.4 and P0.5 are spikes: their code is thrown away and their findings go into
 [platform](../architecture/platform.md). A failed spike goes back to the owner
 before the next step.
 
@@ -55,7 +61,8 @@ The gate for everything after it: the owner approves the look here.
 
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
 with candidate tones and their measured contrast side by side, so that the
-owner can decide O-1 by eye in P1.7.
+owner can decide O-1 by eye in P1.7. They show the focused tone the same
+way, for O-3.
 
 ## Step 2 — Colour scheme
 
@@ -73,7 +80,7 @@ next starts.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | todo |
-| P3.2 Global rules | Radius zero, borders removed, glow variables | No rounded corner or outline on the widgets not yet restyled | todo |
+| P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | todo |
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
@@ -94,7 +101,7 @@ next starts.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P5.1 Frame and title bar | Square, borderless frame with a tone 0 title bar | Matches the prototype for active and inactive windows | todo |
-| P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype, or the missing glow is a known gap | todo |
+| P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
 | P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line appears at any window edge in any state | todo |
 
 ## Step 6 — Packaging

@@ -7,8 +7,8 @@
 Amber is a dark theme for KDE Plasma 6 in warm tones. It is flat and quiet:
 the areas of an application are told apart by steps of tone, not by lines, in
 the manner of the "Islands" theme of the JetBrains IDEs. Corners are square.
-A widget that is hovered or focused shows a soft glow instead of a hard
-outline.
+A widget that is hovered or focused changes tone; it gets no outline and
+no glow.
 
 Amber is made of several parts (see the [glossary](glossary.md)) that are
 installed together: a colour scheme, a Union style for widgets, a window
@@ -33,10 +33,11 @@ day: Dolphin, Kate and Konsole.
 ## Goals
 
 1. Dark theme in warm tones; minimalist, clean, modern.
-2. Square corners everywhere.
+2. Square corners everywhere. Round widgets, such as radio buttons, stay
+   round.
 3. No outlines and no one-pixel separators. Separation is by tone only.
-4. Hovered and focused widgets show a subtle glow. Subtle shadows may add
-   depth.
+4. Hovered and focused widgets are shown by a change of tone alone. Subtle
+   shadows may add depth.
 5. Covers application widgets and window decorations.
 6. Widgets are styled through Union.
 7. Konsole's terminal area and Kate's editor area match the frame around them.
@@ -66,7 +67,8 @@ Chosen by the designer, open to change:
 
 These fail Amber even if everything else works:
 
-- any rounded corner;
+- any rounded corner (a round widget is not one; see the
+  [glossary](glossary.md));
 - any hairline border or divider;
 - any cool grey tone: every neutral leans warm.
 
@@ -78,7 +80,7 @@ recorded as a known gap, not hidden.
 - The owner has approved the prototype.
 - With every part installed and selected, Dolphin, Kate and Konsole show no
   rounded corner, no hairline and no cool grey, and buttons and text fields
-  glow when hovered or focused.
+  change tone when hovered or focused.
 - Kate's editor area and Konsole's terminal area match their frames.
 - Every declared contrast pair passes its check.
 - Changing one token and following the documented steps updates every part.

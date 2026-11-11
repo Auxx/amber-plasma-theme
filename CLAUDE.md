@@ -22,8 +22,8 @@ word Amber uses for each.
 - Architecture: `docs/architecture/overview.md` — entry point: how the
   tokens, the prototype, the tools and the parts fit; repository layout;
   rules that hold everywhere.
-- Design language: `docs/architecture/design-language.md` — tones, states,
-  glow and shadow rules.
+- Design language: `docs/architecture/design-language.md` — tones, states
+  and shadow rules.
 - Accessibility: `docs/architecture/accessibility.md` — the WCAG contrast
   rules, the contrast pairs and how they are checked.
 - Platform: `docs/architecture/platform.md` — verified and unverified facts
@@ -66,7 +66,8 @@ be now, not how it got there.
   fine. Ask the owner to switch settings themselves.
 - **Write nothing under `/usr`.**
 - **The anti-goals are hard failures:** no rounded corner, no hairline
-  border or divider, no cool grey. Check for them in every plan.
+  border or divider, no cool grey. Check for them in every plan. A round
+  widget, such as a radio button, is not a rounded corner.
 - **Work in small plans.** Each step of the roadmap is split into plans with
   one testable result each. Write a plan just before its work, and do not
   start the next plan until the current one's "done when" is checked.

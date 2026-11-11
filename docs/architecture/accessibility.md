@@ -12,8 +12,8 @@ of colours, so it can be used for a desktop theme as it stands.
 | Criterion | Asks for | Applies in Amber to |
 |---|---|---|
 | 1.4.3 Contrast (Minimum) | 4.5:1 for text; 3:1 for large text | all text and icons on every surface they appear on |
-| 1.4.11 Non-text Contrast | 3:1 for the features of a control needed to identify it and its state, against what is next to them | check marks, block markers, slider and progress fills, the glow |
-| 2.4.7 Focus Visible | the focused control can be seen | the focused glow |
+| 1.4.11 Non-text Contrast | 3:1 for the features of a control needed to identify it and its state, against what is next to them | check marks, block markers, slider and progress fills, the tone of a focused widget |
+| 2.4.7 Focus Visible | the focused control can be seen | the tone of the focused widget |
 
 Disabled controls are exempt in WCAG, and are exempt here.
 
@@ -28,10 +28,10 @@ Disabled controls are exempt in WCAG, and are exempt here.
 3. **Syntax and terminal colours: 4.5:1** against the editor and terminal
    background. ANSI black is exempt, since it is meant to match a dark
    background.
-4. **Focused glow: 3:1 at its strongest point** against the surface around
-   it, measured as the accent at the glow's alpha composited over the
-   surface. This is a target to tune in the prototype, not yet a hard rule:
-   a blur has no single colour, so the measure is approximate.
+4. **Focused widgets: open.** A focused widget is shown by a tone tinted
+   with accent. How far that tone must stand from the widget at rest and
+   from the surface is open question O-3 in the [decisions](decisions.md).
+   Text on the focused tone reaches 4.5:1 like any other text.
 5. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
@@ -96,9 +96,10 @@ the `ai-tools` skill). The tools' tests pin several of these values.
 Dim text fails on tone 4, a hovered raised widget. Plan P1.1 settles it by
 lightening dim text or by not using it on tone 4.
 
-The focused glow at its starting strength, accent at 45 % alpha over tone 2,
-measures 2.67:1, below the 3:1 target of rule 4. It is tuned in the
-prototype.
+The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
+(`#695c45`), measures 2.07:1 against tone 3, 2.42:1 against tone 2, and
+5.11:1 under primary text. The sample was not held to these rules; the
+tones are worked out in the prototype (O-3).
 
 Not yet measured: the terminal and syntax colours, which do not exist yet.
 

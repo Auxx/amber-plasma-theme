@@ -110,18 +110,22 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A widget that sits lighter than its surface, such as a button. It is not a
   3D effect.
 
+**Round widget**
+: A widget that is a circle by convention: a radio button, a round button.
+  It stays a circle. It is not a rounded corner, which is the softened
+  corner of a rectangle.
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
-  progress and the primary button, and it colours the glow.
+  progress and the primary button, and it tints the tone of a focused widget.
 
 **Glow**
-: A soft, blurred, coloured shadow around a widget that shows it is hovered
-  or focused. It is accent-coloured, except on the close button, where it is
-  danger-coloured. A glow never reads as a line.
+: A soft, blurred, coloured light around a widget. Amber has none: Union
+  cannot draw it in Qt Widgets applications. State is shown by tone.
 
 **Shadow**
 : A soft dark blur under a popup, menu or window that adds depth. A shadow is
-  not a glow: it is dark and shows no state.
+  dark and shows no state.
 
 **Hairline**
 : A line one pixel wide: a border, outline, separator or divider. Amber has
@@ -136,7 +140,7 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 The names follow Union CSS.
 
 **At rest**
-: No state applies. A widget at rest never glows.
+: No state applies.
 
 **Hovered**
 : The pointer is over the widget. _Avoid_ "hover state", "mouse-over".

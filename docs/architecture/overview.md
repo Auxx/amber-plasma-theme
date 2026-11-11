@@ -7,7 +7,7 @@ are used as the [glossary](../product/glossary.md) defines them.
 
 | Document | Holds |
 |---|---|
-| [design-language.md](design-language.md) | The look: tokens, tones, states, glow and shadow rules |
+| [design-language.md](design-language.md) | The look: tokens, tones, states and shadow rules |
 | [accessibility.md](accessibility.md) | Contrast rules, what is checked and how |
 | [platform.md](platform.md) | Facts about Union, Aurorae, Konsole and Kate on the target system; open questions and spike findings |
 | [tooling.md](tooling.md) | The command-line tools and the rules for adding one |

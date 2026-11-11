@@ -13,9 +13,9 @@ text in other documents.
 | ID | Decision | By | Why |
 |---|---|---|---|
 | D-1 | Dark theme in warm tones, minimalist | Owner | Breeze is neutral to cool |
-| D-2 | Square corners everywhere | Owner | |
+| D-2 | Square corners everywhere. A widget that is a circle by convention, such as a radio button or a round button, stays a circle: it has no corners to round | Owner | Second sentence added on 2026-11-11 |
 | D-3 | No hairlines; separation by tone, as in JetBrains Islands | Owner | |
-| D-4 | Hovered and focused widgets show a glow, not an outline | Owner | |
+| D-4 | Hovered, focused and pressed widgets are shown by a change of tone alone. Nothing glows, and there is no outline. This holds for every part, the window decoration included, so that Amber is consistent | Owner | Changed on 2026-11-11. It was "a glow, not an outline"; spikes P0.3 and P0.5 showed that Union cannot draw a glow in Qt Widgets applications. The exact tones are settled in the prototype |
 | D-5 | Widgets styled through Union | Owner | |
 | D-6 | Window decoration and widgets are both in scope | Owner | |
 | D-7 | Breeze icons and the Noto font stay | Owner | |
@@ -24,7 +24,7 @@ text in other documents.
 | D-10 | The Sand direction: stone surfaces, muted gold accent | Owner | Chosen from three mockups, 2026-11-10 |
 | D-11 | Judged in Dolphin, Kate and Konsole; Vivaldi and WebStorm are out | Owner | They are the owner's daily Qt applications |
 | D-12 | Terminal colours and an editor theme are included | Owner | Otherwise a Breeze-coloured terminal and editor sit in an Amber frame |
-| D-13 | Rounded corners, hairlines and cool greys are failures | Owner | |
+| D-13 | Rounded corners, hairlines and cool greys are failures. A round widget (D-2) is not a rounded corner | Owner | Second sentence added on 2026-11-11 |
 | D-14 | Contrast is checked against WCAG | Owner | Accessibility; 2026-11-11 |
 | D-15 | Living documentation in `docs/product` and `docs/architecture`, with `CLAUDE.md` as the guide | Owner | 2026-11-11 |
 | D-16 | Each step is planned as several small plans | Owner | Easier to build and test; 2026-11-11 |
@@ -47,10 +47,10 @@ text in other documents.
 | D-33 | The Union style reads colours from the colour scheme where a role exists | Designer | As Breeze does; applications' own colours then agree with it |
 | D-34 | The window decoration is an Aurorae theme | Designer | No compiled code |
 | D-35 | The prototype is plain HTML and CSS, opened from disk, with no build step | Designer | Fast to change; nothing to install |
-| D-36 | The prototype uses only effects Union can draw: one outer shadow, no inner shadow | Designer | It must not promise what the system cannot draw |
+| D-36 | The prototype uses only effects Union can draw in Qt Widgets applications: flat colours, and no shadow on a widget | Designer | It must not promise what the system cannot draw. Changed on 2026-11-11 after spike P0.3 |
 | D-37 | Two spikes run before the prototype is approved: widget glow, square decoration | Designer | Both are goals that the platform might not allow |
 | D-38 | A failed glow, or a decoration that cannot be square and borderless, goes back to the owner | Designer | The fallback changes what Amber is |
-| D-39 | A decoration without button glow ships with a known gap | Designer | Small loss |
+| D-39 | Withdrawn on 2026-11-11: it was about a decoration without button glow, and Amber has no glow (D-4) | Designer | |
 | D-40 | Nothing is written under `/usr`; everything installs to the home folder | Designer | Easy to remove |
 | D-41 | Tools follow the `ai-tools` approach of `front-burner`; `colour` is ported | Designer | Asked for by the owner to be assessed; it fits |
 | D-42 | Tools are tested with Node's own test runner; culori is the only dependency | Designer | No workspace tooling is needed here |
@@ -63,7 +63,7 @@ text in other documents.
 | D-51 | All text reaches 4.5:1; the 3:1 for large text is not used | Designer | Simpler, and stricter |
 | D-52 | Accent reaches 3:1 against every tone it marks | Designer | WCAG 1.4.11 |
 | D-53 | Terminal and syntax colours reach 4.5:1; ANSI black is exempt | Designer | They are text |
-| D-54 | The focused glow aims for 3:1 at its strongest point | Designer | A target, since a blur has no single colour |
+| D-54 | Withdrawn on 2026-11-11 with the glow: it set a 3:1 target for the focused glow. What the focused tone must reach is open question O-3 | Designer | |
 | D-55 | Tonal separation between surfaces is exempt from 3:1 | Designer | It is the purpose of Amber, and WCAG does not ask for it |
 
 ## Open
@@ -71,3 +71,4 @@ text in other documents.
 | ID | Question | Whose |
 |---|---|---|
 | O-1 | Controls identified only by tone (empty text field, unchecked check box, slider track) do not reach 3:1. Which tones and gaps do they get? Deferred by the owner on 2026-11-11 to the prototype, where the tones can be seen: plans P1.3 and P1.4 show candidates, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |
+| O-3 | How strong must the focused tone be? The owner said on 2026-11-11 that the exact tones of every state are worked out in step 1, and that the sample of spike P0.5 is not held to WCAG. Plan P1.3 shows candidates with their measured contrast, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |
