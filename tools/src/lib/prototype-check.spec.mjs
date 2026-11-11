@@ -107,12 +107,23 @@ describe('prototype check', () => {
       "el.textContent = '';",
       "eval('1');",
       "new Function('1');",
-      "const u = '//'; el.classList.add('is-hovered');"
+      "const u = '//'; el.classList.add('is-hovered');",
+      "el.attributeStyleMap.set('display', 'none');",
+      "el['checked'] = true;",
+      'el.click();',
+      "el.ariaChecked = 'true';",
+      'el.hidden = true;',
+      'el.remove();',
+      'el.animate([]);',
+      "setTimeout('go()');",
+      'new XMLHttpRequest();',
+      "navigator.sendBeacon('/');"
     ];
+    const declared = "const el = document.querySelector('.slider');\n";
     for (const line of offending) {
-      assert.notDeepEqual(scriptOffences('a.js', line), [], line);
+      assert.notDeepEqual(scriptOffences('a.js', declared + line), [], line);
     }
-    assert.deepEqual(scriptOffences('a.js', "const u = '//'; el.style.setProperty('--value', `${v}%`);"), []);
+    assert.deepEqual(scriptOffences('a.js', `${declared}const u = '//'; el.style.setProperty('--value', \`\${el.value}%\`);`), []);
   });
 
   it('keeps inline scripts out of the page', () => {
@@ -120,6 +131,18 @@ describe('prototype check', () => {
       'a.html:1: onclick',
       'a.html:2: href="javascript:go()"'
     ]);
+    assert.deepEqual(page('<input onclick=go()>'), [ 'a.html:1: onclick' ]);
+    assert.deepEqual(page('<a href=javascript:go()>'), [ 'a.html:1: href=javascript:go()' ]);
+    assert.deepEqual(page('<a href="&#106;avascript:go()">'), [ 'a.html:1: href="&#106;avascript:go()"' ]);
+  });
+
+  it('reads tags in any case', () => {
+    assert.deepEqual(page('<SCRIPT>x()</SCRIPT>\n<Style>p{}</Style>\n<HR>'), [
+      'a.html:1: <script',
+      'a.html:2: <style',
+      'a.html:3: <hr'
+    ]);
+    assert.deepEqual(page('<SCRIPT src="gallery.js" defer></SCRIPT>'), [ 'a.html:1: <script' ]);
   });
 
   it('allows a linked script', () => {
@@ -128,17 +151,36 @@ describe('prototype check', () => {
 
   it('lets a script set custom properties only', () => {
     const source = `// el.style.color = 'red' in a comment is fine
+const el = document.querySelector('.slider');
 el.style.setProperty('--value', '40%');
 el.style.color = '#fff';
 el.classList.add('is-hovered');
 el.style.setProperty('color', 'red');`;
     assert.deepEqual(scriptOffences('a.js', source), [
-      'a.js:3: .style.',
-      'a.js:3: #fff',
-      'a.js:4: classList',
-      'a.js:5: .style.',
-      'a.js:5: red'
+      'a.js:4: .style.',
+      'a.js:4: color',
+      'a.js:4: #fff',
+      'a.js:5: classList',
+      'a.js:5: add',
+      'a.js:6: .style.',
+      'a.js:6: red'
     ]);
+  });
+
+  it('allows only the names a slider needs', () => {
+    const source = `const fill = slider => {
+  const min = Number(slider.min);
+  slider.style.setProperty('--value', \`\${((slider.value - min) * 100) / (Number(slider.max) - min)}%\`);
+};
+for (const slider of document.querySelectorAll('.slider')) {
+  fill(slider);
+  slider.addEventListener('input', () => fill(slider));
+}
+window.addEventListener('pageshow', () => document.querySelectorAll('.slider').forEach(fill));`;
+    assert.deepEqual(scriptOffences('a.js', source), []);
+    assert.deepEqual(scriptOffences('a.js', 'const s = document.body; s.click();'), [ 'a.js:1: body', 'a.js:1: click' ]);
+    assert.deepEqual(scriptOffences('a.js', "const s = window; s['checked'] = 1;"), [ 'a.js:1: [' ]);
+    assert.deepEqual(scriptOffences('a.js', 'const s = window; `${s.hidden}`;'), [ 'a.js:1: hidden' ]);
   });
 
   it('lets a candidate set a warm colour, and no one else', () => {
