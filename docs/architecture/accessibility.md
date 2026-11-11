@@ -66,8 +66,8 @@ tones and their measured ratios side by side, and the owner chooses in P1.7.
 
 ## First measurements
 
-Measured on 2026-11-11 with the `colour` tool of the owner's `front-burner`
-project, on the starting tokens.
+Measured on 2026-11-11 on the starting tokens, with the `colour` tool (see
+the `ai-tools` skill). The tools' tests pin several of these values.
 
 | Foreground | Background | Ratio | Rule | Result |
 |---|---|---|---|---|
@@ -96,8 +96,11 @@ project, on the starting tokens.
 Dim text fails on tone 4, a hovered raised widget. Plan P1.1 settles it by
 lightening dim text or by not using it on tone 4.
 
-Not yet measured: the glow, and the terminal and syntax colours, which do not
-exist yet.
+The focused glow at its starting strength, accent at 45 % alpha over tone 2,
+measures 2.67:1, below the 3:1 target of rule 4. It is tuned in the
+prototype.
+
+Not yet measured: the terminal and syntax colours, which do not exist yet.
 
 ## How the check works
 

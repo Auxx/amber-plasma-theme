@@ -77,6 +77,7 @@ be now, not how it got there.
 
 ## Tools
 
-Command-line tools for colour, contrast, tokens and generating the parts
-will live in `tools/`, with an `ai-tools` skill describing them (roadmap plan
-P0.2). Once it exists, load that skill before writing any one-off script.
+Command-line tools for colour and contrast live in `tools/`; tools for
+tokens and for generating the parts will join them. **Load the `ai-tools`
+skill before writing any one-off script**, and use it to add a tool when none
+fits. Run the tools' tests with `npm --prefix tools test`.

@@ -28,7 +28,7 @@ that the prototype never promises something the system cannot draw.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; the first commit exists | done |
-| P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | todo |
+| P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | done |
 | P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | todo |
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | todo |
 
