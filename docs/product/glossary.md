@@ -110,6 +110,11 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A widget that sits lighter than its surface, such as a button. It is not a
   3D effect.
 
+**Round widget**
+: A widget that is a circle by convention: a radio button, a round button.
+  It stays a circle. It is not a rounded corner, which is the softened
+  corner of a rectangle.
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.

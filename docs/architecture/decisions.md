@@ -13,9 +13,9 @@ text in other documents.
 | ID | Decision | By | Why |
 |---|---|---|---|
 | D-1 | Dark theme in warm tones, minimalist | Owner | Breeze is neutral to cool |
-| D-2 | Square corners everywhere | Owner | |
+| D-2 | Square corners everywhere. A widget that is a circle by convention, such as a radio button or a round button, stays a circle: it has no corners to round | Owner | Second sentence added on 2026-11-11 |
 | D-3 | No hairlines; separation by tone, as in JetBrains Islands | Owner | |
-| D-4 | Hovered, focused and pressed widgets are shown by a change of tone alone. Nothing glows, and there is no outline | Owner | Changed on 2026-11-11. It was "a glow, not an outline"; spikes P0.3 and P0.5 showed that Union cannot draw a glow in Qt Widgets applications. The exact tones are settled in the prototype |
+| D-4 | Hovered, focused and pressed widgets are shown by a change of tone alone. Nothing glows, and there is no outline. This holds for every part, the window decoration included, so that Amber is consistent | Owner | Changed on 2026-11-11. It was "a glow, not an outline"; spikes P0.3 and P0.5 showed that Union cannot draw a glow in Qt Widgets applications. The exact tones are settled in the prototype |
 | D-5 | Widgets styled through Union | Owner | |
 | D-6 | Window decoration and widgets are both in scope | Owner | |
 | D-7 | Breeze icons and the Noto font stay | Owner | |
@@ -24,7 +24,7 @@ text in other documents.
 | D-10 | The Sand direction: stone surfaces, muted gold accent | Owner | Chosen from three mockups, 2026-11-10 |
 | D-11 | Judged in Dolphin, Kate and Konsole; Vivaldi and WebStorm are out | Owner | They are the owner's daily Qt applications |
 | D-12 | Terminal colours and an editor theme are included | Owner | Otherwise a Breeze-coloured terminal and editor sit in an Amber frame |
-| D-13 | Rounded corners, hairlines and cool greys are failures | Owner | |
+| D-13 | Rounded corners, hairlines and cool greys are failures. A round widget (D-2) is not a rounded corner | Owner | Second sentence added on 2026-11-11 |
 | D-14 | Contrast is checked against WCAG | Owner | Accessibility; 2026-11-11 |
 | D-15 | Living documentation in `docs/product` and `docs/architecture`, with `CLAUDE.md` as the guide | Owner | 2026-11-11 |
 | D-16 | Each step is planned as several small plans | Owner | Easier to build and test; 2026-11-11 |
@@ -71,4 +71,4 @@ text in other documents.
 | ID | Question | Whose |
 |---|---|---|
 | O-1 | Controls identified only by tone (empty text field, unchecked check box, slider track) do not reach 3:1. Which tones and gaps do they get? Deferred by the owner on 2026-11-11 to the prototype, where the tones can be seen: plans P1.3 and P1.4 show candidates, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |
-| O-3 | How strong must the focused tone be? In the sample of spike P0.5 a focused button (tone 4 mixed 30 % with accent) measures 2.07:1 against the same button at rest and 2.42:1 against tone 2, below the 3:1 of WCAG 1.4.11. Plan P1.3 shows candidates with their measured contrast, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |
+| O-3 | How strong must the focused tone be? The owner said on 2026-11-11 that the exact tones of every state are worked out in step 1, and that the sample of spike P0.5 is not held to WCAG. Plan P1.3 shows candidates with their measured contrast, and the owner decides in P1.7. See [accessibility](accessibility.md) | Owner |

@@ -98,7 +98,8 @@ lightening dim text or by not using it on tone 4.
 
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
 (`#695c45`), measures 2.07:1 against tone 3, 2.42:1 against tone 2, and
-5.11:1 under primary text. It is tuned in the prototype (O-3).
+5.11:1 under primary text. The sample was not held to these rules; the
+tones are worked out in the prototype (O-3).
 
 Not yet measured: the terminal and syntax colours, which do not exist yet.
 

@@ -33,7 +33,8 @@ day: Dolphin, Kate and Konsole.
 ## Goals
 
 1. Dark theme in warm tones; minimalist, clean, modern.
-2. Square corners everywhere.
+2. Square corners everywhere. Round widgets, such as radio buttons, stay
+   round.
 3. No outlines and no one-pixel separators. Separation is by tone only.
 4. Hovered and focused widgets are shown by a change of tone alone. Subtle
    shadows may add depth.
@@ -66,7 +67,8 @@ Chosen by the designer, open to change:
 
 These fail Amber even if everything else works:
 
-- any rounded corner;
+- any rounded corner (a round widget is not one; see the
+  [glossary](glossary.md));
 - any hairline border or divider;
 - any cool grey tone: every neutral leans warm.
 

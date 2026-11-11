@@ -11,7 +11,8 @@ updated.
 ## Principles
 
 1. **Warm.** Every neutral leans warm. No cool grey. (decided)
-2. **Square.** Every corner radius is zero. (decided)
+2. **Square.** Every corner radius is zero. A round widget, such as a radio
+   button or a round button, stays a circle. (decided)
 3. **No lines.** No border, outline, separator or divider one pixel wide.
    Surfaces and widgets are told apart by tone. (decided)
 4. **State is tone.** Hovered, focused and pressed widgets change tone.
@@ -58,14 +59,15 @@ before they go into real files.
 |---|---|---|---|---|---|
 | Raised (button, tool button, combo box) | tone 3 | tone 4 | tone 4 tinted with accent | a darker tone | dim text |
 | Well (text field, spin box, text area) | tone 0 | tone 1 | tone 1 tinted with accent | — | dim text |
-| Toggle (check box, radio button) | tone 0 box | a lighter box | a box tinted with accent | — | dim text |
+| Toggle (check box, radio button) | tone 0 box, or tone 0 circle for a radio button | a lighter box | a box tinted with accent | — | dim text |
 | Primary button | accent fill, on-accent text | lighter accent | settled in the prototype | darker accent | dim text |
 | Close button | as title bar | danger fill | — | darker danger | — |
 
 - The states above are the starting point (my call), taken from the sample
-  the owner saw in spike P0.5. The exact tones are settled in the prototype;
-  how strong the focused tone must be is open question O-3 in the
-  [decisions](decisions.md).
+  the owner saw in spike P0.5. That sample was not held to the contrast
+  rules. The exact tones of every state are worked out in step 1, the
+  prototype; how strong the focused tone must be is open question O-3 in
+  the [decisions](decisions.md).
 - A checked toggle fills with accent.
 - A selected list or sidebar item has a tone 3 background. It may carry a
   block marker in accent on its leading edge.
@@ -84,10 +86,11 @@ before they go into real files.
 
 - Title bar in tone 0; square corners; no border line on any edge.
 - A soft drop shadow around the window.
-- Window buttons are flat. Hovered minimise and maximise move up a tone; hovered close turns danger.
+- Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
 
 ## What must not appear
 
-A rounded corner, a hairline, or a cool grey. See the anti-goals in the
+A rounded corner, a hairline, or a cool grey. A round widget is not a
+rounded corner. See the anti-goals in the
 [vision](../product/vision.md).
