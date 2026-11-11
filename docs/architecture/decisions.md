@@ -30,7 +30,7 @@ text in other documents.
 | D-16 | Each step is planned as several small plans | Owner | Easier to build and test; 2026-11-11 |
 | D-17 | The product is named Amber, identifier `amber` | Designer | From the folder name |
 | D-18 | Plasma shell, GTK, login screen, cursors and the KDE Store are out | Designer | Keeps the first version small |
-| D-19 | Starting values of tones, text, accent and danger | Designer | From the Sand mockup; tuned in the prototype |
+| D-19 | Starting values of tones, text, accent, danger and on-danger | Designer | From the Sand mockup; tuned in the prototype. On-danger was added on 2026-11-11 because text on danger measures 4.29:1 |
 | D-20 | Terminal and syntax colours are muted, warm-shifted hues, approved in the prototype | Designer | They must sit with Sand |
 | D-21 | A selected item may carry an accent block marker three pixels wide | Designer | A block is not a hairline |
 

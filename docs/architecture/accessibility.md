@@ -19,8 +19,8 @@ Disabled controls are exempt in WCAG, and are exempt here.
 
 ## Amber's rules (my call)
 
-1. **Text: 4.5:1.** Primary text, dim text, on-accent text and text on danger
-   reach 4.5:1 on every tone they can appear on. The lower 3:1 for large text
+1. **Text: 4.5:1.** Primary text and dim text reach 4.5:1 on every tone they
+   can appear on; on-accent reaches it on accent, and on-danger on danger. The lower 3:1 for large text
    is not used.
 2. **Indicators: 3:1.** Accent reaches 3:1 against every tone it marks: the
    check mark's fill against the surface, a block marker against its item, a
@@ -83,7 +83,8 @@ project, on the starting tokens.
 | accent | tone 0 | 8.91:1 | 3 | pass |
 | accent | tone 2 | 7.66:1 | 3 | pass |
 | accent | tone 3 | 6.54:1 | 3 | pass |
-| white | danger | 5.48:1 | 4.5 | pass |
+| on-danger | danger | 4.97:1 | 4.5 | pass |
+| text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |
 | tone 1 | tone 2 | 1.10:1 | — | tonal step |

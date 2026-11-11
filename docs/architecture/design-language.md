@@ -32,6 +32,7 @@ updated.
 | accent | `#d1b072` | selection, checked, progress, primary button, glow |
 | on-accent | `#1b160b` | text on accent |
 | danger | `#b5442f` | close button when hovered, negative states |
+| on-danger | `#fbf3e6` | text and icons on danger; the text token is too dark for it |
 
 Token names, further tones and the terminal and syntax colours are settled in
 plan P1.1 and P1.6. Terminal and syntax colours are muted, warm-shifted hues
