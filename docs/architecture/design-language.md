@@ -51,7 +51,8 @@ before they go into real files.
 - A window is built from tones 0 to 2: title bar darkest, sidebars next, the
   main surface lightest.
 - The menu bar and toolbar continue the title bar in tone 0, as one header.
-  The status area is tone 1, like the sidebars. (my call; tuned in plan P1.2)
+  The status area is tone 1, like the sidebars. (my call; seen in the window
+  shell of plan P1.2)
 - Two surfaces that touch differ by at least one tone, unless they are meant
   to read as one area, as the header is.
 - Menus, popups and tooltips are one tone away from what they cover and carry
@@ -103,6 +104,23 @@ before they go into real files.
   P0.6: the glow fades from 28 % to nothing over 24 px; the shadow is
   black and fades from 50 % over 24 px. They are settled with the window
   outline, in O-4. A maximised window has neither.
+- Starting tokens of the decoration (my call, from P0.6; the owner chooses
+  in P1.7, O-4). The prototype page shows candidates beside them, each
+  with its measured contrast.
+
+  | Token | Starting value | Used for |
+  |---|---|---|
+  | `--outline` | `var(--tone-4)` | the window outline |
+  | `--outline-width` | `1px` | its width |
+  | `--glow` | accent at 28 % | the window glow, at the window outline |
+  | `--glow-size` | `24px` | how far the window glow fades to nothing |
+  | `--shadow` | black at 50 % | the shadow of an inactive window |
+  | `--shadow-size` | `24px` | how far the shadow fades to nothing |
+
+- The prototype draws the window glow and the shadow as gradients from the
+  window outline outwards, straight on the edges and round on the corners,
+  as the Aurorae frame draws them (see [platform](platform.md), P0.6). It
+  uses no `box-shadow`.
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
 

@@ -67,7 +67,7 @@ the pairs with the same maths as `colour`.
 | Command                                                         | Does                                                                   |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `list [filter]`                                                 | The tokens whose name contains the filter, with their values           |
-| `resolve <token...> [--set token=value]`                        | Follows each token through `var()` to its colour: OKLCH and hex         |
+| `resolve <token...> [--set token=value]`                        | Follows each colour token through `var()` to its colour: OKLCH and hex  |
 | `pairs [filter] [--failing] [--close] [--set token=value]`      | Measures every contrast pair; exits with 1 when one fails or is missing |
 | `try <token=value...>`                                          | The pairs a change would affect, before and after; exits 1 if one fails |
 
@@ -75,7 +75,7 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "17 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "23 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
 # Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
@@ -89,16 +89,24 @@ node tools/src/bin/tokens.mjs resolve text-dim
   with it must follow a `--` separator, since it looks like an option:
   `resolve --json -- --tone-2`.
 - **Overrides.** `--set token=value` (repeatable) and each argument of `try`
-  change a token before measuring. The value is `var(--other)` or a CSS colour.
+  change a token before measuring. The value takes any form the tokens file
+  takes (below).
   For `resolve`, an unknown name adds a new token; `pairs` and `try` refuse it
   (exit 1), since a new token can change no pair and a typo would read as
   safe. Nothing is written: to keep a value, edit
   `prototype/tokens.css`.
 - **The tokens file** is one `:root { … }` block of `--name: value;`
-  declarations, one per line, with `/* … */` comments. A value is a CSS colour
-  or `var(--name)`. Anything else, a size such as `1px` included, is an error
-  that names the file and line. The reader is extended when the first size
-  token arrives (roadmap plan P1.2).
+  declarations, one per line, with `/* … */` comments. A value is a CSS colour,
+  `var(--name)`, a length in px such as `24px`, or a part-transparent colour
+  `color-mix(in srgb, var(--name) N%, transparent)` with N above 0 and at
+  most 100. Anything else, such as `1em`, `calc()` or a `color-mix` in
+  another space, is an error that names the file and line.
+- **Lengths** are listed by `list` but are not colours: `resolve` refuses
+  one (exit 1, "… is a length (1px)"), and a pair that names one is
+  `MISSING`.
+- **A `color-mix` token** resolves to the colour it names with its alpha
+  multiplied by N %, so `--glow` follows `--accent`. `list` prints it as
+  written; a colour with alpha prints as `#000000 / 50%`.
 - **The pairs file** is a JSON array of
   `{ "foreground", "on", "minimum", "why" }`. Each item of `on` becomes one
   pair: a token name, or an array of names that are background layers from
@@ -108,8 +116,14 @@ node tools/src/bin/tokens.mjs resolve text-dim
   part-transparent layer is fine when an opaque layer lies over it, or under it
   at the bottom.
 - **Every foreground has a pair.** The test
-  `tools/src/lib/amber-contrast.spec.mjs` fails when a token other than a tone
-  or `danger` is the foreground of no pair.
+  `tools/src/lib/amber-contrast.spec.mjs` fails when a colour token other
+  than a tone, `danger` or `shadow` is the foreground of no pair.
+- **The prototype is checked too.** `prototype-anti-goals.spec.mjs` fails on
+  a rounded corner, border, `box-shadow`, outline other than the window
+  outline, or colour that is not a token in the prototype's CSS, and on a
+  `<script>`, `<style>` or `<hr>` in the page. `prototype-candidates.spec.mjs`
+  measures every ratio printed under a candidate again, with that figure's
+  `style` overrides, and fails when one is stale.
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,
   or a value is not a colour; 2 the command line was wrong, including an
   override that is not `token=value`.
