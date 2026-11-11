@@ -5,7 +5,8 @@ import { CLOSE_MARGIN, describeColour } from '../lib/colour.mjs';
 import { checkPairs, describePair, loadPairs, loadTokens, parseOverrides, resolveToken } from '../lib/tokens.mjs';
 
 const OVERRIDE_HELP = `--set token=value (repeatable) changes a token before measuring. The value is
-var(--other-token) or a CSS colour. An unknown name adds a new token.`;
+var(--other-token) or a CSS colour. For resolve, an unknown name adds a new
+token; pairs and try refuse it, since a new token can change no pair.`;
 
 const NAME_HELP = `A token is named with or without its leading --; a name written with it goes
 after a -- separator, as in: resolve --json -- --tone-2.`;
@@ -17,6 +18,20 @@ function overrides(list) {
   } catch (error) {
     throw error.code === 'NOT_AN_OVERRIDE' ? new UsageError(error.message) : error;
   }
+}
+
+/**
+ * Overrides for measuring pairs. A new token can change no pair, so a name
+ * not in the tokens file is a typo, and is refused rather than read as safe.
+ */
+function existingOverrides(list) {
+  const changes = overrides(list);
+  const tokens = loadTokens();
+  const unknown = changes.find(({ name }) => !tokens.has(name));
+  if (unknown) {
+    throw new Error(`Unknown token: ${unknown.name}`);
+  }
+  return changes;
 }
 
 const status = r =>
@@ -80,7 +95,7 @@ ${OVERRIDE_HELP}`,
         json: { type: 'boolean' }
       },
       run(options, [ filter = '' ]) {
-        const all = checkPairs(loadTokens({ overrides: overrides(options.set) }), loadPairs());
+        const all = checkPairs(loadTokens({ overrides: existingOverrides(options.set) }), loadPairs());
         const shown = all
           .filter(r => describePair(r.pair).includes(filter))
           .filter(r => !options.failing || r.status !== 'pass')
@@ -111,7 +126,7 @@ ${OVERRIDE_HELP}`,
         if (!sets.length) {
           throw new UsageError('Give at least one token=value');
         }
-        const changes = overrides(sets);
+        const changes = existingOverrides(sets);
         const pairs = loadPairs();
         const before = checkPairs(loadTokens(), pairs);
         const after = checkPairs(loadTokens({ overrides: changes }), pairs);

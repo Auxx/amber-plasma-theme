@@ -90,7 +90,9 @@ node tools/src/bin/tokens.mjs resolve text-dim
   `resolve --json -- --tone-2`.
 - **Overrides.** `--set token=value` (repeatable) and each argument of `try`
   change a token before measuring. The value is `var(--other)` or a CSS colour.
-  An unknown name adds a new token. Nothing is written: to keep a value, edit
+  For `resolve`, an unknown name adds a new token; `pairs` and `try` refuse it
+  (exit 1), since a new token can change no pair and a typo would read as
+  safe. Nothing is written: to keep a value, edit
   `prototype/tokens.css`.
 - **The tokens file** is one `:root { … }` block of `--name: value;`
   declarations, one per line, with `/* … */` comments. A value is a CSS colour
@@ -101,8 +103,10 @@ node tools/src/bin/tokens.mjs resolve text-dim
   `{ "foreground", "on", "minimum", "why" }`. Each item of `on` becomes one
   pair: a token name, or an array of names that are background layers from
   the bottom up. `minimum` is from 1 to 21; `why` names the accessibility rule.
-- **Missing.** A pair whose token does not exist, or whose bottom background
-  layer is not opaque, is `MISSING` and counts as failing.
+- **Missing.** A pair whose token does not exist, or whose background layers
+  together are not opaque, is `MISSING` and counts as failing. A
+  part-transparent layer is fine when an opaque layer lies over it, or under it
+  at the bottom.
 - **Every foreground has a pair.** The test
   `tools/src/lib/amber-contrast.spec.mjs` fails when a token other than a tone
   or `danger` is the foreground of no pair.

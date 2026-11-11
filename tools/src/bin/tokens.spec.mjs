@@ -105,6 +105,18 @@ describe('tokens tool', () => {
     assert.ok(stderr.includes('Not an override'));
   });
 
+  it('refuses to try a token that does not exist', () => {
+    const { status, stderr } = tokens('try', 'txet-dim=#000');
+    assert.equal(status, 1);
+    assert.ok(stderr.includes('Unknown token: txet-dim'));
+  });
+
+  it('refuses to set a token that does not exist for pairs', () => {
+    const { status, stderr } = tokens('pairs', '--set', 'txet-dim=#000');
+    assert.equal(status, 1);
+    assert.ok(stderr.includes('Unknown token: txet-dim'));
+  });
+
   it('names a value that is not a colour', () => {
     const { status, stderr } = tokens('try', 'text=banana');
     assert.equal(status, 1);
