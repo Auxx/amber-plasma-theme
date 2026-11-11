@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { cssOffences, pageOffences, warmthOffence } from './prototype-check.mjs';
+import { cssOffences, pageOffences, scriptOffences, warmthOffence } from './prototype-check.mjs';
 
 const css = source => cssOffences('a.css', source);
 const page = source => pageOffences('a.html', source);
@@ -75,14 +75,37 @@ describe('prototype check', () => {
 <svg><rect rx="2"/><line x1="0"/><path stroke="slategray"/></svg>
 <p style='color: red'>
 <hr>
-<div style="--x: 1px">#585248 in text is a caption, not paint</div>`;
+<div style="--x: 1px">#585248 in text is a caption, not paint</div>
+<script src="x.js"></script>
+<script src="x.js" defer>alert(1)</script>`;
     assert.deepEqual(page(source), [
       'a.html:3: <script',
       'a.html:4: rx=',
       'a.html:4: <line',
       'a.html:4: stroke="slategray"',
       'a.html:5: style: color: red',
-      'a.html:6: <hr'
+      'a.html:6: <hr',
+      'a.html:8: <script',
+      'a.html:9: <script'
+    ]);
+  });
+
+  it('allows a linked script', () => {
+    assert.deepEqual(page('<script src="gallery.js" defer></script>'), []);
+  });
+
+  it('lets a script set custom properties only', () => {
+    const source = `// el.style.color = 'red' in a comment is fine
+el.style.setProperty('--value', '40%');
+el.style.color = '#fff';
+el.classList.add('is-hovered');
+el.style.setProperty('color', 'red');`;
+    assert.deepEqual(scriptOffences('a.js', source), [
+      'a.js:3: .style.',
+      'a.js:3: #fff',
+      'a.js:4: classList',
+      'a.js:5: .style.',
+      'a.js:5: red'
     ]);
   });
 

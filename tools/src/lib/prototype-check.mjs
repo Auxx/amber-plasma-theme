@@ -113,6 +113,9 @@ export function cssOffences(file, source) {
   return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
 }
 
+// A script linked from its own file, which scriptOffences reads (D-48).
+const LINKED_SCRIPT = /^<script src="[a-z][a-z0-9-]*\.js" defer><\/script>/;
+
 const FORBIDDEN = [ '<script', '<style', '<hr', '<line', ' rx=', ' ry=' ];
 
 /**
@@ -127,6 +130,9 @@ export function pageOffences(file, source) {
   const offences = [];
   for (const word of FORBIDDEN) {
     for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) {
+      if (word === '<script' && LINKED_SCRIPT.test(text.slice(index))) {
+        continue;
+      }
       offences.push({ index: index + (word.startsWith(' ') ? 1 : 0), text: word.trim() });
     }
   }
@@ -158,6 +164,43 @@ export function pageOffences(file, source) {
         }
       }
     }
+  }
+  return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
+}
+
+// What a script may not touch: classes, attributes, markup, the network.
+const SCRIPT_FORBIDDEN = [
+  'classList',
+  'className',
+  'setAttribute',
+  'innerHTML',
+  'outerHTML',
+  'insertAdjacentHTML',
+  'document.write',
+  'fetch(',
+  'import('
+];
+
+/**
+ * The offences of a prototype script, as `file:line: text`. A script may only
+ * set custom properties (D-48): it writes no colour and no class, changes no
+ * markup and loads nothing. Comments are not read.
+ */
+export function scriptOffences(file, source) {
+  const text = stripComments(source, /\/\*[\s\S]*?\*\/|\/\/[^\n]*/g);
+  const offences = [];
+  for (const word of SCRIPT_FORBIDDEN) {
+    for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) {
+      offences.push({ index, text: word });
+    }
+  }
+  for (const style of text.matchAll(/\.style(?:\.|\[)/g)) {
+    if (!text.startsWith(".style.setProperty('--", style.index)) {
+      offences.push({ index: style.index, text: style[0] });
+    }
+  }
+  for (const literal of text.matchAll(LITERAL)) {
+    offences.push({ index: literal.index, text: literal[0] });
   }
   return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
 }
