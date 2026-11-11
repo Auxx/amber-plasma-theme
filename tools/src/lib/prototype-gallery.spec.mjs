@@ -16,7 +16,7 @@ import { loadTokens } from './tokens.mjs';
 
 const GALLERY = 'prototype/gallery.html';
 const SOURCE = fileURLToPath(new URL(`../../../${GALLERY}`, import.meta.url));
-const WIDGETS_CSS = fileURLToPath(new URL('../../../prototype/widgets.css', import.meta.url));
+const SCROLLBARS_CSS = fileURLToPath(new URL('../../../prototype/scrollbars.css', import.meta.url));
 
 const RAISED = {
   rest: [ 'tone-3', 'text' ],
@@ -235,7 +235,7 @@ describe('prototype gallery', () => {
   it('styles the real scrollbars as the drawn ones', () => {
     // A real thumb in a state shares its rule with the drawn thumb in that
     // state and with its forced copy, so the two cannot drift apart.
-    const rules = [ ...readFileSync(WIDGETS_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g) ].map(
+    const rules = [ ...readFileSync(SCROLLBARS_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g) ].map(
       ([ , selector, body ]) => ({ selectors: selector.split(',').map(part => part.trim()), body })
     );
     const DRAWN = {

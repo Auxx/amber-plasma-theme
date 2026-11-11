@@ -1,0 +1,50 @@
+/*
+ * Amber's scrollbars (P1.4), linked by every page: a thumb on no track, with
+ * no arrow buttons. The drawn thumb of the gallery and the real scrollbars of
+ * every scroller, each page included, share each rule, so they cannot differ
+ * and Chrome's grey scrollbars never show.
+ */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+.scrollbar {
+  width: 12px;
+  height: 96px;
+}
+
+.scroll-thumb {
+  display: block;
+  width: 12px;
+  height: 32px;
+  margin-top: 16px;
+}
+
+.scroll-thumb,
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+}
+
+.scroll-thumb:hover,
+.scroll-thumb.is-hovered,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+.scroll-thumb:active,
+.scroll-thumb.is-pressed,
+::-webkit-scrollbar-thumb:active {
+  background: var(--text);
+}

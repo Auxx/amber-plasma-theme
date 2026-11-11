@@ -22,8 +22,8 @@ const scripts = files.filter(name => name.endsWith('.js'));
 
 // The stylesheets each page links, in order. A new page is added here.
 const LINKS = {
-  'gallery.html': [ 'tokens.css', 'widgets.css', 'gallery.css' ],
-  'index.html': [ 'tokens.css', 'window.css', 'shell.css' ]
+  'gallery.html': [ 'tokens.css', 'widgets.css', 'scrollbars.css', 'gallery.css' ],
+  'index.html': [ 'tokens.css', 'window.css', 'shell.css', 'scrollbars.css' ]
 };
 
 // The scripts each page runs (D-48). A new page is added here.
