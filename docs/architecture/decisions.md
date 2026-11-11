@@ -55,9 +55,11 @@ text in other documents.
 | D-39 | Withdrawn on 2026-11-11: it was about a decoration without button glow, and no widget glows (D-4) | Designer | |
 | D-40 | Nothing is written under `/usr`; everything installs to the home folder | Designer | Easy to remove |
 | D-41 | Tools follow the `ai-tools` approach of `front-burner`; `colour` is ported | Designer | Asked for by the owner to be assessed; it fits |
-| D-42 | Tools are tested with Node's own test runner; culori is the only dependency | Designer | No workspace tooling is needed here |
+| D-42 | Tools are tested with Node's own test runner; culori and playwright-core are the only dependencies | Designer | No workspace tooling is needed here. playwright-core added on 2026-11-11, P0.7 |
 | D-43 | Tokens are CSS custom properties without a prefix (`--tone-0`, `--text-dim`) in one `:root` block of `prototype/tokens.css`; their contrast pairs are in `prototype/contrast-pairs.json` beside it | Designer | The prototype reads the tokens as they are; JSON lets each pair carry its reason. 2026-11-11, P1.1 |
 | D-44 | A token may also be a length in px, or a part-transparent colour written `color-mix(in srgb, var(--token) N%, transparent)` | Designer | The decoration needs sizes, and the window glow must follow accent rather than copy its value. 2026-11-11, P1.2 |
+| D-45 | The prototype is opened in a browser by a tool built on Playwright, in `tools/` | Owner | 2026-11-11: the owner cannot install the Chrome extension, and pictures without states cannot show hovered, focused or pressed tones |
+| D-46 | `playwright-core` drives the installed Google Chrome; no browser is downloaded, and Firefox is not driven | Designer | Nothing is installed beyond one npm package; Chrome 157 verified on 2026-11-11, P0.7 |
 
 ## Accessibility
 

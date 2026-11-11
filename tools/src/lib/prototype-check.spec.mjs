@@ -47,11 +47,15 @@ describe('prototype check', () => {
       'text-decoration: underline',
       'filter: drop-shadow(0 0 2px var(--accent))',
       'clip-path: inset(0 round 4px)',
-      'border-radius: 50%'
+      'border-radius: 2px 0'
     ];
     for (const declaration of offending) {
       assert.equal(css(`.x { ${declaration}; }`).length, 1, declaration);
     }
+  });
+
+  it('allows a round widget', () => {
+    assert.deepEqual(css('.radio { border-radius: 50%; }'), []);
   });
 
   it('allows the window outline on the window alone', () => {

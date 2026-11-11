@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- Breaks each check of `browser check` once: a missing stylesheet, a script
+     error, a hairline and an underline. Used by browser.spec.mjs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Broken page</title>
+<link rel="stylesheet" href="missing.css">
+</head>
+<body>
+<div class="lined" style="border-top: 1px solid #888">A hairline</div>
+<a href="#">An underlined link</a>
+<script>console.error('boom');</script>
+</body>
+</html>

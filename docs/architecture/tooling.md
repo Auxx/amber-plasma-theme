@@ -28,7 +28,8 @@ documents have few IDs.
 
 Differences (my call): Amber is not an Nx workspace, so tools are run with
 `node` and tested with Node's own test runner, which needs no extra package.
-The only dependency is culori, pinned to an exact version.
+The dependencies are culori and playwright-core, each pinned to an exact
+version.
 
 ## Planned tools
 
@@ -36,11 +37,13 @@ The only dependency is culori, pinned to an exact version.
 |---|---|---|
 | `colour` | `convert`, `contrast <fg> <bg...> [--min]`, `solve` | P0.2 |
 | `tokens` | `list [filter]`, `resolve <token...> [--set]`, `pairs [filter] [--failing] [--close] [--set]`, `try <token=value...>` | P1.1 |
+| `browser` | `shot <page> [--selector] [--hover] [--focus] [--press]`, `check <page>`, `colours <page> <selector>` | P0.7 |
 | `generate` | one command per part; prints the result, writes with `--write` | P2.2, then each later step |
 
-A tool for taking screenshots of the prototype may be added if comparing the
-prototype with a real application by eye proves too slow. It would need a
-browser automation package, so it is added only when needed.
+The `browser` tool opens the prototype in the installed Google Chrome through
+playwright-core, which downloads no browser of its own (D-45, D-46). It is
+for checks by eye, in any state of a widget, and for the anti-goals as the
+browser draws them, which the checks of the source cannot see.
 
 ## Rules for every tool
 

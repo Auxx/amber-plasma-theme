@@ -33,6 +33,7 @@ that the prototype never promises something the system cannot draw.
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | done |
 | P0.5 Spike: glow without a shadow | Finding on whether a glow can be made in a Qt Widgets application from what Union does draw there: a background image, `inset` and `margin` | Pictures show a hovered and a focused button with such a glow in a Qt Widgets application, or the reason it cannot is written in the platform document; what the glow costs in layout is written there | done |
 | P0.6 Spike: window shadow and glow | Findings on the shadow an Aurorae theme draws around a window, and on a glow drawn the same way | Pictures show a window with a shadow of Amber's own and a window with a glow, or the reason either cannot be drawn is written in the platform document | done |
+| P0.7 Browser tool | `browser` tool: screenshots in a state, the rendered anti-goal check, computed colours named as tokens, through the installed Chrome | `browser check prototype/index.html` passes in the tests; a screenshot of the hovered close button shows danger | done |
 
 P0.4 was written when the decoration was to have no line at all. The spike
 showed a square title bar with no border line; on seeing it the owner
@@ -47,6 +48,10 @@ that the active window has a window glow: D-26.
 
 The folders of the repository layout are not created empty: each appears with
 its first file, in the plan that fills it.
+
+P0.7 was added after P1.2, on the owner's suggestion: a tool built on
+Playwright, so that the prototype can be seen in a browser in every state.
+It is a tool, not a spike.
 
 P0.3, P0.4, P0.5 and P0.6 are spikes: their code is thrown away and their findings go into
 [platform](../architecture/platform.md). A failed spike goes back to the owner
