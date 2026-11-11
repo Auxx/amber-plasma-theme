@@ -32,6 +32,9 @@ Disabled controls are exempt in WCAG, and are exempt here.
    it, measured as the accent at the glow's alpha composited over the
    surface. This is a target to tune in the prototype, not yet a hard rule:
    a blur has no single colour, so the measure is approximate.
+   **Open:** the glow cannot be drawn in Qt Widgets applications, so what
+   meets 2.4.7 Focus Visible there waits for O-2 in the
+   [decisions](decisions.md).
 5. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 

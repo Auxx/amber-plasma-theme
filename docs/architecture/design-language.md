@@ -78,6 +78,9 @@ before they go into real files.
   pressed widgets are shown by tone alone, and focus is a single stronger
   glow, not a halo plus a glow. The prototype keeps to the same limit so that
   it shows only what the system can draw.
+- **Open:** in Qt Widgets applications Union draws no shadow at all, so the
+  glow rules above hold only for Qt Quick applications until the owner
+  decides O-2 in the [decisions](decisions.md).
 - A shadow under a popup, menu or window is dark, soft and offset downwards.
 
 ## Window decoration

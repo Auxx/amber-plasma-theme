@@ -40,10 +40,10 @@ Verified on 2026-11-10 unless marked.
 - Dolphin, Kate and Konsole are Qt Widgets applications and are drawn through
   `UnionWidgetsStyle.so`. Qt Quick applications use the same style through
   `org.kde.union`.
-- **The two do not draw the same properties.** In 6.8.2 the Qt Widgets
-  plugin draws a style's background, border, corners, icon, layout and text,
-  and nothing else: `box-shadow` and `outline` are matched but never drawn.
-  Qt Quick draws both. (verified, 2026-11-11; see
+- **The two do not draw the same properties.** In 6.8.2, on a button in a
+  Qt Widgets application, `box-shadow` and `outline` are matched but no
+  pixel of either is drawn; background, border and corners are. Qt Quick
+  draws all of them. Only buttons were tried. (verified, 2026-11-11; see
   [P0.3](#p03-widget-glow--2026-11-11))
 - A Qt Widgets application reports its style as class `UnionStyle`, name
   `union`. A PySide6 script (`python3-pyside6` 6.11.2 is installed) is drawn
@@ -181,10 +181,13 @@ symbols that `UnionWidgetsStyle.so` imports were listed with `nm`.
   studied. The background colour set in the same rule was drawn.
 - *Why:* `UnionWidgetsStyle.so` imports the accessors for a style's
   background, border, corners, icon, layout and text. It imports none for
-  shadow or outline. The Qt Widgets style of 6.8.2 does not have the code.
+  shadow or outline, which suggests that the Qt Widgets style of 6.8.2 has
+  no code to draw them for any widget. Only buttons were tried, so for other
+  widgets this is unverified.
 - *Glow in Qt Quick:* yes. The same rules drew the shadow and the outline.
   At the design language's focused amounts (18 px blur, 45 % alpha, accent)
-  the result is a soft glow that does not read as a line. A neighbour that
+  the result is a soft glow that does not read as a line (my call, judged
+  from a saved picture at scale 1.49; the owner has not judged it). A neighbour that
   comes later in the layout paints over the glow of the one before it; the
   window's edge cuts it.
 - Scale of the display during the run: 1.49.
