@@ -129,20 +129,120 @@ decided on 2026-11-11 that Amber has none: D-4 in the
 
 ## Window decoration
 
+Verified on 2026-11-11 unless marked; see
+[P0.4](#p04-square-decoration--2026-11-11).
+
 - KWin draws the decoration; Union does not. (verified, 2026-11-10)
-- `aurorae` 6.8.2 is installed. `~/.local/share/aurorae/themes/` exists and
-  is empty. (verified, 2026-11-10)
+- `aurorae` 6.8.2 is installed. No Aurorae theme is installed for the
+  system or for the user: `~/.local/share/aurorae/themes/` exists and is
+  empty.
+- **An Aurorae theme can draw a square title bar with no line on any edge**,
+  for active, inactive, maximised and restored windows, at scale 1 and at
+  the owner's 1.49. It needs KWin's window border size set to "No borders";
+  see "The side and bottom borders" below.
+- **An Aurorae theme can draw a window outline 1 px wide in a colour of its
+  own.** The edge and corner elements of the frame are made 1 px thick in
+  the window outline's colour, the centre element in the title bar's colour, and
+  the theme's left, right and bottom borders are set to 1. At the top the
+  window outline is drawn inside the title bar, in its first row. What shows on
+  the other three edges depends on KWin's border size:
+  - "Tiny": the window outline alone, 1 px on every edge at scale 1. At scale 1.49
+    it is 2 device pixels on the top, left and bottom and 1 on the right.
+  - the default: the window outline, then a band 3 px wide in the title bar's
+    colour between it and the content.
+  - "No borders": no window outline on the left, right and bottom.
+- **The side and bottom borders belong to KWin's border size setting, not to
+  the theme.** With the setting left at its default, a theme whose borders
+  are 0 still gets a border 4 px wide, in the frame's colour, on the left,
+  right and bottom. A negative border in the theme does not remove it.
+  "Tiny" gives 1 px on all three, and "No side borders" leaves 1 px at
+  the bottom: both are hairlines. Only "No borders" gives none. The setting is `BorderSize` with
+  `BorderSizeAuto=false` in `[org.kde.kdecoration2]` of `kwinrc`; the owner
+  sets it in System Settings → Window Decorations. The names here are for
+  the values `Tiny`, `NoSides` and `None` that were written to the nested
+  KWin's `kwinrc`; the default is `BorderSizeAuto=true`, which gave the
+  same as `Normal`. The labels System Settings shows for them were not
+  looked at.
+- A theme is a folder `<id>/` in `~/.local/share/aurorae/themes/` holding
+  `decoration.svg`, `<id>rc`, `metadata.desktop` and one SVG file per window
+  button (`close.svg`, `minimize.svg`, `maximize.svg`, `restore.svg` and
+  others). A button with no file is not shown. The format is described at
+  <https://develop.kde.org/docs/plasma/aurorae/>.
+- `decoration.svg` holds a frame of nine elements named
+  `decoration-<side>` (`topleft`, `top`, `topright`, `left`, `center`,
+  `right`, `bottomleft`, `bottom`, `bottomright`) and the same again as
+  `decoration-inactive-<side>`. Plain rectangles of one colour, each 4 px
+  thick at the edges, left no seam between the pieces at either scale.
+  The elements for maximised windows, the inner border and the mask were
+  left out, and nothing was missed.
+- In the `rc` file, `[Layout]` sets `TitleHeight`, `ButtonWidth`,
+  `ButtonHeight`, the `TitleEdge*` and `Padding*` values and the borders;
+  `[General]` sets `ActiveTextColor`, `InactiveTextColor`,
+  `TitleAlignment`, `Animation` and `Shadow`. The title bar's colour comes
+  from the SVG, not from the colour scheme.
+- Which window buttons show, and on which side, is KWin's setting
+  (`ButtonsOnLeft`, `ButtonsOnRight` in the same group of `kwinrc`). The
+  theme's empty `LeftButtons` did not remove the menu button on the left.
+- A window with an empty title shows its application's name in the title
+  bar.
+- KWin selects an Aurorae theme with `library=org.kde.kwin.aurorae` and
+  `theme=__aurorae__svg__<id>` in `[org.kde.kdecoration2]` of `kwinrc`.
+- A changed theme shows as soon as KWin starts again; no cache had to be
+  emptied.
+- **A decoration can be tried without changing a system setting**, in a
+  nested KWin with its own configuration, cache and D-Bus session:
+  `XDG_CONFIG_HOME=<folder> XDG_CACHE_HOME=<folder> dbus-run-session --
+  kwin_wayland --socket <name> --no-lockscreen --no-global-shortcuts
+  --no-kactivities --width 900 --height 600 --exit-with-session <script>`.
+  It opens as a window in the owner's session and reads its own `kwinrc`
+  from that folder. The owner's `kwinrc` and `kdeglobals` were the same,
+  byte for byte, afterwards.
+  - Its scale is that of the display it opens on (1.49 here); `--scale`
+    changed nothing. With `--virtual` it draws to no window at scale 1.
+  - With `KWIN_SCREENSHOT_NO_PERMISSION_CHECKS=1` in its environment,
+    `spectacle --background --fullscreen --nonotify --output <file>`, run
+    inside it, saves a picture of its output.
+
+- **An Aurorae theme draws its own shadow, as part of the frame's SVG.**
+  The `rc` file's `PaddingLeft`, `PaddingTop`, `PaddingRight` and
+  `PaddingBottom` keep that much room around the window, and the frame's
+  edge and corner elements, made as thick as the padding, are drawn into
+  it. What they hold is the shadow: a linear gradient from a
+  part-transparent colour to nothing on an edge, a radial one on a corner.
+  The window's own corners stay square. (verified, 2026-11-11; see
+  [P0.6](#p06-window-shadow-and-glow--2026-11-11))
+  - Width, strength and colour are whatever the SVG says, and each side may
+    have a padding of its own, so a shadow can be deeper below a window
+    than above it.
+  - A `feGaussianBlur` filter inside one element is drawn too. Each element
+    is drawn by itself, so a blur cannot run from one element into the
+    next; gradients do not have that limit.
+  - The colour may be any colour. In accent it is a glow around the window.
+  - `decoration-inactive-*` elements may hold another shadow, so an active
+    window can look different from an inactive one.
+  - The shadow or glow falls on whatever is behind the window, other
+    windows included.
+  - A maximised window shows no shadow, no glow and no window outline, and
+    fills the output.
+  - The window outline is the innermost pixel of the same edge elements.
+    At scale 1 it is one sharp pixel between the glow and the window. At
+    scale 1.49 it is one full pixel and one blended pixel, and the pixel of
+    the glow next to it is a little darker than its neighbours.
+- Breeze's decoration, for comparison, draws a dark shadow that reaches
+  more than 55 device pixels from the window at scale 1.49 and is deeper
+  below the window than above it.
 
 ### Unverified
 
 | Question | Tested in |
 |---|---|
-| Can an Aurorae theme draw square corners, with no border line on any edge? | P0.4 |
-| How does it draw its shadow, and does the shadow hide when maximised? | P5.3 |
+| Can the window outline be made the same width on every edge at scale 1.49? | P5.1 |
+| What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
+| Is there a line at the edge of a tiled window? | P5.3 |
+| Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
-If square corners or a borderless frame cannot be done, the work stops and
-goes back to the owner. A compiled decoration, or Breeze's own decoration, is not
-used without their say. (my call)
+A compiled decoration, or Breeze's own decoration, is not used without the
+owner's say. (my call)
 
 ## Colour scheme
 
@@ -253,5 +353,115 @@ hovered and focused.
 
 **What it changes.** The owner saw the candidates and a live sample window
 of the tone-only one, with text inputs and buttons, and decided on
-2026-11-11: no glow anywhere, state by tone alone (D-4). The sample's tones
+2026-11-11: no glow anywhere, state by tone alone (D-4). Since P0.6 the active
+window alone has a window glow (D-26). The sample's tones
 are the starting point in the [design language](design-language.md).
+
+### P0.4 Square decoration — 2026-11-11
+
+**Question.** Can an Aurorae theme draw a window decoration with square
+corners and no border line on any edge?
+
+**What was done.** A throwaway theme, `amber-spike`, was copied to
+`~/.local/share/aurorae/themes/` and selected only in a nested KWin that
+had its own configuration, cache and D-Bus session. A PySide6 window filled
+with one flat colour was opened in it and pictured with Spectacle. The
+frame was magenta, the content green and the backdrop black. The window's
+title was one space, which shows no text, and the nested KWin was set to
+show only the close button, a white square. So every pixel of a picture
+could be counted by colour: a rounded corner or a line would show as a
+colour that is none of these.
+Then the frame was set to tone 0, over content in tone 0 and in tone 1.
+Scale 1 was pictured on a virtual output and scale 1.49 in a window on the
+owner's display.
+
+**What was seen.**
+
+- *Aurorae was drawing:* yes. The title bar was magenta, and followed a
+  change of the SVG's colour at the next start.
+- *Corners:* **square.** All four corner pixels of the window were the
+  frame's or the content's colour, and no picture held a blended colour.
+  Breeze's decoration, pictured the same way first, has rounded corners.
+- *Edges:* **no line**, once KWin's border size was "No borders". The
+  content met the backdrop on the left, right and bottom, and met the title
+  bar in one row, with no pixel of another colour between them. This held
+  for an active window, an inactive window, a maximised window, which
+  filled the output with no gap, and a window maximised and then restored.
+  It held at scale 1 and at 1.49.
+- *With the border size at its default:* a border 4 px wide in the frame's
+  colour on the left, right and bottom, whether the theme asked for 0 or
+  for −100; 6 px when the theme asked for 10. At "Tiny" it was 1 px, and at
+  "No side borders" 1 px remained at the bottom.
+- *Tones:* with a tone 0 frame over tone 0 content, every pixel of the
+  window except the button was `#151413`. Over tone 1 content the only
+  change was the step from `#151413` to `#1c1a18`, in one row.
+- No shadow was drawn; none was asked for.
+- *The owner's look:* the owner saw an active and an inactive window with
+  the tone 0 frame in a live nested KWin, at scale 1.49, and confirmed
+  square corners and no line. They also saw that two such windows cannot
+  be told apart where they overlap, and decided that a window has a window
+  outline (D-25).
+- *Window outline, tried after that decision:* a frame with edge pieces
+  1 px thick in yellow around a magenta centre, with the theme's borders
+  at 1. The facts are under "Window decoration" above.
+
+**What it changes.**
+
+- D-34 stands: the decoration can be an Aurorae theme, with no compiled
+  code.
+- The requirement changed: D-25 and the "Window decoration" section of the
+  [design language](design-language.md). The window outline's colour and width
+  are open question O-4.
+- What shows at a window's edge depends on KWin's border size, which is a
+  system setting, so the owner sets it; P6.2 must say so in the README,
+  beside selecting the decoration. For the window outline alone it is
+  "Tiny". Left at its default, a band 3 px wide in tone 0 sits between the
+  window outline and the content.
+- P5.1 to P5.3 can try the decoration in a nested KWin as above. P5.1 can
+  start from nine plain rectangles per window state, and must settle the
+  uneven window outline at scale 1.49.
+
+### P0.6 Window shadow and glow — 2026-11-11
+
+**Questions.** Asked by the owner after P0.4: can Amber change the shadow
+that windows have under Breeze's decoration, and can a window have a subtle
+glow?
+
+**What was done.** The set-up of P0.4 again, with a stone-coloured window
+without a decoration as the backdrop, so that a dark shadow and a light
+glow could both be seen. Breeze's decoration was pictured first. The spike's
+theme then got padding and gradients in its frame: a black shadow 24 px
+wide at 50 %; one 48 px wide at 80 %; one with paddings of 16, 8, 16 and
+40 px; a blur filter in place of the gradient on the top edge; a glow in
+accent at 28 % and at 60 % for the active window with the black shadow for
+the inactive one; and the 28 % glow with a window outline 1 px wide, at
+border size `Tiny`. Pixels were read outwards from the window's edge.
+
+**What was seen.**
+
+- *Shadow:* yes. Each one was drawn as written, soft, outside a window
+  whose corners stayed square, and each change of width, strength and
+  shape showed. The facts are under "Window decoration" above.
+- *Glow:* yes. The active window had a soft accent glow that fades to
+  nothing over 24 px, and the inactive window behind it kept its dark
+  shadow. The glow fell on the inactive window where they overlapped. On a
+  tone 0 backdrop the glow showed as well; the dark shadow there could
+  hardly be seen.
+- *With the window outline:* the outline sat between the glow and the
+  window. Sharp at scale 1; a little soft at 1.49.
+- *Maximised:* no shadow, glow or outline, at either scale. Restored, they
+  came back.
+- At 28 % the glow is quiet and reads as light, not as a line; at 60 % it
+  is plain to see (my call, from the pictures; the owner judges from the
+  live window).
+
+**What it changes.**
+
+- P5.3 can draw the shadow as gradients in the frame's SVG; the question
+  of how an Aurorae theme draws a shadow is answered.
+- The owner saw the live window and decided on 2026-11-11: the active
+  window has a window glow, and an inactive window a shadow (D-26). The
+  glossary, D-4 and the [design language](design-language.md) say so.
+- The window glow marks the active window, so it is a mark of state. Its
+  amounts and what it must reach are settled with the window outline
+  (O-4).

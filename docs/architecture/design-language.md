@@ -14,9 +14,11 @@ updated.
 2. **Square.** Every corner radius is zero. A round widget, such as a radio
    button or a round button, stays a circle. (decided)
 3. **No lines.** No border, outline, separator or divider one pixel wide.
-   Surfaces and widgets are told apart by tone. (decided)
+   Surfaces and widgets are told apart by tone. The one exception is the
+   window outline, which tells overlapping windows apart. (decided, D-25)
 4. **State is tone.** Hovered, focused and pressed widgets change tone.
-   Nothing glows. (decided)
+   No widget glows. (decided) The active window is the one thing that
+   glows. (decided, D-26)
 5. **Quiet at rest.** A window full of widgets at rest shows accent only on
    what is selected, checked or filled.
    (my call)
@@ -75,22 +77,35 @@ before they go into real files.
 
 ## Shadow
 
-- **No glow, and no shadow on a widget.** Union draws neither in Qt Widgets
+- **No glow and no shadow on a widget.** Union draws neither in Qt Widgets
   applications (see [platform](platform.md)), so the prototype uses neither.
   Wells and pressed widgets are shown by tone alone.
-- A shadow under a popup, menu or window is dark, soft and offset downwards.
+- A shadow under a popup, menu or inactive window is dark, soft and offset
+  downwards. The active window has a window glow in its place; see "Window
+  decoration".
   Whether Union draws one under menus and popups is unverified; see
   [platform](platform.md).
 
 ## Window decoration
 
-- Title bar in tone 0; square corners; no border line on any edge.
-- A soft drop shadow around the window.
+- Title bar in tone 0; square corners.
+- A window has a window outline. (decided, D-25) It runs along every edge,
+  square at the corners, for active and inactive windows; it starts one
+  pixel wide and sits lighter than tone 0 (my call). Its width, its colour
+  and the contrast it must reach are open question O-4 in the
+  [decisions](decisions.md). A maximised window has none (my call).
+- No other line: none between the title bar and the content.
+- The active window has a window glow: a soft light in accent on every
+  side, outside the window outline. An inactive window has a dark shadow
+  in its place. (decided, D-26) Starting amounts (my call), from spike
+  P0.6: the glow fades from 28 % to nothing over 24 px; the shadow is
+  black and fades from 50 % over 24 px. They are settled with the window
+  outline, in O-4. A maximised window has neither.
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
 
 ## What must not appear
 
 A rounded corner, a hairline, or a cool grey. A round widget is not a
-rounded corner. See the anti-goals in the
+rounded corner, and the window outline is the one hairline allowed. See the anti-goals in the
 [vision](../product/vision.md).

@@ -1,6 +1,6 @@
 # Amber
 
-**Amber** is a dark, warm, borderless theme for KDE Plasma 6, made of several
+**Amber** is a dark, warm, flat theme for KDE Plasma 6, made of several
 parts: a colour scheme, a Union style for widgets, a window decoration,
 terminal colours for Konsole and an editor theme for Kate. An HTML and CSS
 prototype holds the tokens that every part is generated from.
@@ -67,7 +67,8 @@ be now, not how it got there.
 - **Write nothing under `/usr`.**
 - **The anti-goals are hard failures:** no rounded corner, no hairline
   border or divider, no cool grey. Check for them in every plan. A round
-  widget, such as a radio button, is not a rounded corner.
+  widget, such as a radio button, is not a rounded corner. The window
+  outline is the one hairline allowed (D-25).
 - **Work in small plans.** Each step of the roadmap is split into plans with
   one testable result each. Write a plan just before its work, and do not
   start the next plan until the current one's "done when" is checked.

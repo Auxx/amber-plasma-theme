@@ -44,8 +44,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   desktop widgets, which Amber does not cover).
 
 **Window decoration**
-: The title bar, window buttons, frame and shadow that KWin draws around a
-  window. Called the "decoration" for short. Built as an Aurorae theme.
+: The title bar, window buttons, frame, window outline, and window glow or
+  shadow that KWin
+  draws around a window. Called the "decoration" for short. Built as an
+  Aurorae theme.
 
 **Terminal colours**
 : The Konsole colour scheme file `Amber.colorscheme`: background, foreground
@@ -120,16 +122,29 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   progress and the primary button, and it tints the tone of a focused widget.
 
 **Glow**
-: A soft, blurred, coloured light around a widget. Amber has none: Union
-  cannot draw it in Qt Widgets applications. State is shown by tone.
+: A soft, blurred, coloured light around something. No widget in Amber has
+  one: Union cannot draw it in Qt Widgets applications, and a widget's
+  state is shown by tone. The one glow in Amber is the window glow.
+
+**Window glow**
+: The soft accent light that the window decoration draws around the active
+  window. An inactive window has a shadow in its place.
 
 **Shadow**
-: A soft dark blur under a popup, menu or window that adds depth. A shadow is
-  dark and shows no state.
+: A soft dark blur under a popup, menu or inactive window that adds depth.
+  A shadow is dark and shows no state.
 
 **Hairline**
 : A line one pixel wide: a border, outline, separator or divider. Amber has
-  none.
+  none, with one exception: the window outline.
+
+**Window outline**
+: The thin line that the window decoration draws along every edge of a
+  window, so that windows which overlap can be told apart. It is the only
+  hairline in Amber, and it is square at the corners. Its width is not yet
+  settled. _Avoid_ "window
+  border" (KWin's name for the frame, whose width is a system setting) and
+  plain "outline".
 
 **Block marker**
 : A solid accent rectangle at least three pixels wide on the leading edge of

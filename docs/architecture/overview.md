@@ -90,7 +90,7 @@ scripts/              install and uninstall
 - **Nothing is written under `/usr`.** Every part installs to the owner's
   home folder and is removed by the uninstall script.
 - **The anti-goals are checked at every plan**, not only at the end: no
-  rounded corner, no hairline, no cool grey.
+  rounded corner, no hairline but the window outline, no cool grey.
 - **A breach that cannot be fixed becomes a known gap**, written in the
   README.
 - **Unverified facts are marked as such** in [platform](platform.md) and are

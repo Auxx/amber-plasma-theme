@@ -1,7 +1,7 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. One question is deferred to the
-> prototype; see "Open question".
+> Status: **Accepted** on 2026-11-11. Three questions are deferred to
+> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md).
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -32,7 +32,13 @@ Disabled controls are exempt in WCAG, and are exempt here.
    with accent. How far that tone must stand from the widget at rest and
    from the surface is open question O-3 in the [decisions](decisions.md).
    Text on the focused tone reaches 4.5:1 like any other text.
-5. **A pair that passes by less than 2 % is close** and is reported as a
+5. **Window outline: open.** The window outline tells one window from the
+   window or desktop behind it. What contrast it must reach is open
+   question O-4 in the [decisions](decisions.md); its contrast pairs are
+   declared with its token. The window glow marks the active window; it
+   is settled in the same question, and the dim title text of an inactive
+   window marks the same state.
+6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
 ## Where Amber departs from WCAG on purpose
