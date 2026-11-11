@@ -76,7 +76,7 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "23 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "37 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
 # Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
@@ -116,11 +116,13 @@ node tools/src/bin/tokens.mjs resolve text-dim
   together are not opaque, is `MISSING` and counts as failing. A
   part-transparent layer is fine when an opaque layer lies over it, or under it
   at the bottom.
-- **Every foreground has a pair.** The test
+- **Every colour token is in a pair.** The test
   `tools/src/lib/amber-contrast.spec.mjs` fails when a colour token other
-  than a tone, `danger` or `shadow` is the foreground of no pair.
+  than `shadow` is in no pair, as foreground or as a background layer.
 - **The prototype is checked too.** `prototype-anti-goals.spec.mjs` runs
-  `tools/src/lib/prototype-check.mjs` over the real files. In the CSS it fails
+  `tools/src/lib/prototype-check.mjs` over the real files: every
+  `prototype/*.html` page and every stylesheet but the tokens. Each page is
+  listed in the spec with the stylesheets it links. In the CSS it fails
   on a rounded corner, a border, any `box-shadow`, `outline-*` other than the
   window outline on `.window`, `column-rule`, `text-decoration`, a
   `drop-shadow` filter, a `round` clip, an at-rule, and any colour written out
@@ -130,7 +132,11 @@ node tools/src/bin/tokens.mjs resolve text-dim
   set outside a candidate. A colour written outside the tokens must be warm:
   OKLCH hue 30 to 110, or black (my call). `prototype-candidates.spec.mjs`
   measures every ratio printed under a candidate again, with that figure's
-  `style` overrides, and fails when one is stale.
+  `style` overrides, and fails when one is stale; it lists how many figures
+  and ratios each page has. `prototype-gallery.spec.mjs` reads the gallery's
+  rows of states and, in Chrome, checks that each state is drawn in its
+  tokens, that a live control in a real state matches its forced copy, the
+  keyboard order, the placeholder colour and the rendered anti-goals.
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,
   or a value is not a colour; 2 the command line was wrong, including an
   override that is not `token=value`.

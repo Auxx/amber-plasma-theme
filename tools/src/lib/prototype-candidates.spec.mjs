@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { checkPairs, describePair, loadPairs, loadTokens, parseOverrides } from './tokens.mjs';
@@ -11,31 +12,47 @@ import { checkPairs, describePair, loadPairs, loadTokens, parseOverrides } from 
  * page.
  */
 
-const PAGE = fileURLToPath(new URL('../../../prototype/index.html', import.meta.url));
+const PROTOTYPE = fileURLToPath(new URL('../../../prototype/', import.meta.url));
 
-const page = readFileSync(PAGE, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+const PAGES = readdirSync(PROTOTYPE).filter(name => name.endsWith('.html')).sort();
 
-const figures = [ ...page.matchAll(/<figure class="candidate"(?: style="([^"]*)")?>([\s\S]*?)<\/figure>/g) ].map(
-  ([ , style = '', body ]) => ({
-    caption: body.match(/<figcaption>\s*([^<\n]+?)\s*(?:<|\n)/)?.[1] ?? '(no caption)',
-    overrides: style
-      .split(';')
-      .map(declaration => declaration.trim())
-      .filter(Boolean)
-      .map(declaration => declaration.replace(/^(--[a-z0-9-]+)\s*:\s*/, '$1=')),
-    ratios: [ ...body.matchAll(/<data class="ratio" data-pair="([^"]+)" value="([^"]+)">([^<]*)<\/data>/g) ].map(
-      ([ , pair, value, shown ]) => ({ pair, value, shown })
-    )
-  })
-);
+// Figures and printed ratios on each page. A new page is added here.
+const COUNTS = {
+  'gallery.html': [ 11, 32 ],
+  'index.html': [ 9, 18 ]
+};
+
+/** The candidate figures of one page, each with its overrides and ratios. */
+function figuresOf(page) {
+  const source = readFileSync(join(PROTOTYPE, page), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+  return [ ...source.matchAll(/<figure class="candidate"(?: style="([^"]*)")?>([\s\S]*?)<\/figure>/g) ].map(
+    ([ , style = '', body ]) => ({
+      page,
+      caption: `${page}: ${body.match(/<figcaption>\s*([^<\n]+?)\s*(?:<|\n)/)?.[1] ?? '(no caption)'}`,
+      overrides: style
+        .split(';')
+        .map(declaration => declaration.trim())
+        .filter(Boolean)
+        .map(declaration => declaration.replace(/^(--[a-z0-9-]+)\s*:\s*/, '$1=')),
+      ratios: [ ...body.matchAll(/<data class="ratio" data-pair="([^"]+)" value="([^"]+)">([^<]*)<\/data>/g) ].map(
+        ([ , pair, value, shown ]) => ({ pair, value, shown })
+      )
+    })
+  );
+}
+
+const figures = PAGES.flatMap(figuresOf);
 
 const pairs = new Map(loadPairs().map(pair => [ describePair(pair), pair ]));
 const names = new Set(loadTokens().keys());
 
 describe('prototype candidates', () => {
   it('shows the candidates', () => {
-    assert.equal(figures.length, 9);
-    assert.equal(figures.flatMap(f => f.ratios).length, 18);
+    assert.deepEqual(PAGES, Object.keys(COUNTS));
+    for (const page of PAGES) {
+      const own = figures.filter(f => f.page === page);
+      assert.deepEqual([ own.length, own.flatMap(f => f.ratios).length ], COUNTS[page], page);
+    }
   });
 
   it('names only real pairs and tokens', () => {

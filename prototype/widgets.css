@@ -1,0 +1,270 @@
+/*
+ * Amber's widgets, as the Union style will draw them (P3.3 to P3.5). A state
+ * is a tone. Each state rule names the real pseudo-class together with the
+ * class that forces the state in the gallery, so that a copy can show it
+ * beside the others and a live control reacts the same way.
+ *
+ * Order: hovered, focused, pressed, then disabled. Pressed wins over focused,
+ * focused over hovered, and a disabled control never changes.
+ */
+
+/* At rest */
+
+.button,
+.tool-button,
+.combo {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+  color: var(--text);
+  background: var(--tone-3);
+}
+
+.tool-button {
+  padding: 0 8px;
+  background: transparent;
+}
+
+.combo {
+  min-width: 160px;
+  justify-content: space-between;
+}
+
+.button.is-primary {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+.tool-button.is-checked {
+  color: var(--accent);
+  background: var(--tone-3);
+}
+
+.glyph {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+}
+
+/* Wells: text fields, spin boxes and text areas sit darker than the surface. */
+
+.text-field,
+.text-area,
+.spin,
+.spin-field,
+.spin-step {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  color: var(--text);
+  caret-color: var(--text);
+}
+
+.text-field,
+.text-area,
+.spin {
+  width: 100%;
+  background-color: var(--well);
+  /* The well edge (O-1): none at the start, where its width is 0. */
+  background-image: linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
+}
+
+.text-field {
+  height: 30px;
+  padding: 0 8px;
+}
+
+.text-area {
+  display: block;
+  padding: 6px 8px;
+  line-height: 1.4;
+  resize: none;
+}
+
+.spin {
+  display: flex;
+  height: 30px;
+}
+
+.spin-field {
+  appearance: textfield;
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+  color: inherit;
+  background: transparent;
+}
+
+.spin-field::-webkit-inner-spin-button,
+.spin-field::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.spin-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.spin-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 15px;
+  padding: 0;
+  cursor: default;
+  color: var(--text-dim);
+  background: transparent;
+}
+
+.spin-step .glyph {
+  width: 12px;
+  height: 12px;
+}
+
+.text-field::placeholder,
+.text-area::placeholder,
+.spin-field::placeholder {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+.text-field::selection,
+.text-area::selection,
+.spin-field::selection {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+/* Hovered */
+
+.button:hover,
+.button.is-hovered,
+.combo:hover,
+.combo.is-hovered {
+  background: var(--tone-4);
+}
+
+.tool-button:hover,
+.tool-button.is-hovered {
+  background: var(--tone-3);
+}
+
+.tool-button.is-checked:not(:disabled):hover,
+.tool-button.is-checked.is-hovered {
+  background: var(--tone-4);
+}
+
+.button.is-primary:hover,
+.button.is-primary.is-hovered {
+  background: var(--accent-hover);
+}
+
+.text-field:hover,
+.text-field.is-hovered,
+.text-area:hover,
+.text-area.is-hovered,
+.spin:hover,
+.spin.is-hovered {
+  background-color: var(--tone-1);
+}
+
+.spin-step:hover {
+  color: var(--text);
+  background: var(--tone-3);
+}
+
+/* Focused */
+
+.button:focus-visible,
+.button.is-focused,
+.combo:focus-visible,
+.combo.is-focused,
+.tool-button:focus-visible,
+.tool-button.is-focused,
+.tool-button.is-checked:focus-visible {
+  background: var(--raised-focus);
+}
+
+.button.is-primary:focus-visible,
+.button.is-primary.is-focused {
+  background: var(--accent-hover);
+}
+
+.text-field:focus-visible,
+.text-field.is-focused,
+.text-area:focus-visible,
+.text-area.is-focused,
+.spin:has(.spin-field:focus-visible),
+.spin.is-focused {
+  background-color: var(--well-focus);
+}
+
+/* Pressed */
+
+.button:active,
+.button.is-pressed,
+.combo:active,
+.combo.is-pressed {
+  background: var(--tone-1);
+}
+
+.tool-button:active,
+.tool-button.is-pressed,
+.tool-button.is-checked:active {
+  background: var(--tone-2);
+}
+
+.button.is-primary:active,
+.button.is-primary.is-pressed {
+  background: var(--accent-pressed);
+}
+
+.spin-step:active {
+  background: var(--tone-2);
+}
+
+/* Disabled */
+
+.button:disabled,
+.combo:disabled,
+.button.is-primary:disabled {
+  color: var(--text-dim);
+  background: var(--tone-3);
+}
+
+.tool-button:disabled {
+  color: var(--text-dim);
+  background: transparent;
+}
+
+.text-field:disabled,
+.text-area:disabled,
+.spin:has(.spin-field:disabled) {
+  color: var(--text-dim);
+  background-color: var(--well);
+}
+
+.spin-step:disabled {
+  color: var(--text-dim);
+  background: transparent;
+}

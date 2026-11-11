@@ -7,32 +7,41 @@ import { cssOffences, pageOffences } from './prototype-check.mjs';
 
 /**
  * The anti-goals, checked in the prototype's real files with
- * prototype-check.mjs. The tokens file itself is checked by the contrast
- * pairs.
+ * prototype-check.mjs: every page and every stylesheet. The tokens file itself
+ * is checked by the contrast pairs.
  */
 
 const PROTOTYPE = fileURLToPath(new URL('../../../prototype/', import.meta.url));
 
 const read = name => readFileSync(join(PROTOTYPE, name), 'utf8');
 
-const stylesheets = readdirSync(PROTOTYPE)
-  .filter(name => name.endsWith('.css') && name !== 'tokens.css')
-  .sort();
+const files = readdirSync(PROTOTYPE).sort();
+const stylesheets = files.filter(name => name.endsWith('.css') && name !== 'tokens.css');
+const PAGES = files.filter(name => name.endsWith('.html'));
 
-const page = read('index.html');
+// The stylesheets each page links, in order. A new page is added here.
+const LINKS = {
+  'gallery.html': [ 'tokens.css', 'widgets.css', 'gallery.css' ],
+  'index.html': [ 'tokens.css', 'window.css', 'shell.css' ]
+};
 
 describe('prototype anti-goals', () => {
-  it('finds the page and its stylesheets', () => {
-    assert.ok(stylesheets.includes('window.css') && stylesheets.includes('shell.css'), stylesheets.join(', '));
-    const links = [ ...page.matchAll(/<link rel="stylesheet" href="([^"]+)">/g) ].map(m => m[1]);
-    assert.deepEqual(links, [ 'tokens.css', 'window.css', 'shell.css' ]);
+  it('finds the pages and their stylesheets', () => {
+    assert.deepEqual(PAGES, Object.keys(LINKS));
+    for (const page of PAGES) {
+      const links = [ ...read(page).matchAll(/<link rel="stylesheet" href="([^"]+)">/g) ].map(m => m[1]);
+      assert.deepEqual(links, LINKS[page], page);
+      for (const name of links) {
+        assert.ok(files.includes(name), `${page} links a missing ${name}`);
+      }
+    }
   });
 
   it('breaks no anti-goal in the stylesheets', () => {
     assert.deepEqual(stylesheets.flatMap(name => cssOffences(name, read(name))), []);
   });
 
-  it('breaks no anti-goal in the page', () => {
-    assert.deepEqual(pageOffences('index.html', page), []);
+  it('breaks no anti-goal in any page', () => {
+    assert.deepEqual(PAGES.flatMap(page => pageOffences(page, read(page))), []);
   });
 });

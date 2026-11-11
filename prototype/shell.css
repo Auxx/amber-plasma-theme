@@ -27,6 +27,31 @@ body {
   box-sizing: border-box;
 }
 
+/* Links between the prototype's pages; the same rules are in gallery.css. */
+.pages {
+  display: flex;
+  gap: 4px;
+  margin: -48px -48px 48px;
+  padding: 4px 24px;
+  background: var(--tone-0);
+}
+
+.pages a {
+  padding: 6px 10px;
+  color: var(--text);
+  text-decoration: none;
+  outline: none;
+}
+
+.pages a:hover,
+.pages a:focus-visible {
+  background: var(--tone-3);
+}
+
+.pages a[aria-current="page"] {
+  color: var(--accent);
+}
+
 .scene {
   position: relative;
   width: 1100px;

@@ -113,6 +113,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Well**
 : A widget that sits darker than its surface, such as a text field.
 
+**Well edge**
+: A solid bar at least three pixels high at the foot of a well, in a tone
+  lighter than the surface. A candidate cue for O-1. It is not a hairline.
+
 **Raised widget**
 : A widget that sits lighter than its surface, such as a button. It is not a
   3D effect.

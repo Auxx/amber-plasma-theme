@@ -31,7 +31,13 @@ Disabled controls are exempt in WCAG, and are exempt here.
 4. **Focused widgets: open.** A focused widget is shown by a tone tinted
    with accent. How far that tone must stand from the widget at rest and
    from the surface is open question O-3 in the [decisions](decisions.md).
-   Text on the focused tone reaches 4.5:1 like any other text.
+   Text on the focused tone reaches 4.5:1 like any other text, and so does
+   the placeholder of a focused well. Until O-3 is closed, the pairs of
+   `raised-focus` and `well-focus` against the widget at rest and the
+   surface have a provisional minimum of 1.2 (my call): a floor, not a WCAG
+   rule. A placeholder in dim text passes 4.5:1 on a focused well tinted up to
+   20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
+   which caps the tint of a focused well near 20 %.
 5. **Window outline: open.** The window outline tells one window from the
    window or desktop behind it. What contrast it must reach is open
    question O-4 in the [decisions](decisions.md); its contrast pairs are
@@ -74,10 +80,18 @@ How should Amber treat controls identified only by tone?
 The owner deferred this on 2026-11-11 to the prototype, where the tones can
 be seen. The gallery plans P1.3 and P1.4 show these controls with candidate
 tones and their measured ratios side by side, and the owner chooses in P1.7.
+Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
+
+- **A darker well cannot get there.** Even black measures only 1.33:1 on
+  tone 2 (measured 2026-11-11), so a stronger cue must be lighter than the
+  surface, or a well edge.
+- Until O-1 is closed, the pairs of `well` and `well-edge` on tone 2 have a
+  provisional minimum of 1.1 (my call). At the start the well edge has no
+  width and the well's own tone.
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plans P1.1 and P1.2. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1, P1.2 and P1.3. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -106,6 +120,20 @@ falls below its minimum.
 | window glow | tone 0 | 1.81:1 | 1.3 (provisional) | pass |
 | window glow | tone 1 | 1.82:1 | 1.3 (provisional) | pass |
 | window glow | tone 2 | 1.82:1 | 1.3 (provisional) | pass |
+| text | well | 14.40:1 | 4.5 | pass |
+| text | raised focus | 5.11:1 | 4.5 | pass |
+| text | well focus | 9.91:1 | 4.5 | pass |
+| dim text | well | 7.27:1 | 4.5 | pass |
+| dim text | well focus | 5.01:1 | 4.5 | pass |
+| accent | raised focus | 3.16:1 | 3 | pass |
+| on-accent | accent hover | 9.94:1 | 4.5 | pass |
+| on-accent | accent pressed | 6.68:1 | 4.5 | pass |
+| raised focus | tone 3 | 2.07:1 | 1.2 (provisional) | pass |
+| raised focus | tone 2 | 2.42:1 | 1.2 (provisional) | pass |
+| well focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |
+| well focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
+| well | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| well edge | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |
@@ -117,9 +145,8 @@ chroma, so that it passes on tone 4, a hovered raised widget. The old value
 measured 3.92:1 there and 4.56:1 (close) on tone 3.
 
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
-(`#695c45`), measures 2.07:1 against tone 3, 2.42:1 against tone 2, and
-5.11:1 under primary text. The sample was not held to these rules; the
-tones are worked out in the prototype (O-3).
+(`#695c45`), is the starting `raised-focus` (P1.3). The gallery shows it
+beside 20 %, 40 % and 60 % (O-3).
 
 Not yet measured: the terminal and syntax colours, which do not exist yet.
 
@@ -134,8 +161,8 @@ Not yet measured: the terminal and syntax colours, which do not exist yet.
 - **A tool measures every pair**: `tokens pairs` (see [tooling](tooling.md)).
   It exits with an error when a pair fails.
 - **The same check runs in the tests**, so a token change that breaks a pair
-  fails them. The tests also fail when a token other than a tone or `danger`
-  is the foreground of no pair.
+  fails them. The tests also fail when a colour token other than `shadow`
+  is in no pair, as foreground or background.
 - **Try before changing.** `tokens try name=value` shows the pairs a change
   would affect, before and after.
 - **Find a value that passes.** `colour solve` gives the lightness range in

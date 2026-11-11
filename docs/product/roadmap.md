@@ -65,7 +65,7 @@ The gate for everything after it: the owner approves the look here.
 |---|---|---|---|
 | P1.1 Tokens and contrast pairs | Tokens file, contrast pairs, `tokens` tool | `tokens pairs` runs in the tests and every pair passes | done |
 | P1.2 Window shell | Mock file-manager window: title bar, toolbar, sidebar, list, status area; a second window behind it, with candidates for the window outline, the window glow and the shadow | The page opens from disk and shows every surface by tone alone; the two windows can be told apart where they overlap | done |
-| P1.3 Gallery: buttons and inputs | Buttons, tool buttons, combo boxes, text fields, spin boxes, text areas in every state | Each state is shown side by side and reacts to pointer and keyboard | todo |
+| P1.3 Gallery: buttons and inputs | Buttons, tool buttons, combo boxes, text fields, spin boxes, text areas in every state | Each state is shown side by side and reacts to pointer and keyboard | done |
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | todo |
 | P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | todo |
 | P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | todo |

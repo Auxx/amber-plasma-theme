@@ -60,23 +60,58 @@ before they go into real files.
 
 ## Widgets
 
-| Widget kind | At rest | Hovered | Focused | Pressed | Disabled |
-|---|---|---|---|---|---|
-| Raised (button, tool button, combo box) | tone 3 | tone 4 | tone 4 tinted with accent | a darker tone | dim text |
-| Well (text field, spin box, text area) | tone 0 | tone 1 | tone 1 tinted with accent | — | dim text |
-| Toggle (check box, radio button) | tone 0 box, or tone 0 circle for a radio button | a lighter box | a box tinted with accent | — | dim text |
-| Primary button | accent fill, on-accent text | lighter accent | settled in the prototype | darker accent | dim text |
-| Close button | as title bar | danger fill | — | darker danger | — |
+The tones of each state, as background / text (my call; seen in the gallery
+of plan P1.3, `prototype/gallery.html`). Toggles and ranges follow in P1.4.
 
-- The states above are the starting point (my call), taken from the sample
-  the owner saw in spike P0.5. That sample was not held to the contrast
-  rules. The exact tones of every state are worked out in step 1, the
-  prototype; how strong the focused tone must be is open question O-3 in
-  the [decisions](decisions.md).
+| Widget | At rest | Hovered | Focused | Pressed | Checked | Disabled |
+|---|---|---|---|---|---|---|
+| Button, combo box | tone 3 / text | tone 4 / text | raised focus / text | tone 1 / text | — | tone 3 / dim text |
+| Primary button | accent / on-accent | accent hover / on-accent | accent hover / on-accent | accent pressed / on-accent | — | tone 3 / dim text |
+| Tool button, on a tone 0 toolbar | no fill / text | tone 3 / text | raised focus / text | tone 2 / text | tone 3 / accent | no fill / dim text |
+| Text field, spin box, text area | well / text | tone 1 / text | well focus / text | — | — | well / dim text |
+| Close button | as title bar | danger fill | — | darker danger | — | — |
+
+- **Precedence:** pressed wins over focused, and focused over hovered. A
+  disabled widget never changes. (my call)
+- **Pressed sinks.** A pressed button goes to tone 1, below the tone 2
+  surface; a pressed tool button goes to tone 2, one below its hovered tone.
+  (my call)
+- **A checked tool button** keeps its accent text in every state. Hovered,
+  it goes to tone 4, one above its checked tone; focused and pressed, it
+  takes the tones of an unchecked tool button. (my call)
+- **The primary button** shows focus with its hovered tone for now (my
+  call); this is part of O-3 in the [decisions](decisions.md).
+- **Wells:** a placeholder is dim text; selected text is on-accent on
+  accent. A spin box's step buttons take no keyboard focus; the well around
+  the field shows it.
+- **The focused tone** is accent mixed over the tone a widget has when
+  hovered. How strong it must be is open question O-3, and the gallery shows
+  candidates with their measured contrast. The placeholder caps how strong
+  a focused well's tint can be: see rule 4 of
+  [accessibility](accessibility.md).
+- **An empty well** is told from its surface by tone alone (open question
+  O-1). The gallery shows candidates: a darker well, and a well edge.
+- Toggles start (my call, from spike P0.5) as a tone 0 box, or a tone 0
+  circle for a radio button; hovered, a lighter box; focused, a box tinted
+  with accent; disabled, dim text. Their tones are worked out in P1.4.
 - A checked toggle fills with accent.
 - A selected list or sidebar item has a tone 3 background. It may carry a
   block marker in accent on its leading edge.
 - Progress and slider fills are accent on a tone 0 track.
+
+Tokens of the widgets (my call, P1.3; the owner chooses O-1 and O-3 in
+P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the
+token holds the plain colour (D-47).
+
+| Token | Starting value | Used for |
+|---|---|---|
+| `--well` | `var(--tone-0)` | a well at rest (O-1) |
+| `--well-edge` | `var(--well)` | the colour of the well edge (O-1) |
+| `--well-edge-width` | `0px` | its height: none at the start (O-1) |
+| `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (O-3) |
+| `--well-focus` | `#393226`, accent 16 % over tone 1 | a focused well (O-3) |
+| `--accent-hover` | `#debc7d`, accent at OKLCH lightness 81 % | a hovered or focused primary button |
+| `--accent-pressed` | `#ba995b`, accent at OKLCH lightness 70 % | a pressed primary button |
 
 ## Shadow
 

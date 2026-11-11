@@ -8,11 +8,11 @@ import { checkPairs, describePair, loadPairs, loadTokens } from './tokens.mjs';
  * fails the tests (docs/architecture/accessibility.md).
  */
 
-// Colour tokens that need no pair: the tones and danger are only ever a
-// background, and the shadow shows no state (D-4). Every other colour token
-// carries text or marks state, and must be the foreground of at least one pair
+// Colour tokens that need no pair: the shadow shows no state (D-4). Every
+// other colour token carries text, marks state or lies under text, and must be
+// the foreground or a background layer of at least one pair
 // (docs/architecture/accessibility.md, "How the check works").
-const NO_PAIR = [ 'tone-0', 'tone-1', 'tone-2', 'tone-3', 'tone-4', 'danger', 'shadow' ];
+const NO_PAIR = [ 'shadow' ];
 
 describe('Amber contrast pairs', () => {
   const tokens = loadTokens();
@@ -20,7 +20,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 23);
+    assert.equal(pairs.length, 37);
   });
 
   it('resolves every token of every pair', () => {
@@ -35,10 +35,10 @@ describe('Amber contrast pairs', () => {
     assert.deepEqual(failing, []);
   });
 
-  it('gives every foreground token a pair', () => {
-    const foregrounds = new Set(pairs.map(p => p.foreground));
+  it('puts every colour token in a pair', () => {
+    const paired = new Set(pairs.flatMap(p => [ p.foreground, ...p.background ]));
     const unpaired = [ ...tokens ]
-      .filter(([ name, value ]) => !value.length && !NO_PAIR.includes(name) && !foregrounds.has(name))
+      .filter(([ name, value ]) => !value.length && !NO_PAIR.includes(name) && !paired.has(name))
       .map(([ name ]) => name);
     assert.deepEqual(unpaired, []);
   });
@@ -53,5 +53,18 @@ describe('Amber contrast pairs', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('outline on tone-2'), '1.36');
     assert.equal(ratio('glow on tone-2'), '1.82');
+  });
+
+  it('starts the focused tones where O-3 starts', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('raised-focus on tone-3'), '2.07');
+    assert.equal(ratio('well-focus on tone-0'), '1.45');
+    assert.equal(ratio('text-dim on well-focus'), '5.01');
+  });
+
+  it('starts the well where O-1 starts', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('well on tone-2'), '1.16');
+    assert.equal(ratio('well-edge on tone-2'), '1.16');
   });
 });
