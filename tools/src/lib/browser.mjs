@@ -1,11 +1,11 @@
 // Opens prototype pages in the installed Google Chrome through playwright-core
 // (D-45, D-46). The parts here that need no browser are tested without one.
-import { existsSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { isAbsolute, join, relative, resolve } from 'node:path';
+import { existsSync, realpathSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { UsageError } from './cli.mjs';
-import { describeColour, parseColour } from './colour.mjs';
+import { describeColour, parseColour, srgb8 } from './colour.mjs';
 import { resolveToken } from './tokens.mjs';
 
 /** The repository's root folder. */
@@ -14,8 +14,19 @@ export const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url)).re
 /** True when `path` is `folder` or inside it. */
 const isInside = (folder, path) => {
   const rel = relative(folder, path);
-  return rel === '' || (!rel.startsWith('..') && !isAbsolute(rel));
+  return rel === '' || (rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
 };
+
+/** A path with every link followed, as far as the path exists. */
+function real(path) {
+  const rest = [];
+  let head = path;
+  while (!existsSync(head)) {
+    rest.unshift(basename(head));
+    head = dirname(head);
+  }
+  return join(realpathSync(head), ...rest);
+}
 
 /** The `file://` URL of a page, given relative to `root` or absolute. */
 export function pageUrl(path, root = REPO_ROOT) {
@@ -28,10 +39,10 @@ export function pageUrl(path, root = REPO_ROOT) {
 
 /**
  * Where a screenshot is written: `tmp/<name>.png` in the repository by
- * default (gitignored). Tool rule 6: never under the owner's home folder
- * outside the repository.
+ * default (gitignored). Tool rule 6: only inside the repository or the
+ * system's temporary folder, after following links.
  */
-export function outPath(path, { name, root = REPO_ROOT, home = homedir() }) {
+export function outPath(path, { name, root = REPO_ROOT, temp = tmpdir() }) {
   if (path === undefined) {
     return join(root, 'tmp', `${name}.png`);
   }
@@ -39,20 +50,22 @@ export function outPath(path, { name, root = REPO_ROOT, home = homedir() }) {
     throw new UsageError(`Not a .png file: ${path}`);
   }
   const file = resolve(root, path);
-  if (!isInside(root, file) && isInside(home, file)) {
-    throw new UsageError(`Will not write under the home folder outside the repository: ${path}`);
+  const target = real(file);
+  if (!isInside(real(root), target) && !isInside(real(temp), target)) {
+    throw new UsageError(`Will not write outside the repository and the temporary folder: ${path}`);
   }
   return file;
 }
 
-/** Reads the `rgb(…)` or `rgba(…)` that `getComputedStyle` gives. */
+/** Reads a computed colour: `rgb()`, `rgba()`, `color(srgb …)`, `oklch()` and the rest. */
 export function parseCssColour(text) {
-  const match = text.match(/^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\s*\)$/);
-  if (!match) {
+  let colour;
+  try {
+    colour = parseColour(text);
+  } catch {
     throw new Error(`Not a computed colour: ${text}`);
   }
-  const [ , r, g, b, alpha = '1' ] = match;
-  return { r: Number(r), g: Number(g), b: Number(b), alpha: Number(alpha) };
+  return srgb8(colour);
 }
 
 const hexOf = ({ r, g, b }) => describeColour(parseColour(`rgb(${r} ${g} ${b})`)).hex;
@@ -150,7 +163,8 @@ export async function applyState(page, { hover, focus, press } = {}) {
 }
 
 /**
- * The anti-goals as Chrome draws them: a border, a rounded corner, a box
+ * The anti-goals as Chrome draws them: a border, a rounded corner (a circle
+ * of 50 % on a square element is a round widget and passes), a box
  * shadow, an underline, or an outline anywhere but on a `.window`. Looks at
  * every element and at its ::before and ::after.
  */
@@ -174,7 +188,10 @@ export function renderedOffences(page) {
             report(`border-${side} ${width} ${lineStyle}`);
           }
         }
-        if (style.borderRadius !== '0px') {
+        // A round widget, a circle by convention, is not a rounded corner.
+        const box = pseudo ? null : element.getBoundingClientRect();
+        const round = style.borderRadius === '50%' && box && box.width > 0 && box.width === box.height;
+        if (style.borderRadius !== '0px' && !round) {
           report(`border-radius ${style.borderRadius}`);
         }
         if (style.boxShadow !== 'none') {

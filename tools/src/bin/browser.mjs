@@ -91,7 +91,8 @@ main({
       usage: '<page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--width n] [--height n] [--json]',
       summary: 'Saves a PNG of one element, the viewport, or the whole page (--full), in a state.',
       help: `${STATE_HELP}\n\n${SIZE_HELP}\n\n--out defaults to tmp/<page>-<selector>-<states>.png in the repository (gitignored). It may be
-another path inside the repository, or one outside the home folder, such as /tmp.`,
+another path inside the repository or inside the system's temporary folder, such as /tmp;
+links are followed before deciding.`,
       options: { selector: { type: 'string' }, out: { type: 'string' }, full: { type: 'boolean' }, ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
       async run(options, positionals) {
         const url = page(positionals);
@@ -111,21 +112,24 @@ another path inside the repository, or one outside the home folder, such as /tmp
       }
     },
     check: {
-      usage: '<page> [--width n] [--height n] [--json]',
-      summary: 'Lists load problems and anti-goals as Chrome draws the page; exits 1 if there is any.',
+      usage: '<page> [--hover css] [--focus css] [--press css] [--width n] [--height n] [--json]',
+      summary: 'Lists load problems and anti-goals as Chrome draws the page, in a state; exits 1 if there is any.',
       help: `Load problems: a file that fails to load, a console error, a script error.
 Anti-goals: a border, a rounded corner, a box shadow, an underline, or an
 outline anywhere but on .window, on any element or its ::before and ::after.
+A circle of 50 % on a square element is a round widget and passes.
+
+${STATE_HELP}
 
 ${SIZE_HELP}`,
-      options: { ...SIZE_OPTIONS, json: { type: 'boolean' } },
+      options: { ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
       async run(options, positionals) {
         const url = page(positionals);
         viewport(options);
-        const result = await withPage(url, options, async (opened, problems) => ({
-          problems: [ ...problems ],
-          offences: await renderedOffences(opened)
-        }));
+        const result = await withPage(url, options, async (opened, problems) => {
+          await applyState(opened, options);
+          return { problems: [ ...problems ], offences: await renderedOffences(opened) };
+        });
         print(options.json, result, () =>
           [
             ...result.problems,

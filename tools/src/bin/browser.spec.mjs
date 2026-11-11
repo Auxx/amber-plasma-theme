@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
@@ -83,12 +83,22 @@ describe('browser tool', () => {
 
   withChrome('saves a hovered state by default name', () => {
     const close = '.scene-front .is-close';
-    const { status, stdout } = browser('shot', 'prototype/index.html', '--selector', close, '--hover', close, '--json');
-    assert.equal(status, 0, stdout);
-    const { path } = JSON.parse(stdout);
-    assert.equal(path, 'tmp/index-scene-front-is-close-hover.png');
-    assert.ok(existsSync(join(root, path)));
-    rmSync(join(root, path));
+    // A screenshot of that name the owner saved is put back afterwards.
+    const kept = join(root, 'tmp/index-scene-front-is-close-hover.png');
+    const before = existsSync(kept) ? readFileSync(kept) : null;
+    try {
+      const { status, stdout } = browser('shot', 'prototype/index.html', '--selector', close, '--hover', close, '--json');
+      assert.equal(status, 0, stdout);
+      const { path } = JSON.parse(stdout);
+      assert.equal(path, 'tmp/index-scene-front-is-close-hover.png');
+      assert.ok(existsSync(join(root, path)));
+    } finally {
+      if (before) {
+        writeFileSync(kept, before);
+      } else {
+        rmSync(kept, { force: true });
+      }
+    }
   });
 
   withChrome('refuses an ambiguous state', () => {
@@ -106,7 +116,22 @@ describe('browser tool', () => {
   it('refuses a home path', () => {
     const { status, stderr } = browser('shot', 'prototype/index.html', '--out', join(homedir(), 'a.png'));
     assert.equal(status, 2);
-    assert.ok(stderr.includes('home folder outside the repository'), stderr);
+    assert.ok(stderr.includes('outside the repository and the temporary folder'), stderr);
+  });
+
+  withChrome('allows round widgets and finds ovals', () => {
+    const { status, stdout } = browser('check', 'tools/src/bin/fixtures/round-page.html', '--json');
+    assert.equal(status, 1);
+    const { problems, offences } = JSON.parse(stdout);
+    assert.deepEqual(problems, []);
+    assert.deepEqual(offences, [ 'div.oval: border-radius 50%' ]);
+  });
+
+  withChrome('checks a page in a state', () => {
+    const { status, stdout } = browser('check', 'tools/src/bin/fixtures/round-page.html', '--focus', '.plain', '--json');
+    assert.equal(status, 1);
+    const { offences } = JSON.parse(stdout);
+    assert.ok(offences.some(o => o.startsWith('button.plain: outline')), offences.join('\n'));
   });
 
   it('refuses a bad size', () => {

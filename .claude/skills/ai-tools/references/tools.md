@@ -145,7 +145,7 @@ path from the repository root, opened as `file://`.
 | Command | Does |
 | --- | --- |
 | `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full]` | Saves a PNG of one element, the viewport, or the whole page with `--full` |
-| `check <page>` | Lists load problems and anti-goals as Chrome draws the page; exits 1 if there is any |
+| `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
 
 Every command takes `--width` and `--height` (200 to 4000; default
@@ -171,14 +171,23 @@ Look at a screenshot with the Read tool.
   element too.
 - **Where screenshots go.** By default `tmp/<page>-<selector>-<states>.png` in
   the repository, which is gitignored. `--out` may name another `.png` inside
-  the repository, or one outside the home folder, such as `/tmp/a.png`. Any
-  other path under the home folder is refused (exit 2).
+  the repository or inside the system's temporary folder, such as
+  `/tmp/a.png`, after following links. Any other path is refused (exit 2).
 - **`check`** reports a file that fails to load, a console error and a script
   error, then each element (or its `::before` / `::after`) with a border, a
   rounded corner, a box shadow, an underline, or an outline anywhere but on
-  `.window`. It complements `prototype-anti-goals.spec.mjs`, which reads the
-  source; `check` sees what the browser's defaults and the cascade add.
-- **`colours`** names an opaque colour by every token that resolves to it, such
+  `.window`. A `border-radius` of 50 % on a square element is a round widget
+  and passes. With `--hover`, `--focus` or `--press` it checks the page in
+  that state, which is where focus rings and state borders appear. It
+  complements `prototype-anti-goals.spec.mjs`, which reads the source; `check`
+  sees what the browser's defaults and the cascade add.
+- **What `check` cannot see:** SVG `rx`, `clip-path` and `filter` shapes,
+  `text-shadow`, `column-rule`, lines drawn with gradients, `::marker` and
+  `::placeholder`, scrollbars, the inside of native controls (a native check
+  box may be drawn rounded while its computed radius is 0), and errors after
+  the page has loaded.
+- **`colours`** reads any computed form (`rgb()`, `color(srgb …)` from a
+  `color-mix`, `oklch()`) and names an opaque colour by every token that resolves to it, such
   as `#3c3832 (tone-4, outline)`, or prints the bare hex. Fully transparent is
   `transparent`; part-transparent is `rgb(r g b / N%)`, with no token name.
 - **Chrome missing.** Every command that opens a page exits 1 with "Google

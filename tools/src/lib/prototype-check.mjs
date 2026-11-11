@@ -50,7 +50,9 @@ function declarationOffence(selector, property, value) {
     return literals.map(warmthOffence).find(Boolean) ?? null;
   }
   if (property === 'border-radius') {
-    return value === '0' ? null : '';
+    // 50 % is a round widget, a circle by convention (glossary); `browser
+    // check` makes sure the element is square.
+    return [ '0', '50%' ].includes(value) ? null : '';
   }
   if (property.startsWith('border') && !BORDER_ALLOWED.includes(property)) {
     return [ 'none', '0' ].includes(value) ? null : '';
