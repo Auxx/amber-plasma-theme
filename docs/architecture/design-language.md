@@ -41,10 +41,10 @@ updated.
 
 The values live in [`prototype/tokens.css`](../../prototype/tokens.css); when
 this table and that file disagree, the file is right. Token names are written
-without a prefix (my call, D-43). Further tones and the terminal and syntax
-colours are settled in plan P1.6 and the gallery plans. Terminal and syntax colours are muted, warm-shifted hues
-that sit with the Sand palette; the owner approves them in the prototype
-before they go into real files.
+without a prefix (my call, D-43). The tones of widgets are in "Widgets"
+below; the terminal and syntax colours are in "Terminal colours" and
+"Editor theme". The owner approves them in the prototype before they go
+into real files.
 
 ## Surfaces
 
@@ -238,6 +238,72 @@ token holds the plain colour (D-47).
   uses no `box-shadow`.
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
+
+## Terminal colours
+
+Konsole's terminal colours: a background, a foreground and the 16 ANSI
+colours. They are muted, warm-shifted hues that sit with the Sand palette
+(D-20). Starting values (my call, P1.6; the owner chooses in P1.7):
+
+| Token | Value | Built as |
+|---|---|---|
+| `--terminal` | `var(--tone-2)` | the window's main surface, so that the terminal matches its frame (D-56) |
+| `--terminal-text` | `var(--text)` | Konsole's foreground |
+| `--ansi-black` | `var(--tone-0)` | exempt from contrast (D-53) |
+| `--ansi-red` | `#e39383` | OKLCH 74 % 0.10 32: shifted towards orange |
+| `--ansi-green` | `#9eb576` | OKLCH 74 % 0.09 125: shifted towards olive |
+| `--ansi-yellow` | `var(--accent)` | the accent is already a muted gold (D-57) |
+| `--ansi-blue` | `#7fb2d1` | OKLCH 74 % 0.07 235 |
+| `--ansi-magenta` | `#d296b2` | OKLCH 74 % 0.08 350 |
+| `--ansi-cyan` | `#82bbb3` | OKLCH 75 % 0.06 185 |
+| `--ansi-white` | `var(--text)` | |
+| `--ansi-bright-black` | `var(--text-dim)` | dim output and suggestions; it carries text, so it is not exempt |
+| `--ansi-bright-red` … `--ansi-bright-cyan` | `#f9afa0`, `#b7cf8e`, `#e6ca91`, `#9fcbe6`, `#e8b2ca`, `#a3d2cb` | the same hues at OKLCH 82–85 %, chroma 0.05–0.09 |
+| `--ansi-bright-white` | `#f5f1ea` | OKLCH 96 % 0.01 82 |
+
+- **A hue is not a grey.** "No cool grey" is about neutrals. Blue and cyan
+  are hues with a chroma of at least 0.05; every neutral of the terminal is
+  a warm tone or text token.
+- The normal colours are light enough to carry text on the terminal, so
+  light text on them as a background does not reach 4.5:1: open question
+  O-5 in the [decisions](decisions.md).
+- Konsole's intense and faint variants of the foreground and background,
+  and the cursor (a profile setting), are settled in P4.1.
+- The prototype shows the terminal on `prototype/samples.html`, with the
+  terminal background's candidates.
+
+## Editor theme
+
+Kate's editor area. Starting values (my call, P1.6):
+
+| Token | Value | Used for |
+|---|---|---|
+| `--editor` | `var(--tone-2)` | the editor background, as the terminal's (D-56) |
+| `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
+| `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
+| `--editor-selection` | `#3d362b` | the text selection: accent 14 % over tone 2 (D-58) |
+| `--syntax-keyword` | `var(--ansi-magenta)` | keywords |
+| `--syntax-function` | `var(--ansi-blue)` | function names |
+| `--syntax-type` | `var(--ansi-cyan)` | type names |
+| `--syntax-string` | `var(--ansi-green)` | strings and characters |
+| `--syntax-number` | `var(--ansi-red)` | numbers and constants |
+| `--syntax-preprocessor` | `var(--ansi-yellow)` | `#include` and imports |
+| `--syntax-comment` | `var(--ansi-bright-black)` | comments |
+
+- **The syntax colours are the ANSI colours** (D-57), so Kate and Konsole
+  share one palette and a hue changed once changes both. Plain code is
+  text. Line numbers are dim text; the current line's number is text.
+- **No line.** The gutter is told from the code by tone alone. Kate can
+  draw indentation lines and a word wrap marker; those are hairlines, and
+  P4.2 finds out whether the editor theme can leave them out. How
+  KSyntaxHighlighting's text styles and its other editor colours (search
+  highlight, bracket matching, spelling, markers) map onto these tokens is
+  settled in P4.2.
+- The text selection and the current line are close in lightness (1.13:1)
+  and are told apart by the accent's hue. More accent makes comments fail
+  4.5:1 on the selection (see [accessibility](accessibility.md), rule 3).
+- The prototype shows the editor on `prototype/samples.html`, with the text
+  selection's candidates.
 
 ## What must not appear
 

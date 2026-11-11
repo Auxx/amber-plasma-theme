@@ -1,13 +1,13 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "selected", "popup"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "selected", "popup"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "selected", "popup", "editor-gutter"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },
@@ -100,5 +100,155 @@
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
     "why": "A selected item is grouped by tone; its block marker carries rule 2's 3:1. 1.1 is a floor that keeps the tone from fading (my call)."
+  },
+  {
+    "foreground": "terminal-text",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: the terminal's foreground is text (D-53)"
+  },
+  {
+    "foreground": "ansi-red",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-green",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-yellow",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-blue",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-magenta",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-cyan",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-white",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-black",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-red",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-green",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-yellow",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-blue",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-magenta",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-cyan",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "ansi-bright-white",
+    "on": ["terminal"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+  },
+  {
+    "foreground": "syntax-keyword",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-function",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-type",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-string",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-number",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-preprocessor",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "syntax-comment",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+  },
+  {
+    "foreground": "editor-selection",
+    "on": ["editor", "editor-current-line"],
+    "minimum": 1.1,
+    "why": "The text selection is told from the editor and the current line by tone and hue; its text carries the 4.5:1. 1.1 is a floor that keeps it from fading (my call)."
+  },
+  {
+    "foreground": "editor-current-line",
+    "on": ["editor"],
+    "minimum": 1.1,
+    "why": "The current line is told from the editor by tone; its text carries the 4.5:1. 1.1 is a floor that keeps it from fading (my call)."
   }
 ]

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber samples</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="window.css">
+<link rel="stylesheet" href="widgets.css">
+<link rel="stylesheet" href="gallery.css">
+<link rel="stylesheet" href="samples.css">
+</head>
+<body>
+
+<nav class="pages" aria-label="Pages">
+  <a href="index.html">Window shell</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="samples.html" aria-current="page">Samples</a>
+</nav>
+
+<!-- The samples (roadmap P1.6): the terminal colours and the editor theme on
+     realistic content. Each coloured span has one class, named for its token. -->
+<section class="family" aria-label="Terminal">
+  <h2>Terminal</h2>
+  <p class="dim">Konsole's terminal colours on the window's main surface. Every colour but ANSI black reaches 4.5:1.</p>
+
+  <div class="sample-scene">
+    <div class="window is-active sample konsole">
+      <div class="title-bar"><span class="title">amber : bash — Konsole</span></div>
+      <div class="tab-bar" role="tablist"><button class="tab is-selected" role="tab" aria-selected="true">amber</button><button class="tab" role="tab" aria-selected="false">tools</button></div>
+<pre class="terminal"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ ls --color
+<span class="ansi-blue">docs/</span>  <span class="ansi-blue">parts/</span>  <span class="ansi-blue">prototype/</span>  <span class="ansi-blue">tools/</span>  <span class="ansi-green">install.sh*</span>  <span class="ansi-cyan">latest -&gt; docs/</span>  README.md
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git status --short
+ <span class="ansi-red">M</span> prototype/tokens.css
+<span class="ansi-green">A</span>  prototype/samples.html
+<span class="ansi-red">??</span> notes.txt
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ npm --prefix tools test
+<span class="ansi-green">✔</span> tokens pairs (12 ms)
+<span class="ansi-yellow">⚠ 1 close pair</span>
+<span class="ansi-bright-red">✖ samples: span with no token</span>
+<span class="ansi-cyan">ℹ tests 214</span>
+<span class="ansi-bright-black">ℹ duration_ms 8042</span>
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ journalctl --user -p warning -n 2
+<span class="ansi-magenta">Nov 11 09:14:02</span> forge kwin_wayland[1402]: No decoration plugin found, using the default
+<span class="ansi-magenta">Nov 11 09:14:05</span> forge konsole[2210]: Colour scheme "Amber" not found
+<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git<span class="ansi-bright-black"> push</span></pre>
+    </div>
+
+    <div class="ansi-palette terminal" aria-label="The 16 ANSI colours"><span class="ansi-black">black (exempt)</span><span class="ansi-red">red</span><span class="ansi-green">green</span><span class="ansi-yellow">yellow</span><span class="ansi-blue">blue</span><span class="ansi-magenta">magenta</span><span class="ansi-cyan">cyan</span><span class="ansi-white">white</span><span class="ansi-bright-black">bright black</span><span class="ansi-bright-red">bright red</span><span class="ansi-bright-green">bright green</span><span class="ansi-bright-yellow">bright yellow</span><span class="ansi-bright-blue">bright blue</span><span class="ansi-bright-magenta">bright magenta</span><span class="ansi-bright-cyan">bright cyan</span><span class="ansi-bright-white">bright white</span></div>
+  </div>
+</section>
+
+<section class="family" aria-label="Editor">
+  <h2>Editor</h2>
+  <p class="dim">Kate's editor theme. The gutter sits a tone below the code with no line between them; the current line sits a tone above.</p>
+
+  <div class="sample-scene">
+    <div class="window is-active sample kate">
+      <div class="title-bar"><span class="title">counter.cpp — Kate</span></div>
+      <div class="tab-bar" role="tablist"><button class="tab is-selected" role="tab" aria-selected="true">counter.cpp</button><button class="tab" role="tab" aria-selected="false">amber.h</button></div>
+      <div class="editor">
+<div class="gutter" aria-hidden="true">
+<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number current-line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</div>
+<div class="code">
+<span class="line"><span class="syn-comment">// Counts the files in a folder, skipping hidden ones.</span></span>
+<span class="line"><span class="syn-preprocessor">#include</span> <span class="syn-preprocessor">&lt;QDir&gt;</span></span>
+<span class="line"><span class="syn-preprocessor">#include</span> <span class="syn-string">&quot;amber.h&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span class="syn-keyword">static</span> <span class="syn-keyword">constexpr</span> <span class="syn-keyword">int</span> <span class="syn-number">kLimit</span> = <span class="syn-number">4096</span>;</span>
+<span class="line"></span>
+<span class="line"><span class="syn-keyword">int</span> <span class="syn-function">countFiles</span>(<span class="syn-keyword">const</span> <span class="syn-type">QString</span> &amp;path)</span>
+<span class="line">{</span>
+<span class="line">    <span class="syn-type">QDir</span> dir(path);</span>
+<span class="line">    <span class="syn-keyword">int</span> count = <span class="syn-number">0</span>;</span>
+<span class="line">    <span class="syn-keyword">for</span> (<span class="syn-keyword">const</span> <span class="syn-type">QFileInfo</span> &amp;info : dir.<span class="syn-function">entryInfoList</span>()) {</span>
+<span class="line">        <span class="syn-keyword">if</span> (<span class="text-selection">info.<span class="syn-function">fileName</span>()</span>.<span class="syn-function">startsWith</span>(<span class="syn-string">u&#x27;.&#x27;</span>))</span>
+<span class="line">            <span class="syn-keyword">continue</span>;</span>
+<span class="line current-line">        count += <span class="syn-number">1</span>;</span>
+<span class="line">    }</span>
+<span class="line">    <span class="syn-keyword">return</span> count &gt; <span class="syn-number">kLimit</span> ? <span class="syn-number">kLimit</span> : count;</span>
+<span class="line">}</span>
+</div>
+</div>
+    </div>
+  </div>
+</section>
+
+<section class="candidates" aria-label="Candidates">
+  <h2>Terminal background</h2>
+  <p class="dim">The terminal on the window's main surface, or a tone or two darker, as many terminals are.</p>
+  <div class="candidate-row">
+  <figure class="candidate">
+    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
+    <figcaption>
+      Start, tone 2
+      <span class="dim">tone 2</span>
+      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="6.25">6.25:1 on terminal</data></span>
+      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="6.59">6.59:1 on terminal</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--terminal: var(--tone-1)">
+    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
+    <figcaption>
+      Tone 1
+      <span class="dim">tone 1</span>
+      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="6.86">6.86:1 on terminal</data></span>
+      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="7.23">7.23:1 on terminal</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--terminal: var(--tone-0)">
+    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
+    <figcaption>
+      Tone 0
+      <span class="dim">tone 0</span>
+      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="7.27">7.27:1 on terminal</data></span>
+      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="7.66">7.66:1 on terminal</data></span>
+    </figcaption>
+  </figure>
+  </div>
+
+  <h2>Text selection</h2>
+  <p class="dim">The text selection against the current line. More accent tells them apart better, but the comments in dim text fail on it beyond about 14 %.</p>
+  <div class="candidate-row">
+  <figure class="candidate">
+    <div class="vignette" inert><div class="code"><span class="line"><span class="syn-comment">// Skip hidden files.</span></span><span class="line current-line">    count += <span class="syn-number">1</span>; <span class="syn-comment">// counted</span></span><span class="line">    <span class="syn-keyword">return</span> count; <span class="syn-comment">// all <span class="text-selection">the files</span></span></span></div></div>
+    <figcaption>
+      Start, accent 14 %
+      <span class="dim">accent 14 %, #3d362b</span>
+      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-selection" value="4.71">4.71:1 on editor selection</data></span>
+      <span class="ratio-line">selection <data class="ratio" data-pair="editor-selection on editor-current-line" value="1.13">1.13:1 on editor current line</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--editor-selection: var(--tone-4)">
+    <div class="vignette" inert><div class="code"><span class="line"><span class="syn-comment">// Skip hidden files.</span></span><span class="line current-line">    count += <span class="syn-number">1</span>; <span class="syn-comment">// counted</span></span><span class="line">    <span class="syn-keyword">return</span> count; <span class="syn-comment">// all <span class="text-selection">the files</span></span></span></div></div>
+    <figcaption>
+      Tone 4
+      <span class="dim">tone 4</span>
+      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-selection" value="4.60">4.60:1 on editor selection</data></span>
+      <span class="ratio-line">selection <data class="ratio" data-pair="editor-selection on editor-current-line" value="1.16">1.16:1 on editor current line</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--editor-selection: #473e30">
+    <div class="vignette" inert><div class="code"><span class="line"><span class="syn-comment">// Skip hidden files.</span></span><span class="line current-line">    count += <span class="syn-number">1</span>; <span class="syn-comment">// counted</span></span><span class="line">    <span class="syn-keyword">return</span> count; <span class="syn-comment">// all <span class="text-selection">the files</span></span></span></div></div>
+    <figcaption>
+      Accent 20 %
+      <span class="dim">accent 20 %, #473e30</span>
+      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-selection" value="4.15">4.15:1 on editor selection</data> <span class="dim">fails</span></span>
+      <span class="ratio-line">selection <data class="ratio" data-pair="editor-selection on editor-current-line" value="1.29">1.29:1 on editor current line</data></span>
+    </figcaption>
+  </figure>
+  </div>
+</section>
+
+</body>
+</html>

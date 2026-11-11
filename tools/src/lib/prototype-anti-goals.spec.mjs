@@ -23,13 +23,15 @@ const scripts = files.filter(name => name.endsWith('.js'));
 // The stylesheets each page links, in order. A new page is added here.
 const LINKS = {
   'gallery.html': [ 'tokens.css', 'window.css', 'widgets.css', 'scrollbars.css', 'gallery.css' ],
-  'index.html': [ 'tokens.css', 'window.css', 'shell.css', 'scrollbars.css' ]
+  'index.html': [ 'tokens.css', 'window.css', 'shell.css', 'scrollbars.css' ],
+  'samples.html': [ 'tokens.css', 'window.css', 'widgets.css', 'gallery.css', 'samples.css' ]
 };
 
 // The scripts each page runs (D-48). A new page is added here.
 const SCRIPTS = {
   'gallery.html': [ 'gallery.js' ],
-  'index.html': []
+  'index.html': [],
+  'samples.html': []
 };
 
 describe('prototype anti-goals', () => {

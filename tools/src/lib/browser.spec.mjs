@@ -3,7 +3,7 @@ import { mkdtempSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
-import { nameColour, outPath, pageUrl, parseCssColour, tokenNames } from './browser.mjs';
+import { isTokenColour, nameColour, outPath, pageUrl, parseCssColour, tokenNames } from './browser.mjs';
 import { UsageError } from './cli.mjs';
 import { loadTokens } from './tokens.mjs';
 
@@ -54,15 +54,23 @@ describe('browser', () => {
 
   it('names colours as tokens', () => {
     const names = tokenNames(loadTokens());
-    assert.equal(nameColour('rgb(28, 26, 24)', names), '#1c1a18 (tone-1)');
+    assert.equal(nameColour('rgb(28, 26, 24)', names), '#1c1a18 (tone-1, editor-gutter)');
     assert.equal(nameColour('rgb(60, 56, 50)', names), '#3c3832 (tone-4, outline, scroll-thumb)');
     assert.equal(nameColour('rgb(1, 2, 3)', names), '#010203');
     assert.equal(nameColour('rgba(0, 0, 0, 0)', names), 'transparent');
     assert.equal(nameColour('rgba(209, 176, 114, 0.28)', names), 'rgb(209 176 114 / 28%)');
     assert.equal(nameColour('color(srgb 0.819608 0.690196 0.447059 / 0.28)', names), 'rgb(209 176 114 / 28%)');
-    assert.equal(nameColour('color(srgb 0.819608 0.690196 0.447059)', names), '#d1b072 (accent)');
+    assert.equal(nameColour('color(srgb 0.819608 0.690196 0.447059)', names), '#d1b072 (accent, ansi-yellow, syntax-preprocessor)');
     assert.match(nameColour('oklch(0.5 0.02 80)', names), /^#[0-9a-f]{6}$/);
     const all = [ ...names.values() ].flat();
     assert.ok(!all.includes('glow') && !all.includes('shadow'), all.join(', '));
+  });
+
+  it('names a colour as any of its tokens', () => {
+    const names = tokenNames(loadTokens());
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'text', names), true);
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'ansi-white', names), true);
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'text-dim', names), false);
+    assert.equal(isTokenColour('rgba(0, 0, 0, 0)', 'transparent', names), true);
   });
 });

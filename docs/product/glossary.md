@@ -157,6 +157,31 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A small window that opens over a window and closes when it is done: a
   menu, a combo box's list, a tooltip. A dialog is a window, not a popup.
 
+**Sample**
+: A mock terminal or editor in the prototype, filled with realistic content,
+  that shows the terminal colours or the editor theme.
+
+**ANSI colour**
+: One of the 16 colours a terminal program asks for by number: eight normal
+  (black, red, green, yellow, blue, magenta, cyan, white) and eight bright.
+  _Avoid_ "intense", Konsole's word for bright, except when naming Konsole's
+  keys.
+
+**Syntax colour**
+: A colour of the editor theme that marks one kind of code, such as a
+  keyword, a string or a comment.
+
+**Gutter**
+: The column beside an editor's text that holds the line numbers. _Avoid_
+  "icon border" (Kate's name) and "margin".
+
+**Current line**
+: The line of an editor that holds the text cursor.
+
+**Text selection**
+: The run of text chosen in an editor or a text field. _Avoid_ "selected" for
+  it: that is the state of an item or a tab.
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.

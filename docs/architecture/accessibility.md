@@ -1,7 +1,8 @@
 # Amber — Accessibility: contrast
 
 > Status: **Accepted** on 2026-11-11. Three questions are deferred to
-> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md).
+> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md). O-5,
+> light text on ANSI colours, is open too.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -31,9 +32,24 @@ Disabled controls are exempt in WCAG, and are exempt here.
    (raised focus, 3.16:1) and on a focused selected tab (well focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
    tonal step, kept above a floor of 1.1 (my call).
-3. **Syntax and terminal colours: 4.5:1** against the editor and terminal
-   background. ANSI black is exempt, since it is meant to match a dark
-   background.
+3. **Syntax and terminal colours: 4.5:1** against every background they
+   are read on: the terminal colours on the terminal; the syntax colours on
+   the editor, the current line and the text selection. ANSI black is
+   exempt, since it is meant to match a dark background. The text selection
+   is the hardest of these: comments in dim text measure 4.71:1 on it, and
+   fail beyond a tint of about 14 % accent (4.50:1, FAIL, at 16 %; measured
+   2026-11-11, P1.6). Programs such as `less` and `htop` also draw ANSI
+   colours as backgrounds. With the terminal background or ANSI black as
+   text, contrast is symmetric, so those are the same ratios as the pairs on
+   the terminal, and ANSI black, darker than the terminal, passes wherever
+   they do; they need no pairs of their own. **Light text on an ANSI
+   colour is not checked and does not pass:** text measures 1.62:1 to
+   1.88:1 on the six normal colours, and bright white 1.84:1 to 2.13:1
+   (measured 2026-11-11, P1.6). Midnight Commander's blue panels, powerline
+   prompts and some `ls` colours draw that. It is open question O-5 in the
+   [decisions](decisions.md). The text selection and the
+   current line are told apart by a floor of 1.1 (1.13:1) and by the
+   accent's hue (my call).
 4. **Focused widgets: open.** A focused widget is shown by a tone tinted
    with accent. How far that tone must stand from the widget at rest and
    from the surface is open question O-3 in the [decisions](decisions.md).
@@ -106,7 +122,7 @@ Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plans P1.1 to P1.5. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1 to P1.6. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -166,6 +182,52 @@ falls below its minimum.
 | accent | popup | 6.54:1 | 3 | pass |
 | selected | tone 2 | 1.17:1 | 1.1 (floor) | pass |
 | selected | tone 1 | 1.28:1 | 1.1 (floor) | pass |
+| text | editor | 12.38:1 | 4.5 | pass |
+| text | editor gutter | 13.58:1 | 4.5 | pass |
+| text | editor current line | 10.58:1 | 4.5 | pass |
+| text | editor selection | 9.33:1 | 4.5 | pass |
+| dim text | editor gutter | 6.86:1 | 4.5 | pass |
+| terminal text | terminal | 12.38:1 | 4.5 | pass |
+| ansi red | terminal | 6.61:1 | 4.5 | pass |
+| ansi green | terminal | 7.03:1 | 4.5 | pass |
+| ansi yellow | terminal | 7.66:1 | 4.5 | pass |
+| ansi blue | terminal | 6.92:1 | 4.5 | pass |
+| ansi magenta | terminal | 6.59:1 | 4.5 | pass |
+| ansi cyan | terminal | 7.31:1 | 4.5 | pass |
+| ansi white | terminal | 12.38:1 | 4.5 | pass |
+| ansi bright black | terminal | 6.25:1 | 4.5 | pass |
+| ansi bright red | terminal | 8.79:1 | 4.5 | pass |
+| ansi bright green | terminal | 9.29:1 | 4.5 | pass |
+| ansi bright yellow | terminal | 9.96:1 | 4.5 | pass |
+| ansi bright blue | terminal | 9.16:1 | 4.5 | pass |
+| ansi bright magenta | terminal | 8.78:1 | 4.5 | pass |
+| ansi bright cyan | terminal | 9.52:1 | 4.5 | pass |
+| ansi bright white | terminal | 14.05:1 | 4.5 | pass |
+| syntax keyword | editor | 6.59:1 | 4.5 | pass |
+| syntax keyword | editor current line | 5.63:1 | 4.5 | pass |
+| syntax keyword | editor selection | 4.97:1 | 4.5 | pass |
+| syntax function | editor | 6.92:1 | 4.5 | pass |
+| syntax function | editor current line | 5.92:1 | 4.5 | pass |
+| syntax function | editor selection | 5.22:1 | 4.5 | pass |
+| syntax type | editor | 7.31:1 | 4.5 | pass |
+| syntax type | editor current line | 6.25:1 | 4.5 | pass |
+| syntax type | editor selection | 5.51:1 | 4.5 | pass |
+| syntax string | editor | 7.03:1 | 4.5 | pass |
+| syntax string | editor current line | 6.00:1 | 4.5 | pass |
+| syntax string | editor selection | 5.30:1 | 4.5 | pass |
+| syntax number | editor | 6.61:1 | 4.5 | pass |
+| syntax number | editor current line | 5.64:1 | 4.5 | pass |
+| syntax number | editor selection | 4.98:1 | 4.5 | pass |
+| syntax preprocessor | editor | 7.66:1 | 4.5 | pass |
+| syntax preprocessor | editor current line | 6.54:1 | 4.5 | pass |
+| syntax preprocessor | editor selection | 5.77:1 | 4.5 | pass |
+| syntax comment | editor | 6.25:1 | 4.5 | pass |
+| syntax comment | editor current line | 5.34:1 | 4.5 | pass |
+| syntax comment | editor selection | 4.71:1 | 4.5 | pass |
+| editor selection | editor | 1.33:1 | 1.1 (floor) | pass |
+| editor selection | editor current line | 1.13:1 | 1.1 (floor) | pass |
+| editor current line | editor | 1.17:1 | 1.1 (floor) | pass |
+| syntax comment | accent 16 % over tone 2 (`#41392c`) | 4.50:1 (4.496) | 4.5 | fail: caps the text selection's tint near 14 % |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | dim text | raised focus | 2.58:1 | 4.5 | fail: a focused item shows secondary text in text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
@@ -180,8 +242,6 @@ measured 3.92:1 there and 4.56:1 (close) on tone 3.
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
 (`#695c45`), is the starting `raised-focus` (P1.3). The gallery shows it
 beside 20 %, 40 % and 60 % (O-3).
-
-Not yet measured: the terminal and syntax colours, which do not exist yet.
 
 ## How the check works
 
