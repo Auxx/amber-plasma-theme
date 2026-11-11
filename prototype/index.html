@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber prototype</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="window.css">
+<link rel="stylesheet" href="shell.css">
+</head>
+<body class="desktop">
+
+<!-- The window shell (roadmap P1.2): an inactive window behind an active one. -->
+<section class="scene" aria-label="Two windows">
+
+  <div class="window scene-back" aria-label="Inactive window">
+    <div class="title-bar">
+      <span class="title">Downloads — File Manager</span>
+      <span class="window-buttons">
+        <span class="window-button is-minimise"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span>
+        <span class="window-button is-maximise"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span>
+        <span class="window-button is-close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+      </span>
+    </div>
+    <div class="toolbar">
+      <span class="tool">Back</span>
+      <span class="tool">Forward</span>
+      <span class="path">Home › Downloads</span>
+      <span class="tool">View</span>
+    </div>
+    <div class="workspace">
+      <nav class="sidebar">
+        <div class="sidebar-heading dim">Places</div>
+        <div class="place">Home</div>
+        <div class="place">Desktop</div>
+        <div class="place">Documents</div>
+        <div class="place is-selected">Downloads</div>
+        <div class="place">Music</div>
+        <div class="place">Pictures</div>
+      </nav>
+      <div class="list">
+        <div class="row list-header"><span>Name</span><span>Size</span><span>Modified</span></div>
+        <div class="row"><span>fedora-45-kde.iso</span><span>2.6 GB</span><span>Yesterday, 18:02</span></div>
+        <div class="row"><span>invoice-1024.pdf</span><span>184 KB</span><span>9 Nov, 10:15</span></div>
+        <div class="row"><span>noto-fonts.zip</span><span>41 MB</span><span>7 Nov, 21:40</span></div>
+        <div class="row"><span>wallpaper-stone.png</span><span>3.1 MB</span><span>2 Nov, 08:30</span></div>
+        <div class="row"><span>notes.txt</span><span>2 KB</span><span>28 Oct, 14:11</span></div>
+      </div>
+    </div>
+    <div class="status">5 items</div>
+  </div>
+
+  <div class="window is-active scene-front" aria-label="Active window">
+    <div class="title-bar">
+      <span class="title">Documents — File Manager</span>
+      <span class="window-buttons">
+        <span class="window-button is-minimise"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span>
+        <span class="window-button is-maximise"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span>
+        <span class="window-button is-close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+      </span>
+    </div>
+    <div class="toolbar">
+      <span class="tool">Back</span>
+      <span class="tool">Forward</span>
+      <span class="path">Home › Documents</span>
+      <span class="tool">View</span>
+    </div>
+    <div class="workspace">
+      <nav class="sidebar">
+        <div class="sidebar-heading dim">Places</div>
+        <div class="place">Home</div>
+        <div class="place">Desktop</div>
+        <div class="place is-selected">Documents</div>
+        <div class="place">Downloads</div>
+        <div class="place">Music</div>
+        <div class="place">Pictures</div>
+      </nav>
+      <div class="list">
+        <div class="row list-header"><span>Name</span><span>Size</span><span>Modified</span></div>
+        <div class="row"><span>Invoices</span><span>4 items</span><span>Today, 09:12</span></div>
+        <div class="row"><span>Letters</span><span>12 items</span><span>3 Nov, 16:45</span></div>
+        <div class="row"><span>Taxes</span><span>7 items</span><span>12 Oct, 11:20</span></div>
+        <div class="row is-selected"><span>amber-notes.md</span><span>6 KB</span><span>Today, 10:31</span></div>
+        <div class="row"><span>budget-2027.ods</span><span>38 KB</span><span>Yesterday, 20:05</span></div>
+        <div class="row"><span>contract.pdf</span><span>512 KB</span><span>8 Nov, 13:00</span></div>
+        <div class="row"><span>holiday-plan.odt</span><span>24 KB</span><span>5 Nov, 19:47</span></div>
+        <div class="row"><span>passport-scan.png</span><span>1.2 MB</span><span>30 Oct, 09:02</span></div>
+        <div class="row"><span>reading-list.txt</span><span>3 KB</span><span>21 Oct, 22:18</span></div>
+        <div class="row"><span>recipes.odt</span><span>58 KB</span><span>2 Oct, 17:36</span></div>
+      </div>
+    </div>
+    <div class="status">10 items, 3 folders</div>
+  </div>
+
+</section>
+
+</body>
+</html>
