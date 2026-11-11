@@ -121,11 +121,44 @@ describe('prototype samples', () => {
   });
 
   withChrome('draws the samples with no line', async () => {
-    const { page, problems } = await samples();
+    let { page, problems } = await samples();
     assert.deepEqual(problems, []);
-    assert.deepEqual(await renderedOffences(page), []);
+    const offences = (await renderedOffences(page)).map(o => `at rest: ${o}`);
+    ({ page } = await samples());
+    await page.locator('.code').hover();
+    offences.push(...(await renderedOffences(page)).map(o => `pointer over the code: ${o}`));
+    assert.deepEqual(offences, []);
     const { status, stdout } = spawnSync(process.execPath, [ BROWSER, 'check', SAMPLES ], { cwd: REPO, encoding: 'utf8' });
     assert.equal(status, 0, stdout);
     assert.ok(stdout.trim().endsWith('0 load problems, 0 anti-goal offences.'), stdout);
+  });
+
+  withChrome('draws the editor on its own tokens', async () => {
+    const { page } = await samples();
+    const offences = [
+      ...(await expectTokens(page, '.kate .code', [ 'editor', 'text' ])),
+      ...(await expectTokens(page, '.kate .gutter', [ 'editor-gutter', 'text-dim' ])),
+      ...(await expectTokens(page, '.kate .current-line', [ 'editor-current-line' ], [ 'background-color' ])),
+      ...(await expectTokens(page, '.kate .current-line-number', [ 'text' ], [ 'color' ])),
+      ...(await expectTokens(page, '.kate .text-selection', [ 'editor-selection' ], [ 'background-color' ]))
+    ];
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('uses every syntax colour', async () => {
+    const { page } = await samples();
+    const used = new Set(await page.locator('.kate .code [class]').evaluateAll(elements => elements.map(element => element.className)));
+    assert.deepEqual(SYNTAX.filter(kind => !used.has(`syn-${kind}`)), []);
+  });
+
+  withChrome('lines up the gutter with the code', async () => {
+    const { page } = await samples();
+    const tops = selector => page.locator(selector).evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+    const numbers = await tops('.kate .line-number');
+    const lines = await tops('.kate .line');
+    assert.equal(lines.length, 17);
+    assert.equal(numbers.length, lines.length);
+    const off = lines.map((top, index) => [ index + 1, numbers[index] - top ]).filter(([ , gap ]) => Math.abs(gap) > 0.5);
+    assert.deepEqual(off, []);
   });
 });

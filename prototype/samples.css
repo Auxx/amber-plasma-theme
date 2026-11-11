@@ -51,3 +51,63 @@
 .ansi-bright-magenta { color: var(--ansi-bright-magenta); }
 .ansi-bright-cyan { color: var(--ansi-bright-cyan); }
 .ansi-bright-white { color: var(--ansi-bright-white); }
+
+/*
+ * Kate's editor area: the gutter a tone below the code, with no line between
+ * them. Each line is a block of one line height, so that the numbers and the
+ * lines meet, and the current line's tone spans the whole width of the code.
+ */
+.editor {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.gutter,
+.code {
+  padding: 8px 0;
+  font: 13px/20px monospace;
+}
+
+.gutter {
+  padding-inline: 12px;
+  text-align: right;
+  background: var(--editor-gutter);
+  color: var(--text-dim);
+}
+
+.code {
+  background: var(--editor);
+  color: var(--text);
+}
+
+/* A line keeps its spaces; the newlines between lines in the source do not count. */
+.line,
+.line-number {
+  display: block;
+  min-height: 20px;
+  white-space: pre;
+}
+
+.line {
+  padding-inline: 12px;
+}
+
+.current-line {
+  background: var(--editor-current-line);
+}
+
+.current-line-number {
+  color: var(--text);
+}
+
+.text-selection {
+  background: var(--editor-selection);
+}
+
+.syn-keyword { color: var(--syntax-keyword); }
+.syn-function { color: var(--syntax-function); }
+.syn-type { color: var(--syntax-type); }
+.syn-string { color: var(--syntax-string); }
+.syn-number { color: var(--syntax-number); }
+.syn-preprocessor { color: var(--syntax-preprocessor); }
+.syn-comment { color: var(--syntax-comment); }
