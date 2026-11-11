@@ -61,6 +61,26 @@ Verified on 2026-11-10 unless marked.
 - **`box-shadow` is `none` or exactly one shadow**: four lengths and a
   colour. There is no `inset`, and shadows cannot be stacked. The lengths are
   horizontal offset, vertical offset, blur and spread. (verified, 2026-11-11)
+- In a Qt Widgets application, on a button (verified, 2026-11-11; see
+  [P0.5](#p05-glow-without-a-shadow--2026-11-11)):
+  - `inset` (the layout property) draws the background that far inside the
+    widget. The widget does not grow, and `padding` is still counted from
+    the widget's edge. A negative `inset` draws nothing outside the widget.
+  - `margin` changed nothing that could be seen.
+  - A border is drawn around the inset background, on the surface, and its
+    colour may be part transparent.
+  - `background-image` works only as `url(…) mask <colour>` with an SVG
+    file. Without `mask` the application aborts in
+    `drawBackgroundRectangle`. A PNG file is not drawn.
+  - A masked image is drawn over the background colour at the image's own
+    size, centred, and cut at the widget's edge. It is not stretched or
+    tiled. `background-image-width`, `-height` and `-offset-*` changed
+    nothing.
+  - The mask is on or off per pixel: a gradient and a blur filter in the SVG
+    both came out as solid shapes. The mask colour may be part transparent,
+    but only as one flat value.
+  - `:hovered` and `:visual-focus` rules on `background-color` and
+    `border-color` are drawn.
 - `border: none`, `border-radius: 0px` and `outline: none` are accepted and
   give a square widget with no border in both Qt Widgets and Qt Quick.
   (verified, 2026-11-11)
@@ -99,7 +119,6 @@ Verified on 2026-11-10 unless marked.
 
 | Question | Tested in |
 |---|---|
-| Is there another way to draw a glow in a Qt Widgets application: a background image that carries the blur, with `margin` or `inset` to give it room? | not planned; depends on O-2 |
 | Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. | not planned; depends on O-2 |
 | How does the Breeze style show focus in a Qt Widgets application, given that its focus `outline` is not drawn? | P3.2 |
 | Does a later release of Union draw `box-shadow` in Qt Widgets? | not planned; depends on O-2 |
@@ -203,3 +222,39 @@ symbols that `UnionWidgetsStyle.so` imports were listed with `nm`.
 - P3.1 can use the install path, `UNION_STYLE_NAME` and the edit loop above
   as they are. P6.1 must remove the empty folders and the cache file that
   uninstalling leaves behind.
+
+### P0.5 Glow without a shadow — 2026-11-11
+
+**Question.** Asked by the owner before deciding O-2: can a glow be made on
+a button in a Qt Widgets application from what Union does draw there?
+
+**What was done.** The set-up of P0.3 again, with a test application that
+can mark a button as hovered or focused for a picture. One loud rule at a
+time was tried for `inset`, `margin` and `background-image`; the facts are
+under "Union CSS" above. Then four candidates were pictured, each at rest,
+hovered and focused.
+
+**What was seen.**
+
+- **A blurred glow cannot be made.** Nothing that the Qt Widgets style draws
+  can fade: a background and a border are flat colours, and an image mask
+  is on or off per pixel. An image also keeps its own size, so it cannot
+  follow a button's width.
+- What can be made are flat stand-ins:
+  - *tone:* hovered is a lighter tone; focused is the tone mixed with
+    accent. No change in size.
+  - *rim:* a 3 px border inside the button, the tone mixed with accent,
+    stronger when focused. No change in size.
+  - *band:* a 5 px border in part-transparent accent around the button, on
+    the surface, with `inset` keeping room for it. Every button is 10 px
+    wider and taller (34 px to 44 px high at the Breeze style's sizes), and
+    the room is kept at rest too.
+- The rim and the band have hard edges. They read as a frame, not as light
+  (my call; the owner judges from the pictures).
+- Not tried: a dithered mask, which could give a grainy fade but only on
+  widgets of one fixed size, such as check boxes.
+
+**What it changes.** Nothing by itself: it gives the owner the pictures and
+the limits for O-2. If a rim or a band is chosen, it is a border several
+pixels wide, and the owner decides whether that sits with "no lines".
+
