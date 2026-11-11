@@ -76,7 +76,7 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "44 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "45 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
 # Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
@@ -132,9 +132,14 @@ node tools/src/bin/tokens.mjs resolve text-dim
   in an attribute, a `style` that sets anything but custom properties, and a colour
   set outside a candidate. A colour written outside the tokens must be warm:
   OKLCH hue 30 to 110, or black (my call). A script (`prototype/*.js`) may
-  only set custom properties (D-48): it fails on a colour, on `classList`,
-  `className`, `setAttribute`, markup, `fetch` or `import`, and on any
-  `.style` use but `.style.setProperty('--…')`. `prototype-candidates.spec.mjs`
+  only copy a value into `--value` (D-48). It is read against an allowlist:
+  it may use only the names a slider needs (`document`, `querySelectorAll`,
+  `addEventListener`, `setProperty`, `value`, `min`, `max`, `Number` and a few
+  more, in `SCRIPT_NAMES`) and the names it declares itself. It fails on any
+  other name, on bracket access, on `var(`, on a colour, and on any `.style`
+  use but `.style.setProperty('--value'`. A page also fails on an `on…`
+  attribute or a `javascript:` URL, quoted or not, entities decoded, and on
+  `<script>` or `<style>` in any case. `prototype-candidates.spec.mjs`
   measures every ratio printed under a candidate again, with that figure's
   `style` overrides, and fails when one is stale; it lists how many figures
   and ratios each page has. `prototype-gallery.spec.mjs` reads the gallery's

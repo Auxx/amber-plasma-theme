@@ -137,6 +137,7 @@ falls below its minimum.
 | accent | raised focus | 3.16:1 | 3 | pass |
 | on-accent | accent hover | 9.94:1 | 4.5 | pass |
 | on-accent | accent pressed | 6.68:1 | 4.5 | pass |
+| accent hover | tone 2 | 8.74:1 | 3 | pass |
 | raised focus | tone 3 | 2.07:1 | 1.2 (provisional) | pass |
 | raised focus | tone 2 | 2.42:1 | 1.2 (provisional) | pass |
 | well focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |

@@ -124,7 +124,8 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
   arrow buttons. At rest it is tone 4, hovered dim text, pressed text.
   Every page of the prototype links `scrollbars.css`, so its own
   scrollbars are Amber's. A scroller that takes keyboard focus is tinted
-  with the focused well's tone.
+  with the focused well's tone, and its thumb rises to dim text there: the
+  thumb at rest would measure 1.09:1 on that tint.
 
 Tokens of the widgets (my call, P1.3 and P1.4; the owner chooses O-1 and O-3 in
 P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the

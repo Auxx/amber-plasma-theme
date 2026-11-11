@@ -61,7 +61,7 @@ text in other documents.
 | D-45 | The prototype is opened in a browser by a tool built on Playwright, in `tools/` | Owner | 2026-11-11: the owner cannot install the Chrome extension, and pictures without states cannot show hovered, focused or pressed tones |
 | D-46 | `playwright-core` drives the installed Google Chrome; no browser is downloaded, and Firefox is not driven | Designer | Nothing is installed beyond one npm package; Chrome 157 verified on 2026-11-11, P0.7 |
 | D-47 | Widget tones that are not tones, such as the focused tones, are opaque tokens; a mix they come from is written in the token's comment, not as `color-mix` with a second colour | Designer | The colour scheme and the Union style need plain colours, and the tokens reader stays as small as D-44 left it. 2026-11-11, P1.3 |
-| D-48 | The prototype may hold a script only to copy a value into a custom property, such as a slider's fill. A script sets no colour and no class, and `scriptOffences` checks it | Designer | A fill that does not follow a dragged thumb shows what Amber will not do, and CSS cannot read a range input's live value. 2026-11-11, P1.4 |
+| D-48 | The prototype may hold a script only to copy a value into a custom property, such as a slider's fill. A script sets no colour and no class: `scriptOffences` allows it only the names a slider needs and the names it declares | Designer | A fill that does not follow a dragged thumb shows what Amber will not do, and CSS cannot read a range input's live value. 2026-11-11, P1.4 |
 
 ## Accessibility
 
