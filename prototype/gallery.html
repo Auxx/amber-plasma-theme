@@ -275,6 +275,122 @@ Warm, never cool.</textarea></div>
     </figcaption>
   </figure>
   </div>
+  <h2>Focused toggle</h2>
+  <p class="dim">How far the focused tone stands from the toggle at rest and from the surface (O-3). A toggle holds no text, so its tint is not capped by the placeholder.</p>
+  <div class="candidate-row">
+  <figure class="candidate">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
+    <figcaption>
+      Start, 16 %
+      <span class="dim">accent 16 % over tone 1, #393226</span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="1.25">1.25:1 on tone 2</data></span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="1.45">1.45:1 on toggle</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle-focus: #524733">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
+    <figcaption>
+      Accent 30 %
+      <span class="dim">accent 30 % over tone 1, #524733</span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="1.74">1.74:1 on tone 2</data></span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="2.02">2.02:1 on toggle</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle-focus: #64563c">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
+    <figcaption>
+      Accent 40 %
+      <span class="dim">accent 40 % over tone 1, #64563c</span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="2.21">2.21:1 on tone 2</data></span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="2.57">2.57:1 on toggle</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle-focus: #89744e">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
+    <figcaption>
+      Accent 60 % (3:1)
+      <span class="dim">accent 60 % over tone 1, #89744e</span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="3.52">3.52:1 on tone 2</data></span>
+      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="4.09">4.09:1 on toggle</data></span>
+    </figcaption>
+  </figure>
+  </div>
+  <h2>Unchecked toggle</h2>
+  <p class="dim">An unchecked toggle against its surface (O-1). A lighter box is the cue a darker one cannot give.</p>
+  <div class="candidate-row">
+  <figure class="candidate">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
+    <figcaption>
+      Start
+      <span class="dim">tone 0</span>
+      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="1.16">1.16:1 on tone 2</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle: var(--tone-4)">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
+    <figcaption>
+      Lighter box, tone 4
+      <span class="dim">tone 4</span>
+      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="1.36">1.36:1 on tone 2</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle: #585248">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
+    <figcaption>
+      Box 2:1
+      <span class="dim">#585248</span>
+      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="2.05">2.05:1 on tone 2</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--toggle: #746e63">
+    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
+    <figcaption>
+      Box 3:1
+      <span class="dim">#746e63</span>
+      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="3.13">3.13:1 on tone 2</data></span>
+    </figcaption>
+  </figure>
+  </div>
+  <h2>Track</h2>
+  <p class="dim">An empty track against its surface, and the fill against its track (O-1). A track at 3:1 drops the fill below 3:1.</p>
+  <div class="candidate-row">
+  <figure class="candidate">
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <figcaption>
+      Start
+      <span class="dim">tone 0</span>
+      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="1.16">1.16:1 on tone 2</data></span>
+      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="8.91">8.91:1 on track</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--track: var(--tone-4)">
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <figcaption>
+      Lighter track, tone 4
+      <span class="dim">tone 4</span>
+      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="1.36">1.36:1 on tone 2</data></span>
+      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="5.63">5.63:1 on track</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--track: #585248">
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <figcaption>
+      Track 2:1
+      <span class="dim">#585248</span>
+      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="2.05">2.05:1 on tone 2</data></span>
+      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="3.74">3.74:1 on track</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--track: #746e63">
+    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" style="--value: 40%" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
+    <figcaption>
+      Track 3:1
+      <span class="dim">#746e63</span>
+      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="3.13">3.13:1 on tone 2</data></span>
+      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="2.45">2.45:1 on track</data> <span class="dim">fails</span></span>
+    </figcaption>
+  </figure>
+  </div>
 </section>
 
 </body>
