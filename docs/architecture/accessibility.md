@@ -37,7 +37,10 @@ Disabled controls are exempt in WCAG, and are exempt here.
    surface have a provisional minimum of 1.2 (my call): a floor, not a WCAG
    rule. A placeholder in dim text passes 4.5:1 on a focused well tinted up to
    20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
-   which caps the tint of a focused well near 20 %.
+   which caps the tint of a focused well near 20 %. A focused toggle holds
+   no text, so no cap applies to it: `toggle-focus` has the same
+   provisional 1.2 against tone 2 and the toggle at rest, and its tint can
+   reach 3:1 against tone 2 at 60 % (3.52:1; measured 2026-11-11, P1.4).
 5. **Window outline: open.** The window outline tells one window from the
    window or desktop behind it. What contrast it must reach is open
    question O-4 in the [decisions](decisions.md); its contrast pairs are
@@ -88,10 +91,16 @@ Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
 - Until O-1 is closed, the pairs of `well` and `well-edge` on tone 2 have a
   provisional minimum of 1.1 (my call). At the start the well edge has no
   width and the well's own tone.
+- Since P1.4 the gallery also shows candidates for the unchecked toggle and
+  the empty track. `toggle`, `track` and `scroll-thumb` have the same
+  provisional 1.1 on the surfaces they sit on (my call).
+- **A track cannot carry a 3:1 cue by itself.** A track at 3:1 on tone 2
+  (`#746e63`, 3.13:1) drops the accent fill on it to 2.45:1, below rule 2.
+  On a 2:1 track the fill keeps 3.74:1 (measured 2026-11-11).
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plans P1.1, P1.2 and P1.3. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1, P1.2, P1.3 and P1.4. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -134,6 +143,13 @@ falls below its minimum.
 | well focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
 | well | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
 | well edge | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| accent | track | 8.91:1 | 3 | pass |
+| toggle | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| track | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| scroll thumb | tone 2 | 1.36:1 | 1.1 (provisional) | pass |
+| scroll thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
+| toggle focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
+| toggle focus | toggle | 1.45:1 | 1.2 (provisional) | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |

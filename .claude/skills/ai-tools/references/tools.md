@@ -76,7 +76,7 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "37 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "44 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
 # Put dim text back to its old value: shows 5 changed pairs, one FAIL, exits 1
@@ -127,16 +127,22 @@ node tools/src/bin/tokens.mjs resolve text-dim
   window outline on `.window`, `column-rule`, `text-decoration`, a
   `drop-shadow` filter, a `round` clip, an at-rule, and any colour written out
   (CSS named colours included) except a warm `--desktop`. In the page it fails
-  on `<script>`, `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour in an
-  attribute, a `style` that sets anything but custom properties, and a colour
+  on `<script>` (except a linked `<script src="name.js" defer></script>`,
+  listed in the spec), `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour
+  in an attribute, a `style` that sets anything but custom properties, and a colour
   set outside a candidate. A colour written outside the tokens must be warm:
-  OKLCH hue 30 to 110, or black (my call). `prototype-candidates.spec.mjs`
+  OKLCH hue 30 to 110, or black (my call). A script (`prototype/*.js`) may
+  only set custom properties (D-48): it fails on a colour, on `classList`,
+  `className`, `setAttribute`, markup, `fetch` or `import`, and on any
+  `.style` use but `.style.setProperty('--…')`. `prototype-candidates.spec.mjs`
   measures every ratio printed under a candidate again, with that figure's
   `style` overrides, and fails when one is stale; it lists how many figures
   and ratios each page has. `prototype-gallery.spec.mjs` reads the gallery's
   rows of states and, in Chrome, checks that each state is drawn in its
   tokens, that a live control in a real state matches its forced copy, the
-  keyboard order, the placeholder colour and the rendered anti-goals.
+  keyboard order, the placeholder colour and the rendered anti-goals; and
+  that a slider's fill follows its value and that the real scrollbars share
+  their rules with the drawn ones.
 - **Exit codes.** 0 success; 1 a pair fails or is missing, a token is unknown,
   or a value is not a colour; 2 the command line was wrong, including an
   override that is not `token=value`.
