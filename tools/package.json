@@ -1,0 +1,9 @@
+{
+  "name": "amber-tools",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=24" },
+  "scripts": { "test": "node --test \"src/**/*.spec.mjs\"" },
+  "dependencies": { "culori": "4.0.2" }
+}
