@@ -32,6 +32,7 @@ that the prototype never promises something the system cannot draw.
 | P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | done |
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | done |
 | P0.5 Spike: glow without a shadow | Finding on whether a glow can be made in a Qt Widgets application from what Union does draw there: a background image, `inset` and `margin` | Pictures show a hovered and a focused button with such a glow in a Qt Widgets application, or the reason it cannot is written in the platform document; what the glow costs in layout is written there | done |
+| P0.6 Spike: window shadow and glow | Findings on the shadow an Aurorae theme draws around a window, and on a glow drawn the same way | Pictures show a window with a shadow of Amber's own and a window with a glow, or the reason either cannot be drawn is written in the platform document | done |
 
 P0.4 was written when the decoration was to have no line at all. The spike
 showed a square title bar with no border line; on seeing it the owner
@@ -40,13 +41,14 @@ decided that a window has a window outline: D-25 in the
 
 P0.3 is done by its second clause: the glow cannot be drawn in Qt Widgets
 applications, and the reason is in the platform document. After P0.5 the
-owner decided that Amber has no glow: D-4 in the
-[decisions](../architecture/decisions.md).
+owner decided that no widget glows: D-4 in the
+[decisions](../architecture/decisions.md). After P0.6 the owner decided
+that the active window has a window glow: D-26.
 
 The folders of the repository layout are not created empty: each appears with
 its first file, in the plan that fills it.
 
-P0.3, P0.4 and P0.5 are spikes: their code is thrown away and their findings go into
+P0.3, P0.4, P0.5 and P0.6 are spikes: their code is thrown away and their findings go into
 [platform](../architecture/platform.md). A failed spike goes back to the owner
 before the next step.
 
@@ -57,7 +59,7 @@ The gate for everything after it: the owner approves the look here.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P1.1 Tokens and contrast pairs | Tokens file, contrast pairs, `tokens` tool | `tokens pairs` runs in the tests and every pair passes | todo |
-| P1.2 Window shell | Mock file-manager window: title bar, toolbar, sidebar, list, status area; a second window behind it, with candidates for the window outline | The page opens from disk and shows every surface by tone alone; the two windows can be told apart where they overlap | todo |
+| P1.2 Window shell | Mock file-manager window: title bar, toolbar, sidebar, list, status area; a second window behind it, with candidates for the window outline, the window glow and the shadow | The page opens from disk and shows every surface by tone alone; the two windows can be told apart where they overlap | todo |
 | P1.3 Gallery: buttons and inputs | Buttons, tool buttons, combo boxes, text fields, spin boxes, text areas in every state | Each state is shown side by side and reacts to pointer and keyboard | todo |
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | todo |
 | P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | todo |
@@ -67,7 +69,8 @@ The gate for everything after it: the owner approves the look here.
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
 with candidate tones and their measured contrast side by side, so that the
 owner can decide O-1 by eye in P1.7. They show the focused tone the same
-way, for O-3. P1.2 shows the window outline the same way, for O-4, and the
+way, for O-3. P1.2 shows the window outline, the window glow and the shadow the same
+way, for O-4, and the
 owner decides it in P1.7 too.
 
 ## Step 2 — Colour scheme
@@ -108,7 +111,7 @@ next starts.
 |---|---|---|---|
 | P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | todo |
 | P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
-| P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line but the window outline appears at any window edge in any state; a maximised window shows none | todo |
+| P5.3 Glow, shadow and window states | Window glow for the active window, shadow for an inactive one; maximised and tiled windows | Matches the prototype; no line but the window outline appears at any window edge in any state; a maximised window shows no outline, glow or shadow | todo |
 
 ## Step 6 — Packaging
 

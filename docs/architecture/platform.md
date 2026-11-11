@@ -203,13 +203,41 @@ Verified on 2026-11-11 unless marked; see
     `spectacle --background --fullscreen --nonotify --output <file>`, run
     inside it, saves a picture of its output.
 
+- **An Aurorae theme draws its own shadow, as part of the frame's SVG.**
+  The `rc` file's `PaddingLeft`, `PaddingTop`, `PaddingRight` and
+  `PaddingBottom` keep that much room around the window, and the frame's
+  edge and corner elements, made as thick as the padding, are drawn into
+  it. What they hold is the shadow: a linear gradient from a
+  part-transparent colour to nothing on an edge, a radial one on a corner.
+  The window's own corners stay square. (verified, 2026-11-11; see
+  [P0.6](#p06-window-shadow-and-glow--2026-11-11))
+  - Width, strength and colour are whatever the SVG says, and each side may
+    have a padding of its own, so a shadow can be deeper below a window
+    than above it.
+  - A `feGaussianBlur` filter inside one element is drawn too. Each element
+    is drawn by itself, so a blur cannot run from one element into the
+    next; gradients do not have that limit.
+  - The colour may be any colour. In accent it is a glow around the window.
+  - `decoration-inactive-*` elements may hold another shadow, so an active
+    window can look different from an inactive one.
+  - The shadow or glow falls on whatever is behind the window, other
+    windows included.
+  - A maximised window shows no shadow, no glow and no window outline, and
+    fills the output.
+  - The window outline is the innermost pixel of the same edge elements.
+    At scale 1 it is one sharp pixel between the glow and the window. At
+    scale 1.49 it is one full pixel and one blended pixel, and the pixel of
+    the glow next to it is a little darker than its neighbours.
+- Breeze's decoration, for comparison, draws a dark shadow that reaches
+  more than 55 device pixels from the window at scale 1.49 and is deeper
+  below the window than above it.
+
 ### Unverified
 
 | Question | Tested in |
 |---|---|
 | Can the window outline be made the same width on every edge at scale 1.49? | P5.1 |
-| Does a maximised window show the window outline, and can it be left out there? | P5.3 |
-| How does an Aurorae theme draw its shadow, and does the shadow hide when maximised? The spike's theme had `Shadow=false` and no padding. | P5.3 |
+| What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
 | Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
@@ -325,7 +353,8 @@ hovered and focused.
 
 **What it changes.** The owner saw the candidates and a live sample window
 of the tone-only one, with text inputs and buttons, and decided on
-2026-11-11: no glow anywhere, state by tone alone (D-4). The sample's tones
+2026-11-11: no glow anywhere, state by tone alone (D-4). Since P0.6 the active
+window alone has a window glow (D-26). The sample's tones
 are the starting point in the [design language](design-language.md).
 
 ### P0.4 Square decoration — 2026-11-11
@@ -391,3 +420,48 @@ owner's display.
 - P5.1 to P5.3 can try the decoration in a nested KWin as above. P5.1 can
   start from nine plain rectangles per window state, and must settle the
   uneven window outline at scale 1.49.
+
+### P0.6 Window shadow and glow — 2026-11-11
+
+**Questions.** Asked by the owner after P0.4: can Amber change the shadow
+that windows have under Breeze's decoration, and can a window have a subtle
+glow?
+
+**What was done.** The set-up of P0.4 again, with a stone-coloured window
+without a decoration as the backdrop, so that a dark shadow and a light
+glow could both be seen. Breeze's decoration was pictured first. The spike's
+theme then got padding and gradients in its frame: a black shadow 24 px
+wide at 50 %; one 48 px wide at 80 %; one with paddings of 16, 8, 16 and
+40 px; a blur filter in place of the gradient on the top edge; a glow in
+accent at 28 % and at 60 % for the active window with the black shadow for
+the inactive one; and the 28 % glow with a window outline 1 px wide, at
+border size `Tiny`. Pixels were read outwards from the window's edge.
+
+**What was seen.**
+
+- *Shadow:* yes. Each one was drawn as written, soft, outside a window
+  whose corners stayed square, and each change of width, strength and
+  shape showed. The facts are under "Window decoration" above.
+- *Glow:* yes. The active window had a soft accent glow that fades to
+  nothing over 24 px, and the inactive window behind it kept its dark
+  shadow. The glow fell on the inactive window where they overlapped. On a
+  tone 0 backdrop the glow showed as well; the dark shadow there could
+  hardly be seen.
+- *With the window outline:* the outline sat between the glow and the
+  window. Sharp at scale 1; a little soft at 1.49.
+- *Maximised:* no shadow, glow or outline, at either scale. Restored, they
+  came back.
+- At 28 % the glow is quiet and reads as light, not as a line; at 60 % it
+  is plain to see (my call, from the pictures; the owner judges from the
+  live window).
+
+**What it changes.**
+
+- P5.3 can draw the shadow as gradients in the frame's SVG; the question
+  of how an Aurorae theme draws a shadow is answered.
+- The owner saw the live window and decided on 2026-11-11: the active
+  window has a window glow, and an inactive window a shadow (D-26). The
+  glossary, D-4 and the [design language](design-language.md) say so.
+- The window glow marks the active window, so it is a mark of state. Its
+  amounts and what it must reach are settled with the window outline
+  (O-4).

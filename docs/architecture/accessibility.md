@@ -35,7 +35,9 @@ Disabled controls are exempt in WCAG, and are exempt here.
 5. **Window outline: open.** The window outline tells one window from the
    window or desktop behind it. What contrast it must reach is open
    question O-4 in the [decisions](decisions.md); its contrast pairs are
-   declared with its token.
+   declared with its token. The window glow marks the active window; it
+   is settled in the same question, and the dim title text of an inactive
+   window marks the same state.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 

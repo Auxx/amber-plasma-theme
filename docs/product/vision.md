@@ -38,7 +38,8 @@ day: Dolphin, Kate and Konsole.
 3. No outlines and no one-pixel separators inside a window. Separation is by
    tone only. A window itself has a thin window outline, so that windows
    which overlap can be told apart.
-4. Hovered and focused widgets are shown by a change of tone alone. Subtle
+4. Hovered and focused widgets are shown by a change of tone alone. The
+   active window has a subtle glow, and an inactive one a shadow. Subtle
    shadows may add depth.
 5. Covers application widgets and window decorations.
 6. Widgets are styled through Union.
