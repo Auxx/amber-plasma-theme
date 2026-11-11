@@ -65,6 +65,5 @@ browser automation package, so it is added only when needed.
 ## The skill
 
 `.claude/skills/ai-tools/SKILL.md` says how to use, add and maintain tools;
-`references/tools.md` describes every tool and command. Both are written in
-plan P0.2, with the first tool, and `CLAUDE.md` points to the skill from then
-on.
+`references/tools.md` describes every tool and command. `CLAUDE.md` points to
+the skill.
