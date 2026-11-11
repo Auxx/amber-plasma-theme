@@ -70,7 +70,7 @@ docs/
   product/            vision, glossary, roadmap
   architecture/       this folder
   superpowers/        dated design records and plans
-prototype/            index.html, tokens.css, stylesheets
+prototype/            index.html, tokens.css, contrast-pairs.json, stylesheets
 parts/
   colour-scheme/
   union-style/

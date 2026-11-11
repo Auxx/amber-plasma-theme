@@ -30,7 +30,7 @@ text in other documents.
 | D-16 | Each step is planned as several small plans | Owner | Easier to build and test; 2026-11-11 |
 | D-17 | The product is named Amber, identifier `amber` | Designer | From the folder name |
 | D-18 | Plasma shell, GTK, login screen, splash screen, cursors, a global theme package and the KDE Store are out | Designer | Keeps the first version small |
-| D-19 | Starting values of tones, text, accent, danger and on-danger | Designer | From the Sand mockup; tuned in the prototype. On-danger was added on 2026-11-11 because text on danger measures 4.29:1 |
+| D-19 | Starting values of tones, text, accent, danger and on-danger | Designer | From the Sand mockup; tuned in the prototype. On-danger was added on 2026-11-11 because text on danger measures 4.29:1. Dim text was lightened from `#9c958a` to `#a9a297` on 2026-11-11, in P1.1, to reach 4.5:1 on tone 4 |
 | D-20 | Terminal and syntax colours are muted, warm-shifted hues, approved in the prototype | Designer | They must sit with Sand |
 | D-21 | A selected item may carry an accent block marker at least three pixels wide | Designer | A block is not a hairline |
 | D-22 | Amber carries the MIT licence | Owner | 2026-11-11. The Union style starts from BSD-2-Clause code, whose notices are kept |
@@ -56,6 +56,7 @@ text in other documents.
 | D-40 | Nothing is written under `/usr`; everything installs to the home folder | Designer | Easy to remove |
 | D-41 | Tools follow the `ai-tools` approach of `front-burner`; `colour` is ported | Designer | Asked for by the owner to be assessed; it fits |
 | D-42 | Tools are tested with Node's own test runner; culori is the only dependency | Designer | No workspace tooling is needed here |
+| D-43 | Tokens are CSS custom properties without a prefix (`--tone-0`, `--text-dim`) in one `:root` block of `prototype/tokens.css`; their contrast pairs are in `prototype/contrast-pairs.json` beside it | Designer | The prototype reads the tokens as they are; JSON lets each pair carry its reason. 2026-11-11, P1.1 |
 
 ## Accessibility
 

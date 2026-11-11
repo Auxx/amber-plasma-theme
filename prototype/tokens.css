@@ -1,0 +1,23 @@
+/*
+ * Amber tokens: the single source of Amber's look.
+ *
+ * Every part is generated from these values, and the prototype reads them as
+ * they are. A token that carries text or marks state needs contrast pairs in
+ * contrast-pairs.json, in the same change. Check them with
+ * `node tools/src/bin/tokens.mjs pairs`.
+ *
+ * The tools read only this :root block, with colours and var() references.
+ */
+:root {
+  --tone-0: #151413;    /* title bar, wells, tracks of sliders and progress bars */
+  --tone-1: #1c1a18;    /* sidebars, secondary panels */
+  --tone-2: #25221f;    /* the main surface of a window */
+  --tone-3: #312e29;    /* raised widgets: buttons, selected items */
+  --tone-4: #3c3832;    /* hovered raised widgets */
+  --text: #e8e3da;      /* primary text and icons */
+  --text-dim: #a9a297;  /* secondary text, placeholders, inactive titles */
+  --accent: #d1b072;    /* selection, checked, progress, primary button, the tint of a focused widget */
+  --on-accent: #1b160b; /* text on accent */
+  --danger: #b5442f;    /* close button when hovered, negative states */
+  --on-danger: #fbf3e6; /* text and icons on danger */
+}

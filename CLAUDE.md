@@ -72,6 +72,10 @@ be now, not how it got there.
 - **Work in small plans.** Each step of the roadmap is split into plans with
   one testable result each. Write a plan just before its work, and do not
   start the next plan until the current one's "done when" is checked.
+- **One branch per plan.** Every plan of the roadmap is done on a new branch
+  from `master`, named `feat/p<step>.<number>-<short-name>` (for a spike,
+  `spike/…`), for example `feat/p1.1-tokens-and-contrast-pairs`. The plan
+  file is committed on that branch. Never work on `master` directly.
 - **Stop and ask the owner** when a spike fails, when an anti-goal cannot be
   met, or when a choice would change what Amber is.
 - **Contrast pairs must pass.** A token that carries text or marks state gets
