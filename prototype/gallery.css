@@ -1,0 +1,75 @@
+/*
+ * The gallery page: every widget in every state, side by side, on the main
+ * surface of a window (tone 2). Labels of the page are in dim text.
+ */
+
+body {
+  margin: 0;
+  font: 10pt "Noto Sans", sans-serif;
+  color: var(--text);
+  background: var(--tone-2);
+}
+
+.dim {
+  color: var(--text-dim);
+}
+
+/* Links between the prototype's pages; the same rules are in shell.css. */
+.pages {
+  display: flex;
+  gap: 4px;
+  padding: 4px 24px;
+  background: var(--tone-0);
+}
+
+.pages a {
+  padding: 6px 10px;
+  color: var(--text);
+  text-decoration: none;
+  outline: none;
+}
+
+.pages a:hover,
+.pages a:focus-visible {
+  background: var(--tone-3);
+}
+
+.pages a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.family {
+  padding: 24px;
+}
+
+.family h2 {
+  margin: 0 0 4px;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.family > p {
+  margin: 0 0 20px;
+}
+
+.state-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: end;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* A stretch of toolbar, tone 0, for the tool buttons to sit on. */
+.toolbar-strip {
+  align-self: stretch;
+  padding: 4px;
+  background: var(--tone-0);
+}

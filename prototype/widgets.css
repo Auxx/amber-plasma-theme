@@ -1,0 +1,135 @@
+/*
+ * Amber's widgets, as the Union style will draw them (P3.3 to P3.5). A state
+ * is a tone. Each state rule names the real pseudo-class together with the
+ * class that forces the state in the gallery, so that a copy can show it
+ * beside the others and a live control reacts the same way.
+ *
+ * Order: hovered, focused, pressed, then disabled. Pressed wins over focused,
+ * focused over hovered, and a disabled control never changes.
+ */
+
+/* At rest */
+
+.button,
+.tool-button,
+.combo {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+  color: var(--text);
+  background: var(--tone-3);
+}
+
+.tool-button {
+  padding: 0 8px;
+  background: transparent;
+}
+
+.combo {
+  min-width: 160px;
+  justify-content: space-between;
+}
+
+.button.is-primary {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+.tool-button.is-checked {
+  color: var(--accent);
+  background: var(--tone-3);
+}
+
+.glyph {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+}
+
+/* Hovered */
+
+.button:hover,
+.button.is-hovered,
+.combo:hover,
+.combo.is-hovered {
+  background: var(--tone-4);
+}
+
+.tool-button:hover,
+.tool-button.is-hovered {
+  background: var(--tone-3);
+}
+
+.tool-button.is-checked:hover {
+  background: var(--tone-4);
+}
+
+.button.is-primary:hover,
+.button.is-primary.is-hovered {
+  background: var(--accent-hover);
+}
+
+/* Focused */
+
+.button:focus-visible,
+.button.is-focused,
+.combo:focus-visible,
+.combo.is-focused,
+.tool-button:focus-visible,
+.tool-button.is-focused,
+.tool-button.is-checked:focus-visible {
+  background: var(--raised-focus);
+}
+
+.button.is-primary:focus-visible,
+.button.is-primary.is-focused {
+  background: var(--accent-hover);
+}
+
+/* Pressed */
+
+.button:active,
+.button.is-pressed,
+.combo:active,
+.combo.is-pressed {
+  background: var(--tone-1);
+}
+
+.tool-button:active,
+.tool-button.is-pressed,
+.tool-button.is-checked:active {
+  background: var(--tone-2);
+}
+
+.button.is-primary:active,
+.button.is-primary.is-pressed {
+  background: var(--accent-pressed);
+}
+
+/* Disabled */
+
+.button:disabled,
+.combo:disabled,
+.button.is-primary:disabled {
+  color: var(--text-dim);
+  background: var(--tone-3);
+}
+
+.tool-button:disabled {
+  color: var(--text-dim);
+  background: transparent;
+}

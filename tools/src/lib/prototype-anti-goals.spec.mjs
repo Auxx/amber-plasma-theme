@@ -21,6 +21,7 @@ const PAGES = files.filter(name => name.endsWith('.html'));
 
 // The stylesheets each page links, in order. A new page is added here.
 const LINKS = {
+  'gallery.html': [ 'tokens.css', 'widgets.css', 'gallery.css' ],
   'index.html': [ 'tokens.css', 'window.css', 'shell.css' ]
 };
 

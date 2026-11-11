@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber gallery</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="widgets.css">
+<link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+
+<nav class="pages" aria-label="Pages">
+  <a href="index.html">Window shell</a>
+  <a href="gallery.html" aria-current="page">Gallery</a>
+</nav>
+
+<!-- The gallery (roadmap P1.3): each row is one widget, each cell one state.
+     A cell's copy has its state forced by a class, and reacts like any other. -->
+<section class="family" aria-label="Buttons">
+  <h2>Buttons</h2>
+  <p class="dim">Raised widgets sit a tone above the surface. Hovered moves up a tone, focused is tinted with accent, pressed sinks below the surface.</p>
+
+  <div class="state-row" data-widget="button">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><button class="button">Save</button></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><button class="button is-hovered">Save</button></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><button class="button is-focused">Save</button></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><button class="button is-pressed">Save</button></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><button class="button" disabled>Save</button></div>
+  </div>
+
+  <div class="state-row" data-widget="primary">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><button class="button is-primary">Apply</button></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><button class="button is-primary is-hovered">Apply</button></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><button class="button is-primary is-focused">Apply</button></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><button class="button is-primary is-pressed">Apply</button></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><button class="button is-primary" disabled>Apply</button></div>
+  </div>
+
+  <div class="state-row" data-widget="tool-button">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="toolbar-strip"><button class="tool-button"><svg class="glyph" viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>Back</button></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="toolbar-strip"><button class="tool-button is-hovered"><svg class="glyph" viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>Back</button></div></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="toolbar-strip"><button class="tool-button is-focused"><svg class="glyph" viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>Back</button></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="toolbar-strip"><button class="tool-button is-pressed"><svg class="glyph" viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>Back</button></div></div>
+    <div class="state" data-state="checked"><span class="state-label dim">Checked</span><div class="toolbar-strip"><button class="tool-button is-checked" aria-pressed="true"><svg class="glyph" viewBox="0 0 16 16"><path d="M3.5 3.5h3.5v3.5h-3.5zM9 3.5h3.5v3.5h-3.5zM3.5 9h3.5v3.5h-3.5zM9 9h3.5v3.5h-3.5z"/></svg>Grid</button></div></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="toolbar-strip"><button class="tool-button" disabled><svg class="glyph" viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>Back</button></div></div>
+  </div>
+
+  <div class="state-row" data-widget="combo">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><button class="combo"><span class="combo-value">Detailed view</span><svg class="glyph combo-arrow" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><button class="combo is-hovered"><span class="combo-value">Detailed view</span><svg class="glyph combo-arrow" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><button class="combo is-focused"><span class="combo-value">Detailed view</span><svg class="glyph combo-arrow" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><button class="combo is-pressed"><span class="combo-value">Detailed view</span><svg class="glyph combo-arrow" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><button class="combo" disabled><span class="combo-value">Detailed view</span><svg class="glyph combo-arrow" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></button></div>
+  </div>
+</section>
+
+</body>
+</html>
