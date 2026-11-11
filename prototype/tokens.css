@@ -6,7 +6,8 @@
  * contrast-pairs.json, in the same change. Check them with
  * `node tools/src/bin/tokens.mjs pairs`.
  *
- * The tools read only this :root block, with colours and var() references.
+ * The tools read only this :root block: colours, var() references, lengths in
+ * px, and color-mix(in srgb, var(--token) N%, transparent).
  */
 :root {
   --tone-0: #151413;    /* title bar, wells, tracks of sliders and progress bars */
@@ -20,4 +21,12 @@
   --on-accent: #1b160b; /* text on accent */
   --danger: #b5442f;    /* close button when hovered, negative states */
   --on-danger: #fbf3e6; /* text and icons on danger */
+
+  /* The window decoration (O-4: starting values) */
+  --outline: var(--tone-4);       /* the window outline, on every edge of a window */
+  --outline-width: 1px;           /* the window outline's width */
+  --glow: color-mix(in srgb, var(--accent) 28%, transparent); /* the window glow of the active window, at the outline */
+  --glow-size: 24px;              /* how far the window glow fades to nothing */
+  --shadow: rgb(0 0 0 / 50%);     /* the shadow of an inactive window, at the outline */
+  --shadow-size: 24px;            /* how far the shadow fades to nothing */
 }
