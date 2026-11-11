@@ -31,6 +31,12 @@ describe('colour', () => {
     assert.equal(formatOklch({ ...c('black'), alpha: 0.05 }), 'oklch(0% 0 0 / 5%)');
   });
 
+  it('reads a missing lightness or chroma as zero', () => {
+    const none = describeColour(c('oklch(none none 0)'));
+    assert.equal(none.oklch, 'oklch(0% 0 0)');
+    assert.equal(none.hex, '#000000');
+  });
+
   it('flags colours outside sRGB and clips them per channel', () => {
     const red = describeColour(c('oklch(70% 0.4 30)'));
     assert.equal(red.inGamut, false);
@@ -96,8 +102,9 @@ describe('Amber starting tokens', () => {
   });
 
   it('marks dim text on tone 3 as close to 4.5', () => {
-    assert.equal(isClose(4.56, 4.5), true);
-    assert.equal(isClose(4.97, 4.5), false);
+    const measured = (fg, bg) => measureContrast(parseColour(fg), [ parseColour(bg) ]).ratio;
+    assert.equal(isClose(measured('#9c958a', '#312e29'), 4.5), true);
+    assert.equal(isClose(measured('#fbf3e6', '#b5442f'), 4.5), false);
   });
 
   it('paints a part-transparent glow over its surface before measuring', () => {

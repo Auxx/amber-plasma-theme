@@ -93,6 +93,45 @@ describe('colour tool', () => {
     assert.equal(stdout, '2.67:1');
   });
 
+  it('shows a third decimal when a failing ratio rounds to the minimum', () => {
+    const { status, stdout } = colour('contrast', '#777', '#fff', '--min', '4.48');
+    assert.equal(status, 1);
+    assert.equal(stdout, '4.478:1 FAIL (< 4.48)');
+  });
+
+  for (
+    const [ name, args ] of [
+      [ 'an empty minimum', [ 'contrast', '#fff', '#000', '--min', '' ] ],
+      [ 'a minimum below 1', [ 'contrast', '#fff', '#000', '--min=0.5' ] ],
+      [ 'a minimum above 21', [ 'contrast', '#fff', '#000', '--min', '22' ] ],
+      [ 'a minimum that is not decimal', [ 'contrast', '#fff', '#000', '--min', '0x10' ] ],
+      [ 'a hue that is not a number', [ 'solve', '#000', '--hue', 'warm', '--chroma', '0.02' ] ],
+      [ 'a chroma that is not a number', [ 'solve', '#000', '--hue', '80', '--chroma', 'low' ] ],
+      [ 'a negative chroma', [ 'solve', '#000', '--hue', '80', '--chroma=-0.02' ] ],
+      [ 'an alpha that is not a number', [ 'solve', '#000', '--hue', '80', '--chroma', '0.02', '--alpha', 'half' ] ],
+      [ 'an alpha above 1', [ 'solve', '#000', '--hue', '80', '--chroma', '0.02', '--alpha', '2' ] ],
+      [ 'a negative alpha', [ 'solve', '#000', '--hue', '80', '--chroma', '0.02', '--alpha=-1' ] ],
+      [ 'solve without a hue', [ 'solve', '#000', '--chroma', '0.02' ] ],
+      [ 'an unknown option', [ 'contrast', '#fff', '#000', '--scheme', 'dark' ] ],
+      [ 'an unknown command', [ 'blend', '#fff', '#000' ] ]
+    ]
+  ) {
+    it(`refuses ${name}`, () => {
+      const { status, stderr } = colour(...args);
+      assert.equal(status, 2);
+      assert.ok(stderr.includes('Usage:'));
+    });
+  }
+
+  it('prints help for the tool and for a command', () => {
+    for (const args of [ [ '--help' ], [ 'contrast', '--help' ], [ 'solve', '--help' ] ]) {
+      const { status, stdout } = colour(...args);
+      assert.equal(status, 0);
+      assert.ok(stdout.includes('Usage:'));
+    }
+    assert.ok(colour('solve', '--help').stdout.includes('--alpha'));
+  });
+
   it('converts a colour', () => {
     const { status, stdout } = colour('convert', '#d1b072', '--json');
     assert.equal(status, 0);

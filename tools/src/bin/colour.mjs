@@ -8,13 +8,21 @@ const VALUE_HELP = 'A value is any CSS colour: #d1b072, rgb(209 176 114 / 45%), 
 const jsonOption = { json: { type: 'boolean' } };
 
 /** Reads a numeric option; a value that is not a finite number is a usage error. */
-function number(name, text) {
-  const value = Number(text);
-  if (text.trim() === '' || !Number.isFinite(value)) {
+function number(name, text, { min = -Infinity, max = Infinity } = {}) {
+  // Decimal notation only: Number() would also read "0x10" or "1e3".
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(text.trim())) {
     throw new UsageError(`--${name} must be a number`);
+  }
+  const value = Number(text);
+  if (value < min || value > max) {
+    const limits = max === Infinity ? `${min} or more` : `from ${min} to ${max}`;
+    throw new UsageError(`--${name} must be ${limits}`);
   }
   return value;
 }
+
+// A WCAG contrast ratio lies between 1:1 and 21:1.
+const RATIO = { min: 1, max: 21 };
 
 main({
   name: 'colour',
@@ -51,7 +59,7 @@ Exits with 1 when --min is given and the ratio is below it.`,
         if (values.length < 2) {
           throw new UsageError('Give a foreground and at least one background layer');
         }
-        const min = options.min === undefined ? undefined : number('min', options.min);
+        const min = options.min === undefined ? undefined : number('min', options.min, RATIO);
         const [ foreground, ...background ] = values.map(parseColour);
         const { ratio, opaque } = measureContrast(foreground, background);
         const result = {
@@ -62,7 +70,8 @@ Exits with 1 when --min is given and the ratio is below it.`,
           close: min !== undefined && opaque && isClose(ratio, min)
         };
         print(options.json, result, () =>
-          `${result.ratio.toFixed(2)}:1${
+          // A failing ratio that rounds up to the minimum is shown with a third decimal.
+          `${ratio.toFixed(result.pass === false && opaque && Number(ratio.toFixed(2)) >= min ? 3 : 2)}:1${
             result.pass === undefined
               ? ''
               : result.close
@@ -101,9 +110,9 @@ Ranges where the chroma is outside sRGB (and so clipped) are listed too.`,
         const result = solveLightness({
           background,
           hue: number('hue', options.hue),
-          chroma: number('chroma', options.chroma),
-          minimum: number('min', options.min),
-          alpha: number('alpha', options.alpha)
+          chroma: number('chroma', options.chroma, { min: 0 }),
+          minimum: number('min', options.min, RATIO),
+          alpha: number('alpha', options.alpha, { min: 0, max: 1 })
         });
         const range = ({ from, to }) => `${from}%–${to}%`;
         print(options.json, result, () =>

@@ -8,7 +8,8 @@ const inSrgb = inGamut('rgb');
 /** An sRGB colour as the browser's canvas stores it: channels 0–255, alpha 0–1. */
 export function srgb8(colour) {
   const { r, g, b, alpha = 1 } = toRgb(colour);
-  const channel = value => Math.round(Math.min(Math.max(value, 0), 1) * 255);
+  // A channel written as `none` has no value; CSS reads it as zero.
+  const channel = value => Math.round(Math.min(Math.max(value || 0, 0), 1) * 255);
   return { r: channel(r), g: channel(g), b: channel(b), alpha };
 }
 
@@ -26,7 +27,7 @@ const trim = (value, digits) => String(Number(value.toFixed(digits)));
 /** Formats a colour as CSS writes it: `oklch(55% 0.19 262)`. */
 export function formatOklch(colour) {
   const { l, c, h, alpha } = toOklch(colour);
-  const body = `${trim(l * 100, 1)}% ${trim(c, 3)} ${trim(h ?? 0, 1)}`;
+  const body = `${trim((l || 0) * 100, 1)}% ${trim(c || 0, 3)} ${trim(h || 0, 1)}`;
   return alpha === undefined || alpha === 1 ? `oklch(${body})` : `oklch(${body} / ${trim(alpha * 100, 1)}%)`;
 }
 

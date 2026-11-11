@@ -2,8 +2,8 @@
 name: ai-tools
 description: |
   Ready-made command-line tools for jobs that would otherwise need a
-  throwaway script: colour conversion and WCAG contrast, token checks and
-  generating Amber's parts from the tokens. Use BEFORE writing any one-off
+  throwaway script: colour conversion and WCAG contrast now, with token
+  checks and generating Amber's parts to follow. Use BEFORE writing any one-off
   script (node -e, python, a heredoc in the scratchpad) to compute, check or
   generate something in this repository, and when a task needs a tool that
   does not exist yet: this skill says how to add one.
@@ -42,8 +42,8 @@ Rules that hold for every tool are in
 
 - **Paths stay inside the repository.** A tool never writes to the home
   folder or the system; installing is the install script's job.
-- **Tools that change files print the changes first.** They write only with
-  `--write`. Check what they would do before you rerun them with it.
+- **A tool that changes files prints the changes first** and writes only
+  with `--write`. No tool changes files yet; the rule is for those to come.
 
 ## Add or change a tool
 
@@ -94,8 +94,8 @@ tools/
 
 - When a tool's result looks wrong, fix the tool rather than working around
   it with a script, and add a spec for the case.
-- When a source a tool reads changes format, such as the tokens file, its
-  parser fails with a message naming the file and line. Update the parser and
-  its specs.
+- A tool that reads a source file, as the `tokens` tool will read the tokens
+  file, must fail with a message naming the file and line when the format
+  changes. Update the parser and its specs then.
 - Remove a tool or command that is no longer needed, together with its specs
   and its section in the reference.

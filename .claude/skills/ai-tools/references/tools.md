@@ -17,6 +17,9 @@ Colour maths with [culori](https://culorijs.org/).
 | `contrast <fg> <bg...> [--min 4.5]`                | The WCAG 2.2 ratio of `fg` on background layers, bottom layer first |
 | `solve <bg...> --hue <h> --chroma <c> [--min 4.5]` | The OKLCH lightness ranges in which that hue and chroma passes      |
 
+`solve` also takes `--alpha <0–1>` (default 1), the opacity of the colour
+being solved, for a part-transparent colour such as a glow.
+
 A value is any CSS colour: `#d1b072`, `rgb(209 176 114 / 45%)`,
 `oklch(77% 0.09 82)`, `white`. Token names are not understood yet; they come
 with the `tokens` tool (roadmap plan P1.1). Every command takes `--json`.
@@ -45,6 +48,11 @@ node tools/src/bin/colour.mjs solve '#3c3832' --hue 80 --chroma 0.015 --min 4.5
   small change of either colour may fail it.
 - **Outside sRGB.** Colours outside sRGB are clipped per channel; `convert`
   marks them `OUT (clipped)` and `solve` lists the clipped ranges.
+- **A failing ratio that rounds up to the minimum** is printed with a third
+  decimal, as in `4.478:1 FAIL (< 4.48)`.
+- **Number options** take plain decimal numbers within their range: `--min`
+  from 1 to 21, `--alpha` from 0 to 1, `--chroma` 0 or more. Write a negative
+  value as `--hue=-30`.
 - **Exit codes.** 0 success; 1 a ratio is below `--min`, or a value is not a
-  colour (the message names it); 2 the command line was wrong, including an
-  option that should be a number and is not.
+  colour (the message names it); 2 the command line was wrong, including a
+  number option that is not a number or is out of range.
