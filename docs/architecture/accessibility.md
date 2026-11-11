@@ -38,7 +38,7 @@ Disabled controls are exempt in WCAG, and are exempt here.
 ## Where Amber departs from WCAG on purpose
 
 Tonal separation is the heart of Amber, and the steps between tones are small
-by design, about 1.1:1 to 1.2:1. That is far below 3:1.
+by design, from 1.06:1 to about 1.2:1. That is far below 3:1.
 
 - **Between surfaces this is fine.** WCAG does not ask for a visible edge
   between a sidebar and a content area.
@@ -72,6 +72,7 @@ project, on the starting tokens.
 | Foreground | Background | Ratio | Rule | Result |
 |---|---|---|---|---|
 | text | tone 0 | 14.40:1 | 4.5 | pass |
+| text | tone 1 | 13.58:1 | 4.5 | pass |
 | text | tone 2 | 12.38:1 | 4.5 | pass |
 | text | tone 3 | 10.58:1 | 4.5 | pass |
 | text | tone 4 | 9.11:1 | 4.5 | pass |
@@ -79,8 +80,10 @@ project, on the starting tokens.
 | dim text | tone 1 | 5.85:1 | 4.5 | pass |
 | dim text | tone 2 | 5.33:1 | 4.5 | pass |
 | dim text | tone 3 | 4.56:1 | 4.5 | pass (close) |
+| dim text | tone 4 | 3.92:1 | 4.5 | fail: settled in plan P1.1 |
 | on-accent | accent | 8.72:1 | 4.5 | pass |
 | accent | tone 0 | 8.91:1 | 3 | pass |
+| accent | tone 1 | 8.40:1 | 3 | pass |
 | accent | tone 2 | 7.66:1 | 3 | pass |
 | accent | tone 3 | 6.54:1 | 3 | pass |
 | on-danger | danger | 4.97:1 | 4.5 | pass |
@@ -88,11 +91,13 @@ project, on the starting tokens.
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |
 | tone 1 | tone 2 | 1.10:1 | — | tonal step |
+| tone 0 | tone 1 | 1.06:1 | — | tonal step |
 
-Not yet measured: dim text on tone 4, the glow, and the terminal and syntax
-colours, which do not exist yet. Dim text on tone 3 is close, so dim text on
-tone 4 is likely to fail; plan P1.1 settles it by lightening dim text or by
-not using it on tone 4.
+Dim text fails on tone 4, a hovered raised widget. Plan P1.1 settles it by
+lightening dim text or by not using it on tone 4.
+
+Not yet measured: the glow, and the terminal and syntax colours, which do not
+exist yet.
 
 ## How the check works
 

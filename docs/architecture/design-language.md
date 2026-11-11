@@ -43,7 +43,10 @@ before they go into real files.
 
 - A window is built from tones 0 to 2: title bar darkest, sidebars next, the
   main surface lightest.
-- Two surfaces that touch differ by at least one tone.
+- The menu bar and toolbar continue the title bar in tone 0, as one header.
+  The status area is tone 1, like the sidebars. (my call; tuned in plan P1.2)
+- Two surfaces that touch differ by at least one tone, unless they are meant
+  to read as one area, as the header is.
 - Menus, popups and tooltips are one tone away from what they cover and carry
   a shadow. They have no outline.
 
@@ -54,7 +57,7 @@ before they go into real files.
 | Raised (button, tool button, combo box) | tone 3 | tone 4 and a faint glow | stronger glow | a darker tone, no glow | dim text, lowered opacity, no glow |
 | Well (text field, spin box) | tone 0 | faint glow | stronger glow | — | dim text, lowered opacity |
 | Toggle (check box, radio button) | tone 0 box | glow on the box | stronger glow on the box | — | lowered opacity |
-| Primary button | accent fill, on-accent text | stronger accent glow | stronger accent glow | darker accent | lowered opacity |
+| Primary button | accent fill, on-accent text | accent glow | stronger accent glow | darker accent | lowered opacity |
 | Close button | as title bar | danger fill and danger glow | — | darker danger | — |
 
 - A checked toggle fills with accent and carries a faint glow.
@@ -64,7 +67,8 @@ before they go into real files.
 
 ## Glow and shadow
 
-- A glow is one outer, blurred shadow in the accent colour with no offset.
+- A glow is one outer, blurred shadow with no offset, in the accent colour;
+  on the close button it is in the danger colour.
   Starting amounts (my call): hovered about 12–14 px blur at 20–28 % alpha;
   focused about 18 px blur at 45 % alpha.
 - A glow must never read as a line. If it does at any size, it is too tight

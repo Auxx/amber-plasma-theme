@@ -7,7 +7,7 @@ instead of a hard outline.
 
 ## Status
 
-Amber is in early development. Nothing can be installed yet.
+Amber is in early development and nothing can be installed yet.
 
 ## Documentation
 

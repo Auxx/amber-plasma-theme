@@ -27,10 +27,13 @@ that the prototype never promises something the system cannot draw.
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; folders of the layout appear with their first file | done |
+| P0.1 Repository basics | `.gitignore`, MIT `LICENSE`, README stub, first commit | `.superpowers/` and `.idea/` are ignored; the first commit exists | done |
 | P0.2 Tools base | `tools/` with the `colour` tool and the `ai-tools` skill | `colour contrast` gives the same ratios as the table in the accessibility document; tests pass | todo |
-| P0.3 Spike: widget glow | Finding on coloured, blurred shadows under Union | A button in a Qt Widgets application shows a glow, or the reason it cannot is written in the platform document | todo |
+| P0.3 Spike: widget glow | Findings on coloured, blurred shadows under Union, on running one application with a style installed for the user, and on where such a style is installed | A button in a Qt Widgets application shows a glow from a style used by that application alone, or the reason it cannot is written in the platform document; all three findings are written there | todo |
 | P0.4 Spike: square decoration | Finding on Aurorae | A window shows a square title bar with no border line, or the reason it cannot is written in the platform document | todo |
+
+The folders of the repository layout are not created empty: each appears with
+its first file, in the plan that fills it.
 
 P0.3 and P0.4 are spikes: their code is thrown away and their findings go into
 [platform](../architecture/platform.md). A failed spike goes back to the owner
@@ -44,10 +47,10 @@ The gate for everything after it: the owner approves the look here.
 |---|---|---|---|
 | P1.1 Tokens and contrast pairs | Tokens file, contrast pairs, `tokens` tool | `tokens pairs` runs in the tests and every pair passes | todo |
 | P1.2 Window shell | Mock file-manager window: title bar, toolbar, sidebar, list, status area | The page opens from disk and shows every surface by tone alone | todo |
-| P1.3 Gallery: buttons and inputs | Buttons, tool buttons, text fields, combo boxes in every state | Each state is shown side by side and reacts to pointer and keyboard | todo |
+| P1.3 Gallery: buttons and inputs | Buttons, tool buttons, combo boxes, text fields, spin boxes, text areas in every state | Each state is shown side by side and reacts to pointer and keyboard | todo |
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | todo |
-| P1.5 Gallery: navigation and popups | Tabs, menus, popups, tooltips, list items | As P1.3 | todo |
-| P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour has a contrast pair and passes | todo |
+| P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | todo |
+| P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | todo |
 | P1.7 Owner review | Tuned values; the owner's choice of tones for controls identified only by tone (open question O-1) | The owner approves the prototype and O-1 is closed in the decisions | todo |
 
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks

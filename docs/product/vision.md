@@ -22,7 +22,7 @@ all day and wants a warmer, calmer desktop with less visual noise.
 
 The owner also wants to keep shaping the theme after it first works. So the
 project must stay easy to change: one obvious place to change a colour, a fast
-way to see the result, and documentation that says how the parts fit.
+way to see the result, and documentation that says how everything fits.
 
 ## Who it is for
 
@@ -41,8 +41,9 @@ day: Dolphin, Kate and Konsole.
 6. Widgets are styled through Union.
 7. Konsole's terminal area and Kate's editor area match the frame around them.
 8. A small HTML and CSS prototype for trying changes safely.
-9. Text and indicators are readable: colour pairs are checked against WCAG 2.2
-   (see [accessibility](../architecture/accessibility.md)).
+9. Text and indicators are readable: colour pairs are checked against WCAG
+   (the version, level and rules are in
+   [accessibility](../architecture/accessibility.md)).
 10. Living documentation that stays true as the project changes.
 
 ## Non-goals

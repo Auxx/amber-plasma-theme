@@ -57,8 +57,9 @@ are used as the [glossary](../product/glossary.md) defines them.
 | Terminal colours | `Amber.colorscheme` (INI) | `~/.local/share/konsole/` | Konsole profile → Appearance |
 | Editor theme | `.theme` (JSON) | `~/.local/share/org.kde.syntax-highlighting/themes/` | Kate → Settings → Colour Themes |
 
-The identifier of every part is `amber`; the display name is "Amber".
-(my call)
+Every part is shown to the user as "Amber". The colour scheme and the
+terminal colours are identified by their file names; the parts that carry an
+identifier of their own, such as the Union style, use `amber`. (my call)
 
 ## Repository layout (my call)
 
@@ -85,7 +86,7 @@ scripts/              install and uninstall
 
 - **No change to system settings during development.** Trying a part in one
   launched application is fine. Switching the system-wide colour scheme, style
-  or decoration is the owner's action. (decided)
+  or decoration is the owner's action. (decided, D-24)
 - **Nothing is written under `/usr`.** Every part installs to the owner's
   home folder and is removed by the uninstall script.
 - **The anti-goals are checked at every plan**, not only at the end: no

@@ -42,8 +42,8 @@ word Amber uses for each.
 The documents are living: they describe Amber as it is and as it is meant to
 be now, not how it got there.
 
-- **Read before acting.** Before working on a part, read the overview and
-  the documents it points to for that part.
+- **Read before acting.** Before working on a part, the prototype or a
+  tool, read the overview and the documents it points to.
 - **Update in the same change.** When work changes what a document says,
   change the document with it. A value in the tokens file wins over a value
   in a document; fix the document.

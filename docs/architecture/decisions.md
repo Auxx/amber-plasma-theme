@@ -29,18 +29,19 @@ text in other documents.
 | D-15 | Living documentation in `docs/product` and `docs/architecture`, with `CLAUDE.md` as the guide | Owner | 2026-11-11 |
 | D-16 | Each step is planned as several small plans | Owner | Easier to build and test; 2026-11-11 |
 | D-17 | The product is named Amber, identifier `amber` | Designer | From the folder name |
-| D-18 | Plasma shell, GTK, login screen, cursors and the KDE Store are out | Designer | Keeps the first version small |
+| D-18 | Plasma shell, GTK, login screen, splash screen, cursors, a global theme package and the KDE Store are out | Designer | Keeps the first version small |
 | D-19 | Starting values of tones, text, accent, danger and on-danger | Designer | From the Sand mockup; tuned in the prototype. On-danger was added on 2026-11-11 because text on danger measures 4.29:1 |
 | D-20 | Terminal and syntax colours are muted, warm-shifted hues, approved in the prototype | Designer | They must sit with Sand |
-| D-21 | A selected item may carry an accent block marker three pixels wide | Designer | A block is not a hairline |
+| D-21 | A selected item may carry an accent block marker at least three pixels wide | Designer | A block is not a hairline |
+| D-22 | Amber carries the MIT licence | Owner | 2026-11-11. The Union style starts from BSD-2-Clause code, whose notices are kept |
+| D-23 | "Part" is the word for one of the things Amber installs | Owner | 2026-11-11 |
+| D-24 | Developing Amber must not need a change to the owner's system settings | Owner | Stated with D-9 |
 
 ## Architecture
 
 | ID | Decision | By | Why |
 |---|---|---|---|
 | D-30 | The prototype's tokens file is the single source of colours and sizes | Designer | One place to change a value |
-| D-22 | Amber carries the MIT licence | Owner | 2026-11-11. The Union style starts from BSD-2-Clause code, whose notices are kept |
-| D-23 | "Part" is the word for one of the things Amber installs | Owner | 2026-11-11 |
 | D-31 | The parts are generated from the tokens by a tool | Designer | They cannot fall behind; fits the tooling approach |
 | D-32 | The Union style starts as a copy of the Breeze style and is changed file by file | Designer | The Breeze style covers every widget already |
 | D-33 | The Union style reads colours from the colour scheme where a role exists | Designer | As Breeze does; applications' own colours then agree with it |

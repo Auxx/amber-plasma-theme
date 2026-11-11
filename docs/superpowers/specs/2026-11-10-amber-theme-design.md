@@ -63,7 +63,8 @@ README rather than hiding it.
 ## The look
 
 The owner chose direction "C · Sand" from three mockups
-(`.superpowers/brainstorm/7260-1794352906/content/warm-directions.html`). They
+(`.superpowers/brainstorm/7260-1794352906/content/warm-directions.html`, a
+local file that is not kept in the repository). They
 confirmed the direction, not each value; the values below are the starting
 point **(my call)** and are expected to be tuned in the prototype.
 

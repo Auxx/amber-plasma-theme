@@ -69,7 +69,7 @@ Verified on 2026-11-10 unless marked.
 | Does a coloured, blurred `box-shadow` show as a glow in a Qt Widgets application, and is it clipped by neighbouring widgets or the edge of its parent? | P0.3 |
 | Does `UNION_STYLE_NAME=amber` run one application with a style installed for the user? | P0.3 |
 | Where does `union-styletool install` put a style for the user? | P0.3 |
-| Which key selects the style for the whole system? | P3.1 |
+| Which key selects the style for the whole system? | P6.2 |
 
 If the glow cannot be drawn, the work stops and goes back to the owner: the
 glow is a goal, and what replaces it is their decision.
@@ -108,7 +108,7 @@ used without their say. (my call)
 ## Konsole and Kate
 
 - Konsole has one profile, "Profile 1", with no colour scheme of its own.
-  (reported by the design reviewer, 2026-11-10)
+  (verified, 2026-11-11)
 - Kate 26.08.2 is installed, as is KWrite, which shares its editor component.
   (verified, 2026-11-11)
 - No user editor themes exist yet. (verified, 2026-11-10)

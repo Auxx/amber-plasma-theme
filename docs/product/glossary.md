@@ -55,6 +55,8 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The KSyntaxHighlighting theme file used by Kate and KWrite: editor
   background, text and syntax colours.
 
+## Beside the parts
+
 **Prototype**
 : The HTML and CSS pages that show Amber's look in a browser. It holds the
   tokens and is where a change is tried first.
@@ -113,8 +115,9 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   progress and the primary button, and it colours the glow.
 
 **Glow**
-: A soft, blurred, accent-coloured shadow around a widget that shows it is
-  hovered or focused. A glow never reads as a line.
+: A soft, blurred, coloured shadow around a widget that shows it is hovered
+  or focused. It is accent-coloured, except on the close button, where it is
+  danger-coloured. A glow never reads as a line.
 
 **Shadow**
 : A soft dark blur under a popup, menu or window that adds depth. A shadow is
