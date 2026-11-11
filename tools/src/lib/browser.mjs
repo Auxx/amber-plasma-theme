@@ -87,3 +87,107 @@ export function nameColour(text, names) {
   const tokens = names.get(hex);
   return tokens ? `${hex} (${tokens.join(', ')})` : hex;
 }
+
+/**
+ * Opens `url` in the installed Chrome, headless, at device scale 1. Returns
+ * the browser (the caller closes it), the page, and the problems seen while
+ * loading: failed requests, console errors and script errors.
+ */
+export async function openPage(url, { width = 1300, height = 900 } = {}) {
+  const { chromium } = await import('playwright-core');
+  let browser;
+  try {
+    browser = await chromium.launch({ channel: 'chrome', headless: true });
+  } catch (error) {
+    throw new Error(
+      `Google Chrome could not be started (playwright-core uses the installed Chrome): ${error.message.split('\n')[0]}`
+    );
+  }
+  const problems = [];
+  try {
+    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+    page.on('requestfailed', request => {
+      const target = request.url().startsWith('file:') ? relative(REPO_ROOT, fileURLToPath(request.url())) : request.url();
+      problems.push(`failed to load ${target} (${request.failure()?.errorText})`);
+    });
+    page.on('console', message => {
+      // A failed load is reported once, by its request.
+      if (message.type() === 'error' && !message.text().startsWith('Failed to load resource')) {
+        problems.push(`console: ${message.text()}`);
+      }
+    });
+    page.on('pageerror', error => problems.push(`script error: ${error.message}`));
+    await page.goto(url, { waitUntil: 'load' });
+    return { browser, page, problems };
+  } catch (error) {
+    await browser.close();
+    throw error;
+  }
+}
+
+/** The one element a selector matches; anything else is an error. */
+export async function only(page, selector) {
+  const locator = page.locator(selector);
+  const count = await locator.count();
+  if (count !== 1) {
+    throw new Error(`${selector} matches ${count} elements`);
+  }
+  return locator;
+}
+
+/** Puts elements in a state: focused, hovered, or pressed (held down). */
+export async function applyState(page, { hover, focus, press } = {}) {
+  if (focus) {
+    await (await only(page, focus)).focus();
+  }
+  if (hover) {
+    await (await only(page, hover)).hover();
+  }
+  if (press) {
+    await (await only(page, press)).hover();
+    await page.mouse.down();
+  }
+}
+
+/**
+ * The anti-goals as Chrome draws them: a border, a rounded corner, a box
+ * shadow, an underline, or an outline anywhere but on a `.window`. Looks at
+ * every element and at its ::before and ::after.
+ */
+export function renderedOffences(page) {
+  return page.evaluate(() => {
+    const offences = [];
+    const label = element =>
+      element.tagName.toLowerCase() + [ ...element.classList ].map(name => `.${name}`).join('');
+    for (const element of document.querySelectorAll('*')) {
+      for (const pseudo of [ null, '::before', '::after' ]) {
+        const style = getComputedStyle(element, pseudo);
+        if (pseudo && style.content === 'none') {
+          continue;
+        }
+        const where = label(element) + (pseudo ?? '');
+        const report = text => offences.push(`${where}: ${text}`);
+        for (const side of [ 'top', 'right', 'bottom', 'left' ]) {
+          const width = style.getPropertyValue(`border-${side}-width`);
+          const lineStyle = style.getPropertyValue(`border-${side}-style`);
+          if (width !== '0px' && lineStyle !== 'none') {
+            report(`border-${side} ${width} ${lineStyle}`);
+          }
+        }
+        if (style.borderRadius !== '0px') {
+          report(`border-radius ${style.borderRadius}`);
+        }
+        if (style.boxShadow !== 'none') {
+          report(`box-shadow ${style.boxShadow}`);
+        }
+        if (style.textDecorationLine !== 'none') {
+          report(`text-decoration-line ${style.textDecorationLine}`);
+        }
+        if (style.outlineStyle !== 'none' && !(pseudo === null && element.classList.contains('window'))) {
+          report(`outline ${style.outlineWidth} ${style.outlineStyle}`);
+        }
+      }
+    }
+    return offences;
+  });
+}
