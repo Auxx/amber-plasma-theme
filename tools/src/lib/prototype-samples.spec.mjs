@@ -125,7 +125,7 @@ describe('prototype samples', () => {
     assert.deepEqual(problems, []);
     const offences = (await renderedOffences(page)).map(o => `at rest: ${o}`);
     ({ page } = await samples());
-    await page.locator('.code').hover();
+    await page.locator('.kate .code').hover();
     offences.push(...(await renderedOffences(page)).map(o => `pointer over the code: ${o}`));
     assert.deepEqual(offences, []);
     const { status, stdout } = spawnSync(process.execPath, [ BROWSER, 'check', SAMPLES ], { cwd: REPO, encoding: 'utf8' });

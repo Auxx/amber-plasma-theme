@@ -20,7 +20,7 @@ const PAGES = readdirSync(PROTOTYPE).filter(name => name.endsWith('.html')).sort
 const COUNTS = {
   'gallery.html': [ 28, 62 ],
   'index.html': [ 9, 18 ],
-  'samples.html': [ 0, 0 ]
+  'samples.html': [ 6, 12 ]
 };
 
 /** The candidate figures of one page, each with its overrides and ratios. */

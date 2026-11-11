@@ -111,3 +111,20 @@
 .syn-number { color: var(--syntax-number); }
 .syn-preprocessor { color: var(--syntax-preprocessor); }
 .syn-comment { color: var(--syntax-comment); }
+
+/* The candidates' small samples fill their vignette, edge to edge. */
+.vignette:has(> .terminal, > .code) {
+  padding: 0;
+}
+
+.vignette .terminal,
+.vignette .code {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 12px;
+}
+
+/* Lines are padded themselves, so the current line meets both edges. */
+.vignette .code {
+  padding-inline: 0;
+}
