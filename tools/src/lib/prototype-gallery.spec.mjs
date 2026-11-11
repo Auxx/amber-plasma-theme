@@ -820,6 +820,73 @@ describe('prototype gallery', () => {
     assert.deepEqual(offences, []);
   });
 
+  withChrome('casts no shadow above a popup', async () => {
+    // A popup's shadow falls downwards: the foot of the combo box above its
+    // open list, and of the tool button above its tooltip, keep their tones.
+    let { page } = await gallery();
+    const rgb = text => text.match(/\d+/g).slice(0, 3).map(Number);
+    const footOf = async selector => {
+      const element = page.locator(selector);
+      await element.scrollIntoViewIfNeeded();
+      const { x, y, width, height } = await element.boundingBox();
+      return pixel(page, x + width / 2, y + height - 1);
+    };
+    const offences = [];
+    const combo = rgb((await coloursOf(page, '.combo-open .combo'))[0]);
+    const comboFoot = await footOf('.combo-open .combo');
+    if (comboFoot.some((channel, i) => Math.abs(channel - combo[i]) > 1)) {
+      offences.push(`combo box foot ${comboFoot}, expected its tone ${combo}`);
+    }
+    ({ page } = await gallery());
+    const button = '.tooltip-anchor .tool-button';
+    await page.locator(button).hover();
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('.live .tooltip')).visibility === 'visible');
+    const hovered = rgb((await coloursOf(page, button))[0]);
+    const buttonFoot = await footOf(button);
+    if (buttonFoot.some((channel, i) => Math.abs(channel - hovered[i]) > 1)) {
+      offences.push(`tool button foot ${buttonFoot} under its tooltip, expected its hovered tone ${hovered}`);
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('lines up the table header with its rows', async () => {
+    // Where the text of each header section starts, the text of its column
+    // starts in every row.
+    const { page } = await gallery();
+    const starts = await page.evaluate(() => {
+      const textStart = element => element.getBoundingClientRect().left + parseFloat(getComputedStyle(element).paddingLeft);
+      const header = [ ...document.querySelectorAll('.table .header-section') ].map(textStart);
+      const rows = [ ...document.querySelectorAll('.table .item.is-row') ].map(row => [ ...row.children ].map(textStart));
+      return { header, rows };
+    });
+    assert.equal(starts.header.length, 3);
+    const offences = starts.rows.flatMap((row, index) =>
+      row
+        .map((start, column) => [ column, start - starts.header[column] ])
+        .filter(([ , off ]) => Math.abs(off) > 0.5)
+        .map(([ column, off ]) => `row ${index} column ${column}: ${off} px from its header`)
+    );
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('places the tooltip whatever order the stylesheets come in', async () => {
+    // window.css gives every popup position: relative; a tooltip stays out
+    // of the flow even when window.css is read last.
+    const { page } = await gallery();
+    await page.evaluate(
+      () =>
+        new Promise(resolve => {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'window.css';
+          link.onload = resolve;
+          document.head.append(link);
+        })
+    );
+    const position = await page.locator('.live .tooltip').evaluate(element => getComputedStyle(element).position);
+    assert.equal(position, 'absolute');
+  });
+
   withChrome('keeps the combo list against its combo box', async () => {
     // A gap of surface between the two lighter boxes would read as a line.
     const { page } = await gallery();

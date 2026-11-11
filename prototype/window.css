@@ -58,8 +58,9 @@
  * A popup (a menu, a combo box list, a tooltip) is a window too, with no
  * window outline. Its shadow is dark and sits --popup-shadow-offset below it:
  * the light's box is moved down, a centre layer fills the strip it opens
- * under the popup, and the popup's own rectangle is cut out of it, so the
- * shadow never paints over the popup.
+ * under the popup, and the popup's own rectangle and everything above its
+ * top edge are cut out of it, so the shadow never paints over the popup or
+ * over what the popup opens from.
  * Whether Union draws a shadow under a popup in a Qt Widgets application is
  * the question of P3.8 (D-49).
  */
@@ -77,9 +78,10 @@
   left: calc(-1 * var(--s));
   right: calc(-1 * var(--s));
   --o: var(--popup-shadow-offset);
+  /* Outside: from the popup's top edge down, so no shadow falls above it. */
   clip-path: polygon(
     evenodd,
-    0 0, 100% 0, 100% 100%, 0 100%, 0 0,
+    0 calc(var(--s) - var(--o)), 100% calc(var(--s) - var(--o)), 100% 100%, 0 100%, 0 calc(var(--s) - var(--o)),
     var(--s) calc(var(--s) - var(--o)),
     var(--s) calc(100% - var(--s) - var(--o)),
     calc(100% - var(--s)) calc(100% - var(--s) - var(--o)),

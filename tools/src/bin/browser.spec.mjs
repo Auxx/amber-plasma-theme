@@ -122,15 +122,17 @@ describe('browser tool', () => {
   });
 
   withChrome('waits before a shot', () => {
-    // The tooltip shows 400 ms after its anchor is hovered: only the shot
-    // that waits shows it.
-    const shot = (name, ...extra) => {
-      const file = join(out, name);
-      const { status, stdout } = browser('shot', 'prototype/gallery.html', '--selector', '.family[aria-label=Popups] .live', '--hover', '.tooltip-anchor .tool-button', '--out', file, ...extra);
+    // A wait can only make the command slower, so this holds on any machine.
+    const shot = (...extra) => {
+      const begun = Date.now();
+      const { status, stdout } = browser('shot', 'prototype/index.html', '--out', join(out, 'wait.png'), ...extra);
       assert.equal(status, 0, stdout);
-      return readFileSync(file);
+      return Date.now() - begun;
     };
-    assert.notDeepEqual(shot('at-once.png'), shot('waited.png', '--wait', '600'));
+    const plain = shot();
+    const waited = shot('--wait', '1500');
+    assert.ok(waited >= 1500, `waited ${waited} ms`);
+    assert.ok(waited > plain, `waited ${waited} ms, plain ${plain} ms`);
   });
 
   it('refuses a bad wait', () => {

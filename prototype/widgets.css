@@ -679,8 +679,15 @@
   grid-template-columns: 1fr 90px 130px;
 }
 
+/* Each cell is padded as a header section is, so a column's text starts
+   under its title. */
 .item.is-row {
   gap: 0;
+  padding: 0;
+}
+
+.item.is-row > * {
+  padding: 0 12px;
 }
 
 .item.is-row .item-detail {
@@ -787,7 +794,8 @@
   display: inline-flex;
 }
 
-.tooltip {
+/* .popup.tooltip outweighs window.css's .popup, whatever the link order. */
+.popup.tooltip {
   position: absolute;
   left: 0;
   top: calc(100% + 6px);

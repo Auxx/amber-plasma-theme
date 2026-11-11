@@ -118,7 +118,9 @@ shot, for something that shows late, such as a tooltip; 0 to 10000.`,
         const delay = wait(options.wait);
         await withPage(url, options, async opened => {
           await applyState(opened, options);
-          await opened.waitForTimeout(delay);
+          if (delay > 0) {
+            await opened.waitForTimeout(delay);
+          }
           mkdirSync(dirname(file), { recursive: true });
           if (options.selector) {
             await (await only(opened, options.selector)).screenshot({ path: file });

@@ -76,6 +76,23 @@ describe('prototype candidates', () => {
     assert.deepEqual(offences, []);
   });
 
+  it('keeps block markers and well edges at least 3 px', () => {
+    // A thinner marker or edge is a hairline: the tokens and every
+    // candidate's override are 0 (none) or at least 3 px.
+    const NAMES = [ 'marker-width', 'well-edge-width' ];
+    const tokens = loadTokens();
+    const offences = NAMES.map(name => [ `tokens.css: ${name}`, tokens.get(name)?.length?.value ]).concat(
+      figures.flatMap(f =>
+        parseOverrides(f.overrides)
+          .filter(o => NAMES.includes(o.name))
+          .map(o => [ `${f.caption}: ${o.name}`, o.value.length?.value ])
+      )
+    )
+      .filter(([ , px ]) => !(px === 0 || px >= 3))
+      .map(([ where, px ]) => `${where} is ${px} px`);
+    assert.deepEqual(offences, []);
+  });
+
   it('prints every ratio as measured', () => {
     const offences = figures.flatMap(f => {
       const tokens = loadTokens({ overrides: parseOverrides(f.overrides) });

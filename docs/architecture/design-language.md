@@ -192,7 +192,8 @@ token holds the plain colour (D-47).
   [platform](platform.md).
 - A popup's shadow (my call, P1.5; D-49) is drawn in the prototype as the
   window's shadow is, as gradients, black, and sits below the popup: the
-  popup's own rectangle is cut out of it, so it never darkens the popup.
+  popup's own rectangle and everything above its top edge are cut out of
+  it, so it never darkens the popup or what it opens from.
   A combo box's list meets its combo box with no gap. The
   gallery shows a "No shadow" candidate beside it, for the case that Union
   cannot draw it.
