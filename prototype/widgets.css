@@ -169,7 +169,8 @@
   background: var(--tone-3);
 }
 
-.tool-button.is-checked:hover {
+.tool-button.is-checked:not(:disabled):hover,
+.tool-button.is-checked.is-hovered {
   background: var(--tone-4);
 }
 

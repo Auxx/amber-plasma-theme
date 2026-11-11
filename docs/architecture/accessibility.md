@@ -35,9 +35,9 @@ Disabled controls are exempt in WCAG, and are exempt here.
    the placeholder of a focused well. Until O-3 is closed, the pairs of
    `raised-focus` and `well-focus` against the widget at rest and the
    surface have a provisional minimum of 1.2 (my call): a floor, not a WCAG
-   rule. A placeholder in dim text keeps 4.5:1 only on a focused well tinted
-   less than 20 % (4.57:1 at 20 %, close), which caps the tint of a focused
-   well.
+   rule. A placeholder in dim text passes 4.5:1 on a focused well tinted up to
+   20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
+   which caps the tint of a focused well near 20 %.
 5. **Window outline: open.** The window outline tells one window from the
    window or desktop behind it. What contrast it must reach is open
    question O-4 in the [decisions](decisions.md); its contrast pairs are

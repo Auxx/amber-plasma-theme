@@ -76,6 +76,9 @@ of plan P1.3, `prototype/gallery.html`). Toggles and ranges follow in P1.4.
 - **Pressed sinks.** A pressed button goes to tone 1, below the tone 2
   surface; a pressed tool button goes to tone 2, one below its hovered tone.
   (my call)
+- **A checked tool button** keeps its accent text in every state. Hovered,
+  it goes to tone 4, one above its checked tone; focused and pressed, it
+  takes the tones of an unchecked tool button. (my call)
 - **The primary button** shows focus with its hovered tone for now (my
   call); this is part of O-3 in the [decisions](decisions.md).
 - **Wells:** a placeholder is dim text; selected text is on-accent on
@@ -83,8 +86,9 @@ of plan P1.3, `prototype/gallery.html`). Toggles and ranges follow in P1.4.
   the field shows it.
 - **The focused tone** is accent mixed over the tone a widget has when
   hovered. How strong it must be is open question O-3, and the gallery shows
-  candidates with their measured contrast. A placeholder in dim text keeps
-  4.5:1 only on a focused well tinted less than 20 %, which caps that tint.
+  candidates with their measured contrast. The placeholder caps how strong
+  a focused well's tint can be: see rule 4 of
+  [accessibility](accessibility.md).
 - **An empty well** is told from its surface by tone alone (open question
   O-1). The gallery shows candidates: a darker well, and a well edge.
 - Toggles start (my call, from spike P0.5) as a tone 0 box, or a tone 0
