@@ -90,6 +90,38 @@ describe('prototype check', () => {
     ]);
   });
 
+  it('closes the ways round the script rule', () => {
+    const offending = [
+      "el.style.setProperty('--thumb', 'var(--tone-1)');",
+      "document.createElement('style');",
+      'document.styleSheets[0].insertRule(rule);',
+      'document.adoptedStyleSheets = [];',
+      'const s = el.style;',
+      'Object.assign(el.style, {});',
+      "el['style'];",
+      'el.checked = true;',
+      'el.disabled = false;',
+      "el.toggleAttribute('hidden');",
+      "el.removeAttribute('hidden');",
+      'el.dataset.state = 1;',
+      "el.textContent = '';",
+      "eval('1');",
+      "new Function('1');",
+      "const u = '//'; el.classList.add('is-hovered');"
+    ];
+    for (const line of offending) {
+      assert.notDeepEqual(scriptOffences('a.js', line), [], line);
+    }
+    assert.deepEqual(scriptOffences('a.js', "const u = '//'; el.style.setProperty('--value', `${v}%`);"), []);
+  });
+
+  it('keeps inline scripts out of the page', () => {
+    assert.deepEqual(page(`<input onclick="go()">\n<a href="javascript:go()">`), [
+      'a.html:1: onclick',
+      'a.html:2: href="javascript:go()"'
+    ]);
+  });
+
   it('allows a linked script', () => {
     assert.deepEqual(page('<script src="gallery.js" defer></script>'), []);
   });

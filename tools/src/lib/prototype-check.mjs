@@ -142,6 +142,14 @@ export function pageOffences(file, source) {
       const [ , name, double, single ] = attribute;
       const value = double ?? single;
       const index = tag.index + attribute.index + 1;
+      if (/^on/i.test(name)) {
+        offences.push({ index, text: name });
+        continue;
+      }
+      if (/^\s*javascript:/i.test(value)) {
+        offences.push({ index, text: `${name}="${value}"` });
+        continue;
+      }
       if (name !== 'style') {
         if (colourLiterals(value).length) {
           offences.push({ index, text: `${name}="${value}"` });
@@ -168,34 +176,57 @@ export function pageOffences(file, source) {
   return offences.sort((a, b) => a.index - b.index).map(o => `${file}:${lineOf(text, o.index)}: ${o.text}`);
 }
 
-// What a script may not touch: classes, attributes, markup, the network.
+// What a script may not touch: classes, attributes, state, markup, style
+// sheets, tokens, the network, or code made from text.
 const SCRIPT_FORBIDDEN = [
   'classList',
   'className',
   'setAttribute',
+  'toggleAttribute',
+  'removeAttribute',
+  'dataset',
+  '.checked',
+  '.disabled',
   'innerHTML',
   'outerHTML',
   'insertAdjacentHTML',
+  'textContent',
+  'innerText',
+  'createElement',
   'document.write',
+  'styleSheets',
+  'adoptedStyleSheets',
+  'insertRule',
+  'var(',
+  'eval(',
+  'Function(',
   'fetch(',
   'import('
 ];
 
+// The one use of the style object a script may make (D-48).
+const ALLOWED_STYLE = ".style.setProperty('--value'";
+
+// A string literal, kept whole, or a comment, blanked: so that `//` inside a
+// string does not hide the rest of its line.
+const STRING_OR_COMMENT = /('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+
 /**
  * The offences of a prototype script, as `file:line: text`. A script may only
- * set custom properties (D-48): it writes no colour and no class, changes no
- * markup and loads nothing. Comments are not read.
+ * copy a value into `--value` (D-48): it writes no colour, no class and no
+ * state, changes no markup or style sheet, and loads nothing. Comments are
+ * not read; strings are.
  */
 export function scriptOffences(file, source) {
-  const text = stripComments(source, /\/\*[\s\S]*?\*\/|\/\/[^\n]*/g);
+  const text = source.replace(STRING_OR_COMMENT, (match, string) => string ?? match.replace(/[^\n]/g, ''));
   const offences = [];
   for (const word of SCRIPT_FORBIDDEN) {
     for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) {
       offences.push({ index, text: word });
     }
   }
-  for (const style of text.matchAll(/\.style(?:\.|\[)/g)) {
-    if (!text.startsWith(".style.setProperty('--", style.index)) {
+  for (const style of text.matchAll(/\.?\bstyle\b[.[]?/g)) {
+    if (!text.startsWith(ALLOWED_STYLE, style.index)) {
       offences.push({ index: style.index, text: style[0] });
     }
   }
