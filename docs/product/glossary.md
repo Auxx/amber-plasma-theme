@@ -63,6 +63,11 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The HTML and CSS pages that show Amber's look in a browser. It holds the
   tokens and is where a change is tried first.
 
+**Candidate**
+: A value shown in the prototype beside a starting value, with its measured
+  contrast, for the owner to choose from. It is not a token until it is
+  chosen.
+
 **Known gap**
 : A place where Amber cannot meet its own rules because the platform or an
   application prevents it. Known gaps are listed in the README.
