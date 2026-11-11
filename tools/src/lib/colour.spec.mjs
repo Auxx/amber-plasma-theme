@@ -104,6 +104,6 @@ describe('Amber starting tokens', () => {
     const glow = { ...parseColour('#d1b072'), alpha: 0.45 };
     const { ratio: r, opaque } = measureContrast(glow, [ parseColour('#25221f') ]);
     assert.equal(opaque, true);
-    assert.ok(r > 1 && r < 7.66);
+    assert.equal(Number(r.toFixed(2)), 2.67); // 7.66 if the alpha were ignored
   });
 });

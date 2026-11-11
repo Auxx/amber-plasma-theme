@@ -69,6 +69,30 @@ describe('colour tool', () => {
     assert.ok(stdout.includes('not opaque'));
   });
 
+  it('fails a minimum on a background that is not opaque', () => {
+    const args = [ 'contrast', '#fff', 'rgb(0 0 0 / 50%)', '--min', '4.5' ];
+    const text = colour(...args);
+    assert.equal(text.status, 1);
+    assert.ok(text.stdout.includes('FAIL'));
+    assert.ok(text.stdout.includes('not opaque'));
+    const json = colour(...args, '--json');
+    assert.equal(json.status, 1);
+    assert.equal(JSON.parse(json.stdout).pass, false);
+    assert.equal(JSON.parse(json.stdout).opaque, false);
+  });
+
+  it('refuses to solve on a background that is not opaque', () => {
+    const { status, stderr } = colour('solve', 'rgb(0 0 0 / 50%)', '--hue', '80', '--chroma', '0.02');
+    assert.equal(status, 1);
+    assert.ok(stderr.includes('not opaque'));
+  });
+
+  it('measures a part-transparent foreground as it is painted', () => {
+    const { status, stdout } = colour('contrast', 'rgb(209 176 114 / 45%)', '#25221f');
+    assert.equal(status, 0);
+    assert.equal(stdout, '2.67:1');
+  });
+
   it('converts a colour', () => {
     const { status, stdout } = colour('convert', '#d1b072', '--json');
     assert.equal(status, 0);

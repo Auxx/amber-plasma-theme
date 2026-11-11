@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Ported from front-burner tools/ai-tools (MIT, same author).
 import { main, print, table, UsageError } from '../lib/cli.mjs';
-import { describeColour, isClose, measureContrast, parseColour, solveLightness } from '../lib/colour.mjs';
+import { composite, describeColour, isClose, measureContrast, parseColour, solveLightness } from '../lib/colour.mjs';
 
 const VALUE_HELP = 'A value is any CSS colour: #d1b072, rgb(209 176 114 / 45%), oklch(55% 0.19 262), white.';
 
@@ -57,8 +57,9 @@ Exits with 1 when --min is given and the ratio is below it.`,
         const result = {
           ratio: Number(ratio.toFixed(2)),
           opaque,
-          pass: min === undefined ? undefined : ratio >= min,
-          close: min !== undefined && isClose(ratio, min)
+          // On a background that is not opaque the ratio means nothing, so it cannot pass.
+          pass: min === undefined ? undefined : opaque && ratio >= min,
+          close: min !== undefined && opaque && isClose(ratio, min)
         };
         print(options.json, result, () =>
           `${result.ratio.toFixed(2)}:1${
@@ -68,7 +69,9 @@ Exits with 1 when --min is given and the ratio is below it.`,
               ? ' pass (close)'
               : result.pass
               ? ' pass'
-              : ` FAIL (< ${min})`
+              : result.opaque
+              ? ` FAIL (< ${min})`
+              : ' FAIL'
           }${result.opaque ? '' : ' (the background is not opaque; the bottom layer must be)'}`);
         return result.pass === false ? 1 : 0;
       }
@@ -91,8 +94,12 @@ Ranges where the chroma is outside sRGB (and so clipped) are listed too.`,
         if (!values.length || options.hue === undefined || options.chroma === undefined) {
           throw new UsageError('Give the background layers, --hue and --chroma');
         }
+        const background = values.map(parseColour);
+        if (composite(background).alpha !== 1) {
+          throw new Error('The background is not opaque; the bottom layer must be');
+        }
         const result = solveLightness({
-          background: values.map(parseColour),
+          background,
           hue: number('hue', options.hue),
           chroma: number('chroma', options.chroma),
           minimum: number('min', options.min),

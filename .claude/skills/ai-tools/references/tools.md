@@ -34,8 +34,8 @@ node tools/src/bin/colour.mjs solve '#3c3832' --hue 80 --chroma 0.015 --min 4.5
 
 - **Layers.** Background layers are listed from the bottom up and painted
   each over the last, in sRGB with 8 bits per channel. The bottom layer must
-  be opaque; the result says so when it is not, and the ratio then means
-  nothing.
+  be opaque. When it is not, the ratio means nothing: `contrast` says so and
+  fails any `--min`, and `solve` refuses with exit code 1.
 - **A part-transparent foreground**, such as a glow, is painted over the
   background before measuring, so the ratio is that of what is seen.
 - **`--min`.** `contrast --min` exits with 1 when the ratio is below the
