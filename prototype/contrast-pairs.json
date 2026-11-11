@@ -1,0 +1,32 @@
+[
+  {
+    "foreground": "text",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
+  },
+  {
+    "foreground": "text-dim",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
+  },
+  {
+    "foreground": "accent",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, block markers, fills on tracks)"
+  },
+  {
+    "foreground": "on-accent",
+    "on": ["accent"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: on-accent text reaches 4.5:1 on accent"
+  },
+  {
+    "foreground": "on-danger",
+    "on": ["danger"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: on-danger text and icons reach 4.5:1 on danger; text on danger does not"
+  }
+]
