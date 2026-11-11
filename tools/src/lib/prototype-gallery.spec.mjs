@@ -148,6 +148,17 @@ const WIDGETS = {
       pressed: [ 'tone-1', 'text' ],
       sorted: [ 'transparent', 'text' ]
     }
+  },
+  'menu-item': {
+    control: '.menu-item',
+    read: [ 'background-color', 'color', '--mark' ],
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-4', 'text', 'transparent' ],
+      focused: [ 'tone-4', 'text', 'transparent' ],
+      checked: [ 'transparent', 'text', 'accent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
   }
 };
 
@@ -164,7 +175,7 @@ const FORCED = {
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 
 // The focus stops allowed outside every state cell: the live areas.
-const LIVE_STOPS = [ '.scroll-area', '.tree summary' ];
+const LIVE_STOPS = [ '.scroll-area', '.tree summary', '.live .combo', '.tooltip-anchor .tool-button' ];
 
 const cell = (widget, state) => `[data-widget="${widget}"] [data-state="${state}"]`;
 const controlOf = (widget, state) => `${cell(widget, state)} ${WIDGETS[widget].control}`;
@@ -443,7 +454,8 @@ describe('prototype gallery', () => {
       [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
       [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
       [ 'tab', { focus: 'selected' }, [ 'well-focus', 'text', 'accent' ] ],
-      [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ]
+      [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ],
+      [ 'menu-item', { hover: 'checked' }, [ 'tone-4', 'text', 'accent' ] ]
     ];
     for (const [ widget, state, expected ] of combined) {
       ({ page } = await gallery());
@@ -454,7 +466,7 @@ describe('prototype gallery', () => {
       } else {
         await page.locator(target).focus();
       }
-      const shown = await coloursOf(page, target, MARKED_ITEM);
+      const shown = await coloursOf(page, target, readOf(widget));
       const label = `${widget} ${where} ${live}: ${shown.map(c => nameColour(c, names)).join(' / ')}`;
       assert.ok(expected.every((token, index) => isToken(shown[index], token)), label);
     }
@@ -716,6 +728,72 @@ describe('prototype gallery', () => {
     await page.locator('.tree summary').first().focus();
     offences.push(...(await renderedOffences(page)).map(o => `tree summary focused: ${o}`));
     assert.deepEqual(offences, []);
+  });
+
+  withChrome('draws popups on the popup tone with a shadow', async () => {
+    // The shadow is the window's gradient, offset down: its box overhangs
+    // the popup by --popup-shadow-offset less at the top and more at the foot.
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.family .popup') ].map(element => {
+        const style = getComputedStyle(element);
+        const before = getComputedStyle(element, '::before');
+        return {
+          label: element.className,
+          background: style.backgroundColor,
+          image: before.backgroundImage,
+          offset: parseFloat(before.top) - parseFloat(before.bottom)
+        };
+      })
+    );
+    assert.ok(shown.length >= 7, `${shown.length} popups`);
+    const offences = [];
+    for (const { label, background, image, offset } of shown) {
+      if (!isToken(background, 'popup')) {
+        offences.push(`${label}: ${nameColour(background, names)}, expected popup`);
+      }
+      if (!image.includes('linear-gradient') || !image.includes('radial-gradient')) {
+        offences.push(`${label}: no shadow (${image.slice(0, 40)})`);
+      }
+      if (offset !== 8) {
+        offences.push(`${label}: shadow offset ${offset / 2} px, expected 4`);
+      }
+    }
+    assert.deepEqual(offences, []);
+  });
+
+  withChrome('shows a tooltip on hover and on focus', async () => {
+    const { page } = await gallery();
+    const tooltip = page.locator('.live .tooltip');
+    const visibility = () => tooltip.evaluate(element => getComputedStyle(element).visibility);
+    const waitFor = shown =>
+      page.waitForFunction(
+        shown => getComputedStyle(document.querySelector('.live .tooltip')).visibility === shown,
+        shown,
+        { timeout: 1000 }
+      );
+    assert.equal(await visibility(), 'hidden', 'hidden at rest');
+    await page.locator('.tooltip-anchor .tool-button').hover();
+    await waitFor('visible');
+    const [ background, text ] = await coloursOf(page, '.live .tooltip');
+    assert.ok(isToken(background, 'popup') && isToken(text, 'text'), `tooltip ${nameColour(background, names)} / ${nameColour(text, names)}`);
+    await page.mouse.move(0, 0);
+    await waitFor('hidden');
+    await page.locator('.live .combo').focus();
+    await page.keyboard.press('Tab');
+    await waitFor('visible');
+  });
+
+  withChrome('keeps the menu separator a gap', async () => {
+    const { page } = await gallery();
+    const shown = await page.evaluate(() =>
+      [ ...document.querySelectorAll('.menu-gap') ].map(element => {
+        const style = getComputedStyle(element);
+        return [ style.backgroundColor, style.backgroundImage, element.getBoundingClientRect().height ];
+      })
+    );
+    assert.ok(shown.length > 0);
+    assert.deepEqual(shown.filter(([ colour, image, height ]) => !isToken(colour, 'transparent') || image !== 'none' || height !== 8), []);
   });
 
   withChrome('draws no well edge at the start', async () => {

@@ -680,3 +680,119 @@
 .item.is-row .item-detail {
   margin-left: 0;
 }
+
+/*
+ * Popups (P1.5): menus, combo box lists and tooltips, on the popup tone. Their
+ * shadow is drawn in window.css. A menu item's keyboard highlight is its
+ * hovered tone: Qt does not tell the two apart. Space, not a line, divides a
+ * menu.
+ */
+
+.popup {
+  color: var(--text);
+  background: var(--popup);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-width: 180px;
+  padding: 4px 0;
+}
+
+.menu-item {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+  padding: 0 12px 0 6px;
+  white-space: nowrap;
+  text-align: left;
+  cursor: default;
+  color: var(--text);
+  --mark: transparent;
+  background-color: transparent;
+}
+
+/* The tick's column is 28 px: 6 px, the 16 px tick, 6 px. */
+.menu-tick {
+  margin-right: 6px;
+  stroke: var(--mark);
+}
+
+.menu-label {
+  flex: 1;
+}
+
+.menu-shortcut {
+  margin-left: 24px;
+  color: var(--text-dim);
+}
+
+.menu-arrow {
+  margin-left: 24px;
+  color: var(--text-dim);
+}
+
+.menu-gap {
+  height: 8px;
+}
+
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) {
+  background-color: var(--tone-4);
+}
+
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) :is(.menu-shortcut, .menu-arrow) {
+  color: var(--text);
+}
+
+.menu-item.is-checked {
+  --mark: var(--accent);
+}
+
+.menu-item:disabled {
+  color: var(--text-dim);
+}
+
+.live-row .toolbar-strip {
+  align-self: flex-start;
+}
+
+.combo-open {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 180px;
+}
+
+/* A tooltip shows 400 ms after its anchor is hovered or takes keyboard
+   focus, and hides at once. */
+.tooltip-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 1;
+  width: max-content;
+  max-width: 240px;
+  padding: 4px 8px;
+  visibility: hidden;
+  transition: visibility 0s;
+}
+
+.tooltip-anchor:is(:hover, :has(:focus-visible)) .tooltip {
+  visibility: visible;
+  transition-delay: 400ms;
+}

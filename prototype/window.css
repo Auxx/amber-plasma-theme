@@ -27,15 +27,16 @@
 /*
  * Drawn as the Aurorae frame of spike P0.6 draws it: from the light's colour
  * at the window outline to nothing, straight on the edges, round on the
- * corners. The window's own corners stay square.
+ * corners. The window's own corners stay square. A popup's shadow is drawn
+ * the same way.
  */
-.window::before {
+.window::before,
+.popup::before {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
   --s: var(--light-size);
-  inset: calc(-1 * (var(--outline-width) + var(--s)));
   background:
     linear-gradient(to top, var(--light), transparent) top / calc(100% - 2 * var(--s)) var(--s) no-repeat,
     linear-gradient(to bottom, var(--light), transparent) bottom / calc(100% - 2 * var(--s)) var(--s) no-repeat,
@@ -45,6 +46,30 @@
     radial-gradient(circle var(--s) at 0 100%, var(--light), transparent) top right / var(--s) var(--s) no-repeat,
     radial-gradient(circle var(--s) at 100% 0, var(--light), transparent) bottom left / var(--s) var(--s) no-repeat,
     radial-gradient(circle var(--s) at 0 0, var(--light), transparent) bottom right / var(--s) var(--s) no-repeat;
+}
+
+.window::before {
+  inset: calc(-1 * (var(--outline-width) + var(--s)));
+}
+
+/*
+ * A popup (a menu, a combo box list, a tooltip) is a window too, with no
+ * window outline. Its shadow is dark and sits --popup-shadow-offset below it.
+ * Whether Union draws a shadow under a popup in a Qt Widgets application is
+ * the question of P3.8 (D-49).
+ */
+.popup {
+  position: relative;
+  isolation: isolate;
+  --light: var(--shadow);
+  --light-size: var(--popup-shadow-size);
+}
+
+.popup::before {
+  top: calc(var(--popup-shadow-offset) - var(--s));
+  bottom: calc(-1 * (var(--s) + var(--popup-shadow-offset)));
+  left: calc(-1 * var(--s));
+  right: calc(-1 * var(--s));
 }
 
 /* 30 px high: my call, settled with the decoration in P5.1. */
