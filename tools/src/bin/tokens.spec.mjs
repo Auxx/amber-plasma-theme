@@ -69,6 +69,15 @@ describe('tokens tool', () => {
     assert.equal(result.failing, 0);
   });
 
+  it('fails the fill on a 3:1 track', () => {
+    const { status, stdout } = tokens('try', 'track=#746e63', '--json');
+    assert.equal(status, 1);
+    const result = JSON.parse(stdout);
+    assert.equal(result.failing, 1);
+    const failing = result.changed.filter(c => c.after.status === 'fail').map(c => [ c.after.pair, c.after.ratio.toFixed(2) ]);
+    assert.deepEqual(failing, [ [ 'accent on track', '2.45' ] ]);
+  });
+
   it('names an unknown token', () => {
     const { status, stderr } = tokens('resolve', 'nope');
     assert.equal(status, 1);
@@ -84,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('37 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('44 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 37);
+    assert.equal(result.total, 44);
     assert.equal(result.failing, 0);
   });
 

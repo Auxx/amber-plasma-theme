@@ -126,6 +126,20 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   It stays a circle. It is not a rounded corner, which is the softened
   corner of a rectangle.
 
+**Toggle**
+: A check box or a radio button. A toggle button is a button, not a toggle.
+
+**Track**
+: The groove of a slider or a progress bar that the fill runs along.
+  _Avoid_ "groove" and "trough".
+
+**Fill**
+: The accent part of a track, from its start to the value.
+
+**Thumb**
+: The part of a slider or a scrollbar that is dragged. _Avoid_ "handle"
+  and "knob".
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.

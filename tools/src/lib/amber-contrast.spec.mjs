@@ -20,7 +20,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 37);
+    assert.equal(pairs.length, 44);
   });
 
   it('resolves every token of every pair', () => {
@@ -66,5 +66,19 @@ describe('Amber contrast pairs', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('well on tone-2'), '1.16');
     assert.equal(ratio('well-edge on tone-2'), '1.16');
+  });
+
+  it('starts the toggles and tracks where O-1 starts', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('toggle on tone-2'), '1.16');
+    assert.equal(ratio('track on tone-2'), '1.16');
+    assert.equal(ratio('accent on track'), '8.91');
+    assert.equal(ratio('scroll-thumb on tone-2'), '1.36');
+  });
+
+  it('starts the focused toggle where O-3 starts', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('toggle-focus on tone-2'), '1.25');
+    assert.equal(ratio('toggle-focus on toggle'), '1.45');
   });
 });
