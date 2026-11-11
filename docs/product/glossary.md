@@ -44,8 +44,9 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   desktop widgets, which Amber does not cover).
 
 **Window decoration**
-: The title bar, window buttons, frame and shadow that KWin draws around a
-  window. Called the "decoration" for short. Built as an Aurorae theme.
+: The title bar, window buttons, frame, window outline and shadow that KWin
+  draws around a window. Called the "decoration" for short. Built as an
+  Aurorae theme.
 
 **Terminal colours**
 : The Konsole colour scheme file `Amber.colorscheme`: background, foreground
@@ -129,7 +130,14 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 
 **Hairline**
 : A line one pixel wide: a border, outline, separator or divider. Amber has
-  none.
+  none, with one exception: the window outline.
+
+**Window outline**
+: The thin line that the window decoration draws along every edge of a
+  window, so that windows which overlap can be told apart. It is the only
+  hairline in Amber, and it is square at the corners. _Avoid_ "window
+  border" (KWin's name for the frame, whose width is a system setting) and
+  plain "outline".
 
 **Block marker**
 : A solid accent rectangle at least three pixels wide on the leading edge of

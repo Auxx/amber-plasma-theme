@@ -14,7 +14,8 @@ updated.
 2. **Square.** Every corner radius is zero. A round widget, such as a radio
    button or a round button, stays a circle. (decided)
 3. **No lines.** No border, outline, separator or divider one pixel wide.
-   Surfaces and widgets are told apart by tone. (decided)
+   Surfaces and widgets are told apart by tone. The one exception is the
+   window outline, which tells overlapping windows apart. (decided, D-25)
 4. **State is tone.** Hovered, focused and pressed widgets change tone.
    Nothing glows. (decided)
 5. **Quiet at rest.** A window full of widgets at rest shows accent only on
@@ -84,7 +85,13 @@ before they go into real files.
 
 ## Window decoration
 
-- Title bar in tone 0; square corners; no border line on any edge.
+- Title bar in tone 0; square corners.
+- A window outline along every edge, square at the corners, for active and
+  inactive windows. (decided, D-25) It is one pixel wide and sits lighter
+  than tone 0 (my call); its colour, and the contrast it must reach, are
+  open question O-4 in the [decisions](decisions.md). A maximised window
+  has none (my call).
+- No other line: none between the title bar and the content.
 - A soft drop shadow around the window.
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
@@ -92,5 +99,5 @@ before they go into real files.
 ## What must not appear
 
 A rounded corner, a hairline, or a cool grey. A round widget is not a
-rounded corner. See the anti-goals in the
+rounded corner, and the window outline is the one hairline allowed. See the anti-goals in the
 [vision](../product/vision.md).

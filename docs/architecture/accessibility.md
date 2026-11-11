@@ -32,7 +32,11 @@ Disabled controls are exempt in WCAG, and are exempt here.
    with accent. How far that tone must stand from the widget at rest and
    from the surface is open question O-3 in the [decisions](decisions.md).
    Text on the focused tone reaches 4.5:1 like any other text.
-5. **A pair that passes by less than 2 % is close** and is reported as a
+5. **Window outline: open.** The window outline tells one window from the
+   window or desktop behind it. What contrast it must reach is open
+   question O-4 in the [decisions](decisions.md); its contrast pairs are
+   declared with its token.
+6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
 ## Where Amber departs from WCAG on purpose
