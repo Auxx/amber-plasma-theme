@@ -139,18 +139,18 @@ Verified on 2026-11-11 unless marked; see
 - **An Aurorae theme can draw a square title bar with no line on any edge**,
   for active, inactive, maximised and restored windows, at scale 1 and at
   the owner's 1.49. It needs KWin's window border size set to "No borders";
-  see the next point.
+  see "The side and bottom borders" below.
 - **An Aurorae theme can draw a window outline 1 px wide in a colour of its
   own.** The edge and corner elements of the frame are made 1 px thick in
-  the outline's colour, the centre element in the title bar's colour, and
+  the window outline's colour, the centre element in the title bar's colour, and
   the theme's left, right and bottom borders are set to 1. At the top the
-  outline is drawn inside the title bar, in its first row. What shows on
+  window outline is drawn inside the title bar, in its first row. What shows on
   the other three edges depends on KWin's border size:
-  - "Tiny": the outline alone, 1 px on every edge at scale 1. At scale 1.49
+  - "Tiny": the window outline alone, 1 px on every edge at scale 1. At scale 1.49
     it is 2 device pixels on the top, left and bottom and 1 on the right.
-  - the default: the outline, then a band 3 px wide in the title bar's
+  - the default: the window outline, then a band 3 px wide in the title bar's
     colour between it and the content.
-  - "No borders": no outline on the left, right and bottom.
+  - "No borders": no window outline on the left, right and bottom.
 - **The side and bottom borders belong to KWin's border size setting, not to
   the theme.** With the setting left at its default, a theme whose borders
   are 0 still gets a border 4 px wide, in the frame's colour, on the left,
@@ -158,7 +158,11 @@ Verified on 2026-11-11 unless marked; see
   "Tiny" gives 1 px on all three, and "No side borders" leaves 1 px at
   the bottom: both are hairlines. Only "No borders" gives none. The setting is `BorderSize` with
   `BorderSizeAuto=false` in `[org.kde.kdecoration2]` of `kwinrc`; the owner
-  sets it in System Settings → Window Decorations.
+  sets it in System Settings → Window Decorations. The names here are for
+  the values `Tiny`, `NoSides` and `None` that were written to the nested
+  KWin's `kwinrc`; the default is `BorderSizeAuto=true`, which gave the
+  same as `Normal`. The labels System Settings shows for them were not
+  looked at.
 - A theme is a folder `<id>/` in `~/.local/share/aurorae/themes/` holding
   `decoration.svg`, `<id>rc`, `metadata.desktop` and one SVG file per window
   button (`close.svg`, `minimize.svg`, `maximize.svg`, `restore.svg` and
@@ -207,7 +211,7 @@ Verified on 2026-11-11 unless marked; see
 | Does a maximised window show the window outline, and can it be left out there? | P5.3 |
 | How does an Aurorae theme draw its shadow, and does the shadow hide when maximised? The spike's theme had `Shadow=false` and no padding. | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
-| Can the theme, or Amber's installer, choose the border size without the owner setting it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
+| Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the
 owner's say. (my call)
@@ -333,9 +337,11 @@ corners and no border line on any edge?
 `~/.local/share/aurorae/themes/` and selected only in a nested KWin that
 had its own configuration, cache and D-Bus session. A PySide6 window filled
 with one flat colour was opened in it and pictured with Spectacle. The
-frame was magenta, the content green and the backdrop black, with no title
-text, so that every pixel of a picture could be counted by colour: a
-rounded corner or a line would show as a colour that is none of these.
+frame was magenta, the content green and the backdrop black. The window's
+title was one space, which shows no text, and the nested KWin was set to
+show only the close button, a white square. So every pixel of a picture
+could be counted by colour: a rounded corner or a line would show as a
+colour that is none of these.
 Then the frame was set to tone 0, over content in tone 0 and in tone 1.
 Scale 1 was pictured on a virtual output and scale 1.49 in a window on the
 owner's display.
@@ -375,13 +381,13 @@ owner's display.
 - D-34 stands: the decoration can be an Aurorae theme, with no compiled
   code.
 - The requirement changed: D-25 and the "Window decoration" section of the
-  [design language](design-language.md). The outline's colour and width
+  [design language](design-language.md). The window outline's colour and width
   are open question O-4.
 - What shows at a window's edge depends on KWin's border size, which is a
   system setting, so the owner sets it; P6.2 must say so in the README,
   beside selecting the decoration. For the window outline alone it is
   "Tiny". Left at its default, a band 3 px wide in tone 0 sits between the
-  outline and the content.
+  window outline and the content.
 - P5.1 to P5.3 can try the decoration in a nested KWin as above. P5.1 can
   start from nine plain rectangles per window state, and must settle the
-  uneven outline at scale 1.49.
+  uneven window outline at scale 1.49.

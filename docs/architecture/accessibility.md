@@ -1,7 +1,7 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. One question is deferred to the
-> prototype; see "Open question".
+> Status: **Accepted** on 2026-11-11. Three questions are deferred to
+> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md).
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair

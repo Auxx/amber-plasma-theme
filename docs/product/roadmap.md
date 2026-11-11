@@ -62,7 +62,7 @@ The gate for everything after it: the owner approves the look here.
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | todo |
 | P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | todo |
 | P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | todo |
-| P1.7 Owner review | Tuned values; the owner's choice of tones for controls identified only by tone (open question O-1) | The owner approves the prototype and O-1 is closed in the decisions | todo |
+| P1.7 Owner review | Tuned values; the owner's choices for the open questions O-1, O-3 and O-4 | The owner approves the prototype and O-1, O-3 and O-4 are closed in the decisions | todo |
 
 P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
 with candidate tones and their measured contrast side by side, so that the
@@ -108,12 +108,12 @@ next starts.
 |---|---|---|---|
 | P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | todo |
 | P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
-| P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line but the window outline appears at any window edge in any state | todo |
+| P5.3 Shadow and window states | Drop shadow; maximised and tiled windows | No line but the window outline appears at any window edge in any state; a maximised window shows none | todo |
 
 ## Step 6 — Packaging
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | todo |
-| P6.2 README | How to install, select, change a token; known gaps | A reader can do all three from the README alone | todo |
+| P6.2 README | How to install, select (with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
 | P6.3 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |

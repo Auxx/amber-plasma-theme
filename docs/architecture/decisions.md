@@ -15,7 +15,7 @@ text in other documents.
 | D-1 | Dark theme in warm tones, minimalist | Owner | Breeze is neutral to cool |
 | D-2 | Square corners everywhere. A widget that is a circle by convention, such as a radio button or a round button, stays a circle: it has no corners to round | Owner | Second sentence added on 2026-11-11 |
 | D-3 | No hairlines; separation by tone, as in JetBrains Islands. The window outline (D-25) is the one exception | Owner | Second sentence added on 2026-11-11 |
-| D-4 | Hovered, focused and pressed widgets are shown by a change of tone alone. Nothing glows, and there is no outline. This holds for every part, the window decoration included, so that Amber is consistent | Owner | Changed on 2026-11-11. It was "a glow, not an outline"; spikes P0.3 and P0.5 showed that Union cannot draw a glow in Qt Widgets applications. The exact tones are settled in the prototype |
+| D-4 | Hovered, focused and pressed widgets are shown by a change of tone alone. Nothing glows, and no widget gets an outline to show a state. This holds for every part, the window buttons of the decoration included, so that Amber is consistent. The window outline (D-25) shows no state | Owner | Changed on 2026-11-11. It was "a glow, not an outline"; spikes P0.3 and P0.5 showed that Union cannot draw a glow in Qt Widgets applications. The exact tones are settled in the prototype |
 | D-5 | Widgets styled through Union | Owner | |
 | D-6 | Window decoration and widgets are both in scope | Owner | |
 | D-7 | Breeze icons and the Noto font stay | Owner | |
@@ -36,7 +36,7 @@ text in other documents.
 | D-22 | Amber carries the MIT licence | Owner | 2026-11-11. The Union style starts from BSD-2-Clause code, whose notices are kept |
 | D-23 | "Part" is the word for one of the things Amber installs | Owner | 2026-11-11 |
 | D-24 | Developing Amber must not need a change to the owner's system settings | Owner | Stated with D-9 |
-| D-25 | A window has a thin outline along every edge, as Breeze's decoration has. It is the one exception to D-3 and D-13 | Owner | 2026-11-11, on seeing the windows of spike P0.4: without it, windows that overlap cannot be told apart. Accessibility and usability come before the rule |
+| D-25 | A window has a thin window outline, like the thin border of Breeze's decoration. It is the one exception to D-3 and D-13 | Owner | 2026-11-11, on seeing the windows of spike P0.4: without it, windows that overlap cannot be told apart. Accessibility and usability come before the rule |
 
 ## Architecture
 
@@ -50,7 +50,7 @@ text in other documents.
 | D-35 | The prototype is plain HTML and CSS, opened from disk, with no build step | Designer | Fast to change; nothing to install |
 | D-36 | The prototype uses only effects Union can draw in Qt Widgets applications: flat colours, and no shadow on a widget | Designer | It must not promise what the system cannot draw. Changed on 2026-11-11 after spike P0.3 |
 | D-37 | Two spikes run before the prototype is approved: widget glow, square decoration | Designer | Both are goals that the platform might not allow |
-| D-38 | A failed glow, or a decoration that cannot be square, goes back to the owner | Designer | The fallback changes what Amber is |
+| D-38 | A decoration that cannot be square goes back to the owner | Designer | The fallback changes what Amber is. Changed on 2026-11-11: the glow is gone (D-4) and the decoration has a window outline (D-25) |
 | D-39 | Withdrawn on 2026-11-11: it was about a decoration without button glow, and Amber has no glow (D-4) | Designer | |
 | D-40 | Nothing is written under `/usr`; everything installs to the home folder | Designer | Easy to remove |
 | D-41 | Tools follow the `ai-tools` approach of `front-burner`; `colour` is ported | Designer | Asked for by the owner to be assessed; it fits |

@@ -86,11 +86,11 @@ before they go into real files.
 ## Window decoration
 
 - Title bar in tone 0; square corners.
-- A window outline along every edge, square at the corners, for active and
-  inactive windows. (decided, D-25) It is one pixel wide and sits lighter
-  than tone 0 (my call); its colour, and the contrast it must reach, are
-  open question O-4 in the [decisions](decisions.md). A maximised window
-  has none (my call).
+- A window has a window outline. (decided, D-25) It runs along every edge,
+  square at the corners, for active and inactive windows; it starts one
+  pixel wide and sits lighter than tone 0 (my call). Its width, its colour
+  and the contrast it must reach are open question O-4 in the
+  [decisions](decisions.md). A maximised window has none (my call).
 - No other line: none between the title bar and the content.
 - A soft drop shadow around the window.
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
