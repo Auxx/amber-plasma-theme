@@ -56,12 +56,13 @@ before they go into real files.
 - Two surfaces that touch differ by at least one tone, unless they are meant
   to read as one area, as the header is.
 - Menus, popups and tooltips are one tone away from what they cover and carry
-  a shadow. They have no outline.
+  a shadow. They have no outline. A popup is `--popup`, tone 3, one above the
+  tone 2 surface (my call, P1.5).
 
 ## Widgets
 
 The tones of each state, as background / text (my call; seen in the gallery
-of plans P1.3 and P1.4, `prototype/gallery.html`).
+of plans P1.3 to P1.5, `prototype/gallery.html`).
 
 | Widget | At rest | Hovered | Focused | Pressed | Checked | Disabled |
 |---|---|---|---|---|---|---|
@@ -81,6 +82,16 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
 | Slider | tone 3 thumb / accent fill | tone 4 / accent | raised focus / accent | tone 1 / accent | tone 3 / dim text |
 | Progress bar | track / accent fill | — | — | — | track / dim text |
 | Scrollbar thumb | scroll thumb | dim text | — | text | — |
+
+Navigation, views and popups (my call, P1.5). Each cell gives the
+background / text, and the block marker or tick where the widget has one.
+
+| Widget | At rest | Hovered | Focused | Pressed | Selected, checked or sorted | Disabled |
+|---|---|---|---|---|---|---|
+| Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | well focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
+| Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | — | selected: selected / text, marker | no fill / dim text |
+| Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | — |
+| Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
 
 - **Precedence:** pressed wins over focused, and focused over hovered. A
   disabled widget never changes. (my call)
@@ -112,8 +123,30 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
   the primary button does (part of O-3).
 - **An unchecked toggle** is told from its surface by tone alone (O-1); the
   gallery shows a darker box beside lighter ones.
-- A selected list or sidebar item has a tone 3 background. It may carry a
-  block marker in accent on its leading edge.
+- **Selection** (my call, P1.5; D-21): a selected item has the selected
+  tone (tone 3) and carries a block marker in accent, `--marker-width`
+  (3 px) wide, on its leading edge. A selected tab carries it on its top
+  edge and takes tone 2, so that it joins the page below it. The marker is
+  part of selection: without it a selected item looks like a hovered one,
+  and only the marker reaches 3:1. Hovered, a selected item goes to tone 4;
+  focused, it takes raised focus; both keep the marker. A selected tab does
+  not change when hovered, and takes well focus when focused. The focused
+  tones follow the rule above: accent over the hovered tone.
+- **Secondary text on a focused item** is text, not dim text: dim text on
+  raised focus measures 2.58:1 (see [accessibility](accessibility.md)).
+- **Views** (my call, P1.5): a tree has no branch lines; it indents 20 px a
+  level, and its chevron is dim text, turned when open. A table has no grid
+  lines and no alternating rows. A header has no dividers: its sections are
+  dim text at rest, text when sorted, and a sorted section carries a sort
+  arrow.
+- **Menus** (my call, P1.5): a menu item's keyboard highlight is its hovered
+  tone, since Qt does not tell the two apart. A checked item carries a tick
+  in accent in a 28 px column on its left, and a shortcut is dim text on the
+  right. Menu separators are an 8 px gap: no line and no band of tone.
+- **Tooltips** (my call, P1.5) are popups: they show 400 ms after their
+  anchor is hovered or takes keyboard focus, and hide at once.
+- **A dialog** is a window, with a title bar, window outline and window
+  glow; no line sits above its buttons.
 - **Ranges** (my call, P1.4): a fill is accent on a 6 px track below the
   surface; a disabled fill is dim text. A slider's thumb is a 10 × 20 px
   raised widget and takes the button's tones. Pressed, it goes to tone 1
@@ -127,7 +160,7 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
   with the focused well's tone, and its thumb rises to dim text there: the
   thumb at rest would measure 1.09:1 on that tint.
 
-Tokens of the widgets (my call, P1.3 and P1.4; the owner chooses O-1 and O-3 in
+Tokens of the widgets (my call, P1.3 to P1.5; the owner chooses O-1 and O-3 in
 P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the
 token holds the plain colour (D-47).
 
@@ -144,6 +177,8 @@ token holds the plain colour (D-47).
 | `--toggle-focus` | `#393226`, accent 16 % over tone 1 | a focused unchecked toggle (O-3) |
 | `--track` | `var(--tone-0)` | the track of a slider or progress bar (O-1) |
 | `--scroll-thumb` | `var(--tone-4)` | a scrollbar's thumb at rest |
+| `--selected` | `var(--tone-3)` | a selected item (P1.5) |
+| `--marker-width` | `3px` | the block marker (P1.5; D-21) |
 
 ## Shadow
 
@@ -155,6 +190,16 @@ token holds the plain colour (D-47).
   decoration".
   Whether Union draws one under menus and popups is unverified; see
   [platform](platform.md).
+- A popup's shadow (my call, P1.5; D-49) is drawn in the prototype as the
+  window's shadow is, as gradients, black, and sits below the popup. The
+  gallery shows a "No shadow" candidate beside it, for the case that Union
+  cannot draw it.
+
+  | Token | Starting value | Used for |
+  |---|---|---|
+  | `--popup` | `var(--tone-3)` | a menu, a combo box list, a tooltip |
+  | `--popup-shadow-size` | `12px` | how far a popup's shadow fades to nothing |
+  | `--popup-shadow-offset` | `4px` | how far the shadow sits below the popup |
 
 ## Window decoration
 

@@ -119,7 +119,7 @@ Verified on 2026-11-10 unless marked.
 
 | Question | Tested in |
 |---|---|
-| Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. | P3.8 |
+| Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. The prototype draws one (D-49), and the gallery shows a "No shadow" candidate beside it since P1.5. | P3.8 |
 | How does the Breeze style show focus in a Qt Widgets application, given that its focus `outline` is not drawn? | P3.2 |
 | Which key selects the style for the whole system? | P6.2 |
 

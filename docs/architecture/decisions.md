@@ -32,7 +32,7 @@ text in other documents.
 | D-18 | Plasma shell, GTK, login screen, splash screen, cursors, a global theme package and the KDE Store are out | Designer | Keeps the first version small |
 | D-19 | Starting values of tones, text, accent, danger and on-danger | Designer | From the Sand mockup; tuned in the prototype. On-danger was added on 2026-11-11 because text on danger measures 4.29:1. Dim text was lightened from `#9c958a` to `#a9a297` on 2026-11-11, in P1.1, to reach 4.5:1 on tone 4 |
 | D-20 | Terminal and syntax colours are muted, warm-shifted hues, approved in the prototype | Designer | They must sit with Sand |
-| D-21 | A selected item may carry an accent block marker at least three pixels wide | Designer | A block is not a hairline |
+| D-21 | A selected item or tab carries an accent block marker, `--marker-width` wide and at least three pixels | Designer | A block is not a hairline. Changed on 2026-11-11, in P1.5, from "may carry": without the marker a selected item looks like a hovered one (both tone 3, 1.17:1 on tone 2), and the marker is what reaches 3:1 (6.54:1). The gallery shows a "No marker" candidate for the owner |
 | D-22 | Amber carries the MIT licence | Owner | 2026-11-11. The Union style starts from BSD-2-Clause code, whose notices are kept |
 | D-23 | "Part" is the word for one of the things Amber installs | Owner | 2026-11-11 |
 | D-24 | Developing Amber must not need a change to the owner's system settings | Owner | Stated with D-9 |
@@ -62,6 +62,7 @@ text in other documents.
 | D-46 | `playwright-core` drives the installed Google Chrome; no browser is downloaded, and Firefox is not driven | Designer | Nothing is installed beyond one npm package; Chrome 157 verified on 2026-11-11, P0.7 |
 | D-47 | Widget tones that are not tones, such as the focused tones, are opaque tokens; a mix they come from is written in the token's comment, not as `color-mix` with a second colour | Designer | The colour scheme and the Union style need plain colours, and the tokens reader stays as small as D-44 left it. 2026-11-11, P1.3 |
 | D-48 | The prototype may hold a script only to copy a value into a custom property, such as a slider's fill. A script sets no colour and no class: `scriptOffences` allows it only the names a slider needs and the names it declares | Designer | A fill that does not follow a dragged thumb shows what Amber will not do, and CSS cannot read a range input's live value. 2026-11-11, P1.4 |
+| D-49 | Popups (menus, combo box lists and tooltips) are tone 3 and carry a dark shadow offset downwards, drawn in the prototype as the window's shadow is. Whether Union draws it in Qt Widgets applications is answered in P3.8; if it cannot, the shadow is dropped or listed as a known gap | Designer | The design language gives popups depth, and the prototype shows a "No shadow" candidate beside it. 2026-11-11, P1.5 |
 
 ## Accessibility
 

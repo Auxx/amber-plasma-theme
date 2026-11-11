@@ -43,6 +43,18 @@ function size(option, text, fallback) {
   return value;
 }
 
+/** How long to wait after the state is applied, in milliseconds. */
+function wait(text) {
+  if (text === undefined) {
+    return 0;
+  }
+  const value = Number(text);
+  if (!/^\d+$/.test(text) || value > 10000) {
+    throw new UsageError(`--wait must be a whole number of milliseconds from 0 to 10000: ${text}`);
+  }
+  return value;
+}
+
 const viewport = options => ({ width: size('width', options.width, 1300), height: size('height', options.height, 900) });
 
 /** The page argument, checked before Chrome starts. */
@@ -88,20 +100,25 @@ main({
   summary: 'Opens a prototype page in the installed Google Chrome: screenshots, the rendered anti-goal check, computed colours.',
   commands: {
     shot: {
-      usage: '<page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--width n] [--height n] [--json]',
+      usage: '<page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--wait ms] [--width n] [--height n] [--json]',
       summary: 'Saves a PNG of one element, the viewport, or the whole page (--full), in a state.',
       help: `${STATE_HELP}\n\n${SIZE_HELP}\n\n--out defaults to tmp/<page>-<selector>-<states>.png in the repository (gitignored). It may be
 another path inside the repository or inside the system's temporary folder, such as /tmp;
 links are followed before deciding.
 
---scrollbars shows the scrollbars, which headless Chrome hides.`,
-      options: { selector: { type: 'string' }, out: { type: 'string' }, full: { type: 'boolean' }, scrollbars: { type: 'boolean' }, ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
+--scrollbars shows the scrollbars, which headless Chrome hides.
+
+--wait waits that many milliseconds after the state is applied, before the
+shot, for something that shows late, such as a tooltip; 0 to 10000.`,
+      options: { selector: { type: 'string' }, out: { type: 'string' }, full: { type: 'boolean' }, scrollbars: { type: 'boolean' }, wait: { type: 'string' }, ...STATE_OPTIONS, ...SIZE_OPTIONS, json: { type: 'boolean' } },
       async run(options, positionals) {
         const url = page(positionals);
         const file = outPath(options.out, { name: defaultName(positionals[0], options) });
         viewport(options);
+        const delay = wait(options.wait);
         await withPage(url, options, async opened => {
           await applyState(opened, options);
+          await opened.waitForTimeout(delay);
           mkdirSync(dirname(file), { recursive: true });
           if (options.selector) {
             await (await only(opened, options.selector)).screenshot({ path: file });

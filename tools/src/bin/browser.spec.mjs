@@ -121,6 +121,24 @@ describe('browser tool', () => {
     assert.deepEqual(readFileSync(file).subarray(0, 8), PNG);
   });
 
+  withChrome('waits before a shot', () => {
+    // The tooltip shows 400 ms after its anchor is hovered: only the shot
+    // that waits shows it.
+    const shot = (name, ...extra) => {
+      const file = join(out, name);
+      const { status, stdout } = browser('shot', 'prototype/gallery.html', '--selector', '.family[aria-label=Popups] .live', '--hover', '.tooltip-anchor .tool-button', '--out', file, ...extra);
+      assert.equal(status, 0, stdout);
+      return readFileSync(file);
+    };
+    assert.notDeepEqual(shot('at-once.png'), shot('waited.png', '--wait', '600'));
+  });
+
+  it('refuses a bad wait', () => {
+    const { status, stderr } = browser('shot', 'prototype/gallery.html', '--wait', 'soon');
+    assert.equal(status, 2);
+    assert.match(stderr, /--wait must be a whole number of milliseconds from 0 to 10000: soon/);
+  });
+
   withChrome('refuses an ambiguous state', () => {
     const { status, stderr } = browser('colours', 'prototype/index.html', '.window', '--hover', '.window-button');
     assert.equal(status, 1);
