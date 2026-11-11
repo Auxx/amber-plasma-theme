@@ -1,0 +1,105 @@
+/*
+ * The window: what Amber's window decoration will draw (roadmap P5.1 to P5.3).
+ * A title bar in tone 0, the window outline on every edge, and outside it the
+ * window glow of the active window or the shadow of an inactive one.
+ */
+
+.window {
+  position: absolute;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  background: var(--tone-2);
+  outline: var(--outline-width) solid var(--outline);
+}
+
+/* The light outside the window: the window glow, or the shadow in its place. */
+.window.is-active {
+  --light: var(--glow);
+  --light-size: var(--glow-size);
+}
+
+.window:not(.is-active) {
+  --light: var(--shadow);
+  --light-size: var(--shadow-size);
+}
+
+/*
+ * Drawn as the Aurorae frame of spike P0.6 draws it: from the light's colour
+ * at the window outline to nothing, straight on the edges, round on the
+ * corners. The window's own corners stay square.
+ */
+.window::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  --s: var(--light-size);
+  inset: calc(-1 * (var(--outline-width) + var(--s)));
+  background:
+    linear-gradient(to top, var(--light), transparent) top / calc(100% - 2 * var(--s)) var(--s) no-repeat,
+    linear-gradient(to bottom, var(--light), transparent) bottom / calc(100% - 2 * var(--s)) var(--s) no-repeat,
+    linear-gradient(to left, var(--light), transparent) left / var(--s) calc(100% - 2 * var(--s)) no-repeat,
+    linear-gradient(to right, var(--light), transparent) right / var(--s) calc(100% - 2 * var(--s)) no-repeat,
+    radial-gradient(circle var(--s) at 100% 100%, var(--light), transparent) top left / var(--s) var(--s) no-repeat,
+    radial-gradient(circle var(--s) at 0 100%, var(--light), transparent) top right / var(--s) var(--s) no-repeat,
+    radial-gradient(circle var(--s) at 100% 0, var(--light), transparent) bottom left / var(--s) var(--s) no-repeat,
+    radial-gradient(circle var(--s) at 0 0, var(--light), transparent) bottom right / var(--s) var(--s) no-repeat;
+}
+
+/* 30 px high: my call, settled with the decoration in P5.1. */
+.title-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 30px;
+  flex: none;
+  background: var(--tone-0);
+}
+
+.title {
+  grid-column: 2;
+  white-space: nowrap;
+}
+
+.window:not(.is-active) .title {
+  color: var(--text-dim);
+}
+
+.window-buttons {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+}
+
+/* Flat, and never a glow: hovered minimise and maximise move up a tone, close turns danger. */
+.window-button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--text);
+}
+
+.window:not(.is-active) .window-button {
+  color: var(--text-dim);
+}
+
+.window-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+}
+
+.window-button.is-minimise:hover,
+.window-button.is-maximise:hover {
+  background: var(--tone-1);
+}
+
+.window-button.is-close:hover {
+  background: var(--danger);
+  color: var(--on-danger);
+}

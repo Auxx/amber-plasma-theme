@@ -38,6 +38,29 @@ describe('tokens tool', () => {
     assert.deepEqual(row.chain, [ 'tone-2' ]);
   });
 
+  it('lists lengths and mixes', () => {
+    const { status, stdout } = tokens('list', '--json');
+    assert.equal(status, 0);
+    const values = Object.fromEntries(JSON.parse(stdout).map(row => [ row.name, row.value ]));
+    assert.equal(values['outline-width'], '1px');
+    assert.equal(values.glow, 'color-mix(in srgb, var(--accent) 28%, transparent)');
+    assert.equal(values.shadow, '#000000 / 50%');
+  });
+
+  it('refuses to resolve a length', () => {
+    const { status, stderr } = tokens('resolve', 'outline-width');
+    assert.equal(status, 1);
+    assert.ok(stderr.includes('outline-width is a length (1px)'), stderr);
+  });
+
+  it('tries a stronger outline', () => {
+    const { status, stdout } = tokens('try', 'outline=#746e63', '--json');
+    assert.equal(status, 0);
+    const result = JSON.parse(stdout);
+    assert.equal(result.changed.length, 3);
+    assert.equal(result.failing, 0);
+  });
+
   it('names an unknown token', () => {
     const { status, stderr } = tokens('resolve', 'nope');
     assert.equal(status, 1);
@@ -53,14 +76,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('17 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('23 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 17);
+    assert.equal(result.total, 23);
     assert.equal(result.failing, 0);
   });
 

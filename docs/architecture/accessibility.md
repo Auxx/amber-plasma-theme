@@ -37,7 +37,12 @@ Disabled controls are exempt in WCAG, and are exempt here.
    question O-4 in the [decisions](decisions.md); its contrast pairs are
    declared with its token. The window glow marks the active window; it
    is settled in the same question, and the dim title text of an inactive
-   window marks the same state.
+   window marks the same state. Until O-4 is closed, the pairs of
+   `outline` and `glow` on tones 0 to 2 have a provisional minimum of 1.3
+   (my call): a floor that keeps them from fading, not a WCAG rule. The
+   shadow shows no state and has no pair. On the active window the
+   outline also meets its own glow, against which it measures less (1.14:1
+   over tone 0); whether that is measured is part of O-4.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
@@ -72,7 +77,7 @@ tones and their measured ratios side by side, and the owner chooses in P1.7.
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plan P1.1. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1 and P1.2. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -95,6 +100,12 @@ falls below its minimum.
 | accent | tone 3 | 6.54:1 | 3 | pass |
 | accent | tone 4 | 5.63:1 | 3 | pass |
 | on-danger | danger | 4.97:1 | 4.5 | pass |
+| window outline | tone 0 | 1.58:1 | 1.3 (provisional) | pass |
+| window outline | tone 1 | 1.49:1 | 1.3 (provisional) | pass |
+| window outline | tone 2 | 1.36:1 | 1.3 (provisional) | pass |
+| window glow | tone 0 | 1.81:1 | 1.3 (provisional) | pass |
+| window glow | tone 1 | 1.82:1 | 1.3 (provisional) | pass |
+| window glow | tone 2 | 1.82:1 | 1.3 (provisional) | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
 | tone 0 | tone 2 | 1.16:1 | — | tonal step |

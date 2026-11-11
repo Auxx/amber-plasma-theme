@@ -2,10 +2,19 @@
 // Ported from front-burner tools/ai-tools (MIT, same author).
 import { main, print, table, UsageError } from '../lib/cli.mjs';
 import { CLOSE_MARGIN, describeColour } from '../lib/colour.mjs';
-import { checkPairs, describePair, loadPairs, loadTokens, parseOverrides, resolveToken } from '../lib/tokens.mjs';
+import {
+  checkPairs,
+  describePair,
+  formatTokenValue,
+  loadPairs,
+  loadTokens,
+  parseOverrides,
+  resolveToken
+} from '../lib/tokens.mjs';
 
 const OVERRIDE_HELP = `--set token=value (repeatable) changes a token before measuring. The value is
-var(--other-token) or a CSS colour. For resolve, an unknown name adds a new
+var(--other-token), color-mix(in srgb, var(--other-token) N%, transparent), a
+length in px, or a CSS colour. For resolve, an unknown name adds a new
 token; pairs and try refuse it, since a new token can change no pair.`;
 
 const NAME_HELP = `A token is named with or without its leading --; a name written with it goes
@@ -43,8 +52,6 @@ const jsonPair = r => ({ ...r, pair: describePair(r.pair), minimum: r.pair.minim
 
 const CLOSE_NOTE = `"close" passes by less than ${CLOSE_MARGIN * 100} %: a small change to either colour may fail it.`;
 
-const showValue = value => (value.ref ? `var(--${value.ref})` : describeColour(value.colour).hex);
-
 main({
   name: 'tokens',
   summary: "Reads Amber's tokens and checks their contrast pairs, from prototype/.",
@@ -56,7 +63,7 @@ main({
       run(options, [ filter = '' ]) {
         const rows = [ ...loadTokens() ]
           .filter(([ name ]) => name.includes(filter))
-          .map(([ name, value ]) => ({ name, value: showValue(value) }));
+          .map(([ name, value ]) => ({ name, value: formatTokenValue(value) }));
         print(options.json, rows, () => table([ [ 'token', 'value' ], ...rows.map(r => [ r.name, r.value ]) ]));
       }
     },
