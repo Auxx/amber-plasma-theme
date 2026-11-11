@@ -65,9 +65,9 @@ be now, not how it got there.
   under `~/.config` to do so. Trying a part in one launched application is
   fine. Ask the owner to switch settings themselves.
 - **Write nothing under `/usr`.**
-- **The anti-goals are hard failures:** no rounded corner (a round widget such as a
-  radio button is not one), no hairline
-  border or divider, no cool grey. Check for them in every plan.
+- **The anti-goals are hard failures:** no rounded corner, no hairline
+  border or divider, no cool grey. Check for them in every plan. A round
+  widget, such as a radio button, is not a rounded corner.
 - **Work in small plans.** Each step of the roadmap is split into plans with
   one testable result each. Write a plan just before its work, and do not
   start the next plan until the current one's "done when" is checked.
