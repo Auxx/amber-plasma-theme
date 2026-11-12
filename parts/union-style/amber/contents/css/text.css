@@ -26,10 +26,10 @@ textarea,
 spinbox,
 searchfield
 {
-    /* A well (P3.4): 30 px high, as the prototype's */
+    /* A well (P3.4): 30 px high, as the prototype's: 5 px above and below a line of text 20 px high */
     height: 30px;
-    padding-top: var(--medium-spacing);
-    padding-bottom: var(--medium-spacing);
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: var(--large-spacing);
     padding-right: var(--large-spacing);
     border-radius: var(--corner-radius);
@@ -203,7 +203,8 @@ spinbox
         layout-alignment: item end stack-fill 0;
 
         width: var(--medium-element-size);
-        height: var(--small-element-size);
+        /* Two steps share the well's 30 px, as in the prototype (P3.4) */
+        height: 15px;
 
         border: none;
         margin: 0px;
