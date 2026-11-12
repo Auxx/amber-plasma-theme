@@ -321,15 +321,11 @@ describe('the Union style\'s buttons (P3.3)', () => {
     assert.equal(value(pressed, 'background-color'), 'var(--tone-1)');
   });
 
-  it('gives the primary button the tones of the prototype', () => {
-    const primary = top(p => p.length === 1 && p[0] === 'button:highlighted');
-    assert.equal(value(primary, 'background-color'), 'var(--accent)');
-    assert.equal(value(primary, 'color'), 'var(--on-accent)');
-    assert.equal(value(child(primary, '&:hovered'), 'background-color'), 'var(--accent-hover)');
-    assert.equal(value(child(primary, '&:visual-focus'), 'background-color'), 'var(--accent-hover)');
-    assert.equal(value(child(primary, '&:pressed'), 'background-color'), 'var(--accent-pressed)');
-    assert.equal(value(child(primary, '&:disabled'), 'background-color'), 'var(--tone-3)');
-    assert.equal(value(child(primary, '&:disabled'), 'color'), 'var(--text-dim)');
+  it('draws a highlighted button as any other (D-100: Union highlights every auto-default button)', () => {
+    const offending = all.filter(b => chain(b).some(c => /:highlighted/.test(c.selector)) && isButton(b))
+      .filter(b => b.declarations.some(d => [ 'color', 'background-color' ].includes(d.property)))
+      .map(b => b.selector.replace(/\s+/g, ' '));
+    assert.deepEqual(offending, []);
   });
 
   it('gives a tool button the tones of the prototype', () => {

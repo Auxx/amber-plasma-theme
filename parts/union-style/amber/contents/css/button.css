@@ -167,29 +167,10 @@ toolbutton.raised:pressed
     box-shadow: none;
 }
 
-/* The primary button: Union gives a default push button :highlighted (P3.3) */
-button:highlighted
-{
-    color: var(--on-accent);
-    background-color: var(--accent);
-
-    &:hovered {
-        background-color: var(--accent-hover);
-    }
-
-    &:visual-focus {
-        background-color: var(--accent-hover);
-    }
-
-    &:pressed {
-        background-color: var(--accent-pressed);
-    }
-
-    &:disabled {
-        color: var(--text-dim);
-        background-color: var(--tone-3);
-    }
-}
+/*
+ * No primary button (D-100): Union gives :highlighted to every auto-default
+ * push button, which in a dialog is every button, so it is drawn as any other.
+ */
 
 button:checked,
 roundbutton:checked
