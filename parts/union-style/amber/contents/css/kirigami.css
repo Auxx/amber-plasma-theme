@@ -24,7 +24,7 @@ applicationheader
 
     &.with-separator
     {
-        border-bottom: 1px solid var(--header-active-border-color);
+        border-bottom: none;
     }
 
     .inactive &
@@ -38,9 +38,9 @@ applicationheader
 card
 {
     background-color: var(--card-background-color);
-    border: 1px solid var(--card-border-color);
+    border: none;
     border-radius: var(--corner-radius);
-    box-shadow: 0px 2px var(--grid-unit) 0px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
     color: var(--card-text-color);
 
     &:hovered {
@@ -64,7 +64,7 @@ chip
 
     background-color: var(--chip-background-color);
     border-radius: var(--corner-radius);
-    border: 1px solid var(--button-active-border-color);
+    border: none;
     color: var(--button-active-text-color);
 
     spacing: var(--small-spacing);
@@ -157,23 +157,23 @@ inlinemessage
     padding: var(--small-spacing);
 
     background-color: mix(var(--window-background-color), var(--highlight-color), 0.2);
-    border: 1px solid var(--highlight-color);
+    border: none;
     border-radius: var(--corner-radius);
     color: var(--window-text-color);
 
     &[type="positive"] {
         background-color: var(--positive-background);
-        border: 1px solid var(--positive-text);
+        border: none;
     }
 
     &[type="warning"] {
         background-color: var(--neutral-background);
-        border: 1px solid var(--neutral-text);
+        border: none;
     }
 
     &[type="error"] {
         background-color: var(--negative-background);
-        border: 1px solid var(--negative-text);
+        border: none;
     }
 
     &[position="header"] {
@@ -195,11 +195,11 @@ navigationtabbar {
     background-color: var(--window-background-color);
 
     &.header {
-        border-bottom: 1px solid var(--window-border-color);
+        border-bottom: none;
     }
 
     &.footer {
-        border-top: 1px solid var(--window-border-color);
+        border-top: none;
     }
 }
 
@@ -238,7 +238,7 @@ navigationtabbutton {
     {
         color: var(--window-text-color);
         background-color: var(--highlight-hover-color);
-        border: 1px solid var(--highlight-color);
+        border: none;
     }
 
     &[display="text-beside-icon"] {

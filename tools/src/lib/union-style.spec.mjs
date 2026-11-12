@@ -96,3 +96,113 @@ describe('the Union style\'s tokens (P3.2)', () => {
     }
   });
 });
+
+/**
+ * Every block of a Union CSS text, at every depth of `&` nesting, with the
+ * declarations directly inside it. Each declaration keeps its line and the
+ * text of a comment on that line.
+ */
+function blocks(source) {
+  const comments = new Map();
+  const text = source.replace(/\/\*[\s\S]*?\*\//g, (comment, at) => {
+    if (!comment.includes('\n')) {
+      comments.set(source.slice(0, at).split('\n').length, comment.slice(2, -2).trim());
+    }
+    return comment.replace(/[^\n]/g, ' ');
+  });
+  const found = [];
+  const stack = [];
+  let buffer = '';
+  let line = 1;
+  let start = 1;
+  const declare = () => {
+    const body = buffer.trim();
+    if (body && stack.length) {
+      const colon = body.indexOf(':');
+      stack.at(-1).declarations.push({
+        property: body.slice(0, colon).trim(),
+        value: body.slice(colon + 1).trim(),
+        line: start,
+        comment: comments.get(start) ?? ''
+      });
+    }
+    buffer = '';
+  };
+  for (const char of text) {
+    if (char === '\n') {
+      line++;
+    }
+    if (char === '{') {
+      const block = { selector: buffer.trim(), declarations: [] };
+      found.push(block);
+      stack.push(block);
+      buffer = '';
+    } else if (char === ';') {
+      declare();
+    } else if (char === '}') {
+      declare();
+      stack.pop();
+    } else {
+      if (!buffer.trim() && char.trim()) {
+        start = line;
+      }
+      buffer += char;
+    }
+  }
+  return found;
+}
+
+describe('the block reader of this spec', () => {
+  it('reads declarations at every depth of nesting, with their comments', () => {
+    const found = blocks('a {\n  x: 1;\n  &:hovered { x: 2; }\n  .inactive & {\n    y: 3; /* round widget */\n  }\n}\n');
+    assert.deepEqual(found.map(b => [ b.selector, b.declarations.map(d => `${d.property}=${d.value}`) ]), [
+      [ 'a', [ 'x=1' ] ],
+      [ '&:hovered', [ 'x=2' ] ],
+      [ '.inactive &', [ 'y=3' ] ]
+    ]);
+    assert.equal(found[2].declarations[0].line, 5);
+    assert.equal(found[2].declarations[0].comment, 'round widget');
+  });
+});
+
+describe('the Union style\'s global rules (P3.2)', () => {
+  const rules = cssFiles()
+    .filter(f => f !== 'tokens.css')
+    .flatMap(file => blocks(read(file)).flatMap(block =>
+      block.declarations.map(d => ({ ...d, file, block, where: `${file}:${d.line} ${d.property}: ${d.value}` }))));
+  const offending = (test) => rules.filter(test).map(d => d.where);
+  const zero = value => /^(0|0px)$/.test(value);
+
+  it('sets --corner-radius to 0px', () => {
+    assert.deepEqual(rules.filter(d => d.file === 'variables.css' && d.property === '--corner-radius').map(d => d.value), [ '0px' ]);
+  });
+
+  it('gives every corner a radius of zero, except a round widget', () => {
+    assert.deepEqual(offending(d => /^border(-(top|bottom)-(left|right))?-radius$/.test(d.property)
+      && !zero(d.value) && d.value !== 'var(--corner-radius)' && !d.comment.startsWith('round widget')), []);
+  });
+
+  it('marks exactly the five round widgets', () => {
+    assert.deepEqual(rules.filter(d => d.comment.startsWith('round widget')).map(d => d.file).sort(),
+      [ 'application.css', 'bars.css', 'button.css', 'check.css', 'tables.css' ]);
+  });
+
+  it('draws no border', () => {
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value)), []);
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?-width$/.test(d.property) && !zero(d.value)), []);
+  });
+
+  it('draws no outline', () => {
+    assert.deepEqual(offending(d => d.property === 'outline' && d.value !== 'none'), []);
+  });
+
+  it('casts a shadow only from a popup', () => {
+    assert.deepEqual(offending(d => d.property === 'box-shadow' && d.file !== 'popup.css' && d.value !== 'none'), []);
+    assert.deepEqual(offending(d => d.property === '--button-shadow' && d.value !== 'none'), []);
+  });
+
+  it('fills no separator one pixel thick', () => {
+    assert.deepEqual(rules.filter(d => d.property === 'background-color'
+      && d.block.declarations.some(o => /^(width|height)$/.test(o.property) && o.value === '1px')).map(d => d.where), []);
+  });
+});

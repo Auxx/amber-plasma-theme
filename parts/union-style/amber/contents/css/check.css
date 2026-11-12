@@ -69,7 +69,7 @@ radiodelegate
         layout-alignment-order: -1;
 
         background-color: var(--checkable-indicator-active-background-color);
-        border: 1px solid var(--checkable-indicator-active-border-color);
+        border: none;
         color: var(--checkable-indicator-active-text-color);
         border-radius: var(--corner-radius);
     }
@@ -87,7 +87,7 @@ radiodelegate
 
     &:visual-focus > indicator
     {
-        outline: var(--focus-outline);
+        outline: none;
         border-color: var(--checkable-indicator-active-highlight-border-color);
     }
 
@@ -97,7 +97,7 @@ radiodelegate
 
         & > indicator
         {
-            border: 1px solid var(--checkable-indicator-disabled-border-color);
+            border: none;
             color: var(--checkable-indicator-disabled-text-color);
             background-color: var(--checkable-indicator-disabled-background-color);
         }
@@ -129,7 +129,7 @@ menuitem.exclusive
 {
     & > indicator
     {
-        border-radius: 8px;
+        border-radius: 8px; /* round widget */
     }
 
     &:checked > indicator
@@ -148,19 +148,19 @@ switchdelegate
 
         width: 36px;
         height: 12px;
-        border-radius: 6px;
+        border-radius: 0px;
 
         background-color: var(--switch-indicator-active-background-color);
-        border: 1px solid var(--switch-indicator-active-border-color);
+        border: none;
 
         & > handle
         {
             width: var(--grid-unit);
             height: var(--grid-unit);
-            border-radius: 9px; /* grid-unit / 2 */
+            border-radius: 0px;
 
             background-color: var(--switch-handle-active-background-color);
-            border: 1px solid var(--switch-handle-active-border-color);
+            border: none;
         }
     }
 
@@ -185,7 +185,7 @@ switchdelegate
 
     &:visual-focus > indicator > handle
     {
-        outline: var(--focus-outline);
+        outline: none;
     }
 
     &:disabled
@@ -211,6 +211,6 @@ checkdelegate.changed,
 switch.changed {
     indicator {
         background-color: var(--changed-background);
-        border: 1px solid var(--changed-foreground);
+        border: none;
     }
 }

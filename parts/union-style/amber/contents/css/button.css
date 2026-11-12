@@ -33,7 +33,7 @@
 
     --button-border: 1px solid var(--button-active-border-color);
     --button-border-highlight: 1px solid var(--button-active-border-highlight-color);
-    --button-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.1);
+    --button-shadow: none;
     --button-focus: 2px solid var(--button-active-focus-color);
 
     /* Values derived from Breeze QStyle metrics */
@@ -66,12 +66,12 @@ toolbutton.raised
     icon-alignment-horizontal: center;
 
     color: var(--button-active-text-color);
-    border: var(--button-border);
+    border: none;
     background-color: var(--button-active-background-color);
 
     &:checked
     {
-        border: var(--button-border);
+        border: none;
         background-color: var(--button-active-checked-color);
     }
 
@@ -83,7 +83,7 @@ toolbutton.raised
     &:visual-focus
     {
         border-color: var(--button-active-border-highlight-color);
-        outline: var(--button-focus);
+        outline: none;
     }
 
     &:disabled
@@ -126,13 +126,13 @@ toolbutton.raised
         layout-alignment: content end fill 0;
         icon-name: "arrow-down";
         icon-color: var(--button-active-text-color);
-        border-left:  var(--button-border);
+        border-left:  none;
     }
 
     &.menu-open {
-        border: var(--button-border-highlight);
+        border: none;
         & > indicator {
-            border: var(--button-border-highlight);
+            border: none;
             background-color: var(--button-active-highlight-color);
             border-radius: var(--corner-radius);
             border-top-left-radius: 0px;
@@ -154,7 +154,7 @@ button,
 roundbutton,
 delaybutton
 {
-    box-shadow: var(--button-shadow);
+    box-shadow: none;
 }
 
 button:pressed,
@@ -185,15 +185,15 @@ roundbutton.flat
     box-shadow: none;
 
     &:hovered {
-        border: var(--button-border-highlight);
+        border: none;
     }
 
     &:visual-focus {
-        border: var(--button-border-highlight);
+        border: none;
     }
 
     &:pressed {
-        border: var(--button-border-highlight);
+        border: none;
         background-color: var(--button-active-highlight-color);
     }
 
@@ -218,13 +218,13 @@ roundbutton.flat
     &.with-menu-button > indicator {
         border-left: none;
         &:hovered {
-            border-left: var(--button-border-highlight);
+            border-left: none;
         }
     }
 
     &.menu-open {
         & > indicator {
-            border-left: var(--button-border-highlight);
+            border-left: none;
         }
     }
 
@@ -284,7 +284,7 @@ toolbutton.raised
 
 roundbutton
 {
-    border-radius: var(--button-default-size);
+    border-radius: var(--button-default-size); /* round widget */
 }
 
 combobox
@@ -292,7 +292,7 @@ combobox
     layout-alignment: content fill center 0;
     text-alignment: content fill center 0;
     icon-alignment: content start center 0;
-    box-shadow: var(--button-shadow);
+    box-shadow: none;
     text-wrap-mode: no-wrap;
     text-elide: right;
 
@@ -309,7 +309,7 @@ combobox
     &.flat.editable
     {
         background-color: var(--view-background-color);
-        border: 1px solid var(--view-border-color);
+        border: none;
         box-shadow: none;
         text-elide: none;
 
@@ -352,7 +352,6 @@ popup.combobox
 }
 
 toolseparator {
-    background-color: var(--button-active-border-color);
 
     &.horizontal {
         width: var(--large-element-size);
@@ -376,7 +375,7 @@ toolseparator {
 delaybutton {
     & > fill {
         border-radius: var(--corner-radius);
-        border: var(--button-border-highlight);
+        border: none;
         background-color: var(--highlight-color);
     }
 }
@@ -402,7 +401,7 @@ combobox.changed,
 roundbutton.changed,
 delaybutton.changed {
     background-color: var(--changed-background);
-    border: 1px solid var(--changed-foreground);
+    border: none;
 }
 
 
