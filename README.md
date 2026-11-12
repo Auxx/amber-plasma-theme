@@ -28,5 +28,6 @@ Amber is in early development and nothing can be installed yet.
 
 MIT. See [LICENSE](LICENSE).
 
-The Union style will start from KDE's Breeze style, which is BSD-2-Clause, and
-keeps its notices.
+The Union style in `parts/union-style/amber/` is a copy of KDE's Breeze
+style and stays BSD-2-Clause, with its notices and its own `LICENSE`. The
+rest of Amber is MIT.

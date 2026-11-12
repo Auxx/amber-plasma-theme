@@ -76,7 +76,7 @@ docs/
 prototype/            index.html, gallery.html, samples.html, tokens.css, contrast-pairs.json, stylesheets, gallery.js (D-48)
 parts/
   colour-scheme/      roles.json: the token or rule of each role (P2.1); Amber.colors, generated (P2.2)
-  union-style/
+  union-style/        amber/: the Union style, a copy of the Breeze style 6.8.2 (P3.1)
   decoration/
   terminal-colours/
   editor-theme/
