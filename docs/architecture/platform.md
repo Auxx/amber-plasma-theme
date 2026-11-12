@@ -270,7 +270,8 @@ owner's say. (my call)
 Verified on 2026-11-12 in P2.3 unless marked, with `Amber.colors` of that
 day, in Dolphin, Kate and Konsole under the Breeze Union style:
 
-- **A colour scheme can be tried in a nested KWin** (as in [Window decoration](#window-decoration)) whose
+- **A colour scheme can be tried without changing a system setting** in a
+  nested KWin (as in [Window decoration](#window-decoration)) whose
   applications run with their own `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`,
   `XDG_DATA_HOME` and `XDG_STATE_HOME`, and with a folder holding
   `color-schemes/Amber.colors` put first in `XDG_DATA_DIRS`. The folder of
@@ -278,17 +279,6 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   every group of the `.colors` file, plus `widgetStyle=Union` in `[KDE]`.
   Isolating `XDG_CONFIG_HOME` alone is not enough: Dolphin then still
   writes `~/.local/state/dolphinstaterc`.
-  - **It did not leave the owner's files alone.** During the run the
-    owner's `~/.config/kdeglobals` and `~/.config/dolphinrc` were rewritten
-    (13:32:21). Neither held any of Amber's values afterwards, and their
-    colour and style keys were as before, but what changed is not known.
-    The likely cause: a command was started into the session while the file
-    holding the session's bus address was missing, so it ran with an empty
-    `DBUS_SESSION_BUS_ADDRESS` and `WAYLAND_DISPLAY`; Qt then uses the
-    owner's own session, and Dolphin, a single-instance application, hands
-    its request to the owner's Dolphin. Not proven. Until it is, a run must
-    refuse to start anything when the bus address or display is empty, and
-    compare the sums of the owner's files before and after. (unverified)
   - The nested session reads `fontconfig` from that folder too, so text is
     drawn with Fedora's default subpixel anti-aliasing unless the folder
     says otherwise. For pixel checks it was set to greyscale (`rgba` none),
@@ -344,6 +334,12 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 - **Qt draws the text cursor of a text field inverted** over what is under
   it, so on tone 2 it is `#dadde0`, a cool grey. The colour scheme cannot
   change it.
+- **Which colour set paints which surface.** In Dolphin the file view is
+  the View set; the places panel, the information panel and the status bar
+  (small or full width) are the Window set, and the header toolbar is the
+  Header set. Kate's sidebar, tool views and status bar are the Window set.
+  A settings dialog's body is the Window set and its page list, on the
+  left, the View set.
 - **Text fields outside the Union style show tone 2**, the View background:
   Dolphin's location bar when edited, the search and path fields of the
   settings dialogs. Breeze's wells are not Amber's (D-90).

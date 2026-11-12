@@ -50,8 +50,9 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
   application is fixed in the Union style or listed as a known gap (my
   call).
 - **The tones of the sets follow the prototype** (my call, D-90): Window is
-  tone 2 with tone 1 as its alternate; View is tone 2 with no alternate,
-  since views have no stripes; Button is tone 3 and tone 4; Header is
+  tone 1 with no alternate, since applications paint their sidebars, panels
+  and status bars from it (decided, D-95); View is tone 2, the main
+  surface, with no alternate, since views have no stripes; Button is tone 3 and tone 4; Header is
   tone 0 and tone 1; Tooltip is the popup tone; Complementary is tone 0 and
   tone 1.
 - **A well is not the View set.** Breeze draws text fields with the View
@@ -80,8 +81,8 @@ Amber writes none of them. What P2.3 saw of each, on 2026-11-12
 - the background status colours (`background positive`, `neutral`,
   `negative`), tinted from a status colour into the background. The
   negative one, in Dolphin's message, is given in
-  [platform](platform.md#colour-scheme); whether it reads as a grey is the
-  owner's call (it reads as a dark red to me, my call). The positive and
+  [platform](platform.md#colour-scheme). The owner judged it a dark red
+  that reads clearly as an error, not a grey (decided, D-93). The positive and
   neutral ones were not seen;
 - the frame colour (`decoration frame`), mixed with `frameContrast`: at 0 it
   equals the set's background, so the Breeze style's frames vanish into it;

@@ -100,6 +100,9 @@ text in other documents.
 | D-90 | The tones of the colour sets follow the prototype, as in [colour-scheme](colour-scheme.md): View tone 2 with no alternate, wells drawn by the Union style, Header][Inactive equal to Header | Designer | The owner approved the prototype's tones (D-85); an inactive window is shown by the decoration. 2026-11-12, P2.1 |
 | D-91 | Disabled text fades towards the background to the luminance of dim text; the inactive effect is off; `contrast` and `frameContrast` are 0; `shadeSortColumn` is off | Designer | The prototype draws disabled text in dim text, shows inactive windows by the decoration alone, and has no bevel, frame or tinted sorted column. Checked in P2.3: disabled text comes out as computed; `frameContrast` 0 makes frames equal the background; `contrast` 0 does not flatten Qt's bevel roles, which stay warm ([platform](platform.md#colour-scheme)). 2026-11-12, P2.1 |
 | D-92 | A generated part is committed in `parts/<part>/`, and a test fails when it differs from what the generator makes now | Designer | The install script then needs no Node, and a change of a token shows in review as a change of the part. 2026-11-12, P2.2 |
+| D-93 | The derived negative background (`#492829` in Dolphin's message) is accepted: a dark red that reads as an error, not a grey | Owner | Seen in P2.3; it sits just under the 0.05 chroma at which the tool counts a hue. 2026-11-12 |
+| D-94 | Greys drawn by icons, by Qt's inverted text cursor and by KWin's dimming do not breach "no cool grey": they are not part of Amber | Owner | P2.3's "done when". 2026-11-12 |
+| D-95 | The Window colour set is tone 1, not tone 2: Dolphin's places and information panels and status bar, and Kate's sidebar, sit a tone below the view | Owner | Seen in P2.3: with Window at tone 2 they merged with the view, while Breeze tells them apart. Changes D-90. A dialog's body is tone 1 too. 2026-11-12 |
 
 ## Accessibility
 
