@@ -88,7 +88,7 @@ background / text, and the block marker or tick where the widget has one.
 
 | Widget | At rest | Hovered | Focused | Pressed | Selected, checked or sorted | Disabled |
 |---|---|---|---|---|---|---|
-| Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | well focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
+| Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | surface focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
 | Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | — | selected: selected / text, marker | no fill / dim text |
 | Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | — |
 | Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
@@ -130,7 +130,7 @@ background / text, and the block marker or tick where the widget has one.
   part of selection: without it a selected item looks like a hovered one,
   and only the marker reaches 3:1. Hovered, a selected item goes to tone 4;
   focused, it takes raised focus; both keep the marker. A selected tab does
-  not change when hovered, and takes well focus when focused. The focused
+  not change when hovered, and takes surface focus when focused. The focused
   tones follow the rule above: accent over the hovered tone.
 - **Secondary text on a focused item**, and the chevron of a focused tree
   folder, is text, not dim text: dim text on raised focus measures 2.58:1 (see [accessibility](accessibility.md)).
