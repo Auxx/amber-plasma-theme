@@ -273,9 +273,13 @@ describe('the Union style\'s global rules (P3.2)', () => {
   const BAR_BAND = 'var(--well-focus-edge-width) solid var(--tone-2)';
   const focusBar = d => [ 'text.css', 'button.css' ].includes(d.file) && d.property === 'border-bottom'
     && ((d.value === FOCUS_BAR && parts(d.block.selector).includes('&:visual-focus')) || (d.value === BAR_BAND && d.block.selector.includes('[shape="panel"]')));
+  // The second: a selected tab's block marker, 3 px on the edge away from its page, set at rest (P3.6, D-108).
+  const EDGE = { top: 'top', bottom: 'bottom', left: 'left', right: 'right' };
+  const tabMarker = d => d.file === 'tabs.css' && d.value === 'var(--marker-width) solid transparent'
+    && d.property === `border-${EDGE[d.block.selector.match(/^&\[direction="(\w+)"\]$/)?.[1]]}`;
 
-  it('draws no border, but the focus bar of a well', () => {
-    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d)), []);
+  it('draws no border, but the focus bar of a well and the block marker of a tab', () => {
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d) && !tabMarker(d)), []);
     assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?-width$/.test(d.property) && !zero(d.value)), []);
   });
 
@@ -634,6 +638,155 @@ describe('the Union style\'s toggles and ranges (P3.5)', () => {
   it('draws no mark with a round end or join', () => {
     const images = join(STYLE, 'contents/images');
     const offending = readdirSync(images).filter(f => f.endsWith('.svg')).filter(f => /round/.test(readFileSync(join(images, f), 'utf8')));
+    assert.deepEqual(offending, []);
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
+      .map(d => `${file}:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+});
+
+describe('the Union style\'s bars (P3.6)', () => {
+  const files = { 'application.css': /^(toolbar|scrollareacorner)$/, 'popup.css': /^(menubar|menubaritem)$/,
+    'widgets.css': /^statusbar$/, 'tabs.css': /^(tabbutton|tabbar|tabwidget)(\.immutable)?$/, 'bars.css': /^scrollbar$/ };
+  const all = Object.fromEntries(Object.keys(files).map(f => [ f, blocks(read(f)) ]));
+  const below = block => [ block, ...block.children.flatMap(below) ];
+  const family = Object.entries(files).flatMap(([ file, test ]) => all[file]
+    .filter(b => !b.parent && parts(b.selector).every(p => test.test(p)))
+    .flatMap(below).map(b => [ file, b ]));
+  const top = (file, selector) => {
+    const found = all[file].filter(b => !b.parent && parts(b.selector).join(', ') === selector);
+    assert.equal(found.length, 1, `${file}: one block ${selector} expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => parts(c.selector).join(', ') === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  const colourOf = d => (/^border(-(top|right|bottom|left))?$/.test(d.property) ? d.value.split(/\s+/).slice(2).join(' ') || null
+    : /(^|-)color$/.test(d.property) ? d.value : null);
+
+  it('finds every bar block', () => {
+    assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector}`)) ].sort(), [
+      'application.css scrollareacorner', 'application.css toolbar', 'bars.css scrollbar', 'popup.css menubar',
+      'popup.css menubaritem', 'tabs.css tabbar', 'tabs.css tabbutton', 'tabs.css tabwidget', 'widgets.css statusbar' ]);
+  });
+
+  it('colours a bar only with the tokens', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => colourOf(d) !== null && d.value !== 'none')
+      .filter(d => !tokenVar.test(colourOf(d)) && colourOf(d) !== 'transparent')
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('changes no bar in the inactive window', () => {
+    assert.deepEqual(family.filter(([ , b ]) => /\.inactive/.test(b.selector)).map(([ f, b ]) => `${f} ${b.selector}`), []);
+  });
+
+  it('fills a header toolbar with tone 0 and leaves any other toolbar clear', () => {
+    const t = top('application.css', 'toolbar');
+    assert.equal(value(t, 'background-color'), 'transparent');
+    assert.equal(value(t, 'color'), 'var(--text)');
+    assert.equal(value(child(t, '&.header, &[colorset="header"], [colorset="header"] &'), 'background-color'), 'var(--tone-0)');
+    assert.equal(value(child(t, '&[colorset="complementary"], [colorset="complementary"] &, &.header[colorset="complementary"]'), 'background-color'), 'var(--tone-0)');
+    // Qt draws a toolbar's separator with the grip's rule (Task 1): neither has a fill.
+    assert.equal(value(child(t, '& > handle'), 'background-color'), 'transparent');
+    assert.equal(value(child(t, '& > separator'), 'background-color'), 'transparent');
+    assert.equal(value(child(t, '& > separator'), 'width'), '8px');
+  });
+
+  it('gives the menu bar and its titles the tones of the prototype', () => {
+    assert.equal(value(top('popup.css', 'menubar'), 'background-color'), 'var(--tone-0)');
+    const m = top('popup.css', 'menubaritem');
+    assert.equal(value(m, 'background-color'), 'transparent');
+    assert.equal(value(m, 'color'), 'var(--text)');
+    assert.equal(value(m, 'border-radius'), '0px');
+    assert.equal(value(child(m, '&:hovered, &:highlighted'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(m, '&:pressed'), 'background-color'), 'var(--popup)');
+    assert.equal(value(child(m, '&:pressed'), 'color'), 'var(--text)');
+    assert.equal(value(child(m, '&:disabled'), 'color'), 'var(--text-dim)');
+  });
+
+  it('gives the status bar tone 1 and dim text', () => {
+    const s = top('widgets.css', 'statusbar');
+    assert.equal(value(s, 'background-color'), 'var(--tone-1)');
+    assert.equal(value(s, 'color'), 'var(--text-dim)');
+  });
+
+  it('gives a tab the tones of the prototype, and the block marker on its outer edge', () => {
+    const t = top('tabs.css', 'tabbutton');
+    assert.equal(value(t, 'background-color'), 'transparent');
+    assert.equal(value(t, 'color'), 'var(--text)');
+    for (const edge of [ 'top', 'bottom', 'left', 'right' ]) {
+      const direction = child(t, `&[direction="${edge}"]`);
+      assert.equal(value(direction, `border-${edge}`), 'var(--marker-width) solid transparent', edge);
+      assert.deepEqual(direction.declarations.filter(d => /^border/.test(d.property) && d.property !== `border-${edge}`).map(d => d.property), [], edge);
+    }
+    const tone = (selector, background, border) => {
+      assert.equal(value(child(t, selector), 'background-color'), background, selector);
+      assert.equal(value(child(t, selector), 'border-color'), border, selector);
+    };
+    // The background is not drawn under the marker's edge, so each state gives the edge its own fill (Task 1).
+    tone('&:hovered', 'var(--tone-1)', 'var(--tone-1)');
+    tone('&:visual-focus', 'var(--surface-focus)', 'var(--surface-focus)');
+    tone('&:checked, &:highlighted', 'var(--tone-2)', 'var(--accent)');
+    tone('&:checked:visual-focus, &:highlighted:visual-focus', 'var(--surface-focus)', 'var(--accent)');
+    tone('&:disabled', 'transparent', 'transparent');
+    assert.equal(value(child(t, '&:disabled'), 'color'), 'var(--text-dim)');
+    // Every state that colours the marker's edge comes after the edges are set.
+    const at = selector => t.children.findIndex(c => parts(c.selector).join(', ') === selector);
+    assert.ok(at('&:hovered') > at('&[direction="right"]'));
+    const close = child(t, '& > closebutton');
+    assert.equal(value(close, 'background-color'), 'transparent');
+    assert.equal(value(close, 'color'), 'var(--text-dim)');
+    assert.equal(value(child(close, '&:hovered, &:pressed'), 'background-color'), 'var(--danger)');
+    assert.equal(value(child(close, '&:hovered, &:pressed'), 'color'), 'var(--on-danger)');
+    assert.equal(value(top('tabs.css', 'tabwidget'), 'background-color'), 'var(--tone-2)');
+    assert.equal(value(top('tabs.css', 'tabbar'), 'background-color'), 'var(--tone-0)');
+  });
+
+  it('draws a tab with square corners, and a page with no inset that would leave a line', () => {
+    assert.deepEqual(all['tabs.css'].filter(b => /\.(first|last)\b/.test(b.selector)).map(b => b.selector), []);
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => (/radius$/.test(d.property) && d.value !== '0px') || (/^inset/.test(d.property) && d.value !== '0px'))
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a scrollbar a 12 px thumb on no track, in the tones of the prototype', () => {
+    const s = top('bars.css', 'scrollbar');
+    assert.equal(value(s, 'width'), 'var(--scrollbar-size)');
+    assert.equal(value(blocks(read('variables.css')).find(b => b.selector === ':root'), '--scrollbar-size'), '12px');
+    for (const side of [ 'top', 'bottom', 'left', 'right' ]) {
+      assert.equal(value(s, `padding-${side}`), '0px', side);
+    }
+    assert.equal(value(s, 'background-color'), 'transparent');
+    const thumb = child(s, '& > handle');
+    assert.equal(value(thumb, 'background-color'), 'var(--thumb)');
+    assert.equal(value(child(thumb, '&:hovered'), 'background-color'), 'var(--thumb-hover)');
+    assert.equal(value(child(thumb, '&:pressed'), 'background-color'), 'var(--thumb-pressed)');
+    assert.equal(value(child(thumb, '&:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(top('application.css', 'scrollareacorner'), 'background-color'), 'transparent');
+  });
+
+  it('fills no part of a bar one pixel thick', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => /^(width|height)$/.test(d.property) && d.value === '1px')
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('orders the states of each block so that the later wins: hovered, focused, pressed, checked, disabled', () => {
+    const rank = selector => [ /:hovered/, /:visual-focus|:active-focus/, /:pressed/, /:checked|:highlighted/, /:disabled/ ]
+      .findIndex(r => r.test(selector));
+    const offending = family.filter(([ , b ]) => !/:/.test(b.selector)).flatMap(([ file, b ]) => {
+      const ranks = b.children.filter(c => value(c, 'background-color') || value(c, 'color'))
+        .map(c => (/:(checked|highlighted):visual-focus/.test(c.selector) ? 3.5 : rank(c.selector))).filter(r => r >= 0);
+      return ranks.some((r, i) => i && r < ranks[i - 1]) ? [ `${file}: ${b.selector}` ] : [];
+    });
     assert.deepEqual(offending, []);
   });
 

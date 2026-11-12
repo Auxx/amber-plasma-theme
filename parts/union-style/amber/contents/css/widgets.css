@@ -11,8 +11,11 @@ widget {
     background-color: var(--window-background-color);
 }
 
+/* The status bar is tone 1 with dim text (P3.6). Qt draws a label's text in
+   it from the colour scheme, so only a text Union draws itself is dim. */
 statusbar {
-    background-color: var(--window-background-color);
+    background-color: var(--tone-1);
+    color: var(--text-dim);
     border-top: none;
 }
 
