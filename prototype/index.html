@@ -237,6 +237,32 @@
       <data class="ratio" data-pair="glow on tone-2" value="1.33">1.33:1 on tone 2</data>
     </figcaption>
   </figure>
+  <figure class="candidate" style="--glow: color-mix(in srgb, var(--accent) 28%, transparent); --glow-size: 48px">
+    <div class="vignette eased-glow">
+      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+    </div>
+    <figcaption>
+      Glow: 28 %, 48 px, eased
+      <span class="dim">accent 28 %, 48 px, the fade of Breeze's shadow</span>
+      <data class="ratio" data-pair="glow on tone-0" value="1.81">1.81:1 on tone 0</data>
+      <data class="ratio" data-pair="glow on tone-1" value="1.82">1.82:1 on tone 1</data>
+      <data class="ratio" data-pair="glow on tone-2" value="1.82">1.82:1 on tone 2</data>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--glow: color-mix(in srgb, var(--accent) 18%, transparent); --glow-size: 48px">
+    <div class="vignette eased-glow">
+      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+    </div>
+    <figcaption>
+      Glow: 18 %, 48 px, eased
+      <span class="dim">accent 18 %, 48 px, the fade of Breeze's shadow</span>
+      <data class="ratio" data-pair="glow on tone-0" value="1.41">1.41:1 on tone 0</data>
+      <data class="ratio" data-pair="glow on tone-1" value="1.44">1.44:1 on tone 1</data>
+      <data class="ratio" data-pair="glow on tone-2" value="1.46">1.46:1 on tone 2</data>
+    </figcaption>
+  </figure>
   </div>
   <h2>Shadow</h2>
   <p class="dim">The shadow of an inactive window. It shows no state and has no contrast pair.</p>
@@ -289,6 +315,26 @@
     <figcaption>
       Shadow: 12 %, 8 px
       <span class="dim">black 12 %, 8 px</span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--shadow: rgb(0 0 0 / 55%); --shadow-size: 36px">
+    <div class="vignette eased-shadow offset-shadow">
+      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+    </div>
+    <figcaption>
+      Shadow: as Breeze, inactive
+      <span class="dim">black 55 %, eased over 36 px: 9 px above, 19 px beside, 32 px below</span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--shadow: rgb(0 0 0 / 55%); --shadow-size: 71px">
+    <div class="vignette eased-shadow offset-shadow">
+      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
+    </div>
+    <figcaption>
+      Shadow: as Breeze, active
+      <span class="dim">black 55 %, eased over 71 px: 44 px above, 54 px beside, 67 px below</span>
     </figcaption>
   </figure>
   </div>
