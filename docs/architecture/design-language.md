@@ -257,19 +257,20 @@ token holds the plain colour (D-47).
 
 Konsole's terminal colours: a background, a foreground and the 16 ANSI
 colours. They are muted, warm-shifted hues that sit with the Sand palette
-(D-20). Starting values (my call, P1.6; the owner chooses in P1.7):
+(D-20). The six normal colours are on trial in P1.7: the owner is
+choosing between the set below and a darker one (O-5).
 
 | Token | Value | Built as |
 |---|---|---|
 | `--terminal` | `var(--tone-1)` | the terminal background, a tone below the window's main surface (decided, D-78) |
 | `--terminal-text` | `var(--text)` | Konsole's foreground |
 | `--ansi-black` | `var(--tone-0)` | exempt from contrast (D-53) |
-| `--ansi-red` | `#e39383` | OKLCH 74 % 0.10 32: shifted towards orange |
-| `--ansi-green` | `#9eb576` | OKLCH 74 % 0.09 125: shifted towards olive |
-| `--ansi-yellow` | `var(--accent)` | the accent is already a muted gold (D-57) |
-| `--ansi-blue` | `#7fb2d1` | OKLCH 74 % 0.07 235 |
-| `--ansi-magenta` | `#d296b2` | OKLCH 74 % 0.08 350 |
-| `--ansi-cyan` | `#82bbb3` | OKLCH 75 % 0.06 185 |
+| `--ansi-red` | `#aa5f51` | OKLCH 57 % 0.10 32: shifted towards orange |
+| `--ansi-green` | `#667b3e` | OKLCH 55 % 0.09 125: shifted towards olive |
+| `--ansi-yellow` | `#8d7030` | OKLCH 56 % 0.09 85: a darker gold than the accent |
+| `--ansi-blue` | `#487a97` | OKLCH 56 % 0.07 235 |
+| `--ansi-magenta` | `#9b647e` | OKLCH 57 % 0.08 350 |
+| `--ansi-cyan` | `#467d76` | OKLCH 55 % 0.06 185 |
 | `--ansi-white` | `var(--text)` | |
 | `--ansi-bright-black` | `var(--text-dim)` | dim output and suggestions; it carries text, so it is not exempt |
 | `--ansi-bright-red` … `--ansi-bright-cyan` | `#f9afa0`, `#b7cf8e`, `#e6ca91`, `#9fcbe6`, `#e8b2ca`, `#a3d2cb` | the same hues at OKLCH 82–85 %, chroma 0.05–0.09 |
@@ -278,12 +279,18 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
 - **A hue is not a grey.** "No cool grey" is about neutrals. Blue and cyan
   are hues with a chroma of at least 0.05; every neutral of the terminal is
   a warm tone or text token.
-- The normal colours are light enough to carry text on the terminal, so
-  light text on them as a background does not reach 4.5:1: open question
-  O-5 in the [decisions](decisions.md).
+- **A normal colour has two jobs:** text on the terminal, and a background
+  under light text, as in Midnight Commander's panels and in status
+  badges. The owner found the starting normal colours, at lightness
+  74–75 %, too close to the bright ones and unusable as backgrounds. No
+  colour does both jobs at 4.5:1 on tone 1; the two meet near 3:1 as text
+  and 4.4:1 under text. The set on trial is 3.7:1 as text and about 3.7:1
+  under text; the other is 3:1 and 4.4:1. Open question O-5 in the
+  [decisions](decisions.md).
 - Konsole's intense and faint variants of the foreground and background,
   and the cursor (a profile setting), are settled in P4.1.
-- The prototype shows the terminal on `prototype/samples.html`.
+- The prototype shows the terminal on `prototype/samples.html`, with a
+  second window in the other set while the owner chooses.
 
 ## Editor theme
 
@@ -295,17 +302,20 @@ Kate's editor area. Starting values (my call, P1.6):
 | `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
 | `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
 | `--editor-selection` | `#3d362b` | the text selection: accent 14 % over tone 2 (D-58) |
-| `--syntax-keyword` | `var(--ansi-magenta)` | keywords |
-| `--syntax-function` | `var(--ansi-blue)` | function names |
-| `--syntax-type` | `var(--ansi-cyan)` | type names |
-| `--syntax-string` | `var(--ansi-green)` | strings and characters |
-| `--syntax-number` | `var(--ansi-red)` | numbers and constants |
-| `--syntax-preprocessor` | `var(--ansi-yellow)` | `#include` and imports |
-| `--syntax-comment` | `var(--ansi-bright-black)` | comments |
+| `--syntax-keyword` | `#d296b2` | keywords; OKLCH 74 % 0.08 350 |
+| `--syntax-function` | `#7fb2d1` | function names; OKLCH 74 % 0.07 235 |
+| `--syntax-type` | `#82bbb3` | type names; OKLCH 75 % 0.06 185 |
+| `--syntax-string` | `#9eb576` | strings and characters; OKLCH 74 % 0.09 125 |
+| `--syntax-number` | `#e39383` | numbers and constants; OKLCH 74 % 0.10 32 |
+| `--syntax-preprocessor` | `var(--accent)` | `#include` and imports |
+| `--syntax-comment` | `var(--text-dim)` | comments |
 
-- **The syntax colours are the ANSI colours** (D-57), so Kate and Konsole
-  share one palette and a hue changed once changes both. Plain code is
-  text. Line numbers are dim text; the current line's number is text.
+- **The syntax colours are the editor's own**, separate from the terminal
+  colours. (decided, D-79) The editor has a fixed background, changed only
+  by the current line and the text selection, so its colours are tuned
+  as text alone; a terminal colour must also serve as a background. They
+  share the terminal's hues, at the lightness the normal colours started
+  with. Plain code is text. Line numbers are dim text; the current line's number is text.
 - **No line.** The gutter is told from the code by tone alone. Kate can
   draw indentation lines and a word wrap marker; those are hairlines, and
   P4.2 finds out whether the editor theme can leave them out. How

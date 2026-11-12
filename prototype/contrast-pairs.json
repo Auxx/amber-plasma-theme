@@ -116,38 +116,38 @@
   {
     "foreground": "ansi-red",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-green",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-yellow",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-blue",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-magenta",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-cyan",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
   },
   {
     "foreground": "ansi-white",

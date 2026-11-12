@@ -55,16 +55,17 @@
   --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */
 
   /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
-     Hues are OKLCH: normal at lightness 74-75 %, bright at 82-85 %. */
+     Hues are OKLCH: normal at lightness 55-57 %, so that they also carry light
+     text as backgrounds; bright at 82-85 %. */
   --terminal: var(--tone-1);              /* the terminal background: a tone below the window's main surface (D-78) */
   --terminal-text: var(--text);           /* Konsole's foreground */
   --ansi-black: var(--tone-0);            /* colour 0; exempt from contrast (D-53) */
-  --ansi-red: #e39383;                    /* oklch(74% 0.10 32), shifted towards orange */
-  --ansi-green: #9eb576;                  /* oklch(74% 0.09 125), shifted towards olive */
-  --ansi-yellow: var(--accent);           /* the accent is already a muted gold (D-57) */
-  --ansi-blue: #7fb2d1;                   /* oklch(74% 0.07 235) */
-  --ansi-magenta: #d296b2;                /* oklch(74% 0.08 350) */
-  --ansi-cyan: #82bbb3;                   /* oklch(75% 0.06 185) */
+  --ansi-red: #aa5f51;                    /* oklch(57% 0.10 32), shifted towards orange */
+  --ansi-green: #667b3e;                  /* oklch(55% 0.09 125), shifted towards olive */
+  --ansi-yellow: #8d7030;                 /* oklch(56% 0.09 85), a darker gold than the accent */
+  --ansi-blue: #487a97;                   /* oklch(56% 0.07 235) */
+  --ansi-magenta: #9b647e;                /* oklch(57% 0.08 350) */
+  --ansi-cyan: #467d76;                   /* oklch(55% 0.06 185) */
   --ansi-white: var(--text);              /* colour 7 */
   --ansi-bright-black: var(--text-dim);   /* colour 8: dim output and suggestions */
   --ansi-bright-red: #f9afa0;             /* oklch(82% 0.09 32) */
@@ -80,11 +81,11 @@
   --editor-gutter: var(--tone-1);         /* the gutter, a tone below the editor */
   --editor-current-line: var(--tone-3);   /* the current line, a tone above the editor */
   --editor-selection: #3d362b;            /* the text selection: accent 14 % over tone 2 (D-58) */
-  --syntax-keyword: var(--ansi-magenta);  /* keywords: if, return, static, const */
-  --syntax-function: var(--ansi-blue);    /* function names */
-  --syntax-type: var(--ansi-cyan);        /* type names */
-  --syntax-string: var(--ansi-green);     /* strings and characters */
-  --syntax-number: var(--ansi-red);       /* numbers and constants */
-  --syntax-preprocessor: var(--ansi-yellow); /* #include and imports */
-  --syntax-comment: var(--ansi-bright-black); /* comments */
+  --syntax-keyword: #d296b2;              /* keywords: if, return, static, const; oklch(74% 0.08 350) */
+  --syntax-function: #7fb2d1;             /* function names; oklch(74% 0.07 235) */
+  --syntax-type: #82bbb3;                 /* type names; oklch(75% 0.06 185) */
+  --syntax-string: #9eb576;               /* strings and characters; oklch(74% 0.09 125) */
+  --syntax-number: #e39383;               /* numbers and constants; oklch(74% 0.10 32) */
+  --syntax-preprocessor: var(--accent);   /* #include and imports: the accent is a muted gold */
+  --syntax-comment: var(--text-dim);      /* comments */
 }

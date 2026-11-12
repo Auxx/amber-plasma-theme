@@ -31,24 +31,25 @@ Disabled controls are exempt in WCAG, and are exempt here.
    (raised focus, 3.16:1) and on a focused selected tab (surface focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
    tonal step, kept above a floor of 1.1 (my call).
-3. **Syntax and terminal colours: 4.5:1** against every background they
-   are read on: the terminal colours on the terminal; the syntax colours on
-   the editor, the current line and the text selection. ANSI black is
-   exempt, since it is meant to match a dark background. The text selection
-   is the hardest of these: comments in dim text measure 4.71:1 on it, and
-   fail beyond a tint of about 14 % accent (4.50:1, FAIL, at 16 %; measured
-   2026-11-11, P1.6). Programs such as `less` and `htop` also draw ANSI
-   colours as backgrounds. With the terminal background or ANSI black as
-   text, contrast is symmetric, so those are the same ratios as the pairs on
-   the terminal, and ANSI black, darker than the terminal, passes wherever
-   they do; they need no pairs of their own. **Light text on an ANSI
-   colour is not checked and does not pass:** text measures 1.62:1 to
-   1.88:1 on the six normal colours, and bright white 1.84:1 to 2.13:1
-   (measured 2026-11-11, P1.6). Midnight Commander's blue panels, powerline
-   prompts and some `ls` colours draw that. It is open question O-5 in the
-   [decisions](decisions.md). The text selection and the
-   current line are told apart by a floor of 1.1 (1.13:1) and by the
-   accent's hue (my call).
+3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
+   every background they are read on: the editor, the current line and
+   the text selection. The text selection is the hardest of these:
+   comments in dim text measure 4.71:1 on it, and fail beyond a tint of
+   about 14 % accent (4.50:1, FAIL, at 16 %; measured 2026-11-11, P1.6).
+   The text selection and the current line are told apart by a floor of
+   1.1 (1.13:1) and by the accent's hue (my call).
+   The terminal's foreground, white, bright black and the bright colours
+   reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to
+   match a dark background. **The six normal colours reach 3:1 as text,
+   not 4.5:1**, because programs also draw them as backgrounds under light
+   text: Midnight Commander's panels, status badges, powerline prompts.
+   No colour does both at 4.5:1 on tone 1: the two meet near 3:1 as text
+   and 4.4:1 under text. This is on trial in P1.7 and is open question
+   O-5 in the [decisions](decisions.md): the set in the tokens measures
+   3.68:1 to 3.73:1 as text, with text on it at 3.64:1 to 3.69:1 and
+   bright white at 4.13:1 to 4.19:1; the darker set measures 3.04:1 to
+   3.09:1, 4.40:1 to 4.46:1 and 4.99:1 to 5.06:1 (measured 2026-11-12).
+   Light text on a normal colour has no pair until the owner chooses.
 4. **Focused widgets.** A focused raised widget, toggle, tab or scroll
    area is shown by a tone tinted with accent. Text on the focused tone
    reaches 4.5:1 like any other text. The tints are accent 30 % over
@@ -187,12 +188,12 @@ falls below its minimum.
 | text | editor selection | 9.33:1 | 4.5 | pass |
 | dim text | editor gutter | 6.86:1 | 4.5 | pass |
 | terminal text | terminal | 13.58:1 | 4.5 | pass |
-| ansi red | terminal | 7.24:1 | 4.5 | pass |
-| ansi green | terminal | 7.70:1 | 4.5 | pass |
-| ansi yellow | terminal | 8.40:1 | 4.5 | pass |
-| ansi blue | terminal | 7.59:1 | 4.5 | pass |
-| ansi magenta | terminal | 7.23:1 | 4.5 | pass |
-| ansi cyan | terminal | 8.02:1 | 4.5 | pass |
+| ansi red | terminal | 3.69:1 | 3 (on trial) | pass |
+| ansi green | terminal | 3.69:1 | 3 (on trial) | pass |
+| ansi yellow | terminal | 3.71:1 | 3 (on trial) | pass |
+| ansi blue | terminal | 3.72:1 | 3 (on trial) | pass |
+| ansi magenta | terminal | 3.73:1 | 3 (on trial) | pass |
+| ansi cyan | terminal | 3.68:1 | 3 (on trial) | pass |
 | ansi white | terminal | 13.58:1 | 4.5 | pass |
 | ansi bright black | terminal | 6.86:1 | 4.5 | pass |
 | ansi bright red | terminal | 9.64:1 | 4.5 | pass |

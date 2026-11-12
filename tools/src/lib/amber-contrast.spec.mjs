@@ -108,12 +108,12 @@ describe('Amber contrast pairs', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     const expected = {
       'terminal-text': '13.58',
-      'ansi-red': '7.24',
-      'ansi-green': '7.70',
-      'ansi-yellow': '8.40',
-      'ansi-blue': '7.59',
-      'ansi-magenta': '7.23',
-      'ansi-cyan': '8.02',
+      'ansi-red': '3.69',
+      'ansi-green': '3.69',
+      'ansi-yellow': '3.71',
+      'ansi-blue': '3.72',
+      'ansi-magenta': '3.73',
+      'ansi-cyan': '3.68',
       'ansi-white': '13.58',
       'ansi-bright-black': '6.86',
       'ansi-bright-red': '9.64',
