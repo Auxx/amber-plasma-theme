@@ -28,7 +28,7 @@ const RAISED = {
 
 const WELL = {
   rest: [ 'well', 'text' ],
-  hovered: [ 'tone-1', 'text' ],
+  hovered: [ 'well-hover', 'text' ],
   focused: [ 'well-focus', 'text' ],
   disabled: [ 'well', 'text-dim' ]
 };

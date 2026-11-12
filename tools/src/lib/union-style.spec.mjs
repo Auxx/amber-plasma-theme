@@ -267,8 +267,15 @@ describe('the Union style\'s global rules (P3.2)', () => {
       [ 'application.css', 'bars.css', 'button.css', 'check.css', 'tables.css' ]);
   });
 
-  it('draws no border', () => {
-    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value)), []);
+  // The one border allowed: the focus bar of a well, 3 px and not a hairline (P3.4), and the band of a text
+  // area's frame that carries it, in the tone of the text area's viewport.
+  const FOCUS_BAR = 'var(--well-focus-edge-width) solid var(--well-focus-edge)';
+  const BAR_BAND = 'var(--well-focus-edge-width) solid var(--tone-2)';
+  const focusBar = d => [ 'text.css', 'button.css' ].includes(d.file) && d.property === 'border-bottom'
+    && ((d.value === FOCUS_BAR && parts(d.block.selector).includes('&:visual-focus')) || (d.value === BAR_BAND && d.block.selector.includes('[shape="panel"]')));
+
+  it('draws no border, but the focus bar of a well', () => {
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d)), []);
     assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?-width$/.test(d.property) && !zero(d.value)), []);
   });
 
@@ -383,6 +390,116 @@ describe('the Union style\'s buttons (P3.3)', () => {
       const seen = b.children.filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
       return seen.some((v, i) => i && v < seen[i - 1]) ? [ b.selector.replace(/\s+/g, ' ') ] : [];
     });
+    assert.deepEqual(offending, []);
+  });
+});
+
+describe('the Union style\'s wells (P3.4)', () => {
+  const text = blocks(read('text.css'));
+  const button = blocks(read('button.css'));
+  const chain = block => (block ? [ block, ...chain(block.parent) ] : []);
+  const WELL = /(^|[\s,>(])(textfield|textarea|spinbox|searchfield)(?![\w-])/;
+  const OTHER = /\.changed|\.inside-table/;
+  const isWell = block => chain(block).some(b => WELL.test(b.selector) || /&\.editable/.test(b.selector))
+    && !chain(block).some(b => OTHER.test(b.selector) || /popup\.combobox/.test(b.selector));
+  const wells = [ ...text.map(b => [ 'text.css', b ]), ...button.map(b => [ 'button.css', b ]) ].filter(([ , b ]) => isWell(b));
+  const top = (all, test) => {
+    const found = all.filter(b => !b.parent && test(parts(b.selector)));
+    assert.equal(found.length, 1, `one top-level block expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => c.selector === selector);
+  // A well shows focus whenever it has the text cursor, clicked or tabbed (D-103): Union's :visual-focus is
+  // keyboard focus only.
+  const FOCUS = '&:active-focus, &:visual-focus';
+  const focus = block => block?.children.find(c => parts(c.selector).join(', ') === FOCUS);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  const BAR = 'var(--well-focus-edge-width) solid var(--well-focus-edge)';
+  const base = () => top(text, p => [ 'textfield', 'textarea', 'spinbox', 'searchfield' ].every(n => p.includes(n)));
+  const editable = () => {
+    const combo = top(button, p => p.length === 1 && p[0] === 'combobox');
+    return combo.children.find(c => parts(c.selector).includes('&.editable'));
+  };
+
+  it('colours a well only with the tokens', () => {
+    const offending = wells.flatMap(([ file, b ]) => b.declarations
+      .filter(d => [ 'color', 'background-color', 'icon-color', 'border-bottom-color' ].includes(d.property))
+      .filter(d => !tokenVar.test(d.value) && d.value !== 'none' && d.value !== 'transparent')
+      .map(d => `${file}:${d.line} ${b.selector.replace(/\s+/g, ' ')} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a text field, spin box and text area the tones of the prototype, and the focus bar', () => {
+    const well = base();
+    assert.equal(value(well, 'background-color'), 'var(--well)');
+    assert.equal(value(well, 'color'), 'var(--text)');
+    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--well-hover)');
+    assert.equal(value(focus(well), 'background-color'), 'var(--well-focus)');
+    assert.equal(value(focus(well), 'border-bottom'), BAR);
+    assert.equal(value(child(well, '&:disabled'), 'background-color'), 'var(--well)');
+    assert.equal(value(child(well, '&:disabled'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(well, '& > .placeholder'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(child(well, '&:disabled'), '& > .placeholder'), 'color'), 'var(--text-dim)');
+    assert.equal(value(well, 'height'), '30px');
+  });
+
+  it('draws an editable combo box as a well, with its arrow in text (dim text when disabled, as its text)', () => {
+    const well = editable();
+    assert.ok(well, 'an &.editable block in combobox');
+    assert.equal(value(well, 'background-color'), 'var(--well)');
+    assert.equal(value(well, 'color'), 'var(--text)');
+    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--well-hover)');
+    assert.equal(value(focus(well), 'background-color'), 'var(--well-focus)');
+    assert.equal(value(focus(well), 'border-bottom'), BAR);
+    assert.equal(value(child(well, '&:disabled'), 'background-color'), 'var(--well)');
+    assert.equal(value(child(well, '&:disabled'), 'color'), 'var(--text-dim)');
+    const arrows = button.filter(b => b.selector === '& > indicator' && chain(b).some(c => /combobox|&\.editable/.test(c.selector))
+      && !chain(b).some(c => /:disabled/.test(c.selector)) && value(b, 'icon-color'));
+    assert.ok(arrows.length, 'a combo box arrow');
+    assert.deepEqual([ ...new Set(arrows.map(b => value(b, 'icon-color'))) ], [ 'var(--text)' ]);
+  });
+
+  it('gives the spin box\'s steps the prototype\'s tones, wherever Union reaches them', () => {
+    const spin = top(text, p => p.length === 1 && p[0] === 'spinbox');
+    assert.equal(value(spin, 'height'), '30px');
+    for (const steps of [ child(spin, '& > indicator'), child(spin, '&.constrained > indicator') ]) {
+      assert.ok(steps, 'a step block');
+      assert.equal(value(steps, 'icon-color'), 'var(--text-dim)');
+      assert.equal(value(steps, 'background-color'), 'transparent');
+      assert.equal(value(child(steps, '&:hovered'), 'background-color'), 'var(--tone-3)');
+      assert.equal(value(child(steps, '&:hovered'), 'icon-color'), 'var(--text)');
+      assert.equal(value(child(steps, '&:pressed'), 'background-color'), 'var(--tone-2)');
+      assert.equal(value(child(steps, '&:disabled'), 'icon-color'), 'var(--text-dim)');
+    }
+  });
+
+  it('draws the focus bar of a text area on its frame, whose border must be there at rest (Qt Widgets)', () => {
+    const area = top(text, p => p.length === 1 && p[0] === 'textarea');
+    const panel = area.children.find(c => parts(c.selector).includes('&[shape="panel"]'));
+    assert.ok(panel, 'a &[shape="panel"] block in textarea');
+    assert.equal(value(panel, 'border-bottom'), 'var(--well-focus-edge-width) solid var(--tone-2)');
+    assert.equal(value(focus(panel), 'border-bottom-color'), 'var(--well-focus-edge)');
+  });
+
+  it('leaves no later rule that takes the bar away: application.css names no text field or text area', () => {
+    const offending = blocks(read('application.css')).filter(b => !b.parent && /(^|[\s,])(textfield|textarea)(?![\w-])/.test(b.selector));
+    assert.deepEqual(offending.map(b => b.selector.replace(/\s+/g, ' ')), []);
+  });
+
+  it('orders the states of each well block so that the later wins: hovered, focused, disabled', () => {
+    const order = [ '&:hovered', FOCUS, '&:disabled' ];
+    const offending = wells.flatMap(([ , b ]) => {
+      const seen = b.children.map(c => ({ ...c, selector: parts(c.selector).join(', ') })).filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
+      return seen.some((v, i) => i && v < seen[i - 1]) ? [ b.selector.replace(/\s+/g, ' ') ] : [];
+    });
+    assert.deepEqual(offending, []);
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const offending = wells.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
+      .map(d => `${file}:${d.line} padding: ${d.value}`));
     assert.deepEqual(offending, []);
   });
 });

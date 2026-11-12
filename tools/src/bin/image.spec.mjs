@@ -175,6 +175,48 @@ describe('image tool', () => {
       assert.equal(rows.find(r => r.state === 'rest').found.background, '#312e29');
     });
 
+    describe('a focus bar (P3.4)', () => {
+      const wells = join(folder, 'wells');
+      mkdirSync(wells, { recursive: true });
+      // A well 4 px wide and 6 px high: dim text in the middle, its foot 3 px high.
+      const well = (fillHex, footHex) => {
+        const pixels = new Uint8Array(4 * 6 * 4);
+        for (let y = 0; y < 6; y++) {
+          for (let x = 0; x < 4; x++) {
+            const c = y >= 3 ? footHex : (x === 1 && y === 1 ? '#a9a297' : fillHex);
+            pixels.set([ 1, 3, 5 ].map(i => parseInt(c.slice(i, i + 2), 16)).concat(255), (y * 4 + x) * 4);
+          }
+        }
+        return encodePng({ width: 4, height: 6, pixels });
+      };
+      writeFileSync(join(wells, 'line-edit-rest.png'), well('#151413', '#151413'));
+      writeFileSync(join(wells, 'line-edit-focused.png'), well('#1c1a18', '#d1b072'));
+      writeFileSync(join(wells, 'manifest.json'), JSON.stringify([
+        { file: 'line-edit-rest.png', widget: 'line-edit', state: 'rest', reached: true },
+        { file: 'line-edit-focused.png', widget: 'line-edit', state: 'focused', reached: true }
+      ]));
+      writeFileSync(join(wells, 'expect.json'), JSON.stringify([ state('rest', '#151413', '#a9a297'), state('focused', '#1c1a18', '#a9a297') ]));
+      const wdir = relative(root, wells);
+      const expect = join(wdir, 'expect.json');
+
+      it('passes when only the bar states have the bar', () => {
+        const { status, stdout } = image('states', wdir, '--case', 'line-edit', '--expect', expect, '--foot', '3', '--bar', '#d1b072', '--bar-states', 'focused');
+        assert.equal(status, 0, stdout);
+      });
+
+      it('fails when a state has the wrong foot, naming it', () => {
+        const { status, stdout } = image('states', wdir, '--case', 'line-edit', '--expect', expect, '--foot', '3', '--bar', '#d1b072', '--bar-states', 'rest');
+        assert.equal(status, 1, stdout);
+        assert.match(stdout, /rest\s+foot #151413.*expected #d1b072/);
+        assert.match(stdout, /focused\s+foot #d1b072.*expected #1c1a18/);
+      });
+
+      it('wants --foot with --bar, and --bar with --bar-states', () => {
+        assert.equal(image('states', wdir, '--case', 'line-edit', '--expect', expect, '--bar', '#d1b072').status, 2);
+        assert.equal(image('states', wdir, '--case', 'line-edit', '--expect', expect, '--foot', '3', '--bar-states', 'focused').status, 2);
+      });
+    });
+
     it('wants a case', () => {
       const { status, stderr } = image('states', dir, '--expect', join(dir, 'good.json'));
       assert.equal(status, 2);

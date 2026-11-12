@@ -115,7 +115,7 @@ next starts.
 | P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | done |
 | P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | done |
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | done |
-| P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
+| P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | done |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | todo |
 | P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
@@ -148,6 +148,16 @@ and is a known gap (D-100). For the plans after it: `browser states` and `image 
 compare a family's states with the gallery, as P3.3 did; P3.4 takes the
 editable combo box, which is a well; P3.8 finds out why a combo box's popup
 list is transparent (seen before P3.3 too).
+
+P3.4 made text fields, spin boxes and editable combo boxes wells, with the
+focus bar drawn as a 3 px border at the foot. On seeing them in Dolphin the
+owner gave a hovered well a tone of its own, `well-hover`, since tone 1 is a
+dialog's body (D-102), and had a clicked field show focus as a tabbed one
+does (D-103). A text area's inside, a spin box's step arrows and disabled
+text are drawn by Qt from the colour scheme, out of the style's reach, and
+are known gaps with the text cursor (D-104, D-94). The probe's
+`--no-cursor` draws a focused field without its cursor, and `image states
+--foot` checks the bar.
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from

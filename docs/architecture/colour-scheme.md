@@ -57,9 +57,10 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
   tone 1.
 - **A well is not the View set.** Breeze draws text fields with the View
   background; Amber's wells are tone 0 and its views tone 2, so the Union
-  style draws wells from a variable of its own. Until P3.4 draws them, a
-  text field shows tone 2, as P2.3 saw in Dolphin's location bar and the
-  settings dialogs ([platform](platform.md#colour-scheme)). (my call, D-90)
+  style draws wells from a variable of its own. Since P3.4 a text field,
+  spin box and editable combo box are wells; a text area's inside is
+  painted from the View set and stays tone 2, a known gap (D-104; see
+  [platform](platform.md#union)). (my call, D-90)
 - **Header][Inactive equals Header.** An inactive window is shown by the
   decoration, with a shadow and a dim title, not by a toolbar tone.
   (my call, D-90)

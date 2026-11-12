@@ -226,14 +226,13 @@ splitter {
     width: 1px;
 }
 
+/* Text fields and text areas are wells, drawn in text.css (P3.4) */
 frame,
 listview,
 treeview,
 tableview,
 columnview,
-scrollview,
-textfield,
-textarea {
+scrollview {
     &:visual-focus {
         border: none;
     }

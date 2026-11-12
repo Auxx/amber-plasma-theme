@@ -176,6 +176,28 @@ describe('frame', () => {
     assert.deepEqual(result.corners, all('square'));
   });
 
+  it('finds the corners of a focus bar square on magenta, though accent is nearer magenta than the fill is (P3.4)', () => {
+    const c = canvas(60, 40, '#ff00ff');
+    c.rect(10, 10, 40, 20, '#1c1a18');
+    c.rect(10, 27, 40, 3, ACCENT);
+    const result = frame(c.image, { surface: '#ff00ff' });
+    assert.deepEqual(result.corners, all('square'));
+    assert.deepEqual(result.sides, sides('clear'));
+  });
+
+  it('still finds the corners of a focus bar rounded when they are cut (P3.4)', () => {
+    const c = canvas(60, 40, '#ff00ff');
+    rounded(c, 10, 10, 40, 20, 5, '#1c1a18');
+    for (let x = 12; x < 48; x++) {
+      for (let y = 27; y < 30; y++) {
+        c.set(x, y, ACCENT);
+      }
+    }
+    const result = frame(c.image, { surface: '#ff00ff' });
+    assert.equal(result.corners.bl, 'rounded');
+    assert.equal(result.corners.br, 'rounded');
+  });
+
   it('finds corners cut by a radius of 5 rounded', () => {
     const c = canvas(60, 40);
     rounded(c, 10, 10, 40, 20, 5, FILL);
@@ -313,6 +335,22 @@ describe('fill', () => {
   it('finds the text of a dark label on a light fill', () => {
     const image = canvas(60, 30, '#d1b072', [ [ 10, 10, 2, 1, '#1b160b' ], [ 12, 10, 10, 1, '#76633f' ] ]);
     assert.equal(fill(image).text, '#1b160b');
+  });
+
+  it('leaves the foot out of the fill and the text, and gives its colour (P3.4)', () => {
+    const rects = [ [ 0, 27, 60, 3, '#d1b072' ] ];
+    for (const x of [ 10, 26, 42 ]) {
+      rects.push([ x, 9, 2, 12, '#a9a297' ]);
+    }
+    const image = canvas(60, 30, '#1c1a18', rects);
+    assert.deepEqual(fill(image, { foot: 3 }), { background: '#1c1a18', text: '#a9a297', foot: '#d1b072' });
+    assert.deepEqual(fill(image), { background: '#1c1a18', text: '#d1b072' });
+  });
+
+  it('leaves out the colours it is told to ignore, such as a text cursor (P3.4)', () => {
+    const image = canvas(60, 30, '#151413', [ [ 10, 9, 2, 12, '#a9a297' ], [ 30, 6, 1, 18, '#eaebec' ] ]);
+    assert.equal(fill(image, { ignore: [ '#eaebec' ] }).text, '#a9a297');
+    assert.equal(fill(image).text, '#eaebec');
   });
 
   it('counts colours within 1 a channel of the fill as no text', () => {

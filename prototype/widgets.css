@@ -190,7 +190,7 @@
 .text-area.is-hovered,
 .spin:hover,
 .spin.is-hovered {
-  background-color: var(--tone-1);
+  background-color: var(--well-hover);
 }
 
 .spin-step:hover {

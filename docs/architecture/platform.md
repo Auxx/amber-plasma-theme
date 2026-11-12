@@ -71,6 +71,43 @@ Verified on 2026-11-10 unless marked.
   tool button are 30 px high at scale 1, as `sizeHint()` gives it; a
   combo box, whose arrow is 20 px high, needs 4 px. (verified, 2026-11-12,
   P3.3)
+- **What Union reaches on a text field, spin box, text area and editable
+  combo box in a Qt Widgets application** (verified, 2026-11-12, P3.4, by
+  marker rules read in the probe's pixels and in Dolphin):
+  - `textfield`, `spinbox` and `combobox.editable` take a background colour
+    in every state, and a 3 px `border-bottom` under a focus state draws the
+    focus bar along the whole foot. It does not move the text and does not
+    change the widget's height.
+  - `:visual-focus` is keyboard focus only: a clicked field has
+    `:active-focus` alone. Amber's wells show focus under both (D-103).
+  - A text area (`QTextEdit`, `QPlainTextEdit`) is a frame, matched as
+    `textarea[shape="panel"]`, around a viewport that the palette fills
+    with the View set's background, tone 2. No rule reaches the viewport:
+    `textarea`, `scrollview`, `frame`, `textedit` and `scrollview >
+    viewport` all failed. The frame is 0 px wide unless it has a border,
+    and a border is drawn only if it is there at rest: one set only under
+    a focus state is not drawn, though its colour may change with the
+    state. A text area is a known gap (D-104).
+  - A spin box has the hint `constrained`; its two steps are stacked at
+    the right, as in the prototype, and its height comes from the two
+    steps (16 px each by default, 15 px in Amber). No rule reaches the
+    steps (`spinbox > indicator`, `.increase`, `spinbox.constrained >
+    indicator` or a bare `indicator`): Qt draws the arrows in the text
+    colour, with no hovered or pressed tone. A known gap (D-104).
+  - An editable combo box's arrow takes the `combobox > indicator` rule;
+    `combobox.editable > indicator` changed nothing.
+  - The text, the placeholder and the text selection are drawn by Qt from
+    the palette, not from Union's `color`: a placeholder is `#a9a297`
+    (dim text), a disabled text `#a6a19a` and a disabled placeholder
+    `#7c766e`, both from the colour scheme's disabled effect (D-91), and a
+    text selection accent with on-accent text. `textfield > .placeholder`
+    does not reach a Qt Widgets field. No Union property names the
+    cursor, the caret, the selection or the placeholder.
+  - A line of text is 20 px high, so a text field is 30 px with 5 px above
+    and below it.
+  - A later rule of another file wins: Breeze's `application.css`, imported
+    after `text.css`, gave `textfield` and `textarea` a `:visual-focus`
+    rule of its own, which took the bar away until P3.4 took them out of it.
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -424,8 +461,10 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   (`#e89887`, hue 33) into the background. The positive and neutral
   backgrounds were not seen.
 - **Qt draws the text cursor of a text field inverted** over what is under
-  it, so on tone 2 it is `#dadde0`, a cool grey. The colour scheme cannot
-  change it.
+  it, so on tone 2 it is `#dadde0`, a cool grey; on a well, tone 0, it is
+  `#eaebec`, and on a focused well, tone 1, `#e3e5e7` (verified, 2026-11-12,
+  P3.4). Neither the colour scheme nor the Union style can change it: a
+  known gap (D-94).
 - **Which colour set paints which surface.** In Dolphin the file view is
   the View set; the places panel, the information panel and the status bar
   (small or full width) are the Window set, and the header toolbar is the
@@ -434,7 +473,9 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   left, the View set.
 - **Text fields outside the Union style show tone 2**, the View background:
   Dolphin's location bar when edited, the search and path fields of the
-  settings dialogs. Breeze's wells are not Amber's (D-90).
+  settings dialogs. Breeze's wells are not Amber's (D-90). With Amber's
+  Union style they are wells, tone 0, except a text area, whose inside
+  stays tone 2 (verified, 2026-11-12, P3.4; see [Union](#union)).
 - **KWin dims the window behind a dialog** (the dialog parent effect),
   darkening and desaturating it: tone 0 became `#0d0c0c` to `#090808`.
 
