@@ -8,12 +8,13 @@ import { checkPairs, describePair, loadPairs, loadTokens } from './tokens.mjs';
  * fails the tests (docs/architecture/accessibility.md).
  */
 
-// Colour tokens that need no pair: the shadow shows no state (D-4), and ANSI
-// black is meant to match a dark background, so it is exempt (D-53). Every
+// Colour tokens that need no pair: the shadow shows no state (D-4), the
+// window glow is a faint indicator with no minimum (D-60), and ANSI black is
+// meant to match a dark background, so it is exempt (D-53). Every
 // other colour token carries text, marks state or lies under text, and must be
 // the foreground or a background layer of at least one pair
 // (docs/architecture/accessibility.md, "How the check works").
-const NO_PAIR = [ 'shadow', 'ansi-black' ];
+const NO_PAIR = [ 'shadow', 'glow', 'ansi-black' ];
 
 describe('Amber contrast pairs', () => {
   const tokens = loadTokens();
@@ -21,7 +22,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 99);
+    assert.equal(pairs.length, 96);
   });
 
   it('resolves every token of every pair', () => {
@@ -50,10 +51,9 @@ describe('Amber contrast pairs', () => {
     assert.equal(result.close, false);
   });
 
-  it('starts the window outline and glow where O-4 starts', () => {
+  it('starts the window outline where O-4 starts', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('outline on tone-2'), '1.36');
-    assert.equal(ratio('glow on tone-2'), '1.82');
   });
 
   it('starts the focused tones where O-3 starts', () => {

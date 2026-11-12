@@ -42,12 +42,6 @@
     "why": "Accessibility rule 5: the window outline tells a window from the one behind it. 1.3 is provisional until O-4 sets the minimum."
   },
   {
-    "foreground": "glow",
-    "on": ["tone-0", "tone-1", "tone-2"],
-    "minimum": 1.3,
-    "why": "Accessibility rule 5: the window glow marks the active window. 1.3 is provisional until O-4 sets the minimum."
-  },
-  {
     "foreground": "raised-focus",
     "on": ["tone-3", "tone-2"],
     "minimum": 1.2,

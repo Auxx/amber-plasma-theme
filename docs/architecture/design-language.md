@@ -215,27 +215,40 @@ token holds the plain colour (D-47).
 - No other line: none between the title bar and the content.
 - The active window has a window glow: a soft light in accent on every
   side, outside the window outline. An inactive window has a dark shadow
-  in its place. (decided, D-26) Starting amounts (my call), from spike
-  P0.6: the glow fades from 28 % to nothing over 24 px; the shadow is
-  black and fades from 50 % over 24 px. They are settled with the window
-  outline, in O-4. A maximised window has neither.
-- Starting tokens of the decoration (my call, from P0.6; the owner chooses
-  in P1.7, O-4). The prototype page shows candidates beside them, each
-  with its measured contrast.
+  in its place. (decided, D-26) A maximised window has neither.
+  - The window glow is a faint indicator: accent at 14 % at the window
+    outline, fading to nothing over 48 px, the same on every side. It has
+    no contrast minimum. (decided, D-60)
+  - The shadow is that of Breeze: black at 55 %, on a fade 36 px long
+    that starts inside the window, so that 9 px of it show above the
+    window, 19 px beside it and 32 px below it. (decided, D-59)
+  - Both fade on one eased curve, taken from an Aurorae copy of Breeze's
+    shadow: level for the first 6 % of the length, then falling fast and
+    running out slowly. Its 13 stops are written in
+    `prototype/window.css` (my call, D-61).
+- Tokens of the decoration. The outline's are starting values (my call,
+  from P0.6; the owner chooses in P1.7, O-4), and the prototype page
+  shows candidates beside them, each with its measured contrast. The
+  glow's and the shadow's are decided (D-59, D-60).
 
-  | Token | Starting value | Used for |
+  | Token | Value | Used for |
   |---|---|---|
   | `--outline` | `var(--tone-4)` | the window outline |
   | `--outline-width` | `1px` | its width |
-  | `--glow` | accent at 28 % | the window glow, at the window outline |
-  | `--glow-size` | `24px` | how far the window glow fades to nothing |
-  | `--shadow` | black at 50 % | the shadow of an inactive window |
-  | `--shadow-size` | `24px` | how far the shadow fades to nothing |
+  | `--glow` | accent at 14 % | the window glow, at the window outline |
+  | `--glow-size` | `48px` | how far the window glow fades to nothing |
+  | `--shadow` | black at 55 % | the shadow of an inactive window, where its fade starts; a popup's shadow too |
+  | `--shadow-size` | `36px` | how long the shadow's fade is |
+  | `--shadow-inset-top` | `27px` | how far inside the window the fade starts at the top |
+  | `--shadow-inset-side` | `17px` | the same at the sides |
+  | `--shadow-inset-bottom` | `4px` | the same at the foot |
 
 - The prototype draws the window glow and the shadow as gradients from the
   window outline outwards, straight on the edges and round on the corners,
   as the Aurorae frame draws them (see [platform](platform.md), P0.6). It
-  uses no `box-shadow`.
+  uses no `box-shadow`. Whether Aurorae draws the eased curve and a fade
+  that starts inside the window is unverified until P5.3 (see
+  [platform](platform.md)).
 - Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
 - An inactive window has dim title text.
 

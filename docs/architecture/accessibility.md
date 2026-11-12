@@ -66,14 +66,16 @@ Disabled controls are exempt in WCAG, and are exempt here.
 5. **Window outline: open.** The window outline tells one window from the
    window or desktop behind it. What contrast it must reach is open
    question O-4 in the [decisions](decisions.md); its contrast pairs are
-   declared with its token. The window glow marks the active window; it
-   is settled in the same question, and the dim title text of an inactive
-   window marks the same state. Until O-4 is closed, the pairs of
-   `outline` and `glow` on tones 0 to 2 have a provisional minimum of 1.3
-   (my call): a floor that keeps them from fading, not a WCAG rule. The
-   shadow shows no state and has no pair. On the active window the
-   outline also meets its own glow, against which it measures less (1.14:1
-   over tone 0); whether that is measured is part of O-4.
+   declared with its token. Until O-4 is closed, the pairs of `outline`
+   on tones 0 to 2 have a provisional minimum of 1.3 (my call): a floor
+   that keeps it from fading, not a WCAG rule. The window glow marks the
+   active window, as the dim title text of an inactive window marks the
+   same state. The glow is a faint indicator and has no contrast minimum
+   and no pair (decided, D-60): at accent 14 % it measures 1.29:1, 1.31:1
+   and 1.33:1 over tones 0, 1 and 2 (2026-11-12). The shadow shows no
+   state and has no pair. On the active window the outline also meets its
+   own glow, against which it measures 1.22:1 over tone 0; whether that
+   is measured is part of O-4.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
@@ -148,9 +150,6 @@ falls below its minimum.
 | window outline | tone 0 | 1.58:1 | 1.3 (provisional) | pass |
 | window outline | tone 1 | 1.49:1 | 1.3 (provisional) | pass |
 | window outline | tone 2 | 1.36:1 | 1.3 (provisional) | pass |
-| window glow | tone 0 | 1.81:1 | 1.3 (provisional) | pass |
-| window glow | tone 1 | 1.82:1 | 1.3 (provisional) | pass |
-| window glow | tone 2 | 1.82:1 | 1.3 (provisional) | pass |
 | text | well | 14.40:1 | 4.5 | pass |
 | text | raised focus | 5.11:1 | 4.5 | pass |
 | text | well focus | 9.91:1 | 4.5 | pass |

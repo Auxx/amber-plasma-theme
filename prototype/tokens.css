@@ -22,13 +22,16 @@
   --danger: #b5442f;    /* close button when hovered, negative states */
   --on-danger: #fbf3e6; /* text and icons on danger */
 
-  /* The window decoration (O-4: starting values) */
+  /* The window decoration (the outline is O-4: starting values; the glow is D-60, the shadow D-59) */
   --outline: var(--tone-4);       /* the window outline, on every edge of a window */
   --outline-width: 1px;           /* the window outline's width */
-  --glow: color-mix(in srgb, var(--accent) 28%, transparent); /* the window glow of the active window, at the outline */
-  --glow-size: 24px;              /* how far the window glow fades to nothing */
-  --shadow: rgb(0 0 0 / 50%);     /* the shadow of an inactive window, at the outline */
-  --shadow-size: 24px;            /* how far the shadow fades to nothing */
+  --glow: color-mix(in srgb, var(--accent) 14%, transparent); /* the window glow of the active window, at the outline */
+  --glow-size: 48px;              /* how far the window glow fades to nothing */
+  --shadow: rgb(0 0 0 / 55%);     /* the shadow of an inactive window, where its fade starts; a popup's shadow too */
+  --shadow-size: 36px;            /* how long the shadow's fade is */
+  --shadow-inset-top: 27px;       /* how far inside the window the shadow's fade starts at the top: 9 px show */
+  --shadow-inset-side: 17px;      /* the same at the sides: 19 px show */
+  --shadow-inset-bottom: 4px;     /* the same at the foot: 32 px show */
 
   /* Widgets (O-1 and O-3: starting values) */
   --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (O-1) */

@@ -238,7 +238,7 @@ Verified on 2026-11-11 unless marked; see
 |---|---|
 | Can the window outline be made the same width on every edge at scale 1.49? | P5.1 |
 | What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
-| Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype shows candidates drawn this way since P1.7. | P5.3 |
+| Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype draws the window glow and the shadow this way since P1.7 (D-59 to D-61). | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
 | Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
