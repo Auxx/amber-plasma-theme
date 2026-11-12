@@ -4,10 +4,11 @@
  */
 
 /*
- * Tab bars and buttons (P3.6, D-108). A tab has no fill at rest, on a tone 0
- * tab bar; a selected tab takes tone 2, the tone of its page, and carries the
- * block marker on its outer edge: a border of --marker-width, set at rest in
- * transparent, since Union draws only a border that is there at rest. The
+ * Tab bars and buttons (P3.6, D-108). Union draws no tab bar, so a tab at rest
+ * paints the bar's tone 0 itself; past the last tab the bar shows its parent.
+ * A selected tab takes tone 2, the tone of its page, and carries the block
+ * marker on its outer edge: a border of --marker-width, set at rest in tone 0,
+ * since Union draws only a border that is there at rest. The
  * background is not drawn under that edge, so each state colours the edge
  * with its own fill. Kirigami's immutable tabs and Kate's side tab bars take
  * the same rules.
@@ -26,7 +27,7 @@ tabbutton {
     padding-bottom: 4px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: transparent;
+    background-color: var(--tone-0);
     color: var(--text);
 
     text-wrap-mode: no-wrap;
@@ -35,25 +36,29 @@ tabbutton {
     text-alignment: content center center 0;
 
     &[direction="top"] {
-        border-top: var(--marker-width) solid transparent;
+        border-top: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="bottom"] {
-        border-bottom: var(--marker-width) solid transparent;
+        border-bottom: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="left"] {
-        border-left: var(--marker-width) solid transparent;
+        border-left: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="right"] {
-        border-right: var(--marker-width) solid transparent;
+        border-right: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="left"],
     &[direction="right"] {
         width: var(--tab-default-height);
         height: var(--tab-default-width);
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 
     &[display="icon-only"] {
@@ -99,8 +104,8 @@ tabbutton {
     }
 
     &:disabled {
-        background-color: transparent;
-        border-color: transparent;
+        background-color: var(--tone-0);
+        border-color: var(--tone-0);
         color: var(--text-dim);
     }
 

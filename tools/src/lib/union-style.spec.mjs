@@ -275,7 +275,7 @@ describe('the Union style\'s global rules (P3.2)', () => {
     && ((d.value === FOCUS_BAR && parts(d.block.selector).includes('&:visual-focus')) || (d.value === BAR_BAND && d.block.selector.includes('[shape="panel"]')));
   // The second: a selected tab's block marker, 3 px on the edge away from its page, set at rest (P3.6, D-108).
   const EDGE = { top: 'top', bottom: 'bottom', left: 'left', right: 'right' };
-  const tabMarker = d => d.file === 'tabs.css' && d.value === 'var(--marker-width) solid transparent'
+  const tabMarker = d => d.file === 'tabs.css' && d.value === 'var(--marker-width) solid var(--tone-0)'
     && d.property === `border-${EDGE[d.block.selector.match(/^&\[direction="(\w+)"\]$/)?.[1]]}`;
 
   it('draws no border, but the focus bar of a well and the block marker of a tab', () => {
@@ -718,13 +718,17 @@ describe('the Union style\'s bars (P3.6)', () => {
 
   it('gives a tab the tones of the prototype, and the block marker on its outer edge', () => {
     const t = top('tabs.css', 'tabbutton');
-    assert.equal(value(t, 'background-color'), 'transparent');
+    // Union draws no tab bar (Task 1), so each tab paints the bar's tone 0 itself (D-108).
+    assert.equal(value(t, 'background-color'), 'var(--tone-0)');
     assert.equal(value(t, 'color'), 'var(--text)');
     for (const edge of [ 'top', 'bottom', 'left', 'right' ]) {
       const direction = child(t, `&[direction="${edge}"]`);
-      assert.equal(value(direction, `border-${edge}`), 'var(--marker-width) solid transparent', edge);
+      assert.equal(value(direction, `border-${edge}`), 'var(--marker-width) solid var(--tone-0)', edge);
       assert.deepEqual(direction.declarations.filter(d => /^border/.test(d.property) && d.property !== `border-${edge}`).map(d => d.property), [], edge);
     }
+    // A tab beside its pages turns its padding with it: 12 px along the tab, 4 px across (Task 4).
+    const side = child(t, '&[direction="left"], &[direction="right"]');
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(side, `padding-${e}`)), [ '12px', '12px', '4px', '4px' ]);
     const tone = (selector, background, border) => {
       assert.equal(value(child(t, selector), 'background-color'), background, selector);
       assert.equal(value(child(t, selector), 'border-color'), border, selector);
@@ -734,7 +738,7 @@ describe('the Union style\'s bars (P3.6)', () => {
     tone('&:visual-focus', 'var(--surface-focus)', 'var(--surface-focus)');
     tone('&:checked, &:highlighted', 'var(--tone-2)', 'var(--accent)');
     tone('&:checked:visual-focus, &:highlighted:visual-focus', 'var(--surface-focus)', 'var(--accent)');
-    tone('&:disabled', 'transparent', 'transparent');
+    tone('&:disabled', 'var(--tone-0)', 'var(--tone-0)');
     assert.equal(value(child(t, '&:disabled'), 'color'), 'var(--text-dim)');
     // Every state that colours the marker's edge comes after the edges are set.
     const at = selector => t.children.findIndex(c => parts(c.selector).join(', ') === selector);

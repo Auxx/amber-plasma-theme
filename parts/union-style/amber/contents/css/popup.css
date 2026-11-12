@@ -165,8 +165,8 @@ menubaritem
 {
     width: var(--medium-element-size);
     height: var(--medium-element-size);
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
 
