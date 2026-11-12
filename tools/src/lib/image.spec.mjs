@@ -176,6 +176,28 @@ describe('frame', () => {
     assert.deepEqual(result.corners, all('square'));
   });
 
+  it('finds the corners of a focus bar square on magenta, though accent is nearer magenta than the fill is (P3.4)', () => {
+    const c = canvas(60, 40, '#ff00ff');
+    c.rect(10, 10, 40, 20, '#1c1a18');
+    c.rect(10, 27, 40, 3, ACCENT);
+    const result = frame(c.image, { surface: '#ff00ff' });
+    assert.deepEqual(result.corners, all('square'));
+    assert.deepEqual(result.sides, sides('clear'));
+  });
+
+  it('still finds the corners of a focus bar rounded when they are cut (P3.4)', () => {
+    const c = canvas(60, 40, '#ff00ff');
+    rounded(c, 10, 10, 40, 20, 5, '#1c1a18');
+    for (let x = 12; x < 48; x++) {
+      for (let y = 27; y < 30; y++) {
+        c.set(x, y, ACCENT);
+      }
+    }
+    const result = frame(c.image, { surface: '#ff00ff' });
+    assert.equal(result.corners.bl, 'rounded');
+    assert.equal(result.corners.br, 'rounded');
+  });
+
   it('finds corners cut by a radius of 5 rounded', () => {
     const c = canvas(60, 40);
     rounded(c, 10, 10, 40, 20, 5, FILL);

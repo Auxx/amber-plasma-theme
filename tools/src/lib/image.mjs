@@ -252,6 +252,7 @@ export function frame(image, { surface, region } = {}) {
   const sides = {};
   const lines = {};
   const runs = {};
+  const outers = {};
   for (const side of SIDES) {
     const n = length(side);
     let best = [ 0, -1 ], start = null;
@@ -287,6 +288,7 @@ export function frame(image, { surface, region } = {}) {
       return mode(colours);
     };
     const outer = colourAt(0);
+    outers[side] = rgbOf(outer);
     if (near(rgbOf(outer), rgbOf(colourAt(LINE_DEPTH)))) {
       sides[side] = 'clear';
       continue;
@@ -310,8 +312,11 @@ export function frame(image, { surface, region } = {}) {
       corners[name] = 'not judged';
       continue;
     }
+    // A side may end in a band of its own colour, such as a focus bar (P3.4): a
+    // corner of that colour is as square as one of the fill.
     const c = at(...cornerPixel[name]) ?? base;
-    corners[name] = distance(c, base) < distance(c, fill) ? 'rounded' : 'square';
+    const drawnNearest = Math.min(distance(c, fill), ...[ a, b ].filter(side => outers[side]).map(side => distance(c, outers[side])));
+    corners[name] = distance(c, base) < drawnNearest ? 'rounded' : 'square';
   }
   return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, corners, sides, lines };
 }

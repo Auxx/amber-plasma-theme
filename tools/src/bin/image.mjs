@@ -224,7 +224,8 @@ the widget does not use. Nothing is judged unless one colour fills half the
 widget's box, which text never does. A side is judged only
 when its longest run of drawn pixels covers a quarter of it, so text alone
 is not judged; a corner only when both its sides are. A corner is rounded
-when its pixel is nearer the surface than the widget's most common colour.
+when its pixel is nearer the surface than the widget's most common colour
+and than the outer colour of its two sides, such as a focus bar's.
 A side has a line when its outer colour differs from the colour 3 px in and
 runs for 1 or 2 px, or when the whole widget is only 1 or 2 px across it;
 3 px or more is a band, such as a focus bar.

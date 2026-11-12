@@ -333,7 +333,9 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.4-amber --c
     quarter of it, so text alone is not judged; a corner only when both its
     sides are.
   - A corner is **rounded** when its pixel is nearer the surface than the
-    widget's most common colour. A circle, such as a radio button, reports
+    widget's most common colour and than the outer colour of its two sides:
+    the corner of a band such as a focus bar, in a colour near the surface,
+    is square (P3.4). A circle, such as a radio button, reports
     four rounded corners: a round widget is excused by the caller.
   - A side has a **line** when its outer colour differs from the colour 3 px
     in and runs for 1 or 2 px, or when the whole widget is only 1 or 2 px
