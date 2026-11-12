@@ -8,30 +8,21 @@
 <link rel="stylesheet" href="window.css">
 <link rel="stylesheet" href="shell.css">
 <link rel="stylesheet" href="scrollbars.css">
-<script>
-  function setWp(event, name) {
-    event.preventDefault();
-    event.stopPropagation();
-    document.body.classList.remove('wp1', 'wp2', 'wp3', 'wp4');
-
-    if(name.trim().length > 0) {
-      document.body.classList.add(name);
-    }
-  }
-</script>
 </head>
-<body class="desktop wp4">
+<body class="desktop">
 
 <nav class="pages" aria-label="Pages">
   <a href="index.html" aria-current="page">Window shell</a>
   <a href="gallery.html">Gallery</a>
   <a href="samples.html">Samples</a>
-  |
-  <a href="#" onclick="setWp(event, '')">No wallpaper</a>
-  <a href="#" onclick="setWp(event, 'wp1')">Wallpaper #1</a>
-  <a href="#" onclick="setWp(event, 'wp2')">Wallpaper #2</a>
-  <a href="#" onclick="setWp(event, 'wp3')">Wallpaper #3</a>
-  <a href="#" onclick="setWp(event, 'wp4')">Wallpaper #4</a>
+  <!-- The wallpaper behind the windows, chosen without a script: shell.css reads which one is checked. -->
+  <span class="wallpapers" role="radiogroup" aria-label="Wallpaper">
+    <input type="radio" name="wallpaper" id="wp0"><label for="wp0">No wallpaper</label>
+    <input type="radio" name="wallpaper" id="wp1"><label for="wp1">Wallpaper #1</label>
+    <input type="radio" name="wallpaper" id="wp2"><label for="wp2">Wallpaper #2</label>
+    <input type="radio" name="wallpaper" id="wp3"><label for="wp3">Wallpaper #3</label>
+    <input type="radio" name="wallpaper" id="wp4" checked><label for="wp4">Wallpaper #4</label>
+  </span>
 </nav>
 
 <!-- The window shell (roadmap P1.2): an inactive window behind an active one. -->
@@ -116,63 +107,6 @@
     <div class="status">10 items, 3 folders</div>
   </div>
 
-</section>
-
-<!-- Candidates for O-4: each figure changes one thing from the starting values. The glow and the shadow are settled (D-59, D-60). -->
-<section class="candidates" aria-label="Candidates">
-  <h2>Window outline</h2>
-  <p class="dim">The window outline: its colour against the tones it can sit on, and its width.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: start
-      <span class="dim">tone 4, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="1.58">1.58:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="1.49">1.49:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="1.36">1.36:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline: #585248">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 2:1
-      <span class="dim">#585248, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="2.38">2.38:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="2.24">2.24:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="2.05">2.05:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline: #746e63">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 3:1
-      <span class="dim">#746e63, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="3.64">3.64:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="3.43">3.43:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="3.13">3.13:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline-width: 2px">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 2 px
-      <span class="dim">tone 4, 2 px</span>
-    </figcaption>
-  </figure>
-  </div>
 </section>
 
 </body>

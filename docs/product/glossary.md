@@ -206,8 +206,8 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Window outline**
 : The thin line that the window decoration draws along every edge of a
   window, so that windows which overlap can be told apart. It is the only
-  hairline in Amber, and it is square at the corners. Its width is not yet
-  settled. _Avoid_ "window
+  hairline in Amber, and it is square at the corners. It is one pixel
+  wide. _Avoid_ "window
   border" (KWin's name for the frame, whose width is a system setting) and
   plain "outline".
 

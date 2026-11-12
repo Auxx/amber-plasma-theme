@@ -38,8 +38,8 @@
   {
     "foreground": "outline",
     "on": ["tone-0", "tone-1", "tone-2"],
-    "minimum": 1.3,
-    "why": "Accessibility rule 5: the window outline tells a window from the one behind it. 1.3 is provisional until O-4 sets the minimum."
+    "minimum": 2,
+    "why": "Accessibility rule 5: the window outline tells a window from the one behind it, at 2:1 against the tones of a window (D-62). It is not measured against the window glow."
   },
   {
     "foreground": "raised-focus",

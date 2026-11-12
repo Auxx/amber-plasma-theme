@@ -412,7 +412,7 @@ owner's display.
   code.
 - The requirement changed: D-25 and the "Window decoration" section of the
   [design language](design-language.md). The window outline's colour and width
-  are open question O-4.
+  were open question O-4, closed on 2026-11-12 (D-62).
 - What shows at a window's edge depends on KWin's border size, which is a
   system setting, so the owner sets it; P6.2 must say so in the README,
   beside selecting the decoration. For the window outline alone it is
@@ -464,5 +464,5 @@ border size `Tiny`. Pixels were read outwards from the window's edge.
   window has a window glow, and an inactive window a shadow (D-26). The
   glossary, D-4 and the [design language](design-language.md) say so.
 - The window glow marks the active window, so it is a mark of state. Its
-  amounts and what it must reach are settled with the window outline
-  (O-4).
+  amounts were settled with the window outline on 2026-11-12 (D-59 to
+  D-62).

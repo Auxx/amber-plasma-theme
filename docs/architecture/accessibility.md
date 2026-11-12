@@ -1,7 +1,7 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. Three questions are deferred to
-> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md). O-5,
+> Status: **Accepted** on 2026-11-11. Two questions are deferred to
+> the prototype: O-1 and O-3 in the [decisions](decisions.md). O-5,
 > light text on ANSI colours, is open too.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
@@ -63,19 +63,17 @@ Disabled controls are exempt in WCAG, and are exempt here.
    no text, so no cap applies to it: `toggle-focus` has the same
    provisional 1.2 against tone 2 and the toggle at rest, and its tint can
    reach 3:1 against tone 2 at 60 % (3.52:1; measured 2026-11-11, P1.4).
-5. **Window outline: open.** The window outline tells one window from the
-   window or desktop behind it. What contrast it must reach is open
-   question O-4 in the [decisions](decisions.md); its contrast pairs are
-   declared with its token. Until O-4 is closed, the pairs of `outline`
-   on tones 0 to 2 have a provisional minimum of 1.3 (my call): a floor
-   that keeps it from fading, not a WCAG rule. The window glow marks the
-   active window, as the dim title text of an inactive window marks the
-   same state. The glow is a faint indicator and has no contrast minimum
-   and no pair (decided, D-60): at accent 14 % it measures 1.29:1, 1.31:1
-   and 1.33:1 over tones 0, 1 and 2 (2026-11-12). The shadow shows no
-   state and has no pair. On the active window the outline also meets its
-   own glow, against which it measures 1.22:1 over tone 0; whether that
-   is measured is part of O-4.
+5. **Window outline: 2:1.** The window outline tells one window from the
+   window behind it, and reaches 2:1 against tones 0 to 2, the tones a
+   window shows at its edge. (decided, D-62; the minimum of the pairs is
+   my call, D-63) It is not measured against the window glow (decided,
+   D-62), against which it reaches 1.84:1 over tone 0, nor against the
+   desktop, which may be any wallpaper. The window glow marks the active
+   window, as the dim title text of an inactive window marks the same
+   state. The glow is a faint indicator and has no contrast minimum and
+   no pair (decided, D-60): at accent 14 % it measures 1.29:1, 1.31:1 and
+   1.33:1 over tones 0, 1 and 2 (2026-11-12). The shadow shows no state
+   and has no pair.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
@@ -147,9 +145,9 @@ falls below its minimum.
 | accent | tone 3 | 6.54:1 | 3 | pass |
 | accent | tone 4 | 5.63:1 | 3 | pass |
 | on-danger | danger | 4.97:1 | 4.5 | pass |
-| window outline | tone 0 | 1.58:1 | 1.3 (provisional) | pass |
-| window outline | tone 1 | 1.49:1 | 1.3 (provisional) | pass |
-| window outline | tone 2 | 1.36:1 | 1.3 (provisional) | pass |
+| window outline | tone 0 | 2.38:1 | 2 | pass |
+| window outline | tone 1 | 2.24:1 | 2 | pass |
+| window outline | tone 2 | 2.05:1 | 2 | pass |
 | text | well | 14.40:1 | 4.5 | pass |
 | text | raised focus | 5.11:1 | 4.5 | pass |
 | text | well focus | 9.91:1 | 4.5 | pass |

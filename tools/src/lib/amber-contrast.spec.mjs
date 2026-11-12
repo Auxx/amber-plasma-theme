@@ -51,9 +51,9 @@ describe('Amber contrast pairs', () => {
     assert.equal(result.close, false);
   });
 
-  it('starts the window outline where O-4 starts', () => {
+  it('holds the window outline at 2:1 (D-62)', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
-    assert.equal(ratio('outline on tone-2'), '1.36');
+    assert.equal(ratio('outline on tone-2'), '2.05');
   });
 
   it('starts the focused tones where O-3 starts', () => {

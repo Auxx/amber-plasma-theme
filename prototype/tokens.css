@@ -22,8 +22,8 @@
   --danger: #b5442f;    /* close button when hovered, negative states */
   --on-danger: #fbf3e6; /* text and icons on danger */
 
-  /* The window decoration (the outline is O-4: starting values; the glow is D-60, the shadow D-59) */
-  --outline: var(--tone-4);       /* the window outline, on every edge of a window */
+  /* The window decoration (D-59, D-60, D-62) */
+  --outline: #585248;             /* the window outline, on every edge of a window: 2:1 on tones 0 to 2 */
   --outline-width: 1px;           /* the window outline's width */
   --glow: color-mix(in srgb, var(--accent) 14%, transparent); /* the window glow of the active window, at the outline */
   --glow-size: 48px;              /* how far the window glow fades to nothing */

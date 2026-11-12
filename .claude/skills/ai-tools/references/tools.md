@@ -205,7 +205,7 @@ Look at a screenshot with the Read tool.
   the page has loaded.
 - **`colours`** reads any computed form (`rgb()`, `color(srgb …)` from a
   `color-mix`, `oklch()`) and names an opaque colour by every token that resolves to it, such
-  as `#3c3832 (tone-4, outline)`, or prints the bare hex. Fully transparent is
+  as `#3c3832 (tone-4, scroll-thumb)`, or prints the bare hex. Fully transparent is
   `transparent`; part-transparent is `rgb(r g b / N%)`, with no token name.
 - **Chrome missing.** Every command that opens a page exits 1 with "Google
   Chrome could not be started …". The specs that need Chrome are skipped with

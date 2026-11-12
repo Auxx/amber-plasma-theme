@@ -208,10 +208,9 @@ token holds the plain colour (D-47).
 
 - Title bar in tone 0; square corners.
 - A window has a window outline. (decided, D-25) It runs along every edge,
-  square at the corners, for active and inactive windows; it starts one
-  pixel wide and sits lighter than tone 0 (my call). Its width, its colour
-  and the contrast it must reach are open question O-4 in the
-  [decisions](decisions.md). A maximised window has none (my call).
+  square at the corners, the same for active and inactive windows. It is
+  one pixel wide and `#585248`, which reaches 2:1 against tones 0 to 2.
+  (decided, D-62) A maximised window has none (my call).
 - No other line: none between the title bar and the content.
 - The active window has a window glow: a soft light in accent on every
   side, outside the window outline. An inactive window has a dark shadow
@@ -226,14 +225,11 @@ token holds the plain colour (D-47).
     shadow: level for the first 6 % of the length, then falling fast and
     running out slowly. Its 13 stops are written in
     `prototype/window.css` (my call, D-61).
-- Tokens of the decoration. The outline's are starting values (my call,
-  from P0.6; the owner chooses in P1.7, O-4), and the prototype page
-  shows candidates beside them, each with its measured contrast. The
-  glow's and the shadow's are decided (D-59, D-60).
+- Tokens of the decoration (decided, D-59, D-60 and D-62):
 
   | Token | Value | Used for |
   |---|---|---|
-  | `--outline` | `var(--tone-4)` | the window outline |
+  | `--outline` | `#585248` | the window outline |
   | `--outline-width` | `1px` | its width |
   | `--glow` | accent at 14 % | the window glow, at the window outline |
   | `--glow-size` | `48px` | how far the window glow fades to nothing |

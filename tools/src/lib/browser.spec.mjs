@@ -55,7 +55,7 @@ describe('browser', () => {
   it('names colours as tokens', () => {
     const names = tokenNames(loadTokens());
     assert.equal(nameColour('rgb(28, 26, 24)', names), '#1c1a18 (tone-1, editor-gutter)');
-    assert.equal(nameColour('rgb(60, 56, 50)', names), '#3c3832 (tone-4, outline, scroll-thumb)');
+    assert.equal(nameColour('rgb(60, 56, 50)', names), '#3c3832 (tone-4, scroll-thumb)');
     assert.equal(nameColour('rgb(1, 2, 3)', names), '#010203');
     assert.equal(nameColour('rgba(0, 0, 0, 0)', names), 'transparent');
     assert.equal(nameColour('rgba(209, 176, 114, 0.28)', names), 'rgb(209 176 114 / 28%)');
