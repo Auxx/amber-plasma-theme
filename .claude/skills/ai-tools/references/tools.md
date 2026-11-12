@@ -8,6 +8,7 @@ Run every tool from the repository root:
 | [`colour`](#colour) | Converting colours, WCAG contrast, finding a lightness that passes |
 | [`tokens`](#tokens) | Reading Amber's tokens, checking and trying their contrast pairs   |
 | [`browser`](#browser) | Screenshots of the prototype in a state, the rendered anti-goal check, computed colours |
+| [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme |
 
 ## `colour`
 
@@ -215,3 +216,37 @@ Look at a screenshot with the Read tool.
 - **Exit codes.** 0 success; 1 a check found something, a page or element is
   missing, a state selector does not match exactly one element, or Chrome did
   not start; 2 the command line was wrong, including a bad size or `--out`.
+
+## `generate`
+
+Generates Amber's parts from the tokens. One command per part; each prints
+the part and writes it only with `--write`. A generated part is committed, and
+a test fails when it differs from what the generator makes now (D-92).
+
+| Command | Does |
+| --- | --- |
+| `colour-scheme [--write] [--json]` | `parts/colour-scheme/Amber.colors` from `prototype/tokens.css` and `parts/colour-scheme/roles.json` |
+
+```shell
+# Print the colour scheme as it would be generated now; writes nothing, exits 0
+node tools/src/bin/generate.mjs colour-scheme
+
+# After a token changes: prints "parts/colour-scheme/Amber.colors: written", or "… unchanged"
+node tools/src/bin/generate.mjs colour-scheme --write
+```
+
+- **Output.** Without `--write`, the file's text exactly, so it can be piped
+  or compared with `cmp`. With `--write`, one line: `written`, or `unchanged`
+  when the file already holds that text, which is then left alone.
+- **`--json`** prints `{ part, file, changed, written, content }`. Without
+  `--write`, `changed` says whether the file on disk differs and `written` is
+  false.
+- **Refusals.** The generator writes nothing and exits 1 when the table has a
+  missing role, an unknown token, a token that is not opaque, a `rule` it has
+  no code for, or a value that would break the file. The message lists every
+  problem, one per line, each starting `group.key:`.
+- **The same each time.** The file holds no date or path; groups and keys are
+  sorted as KConfig sorts them. The format and the computed disabled amount
+  are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
+- **Exit codes.** 0 success; 1 the table was refused; 2 the command line was
+  wrong, including an unknown part.
