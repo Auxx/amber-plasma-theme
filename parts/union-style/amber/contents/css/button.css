@@ -276,6 +276,11 @@ combobox
     text-wrap-mode: no-wrap;
     text-elide: right;
 
+    /* Union marks a combo box whose popup is open :checked; it keeps its text (P3.3) */
+    &:checked {
+        color: var(--text);
+    }
+
     & > indicator {
         layout-alignment: content end center 0;
         width: var(--icon-size-small);

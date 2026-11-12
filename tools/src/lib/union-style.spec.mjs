@@ -348,6 +348,12 @@ describe('the Union style\'s buttons (P3.3)', () => {
     assert.deepEqual(offending, []);
   });
 
+  it('keeps the text of an open combo box, which Union marks :checked, as at rest', () => {
+    const combo = top(p => p.length === 1 && p[0] === 'combobox');
+    assert.equal(value(child(combo, '&:checked'), 'color'), 'var(--text)');
+    assert.equal(value(child(combo, '&:checked'), 'background-color'), undefined, 'the open combo box keeps the tone of its other states');
+  });
+
   it('makes a button 30 px high', () => {
     const root = all.find(b => b.selector === ':root');
     assert.equal(value(root, '--button-default-size'), '30px');
