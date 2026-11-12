@@ -17,6 +17,34 @@ body {
   background: var(--desktop);
 }
 
+body.wp1 {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/DarkestHour/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.wp2 {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/EveningGlow/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.wp3 {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/PastelHills/contents/images/3200x2000.jpg?ref_type=heads&inline=false");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.wp4 {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/OneStandsOut/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .dim {
   color: var(--text-dim);
 }
