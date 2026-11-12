@@ -127,8 +127,9 @@ background / text, and the block marker or tick where the widget has one.
   browser does. (decided, D-103)
 - **Wells in Qt Widgets applications** have three known gaps: a text
   area's inside stays tone 2, a spin box's steps are drawn in text with no
-  hovered tone, and disabled text is a little lighter than dim text.
-  (decided, D-104; see [platform](platform.md#union))
+  hovered tone, and disabled text and placeholders take the colour
+  scheme's disabled colours, not dim text. (decided, D-104; see
+  [platform](platform.md#union))
 - **An empty well** is told from its surface by tone alone: tone 0 on
   tone 2, with no bar at its foot. (decided, D-75)
 - **Toggles** (my call, P1.4): a 16 px box, or a circle for a radio
