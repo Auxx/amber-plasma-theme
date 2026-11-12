@@ -24,10 +24,11 @@ Verified on 2026-11-10 unless marked.
 - The Breeze style is about 3,000 lines of Union CSS in files per widget
   family: `variables.css`, `button.css`, `text.css`, `check.css`, `tabs.css`,
   `bars.css`, `delegate.css`, `tables.css`, `popup.css`, `application.css`,
-  `kirigami.css`, `calendar.css`, `widgets.css`, with `defaults.css` and
-  `global.css`, joined by `style.css`; `check.css` loads three SVG files from
-  `contents/images/`. Its licence is BSD-2-Clause. (file list verified,
-  2026-11-12)
+  `kirigami.css`, `calendar.css`, `widgets.css` and `defaults.css`, joined
+  by `style.css`; `check.css` loads three SVG files from
+  `contents/images/`. One more file, `global.css`, declares the custom
+  properties `--color-group` and `--color-set` but is imported by no file of
+  the style. Its licence is BSD-2-Clause. (file list verified, 2026-11-12)
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -111,7 +112,7 @@ Verified on 2026-11-10 unless marked.
   application again. Without `--force` the update is refused unless the
   version in `metadata.json` went up. The cache is rebuilt by itself;
   `UNION_FORCE_RECREATE_STYLE_CACHE` was not needed. (verified, 2026-11-11)
-- **A style is found in `union/styles/<id>/` of every folder of
+- **A style is found in `union/styles/<id>/` of a folder put first in
   `XDG_DATA_DIRS`**, not only where `union-styletool install` puts it. A
   symbolic link to the folder works. So a style can be tried without
   installing anything: put a folder holding `union/styles/amber` → the
@@ -145,6 +146,7 @@ Verified on 2026-11-10 unless marked.
 |---|---|
 | Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. The prototype draws one (D-49), and the gallery shows a "No shadow" candidate beside it since P1.5. | P3.8 |
 | How does the Breeze style show focus in a Qt Widgets application, given that its focus `outline` is not drawn? | P3.2 |
+| Does Union read the Breeze style's `global.css`, which `style.css` does not import? A rule put there may never apply. | P3.2 |
 | Which key selects the style for the whole system? | P6.2 |
 
 The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner

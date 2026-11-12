@@ -17,6 +17,19 @@ const CSS = join(STYLE, 'contents/css');
 
 const cssFiles = () => (existsSync(CSS) ? readdirSync(CSS).filter((f) => f.endsWith('.css')) : []);
 const read = (file) => readFileSync(join(CSS, file), 'utf8');
+const imports = (text) => [...text.matchAll(/@import\s+(?:url\(\s*)?(['"])([^'"]+)\1/g)].map((m) => m[2]);
+const urls = (text) => [...text.matchAll(/url\(\s*(['"]?)([^'")\s]+)\1\s*\)/g)].map((m) => m[2]);
+
+describe('the path readers of this spec', () => {
+  it('read every quoting of @import and url()', () => {
+    const text = `@import "a.css"; @import 'b.css'; @import url("c.css");
+      x { background-image: url("../images/d.svg"); }
+      y { background-image: url('../images/e.svg'); }
+      z { background-image: url(../images/f.svg); }`;
+    assert.deepEqual(imports(text), ['a.css', 'b.css', 'c.css']);
+    assert.deepEqual(urls(text).filter((u) => u.endsWith('.svg')), ['../images/d.svg', '../images/e.svg', '../images/f.svg']);
+  });
+});
 
 describe('the Union style folder', () => {
   it('has metadata naming it Amber', () => {
@@ -31,18 +44,21 @@ describe('the Union style folder', () => {
   it('has style.css and resolves every @import', () => {
     assert.ok(existsSync(join(CSS, 'style.css')), 'contents/css/style.css');
     for (const file of cssFiles()) {
-      for (const [, target] of read(file).matchAll(/@import\s+"([^"]+)"/g)) {
+      for (const target of imports(read(file))) {
         assert.ok(existsSync(join(CSS, target)), `${file} imports ${target}, which does not exist`);
       }
     }
   });
 
   it('resolves every url() from contents/css/', () => {
+    let found = 0;
     for (const file of cssFiles()) {
-      for (const [, target] of read(file).matchAll(/url\(\s*"([^"]+)"\s*\)/g)) {
+      for (const target of urls(read(file))) {
+        found += 1;
         assert.ok(existsSync(resolve(CSS, target)), `${file} loads ${target}, which does not exist`);
       }
     }
+    assert.ok(found > 0, 'no url() found: the reader is broken');
   });
 
   it('keeps an SPDX header on every CSS file', () => {
