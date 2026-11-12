@@ -250,12 +250,33 @@ owner's say. (my call)
 - No user colour schemes exist yet: `~/.local/share/color-schemes/` is empty.
   The active global theme is Fedora's dark Breeze variant. (verified,
   2026-11-10)
+- A `.colors` file has seven colour sets, `View`, `Window`, `Button`,
+  `Selection`, `Tooltip`, `Complementary` and `Header`, and Breeze Dark adds
+  `Header][Inactive`. Each set has the same 12 roles: `BackgroundNormal`,
+  `BackgroundAlternate`, `ForegroundNormal`, `ForegroundInactive`,
+  `ForegroundActive`, `ForegroundLink`, `ForegroundVisited`,
+  `ForegroundNegative`, `ForegroundNeutral`, `ForegroundPositive`,
+  `DecorationFocus`, `DecorationHover`. The other groups are
+  `ColorEffects:Disabled`, `ColorEffects:Inactive`, `General`, `KDE` and
+  `WM`. Seen in the strings of `libKF6ColorScheme.so.6` (kf6-kcolorscheme
+  6.31.0) and in `/usr/share/color-schemes/BreezeDark.colors`
+  (plasma-workspace 6.8.2). (verified, 2026-11-12, P2.1)
+- The Breeze Union style reads the scheme as
+  `custom-color("kcolorscheme", <state>, <set>, <role>…)`, with the states
+  `active`, `inactive` and `disabled`, and also reads roles KColorScheme
+  derives, such as `decoration frame` and `background positive`.
+  (verified, 2026-11-12, P2.1)
 
 ### Unverified
 
 | Question | Tested in |
 |---|---|
 | Can Dolphin, Kate and Konsole each be given a colour scheme of their own from their Settings menu, so that the scheme can be tried without changing the system's? | P2.3 |
+| Is `ContrastEffect=1` a mix of the colour towards the background by `ContrastAmount`, so that the disabled rule of [colour-scheme](colour-scheme.md) gives dim text? | P2.3 |
+| What does `contrast=0` change in Qt Widgets applications: are the bevel roles flat? | P2.3 |
+| Is `frameContrast` read from `[KDE]`, and does 0 make the derived frame colour equal the background? | P2.3 |
+| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? | P2.3 |
+| Which programs read `[WM]` on this system? | P2.3 |
 
 ## Konsole and Kate
 

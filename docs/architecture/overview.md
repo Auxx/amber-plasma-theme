@@ -9,6 +9,7 @@ are used as the [glossary](../product/glossary.md) defines them.
 |---|---|
 | [design-language.md](design-language.md) | The look: tokens, tones, states and shadow rules |
 | [accessibility.md](accessibility.md) | Contrast rules, what is checked and how |
+| [colour-scheme.md](colour-scheme.md) | Which token or rule each role of the colour scheme takes, and how that is checked |
 | [platform.md](platform.md) | Facts about Union, Aurorae, Konsole and Kate on the target system; open questions and spike findings |
 | [tooling.md](tooling.md) | The command-line tools and the rules for adding one |
 | [decisions.md](decisions.md) | Every decision, who made it, and why |
@@ -72,7 +73,7 @@ docs/
   superpowers/        dated design records and plans
 prototype/            index.html, gallery.html, samples.html, tokens.css, contrast-pairs.json, stylesheets, gallery.js (D-48)
 parts/
-  colour-scheme/
+  colour-scheme/      roles.json: the token or rule of each role (P2.1)
   union-style/
   decoration/
   terminal-colours/
