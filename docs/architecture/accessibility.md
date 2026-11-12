@@ -28,7 +28,7 @@ Disabled controls are exempt in WCAG, and are exempt here.
 2. **Indicators: 3:1.** Accent reaches 3:1 against every tone it marks: the
    check mark's fill against the surface, a block marker against its item, a
    fill against its track. The block marker is measured on the selected tone
-   (6.54:1), on a hovered selected item (tone 4, 5.63:1), on a focused one
+   (tone 4, 5.63:1), which a hovered selected item keeps, on a focused one
    (raised focus, 3.16:1) and on a focused selected tab (surface focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
    tonal step, kept above a floor of 1.1 (my call).
@@ -182,15 +182,15 @@ falls below its minimum.
 | accent | surface focus | 6.13:1 | 3 | pass |
 | well focus edge | well focus | 8.40:1 | 3 | pass |
 | well focus edge | tone 2 | 7.66:1 | 3 | pass |
-| text | selected | 10.58:1 | 4.5 | pass |
+| text | selected | 9.11:1 | 4.5 | pass |
 | text | popup | 10.58:1 | 4.5 | pass |
-| dim text | selected | 5.34:1 | 4.5 | pass |
+| dim text | selected | 4.60:1 | 4.5 | pass |
 | dim text | popup | 5.34:1 | 4.5 | pass |
-| accent | selected | 6.54:1 | 3 | pass |
+| accent | selected | 5.63:1 | 3 | pass |
 | accent | well focus | 8.40:1 | 3 | pass |
 | accent | popup | 6.54:1 | 3 | pass |
-| selected | tone 2 | 1.17:1 | 1.1 (floor) | pass |
-| selected | tone 1 | 1.28:1 | 1.1 (floor) | pass |
+| selected | tone 2 | 1.36:1 | 1.1 (floor) | pass |
+| selected | tone 1 | 1.49:1 | 1.1 (floor) | pass |
 | text | editor | 12.38:1 | 4.5 | pass |
 | text | editor gutter | 13.58:1 | 4.5 | pass |
 | text | editor current line | 10.58:1 | 4.5 | pass |

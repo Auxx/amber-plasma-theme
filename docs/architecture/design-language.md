@@ -30,8 +30,8 @@ updated.
 | tone 0 | `--tone-0` | `#151413` | title bar, wells, tracks of sliders and progress bars |
 | tone 1 | `--tone-1` | `#1c1a18` | sidebars, secondary panels |
 | tone 2 | `--tone-2` | `#25221f` | the main surface of a window |
-| tone 3 | `--tone-3` | `#312e29` | raised widgets: buttons, selected items |
-| tone 4 | `--tone-4` | `#3c3832` | hovered raised widgets |
+| tone 3 | `--tone-3` | `#312e29` | raised widgets: buttons; hovered items |
+| tone 4 | `--tone-4` | `#3c3832` | hovered raised widgets, selected items, thumbs at rest |
 | text | `--text` | `#e8e3da` | primary text and icons |
 | dim text | `--text-dim` | `#a9a297` | secondary text, placeholders, inactive titles. Lightened from `#9c958a` in P1.1 to reach 4.5:1 on tone 4 (my call) |
 | accent | `--accent` | `#d1b072` | selection, checked, progress, primary button, the tint of a focused widget |
@@ -125,13 +125,13 @@ background / text, and the block marker or tick where the widget has one.
   the primary button does (part of O-3).
 - **An unchecked toggle** is told from its surface by tone alone (O-1); the
   gallery shows a darker box beside lighter ones.
-- **Selection** (my call, P1.5; D-21): a selected item has the selected
-  tone (tone 3) and carries a block marker in accent, `--marker-width`
-  (3 px) wide, on its leading edge. A selected tab carries it on its top
+- **Selection**: a selected item has the selected tone, tone 4 (decided,
+  D-72), one tone above a hovered item, and carries a block marker in
+  accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its top
   edge and takes tone 2, so that it joins the page below it. The marker is
-  part of selection: without it a selected item looks like a hovered one,
-  and only the marker reaches 3:1. Hovered, a selected item goes to tone 4;
-  focused, it takes raised focus; both keep the marker. A selected tab does
+  part of selection: only the marker reaches 3:1. Hovered, a selected item
+  keeps tone 4 and does not change (my call, D-73); focused, it takes
+  raised focus and keeps the marker. A selected tab does
   not change when hovered, and takes surface focus when focused. The focused
   tones follow the rule above: accent over the hovered tone.
 - **Secondary text on a focused item**, and the chevron of a focused tree
@@ -156,7 +156,7 @@ background / text, and the block marker or tick where the widget has one.
 - **Thumbs.** The thumb of a slider and of a scrollbar take the same
   tones: lighter when hovered and lightest when pressed, as Breeze's do.
   (decided, D-65) At rest a thumb is tone 4, hovered `#585248`, pressed
-  `#746e63` (my call, D-66; the owner looks at them in P1.7). A focused
+  `#746e63` (D-66; approved by the owner, D-71). A focused
   slider's thumb is the focused raised tone.
 - **Scrollbars** (my call, P1.4): a 12 px thumb with no track fill and no
   arrow buttons.
@@ -187,7 +187,7 @@ token holds the plain colour (D-47).
 | `--thumb` | `var(--tone-4)` | the thumb of a slider or a scrollbar at rest |
 | `--thumb-hover` | `#585248` | a hovered thumb |
 | `--thumb-pressed` | `#746e63` | a pressed thumb |
-| `--selected` | `var(--tone-3)` | a selected item (P1.5) |
+| `--selected` | `var(--tone-4)` | a selected item (decided, D-72) |
 | `--marker-width` | `3px` | the block marker (P1.5; D-21) |
 
 ## Shadow
@@ -204,9 +204,9 @@ token holds the plain colour (D-47).
   and insets. (decided, D-67) The popup's own rectangle and everything
   above its top edge are cut out of it, so it never darkens the popup or
   what it opens from. A tooltip is small, so its shadow is a third of the
-  size (my call). A combo box's list meets its combo box with no gap. The
-  gallery shows a "No shadow" candidate beside it, for the case that Union
-  cannot draw it.
+  size (my call). A combo box's list meets its combo box with no gap. If Union
+  cannot draw it, a popup has no shadow: the owner accepts that. (decided,
+  D-74)
 
   | Token | Starting value | Used for |
   |---|---|---|

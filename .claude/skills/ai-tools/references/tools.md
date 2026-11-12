@@ -79,7 +79,7 @@ contains it, such as `text-dim` or `on tone-4`.
 # Every pair: prints a table ending "105 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
-# Put dim text back to its old value: shows 15 changed pairs, three FAIL, exits 1
+# Put dim text back to its old value: shows 15 changed pairs, four FAIL, exits 1
 node tools/src/bin/tokens.mjs try 'text-dim=#9c958a'
 
 # The colour of a token: prints "text-dim  -  oklch(71.5% 0.018 79.3)  #a9a297", exits 0
@@ -205,7 +205,7 @@ Look at a screenshot with the Read tool.
   the page has loaded.
 - **`colours`** reads any computed form (`rgb()`, `color(srgb …)` from a
   `color-mix`, `oklch()`) and names an opaque colour by every token that resolves to it, such
-  as `#3c3832 (tone-4, thumb)`, or prints the bare hex. Fully transparent is
+  as `#3c3832 (tone-4, thumb, selected)`, or prints the bare hex. Fully transparent is
   `transparent`; part-transparent is `rgb(r g b / N%)`, with no token name.
 - **Chrome missing.** Every command that opens a page exits 1 with "Google
   Chrome could not be started …". The specs that need Chrome are skipped with

@@ -368,60 +368,6 @@ Warm, never cool.</textarea></div>
   </figure>
   </div>
 
-  <h2>Selected item</h2>
-  <p class="dim">How a selected item is told from a hovered one. Without the block marker both are tone 3, and the selection is shown by tone alone.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><div class="item-view" role="listbox" aria-label="Files"><div class="item" role="option" aria-selected="false"><span class="item-name">Letters</span><span class="item-detail">12 items</span></div><div class="item is-hovered" role="option" aria-selected="false"><span class="item-name">Taxes</span><span class="item-detail">7 items</span></div><div class="item is-selected" role="option" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
-    <figcaption>
-      Start
-      <span class="dim">tone 3, 3 px marker</span>
-      <span class="ratio-line">marker <data class="ratio" data-pair="accent on selected" value="6.54">6.54:1 on selected</data></span>
-      <span class="ratio-line">selected <data class="ratio" data-pair="selected on tone-2" value="1.17">1.17:1 on tone 2</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on selected" value="5.34">5.34:1 on selected</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--marker-width: 0px">
-    <div class="vignette" inert><div class="item-view" role="listbox" aria-label="Files"><div class="item" role="option" aria-selected="false"><span class="item-name">Letters</span><span class="item-detail">12 items</span></div><div class="item is-hovered" role="option" aria-selected="false"><span class="item-name">Taxes</span><span class="item-detail">7 items</span></div><div class="item is-selected" role="option" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
-    <figcaption>
-      No marker
-      <span class="dim">no marker</span>
-      <span class="ratio-line">selected <data class="ratio" data-pair="selected on tone-2" value="1.17">1.17:1 on tone 2</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on selected" value="5.34">5.34:1 on selected</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--selected: var(--tone-4)">
-    <div class="vignette" inert><div class="item-view" role="listbox" aria-label="Files"><div class="item" role="option" aria-selected="false"><span class="item-name">Letters</span><span class="item-detail">12 items</span></div><div class="item is-hovered" role="option" aria-selected="false"><span class="item-name">Taxes</span><span class="item-detail">7 items</span></div><div class="item is-selected" role="option" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
-    <figcaption>
-      Lighter, tone 4
-      <span class="dim">tone 4</span>
-      <span class="ratio-line">marker <data class="ratio" data-pair="accent on selected" value="5.63">5.63:1 on selected</data></span>
-      <span class="ratio-line">selected <data class="ratio" data-pair="selected on tone-2" value="1.36">1.36:1 on tone 2</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on selected" value="4.60">4.60:1 on selected</data></span>
-    </figcaption>
-  </figure>
-  </div>
-
-  <h2>Popup</h2>
-  <p class="dim">A menu with the shadow the design language gives it, and without one, in case Union cannot draw it (P3.8).</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette has-popup" inert><div class="popup menu" role="menu" aria-label="Edit"><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Copy</span><span class="menu-shortcut">Ctrl+C</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Rename</span><span class="menu-shortcut">F2</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Delete</span><span class="menu-shortcut">Del</span></button></div></div>
-    <figcaption>
-      Start, with a shadow
-      <span class="dim">the shadow of an inactive window</span>
-      <span class="ratio-line">shortcut <data class="ratio" data-pair="text-dim on popup" value="5.34">5.34:1 on popup</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--shadow: rgb(0 0 0 / 0%)">
-    <div class="vignette has-popup" inert><div class="popup menu" role="menu" aria-label="Edit"><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Copy</span><span class="menu-shortcut">Ctrl+C</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Rename</span><span class="menu-shortcut">F2</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Delete</span><span class="menu-shortcut">Del</span></button></div></div>
-    <figcaption>
-      No shadow
-      <span class="dim">no shadow</span>
-      <span class="ratio-line">shortcut <data class="ratio" data-pair="text-dim on popup" value="5.34">5.34:1 on popup</data></span>
-    </figcaption>
-  </figure>
-  </div>
 </section>
 
 </body>

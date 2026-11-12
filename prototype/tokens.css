@@ -13,8 +13,8 @@
   --tone-0: #151413;    /* title bar, wells, tracks of sliders and progress bars */
   --tone-1: #1c1a18;    /* sidebars, secondary panels */
   --tone-2: #25221f;    /* the main surface of a window */
-  --tone-3: #312e29;    /* raised widgets: buttons, selected items */
-  --tone-4: #3c3832;    /* hovered raised widgets */
+  --tone-3: #312e29;    /* raised widgets: buttons; hovered items */
+  --tone-4: #3c3832;    /* hovered raised widgets, selected items, thumbs at rest */
   --text: #e8e3da;      /* primary text and icons */
   --text-dim: #a9a297;  /* secondary text, placeholders, inactive titles */
   --accent: #d1b072;    /* selection, checked, progress, primary button, the tint of a focused widget */
@@ -47,10 +47,10 @@
   --toggle: var(--tone-0);        /* an unchecked check box or radio button at rest (O-1) */
   --toggle-focus: #524733;        /* a focused toggle: accent 30 % over tone 1 (D-64) */
   --track: var(--tone-0);         /* the track of a slider or progress bar (O-1) */
-  --thumb: var(--tone-4);         /* the thumb of a slider or a scrollbar at rest */
+  --thumb: var(--tone-4);         /* the thumb of a slider or a scrollbar at rest (D-71) */
   --thumb-hover: #585248;         /* a hovered thumb */
   --thumb-pressed: #746e63;       /* a pressed thumb: the lightest state */
-  --selected: var(--tone-3);      /* a selected item of a list, tree, table or sidebar */
+  --selected: var(--tone-4);      /* a selected item of a list, tree, table or sidebar (D-72) */
   --marker-width: 3px;            /* the block marker on a selected item or tab (D-21: at least 3 px) */
 
   /* Popups: menus, combo box lists, tooltips */

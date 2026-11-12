@@ -123,7 +123,7 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'text-dim=#9c958a', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 3);
+    assert.equal(result.failing, 4);
     assert.equal(result.changed.length, 15);
   });
 

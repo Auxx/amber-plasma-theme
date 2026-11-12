@@ -91,15 +91,15 @@ describe('Amber contrast pairs', () => {
 
   it('marks a selected item at 3:1', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
-    assert.equal(ratio('accent on selected'), '6.54');
+    assert.equal(ratio('accent on selected'), '5.63');
     assert.equal(ratio('accent on surface-focus'), '6.13');
-    assert.equal(ratio('selected on tone-2'), '1.17');
-    assert.equal(ratio('selected on tone-1'), '1.28');
+    assert.equal(ratio('selected on tone-2'), '1.36');
+    assert.equal(ratio('selected on tone-1'), '1.49');
   });
 
   it('keeps secondary text on selections and popups', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
-    assert.equal(ratio('text-dim on selected'), '5.34');
+    assert.equal(ratio('text-dim on selected'), '4.60');
     assert.equal(ratio('text-dim on popup'), '5.34');
     assert.equal(ratio('text on popup'), '10.58');
     assert.equal(ratio('accent on popup'), '6.54');
