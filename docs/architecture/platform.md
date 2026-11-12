@@ -238,6 +238,7 @@ Verified on 2026-11-11 unless marked; see
 |---|---|
 | Can the window outline be made the same width on every edge at scale 1.49? | P5.1 |
 | What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
+| Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype draws the window glow and the shadow this way since P1.7 (D-59 to D-61). | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
 | Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
@@ -411,7 +412,7 @@ owner's display.
   code.
 - The requirement changed: D-25 and the "Window decoration" section of the
   [design language](design-language.md). The window outline's colour and width
-  are open question O-4.
+  were open question O-4, closed on 2026-11-12 (D-62).
 - What shows at a window's edge depends on KWin's border size, which is a
   system setting, so the owner sets it; P6.2 must say so in the README,
   beside selecting the decoration. For the window outline alone it is
@@ -463,5 +464,5 @@ border size `Tiny`. Pixels were read outwards from the window's edge.
   window has a window glow, and an inactive window a shadow (D-26). The
   glossary, D-4 and the [design language](design-language.md) say so.
 - The window glow marks the active window, so it is a mark of state. Its
-  amounts and what it must reach are settled with the window outline
-  (O-4).
+  amounts were settled with the window outline on 2026-11-12 (D-59 to
+  D-62).

@@ -34,32 +34,32 @@
 }
 
 .scroll-thumb {
-  background: var(--scroll-thumb);
+  background: var(--thumb);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scroll-thumb);
+  background: var(--thumb);
 }
 
 .scroll-thumb:hover,
 .scroll-thumb.is-hovered {
-  background: var(--text-dim);
+  background: var(--thumb-hover);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-dim);
+  background: var(--thumb-hover);
 }
 
 .scroll-thumb:active,
 .scroll-thumb.is-pressed {
-  background: var(--text);
+  background: var(--thumb-pressed);
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: var(--text);
+  background: var(--thumb-pressed);
 }
 
-/* On a focused scroll area (well focus) the thumb at rest would measure
+/* On a focused scroll area (surface focus) the thumb at rest would measure
    1.09:1, so it rises to dim text there, which keeps 5.01:1. */
 .scroll-area:focus-visible::-webkit-scrollbar-thumb {
   background: var(--text-dim);

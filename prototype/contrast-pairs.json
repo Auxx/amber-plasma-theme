@@ -1,19 +1,19 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "selected", "popup", "editor-gutter"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "surface-focus", "selected", "popup", "editor-gutter"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "popup"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "surface-focus", "popup"],
     "minimum": 3,
     "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, ticks in menus, block markers, fills on tracks)"
   },
@@ -38,62 +38,68 @@
   {
     "foreground": "outline",
     "on": ["tone-0", "tone-1", "tone-2"],
-    "minimum": 1.3,
-    "why": "Accessibility rule 5: the window outline tells a window from the one behind it. 1.3 is provisional until O-4 sets the minimum."
-  },
-  {
-    "foreground": "glow",
-    "on": ["tone-0", "tone-1", "tone-2"],
-    "minimum": 1.3,
-    "why": "Accessibility rule 5: the window glow marks the active window. 1.3 is provisional until O-4 sets the minimum."
+    "minimum": 2,
+    "why": "Accessibility rule 5: the window outline tells a window from the one behind it, at 2:1 against the tones of a window (D-62). It is not measured against the window glow."
   },
   {
     "foreground": "raised-focus",
     "on": ["tone-3", "tone-2"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
-    "foreground": "well-focus",
+    "foreground": "surface-focus",
     "on": ["tone-0", "tone-2"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone of a tab or a scroll area stands apart from the tab bar and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "well",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
-  },
-  {
-    "foreground": "well-edge",
-    "on": ["tone-2"],
-    "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "toggle",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "toggle-focus",
     "on": ["tone-2", "toggle"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "track",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
-    "foreground": "scroll-thumb",
+    "foreground": "thumb",
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: a scrollbar's thumb is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: the thumb of a slider or a scrollbar is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
+  },
+  {
+    "foreground": "thumb-hover",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a hovered thumb is told from its surface by tone, as the thumb at rest is."
+  },
+  {
+    "foreground": "thumb-pressed",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a pressed thumb is told from its surface by tone, as the thumb at rest is."
+  },
+  {
+    "foreground": "well-focus-edge",
+    "on": ["well-focus", "tone-2"],
+    "minimum": 3,
+    "why": "Accessibility rule 4: a bar at the foot of a focused well marks state, so it reaches 3:1 on the well and on the surface. It is the focus cue of a well, whose tone stays below the surface (D-69)."
   },
   {
     "foreground": "selected",
@@ -108,40 +114,46 @@
     "why": "Accessibility rule 3: the terminal's foreground is text (D-53)"
   },
   {
+    "foreground": "terminal-text",
+    "on": ["ansi-red", "ansi-green", "ansi-yellow", "ansi-blue", "ansi-magenta", "ansi-cyan"],
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: programs draw the normal ANSI colours as backgrounds under light text (Midnight Commander's panels, status badges), which reaches 3.5:1 on them (D-80, D-81)."
+  },
+  {
     "foreground": "ansi-red",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-green",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-yellow",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-blue",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-magenta",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-cyan",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-white",
@@ -235,9 +247,15 @@
   },
   {
     "foreground": "syntax-comment",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor and the current line (D-53)"
+  },
+  {
+    "foreground": "syntax-comment",
+    "on": ["editor-selection"],
+    "minimum": 4,
+    "why": "Accessibility rule 3: a comment inside a text selection is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84)."
   },
   {
     "foreground": "editor-selection",

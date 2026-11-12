@@ -17,6 +17,34 @@ body {
   background: var(--desktop);
 }
 
+/*
+ * Wallpapers to judge the window outline, glow and shadow against (added by
+ * the owner in P1.7). They are KDE's, loaded from invent.kde.org, so they
+ * need the network; without it the stand-in colour shows. The radio buttons
+ * in the page's links choose one, with no script.
+ */
+body:has(.wallpapers :checked:not(#wp0)) {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body:has(#wp1:checked) {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/DarkestHour/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+}
+
+body:has(#wp2:checked) {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/EveningGlow/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+}
+
+body:has(#wp3:checked) {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/PastelHills/contents/images/3200x2000.jpg?ref_type=heads&inline=false");
+}
+
+body:has(#wp4:checked) {
+  background-image: url("https://invent.kde.org/plasma/plasma-workspace-wallpapers/-/raw/master/OneStandsOut/contents/images/2560x1600.jpg?ref_type=heads&inline=false");
+}
+
 .dim {
   color: var(--text-dim);
 }
@@ -49,6 +77,32 @@ body {
 }
 
 .pages a[aria-current="page"] {
+  color: var(--accent);
+}
+
+/* The wallpaper switcher: labels that look like the links, the checked one in accent. */
+.wallpapers {
+  display: flex;
+  gap: 4px;
+  margin-left: 24px;
+}
+
+.wallpapers input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wallpapers label {
+  padding: 6px 10px;
+}
+
+.wallpapers label:hover,
+.wallpapers input:focus-visible + label {
+  background: var(--tone-3);
+}
+
+.wallpapers input:checked + label {
   color: var(--accent);
 }
 
@@ -143,74 +197,4 @@ body {
   padding: 4px 12px;
   color: var(--text-dim);
   background: var(--tone-1);
-}
-
-/* Candidates (O-4): small scenes side by side, each changing one thing. */
-.candidates {
-  max-width: 1100px;
-  margin-top: 72px;
-}
-
-.candidates h2 {
-  margin: 32px 0 4px;
-  font-size: 13pt;
-  font-weight: 600;
-}
-
-.candidates p {
-  margin: 0 0 16px;
-}
-
-.candidate-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
-.candidate {
-  margin: 0;
-  width: 340px;
-}
-
-/* Room on every side for the largest light a candidate shows: 48 px and the outline. */
-.vignette {
-  position: relative;
-  height: 260px;
-  overflow: hidden;
-  background: var(--desktop);
-}
-
-.mini-back {
-  left: 52px;
-  top: 52px;
-  width: 170px;
-  height: 110px;
-}
-
-.mini-front {
-  left: 128px;
-  top: 104px;
-  width: 170px;
-  height: 110px;
-}
-
-.mini-body {
-  display: flex;
-  flex: 1;
-}
-
-.mini-side {
-  width: 48px;
-  background: var(--tone-1);
-}
-
-.candidate figcaption {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-top: 8px;
-}
-
-.candidate data {
-  color: var(--text-dim);
 }

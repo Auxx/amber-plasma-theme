@@ -185,10 +185,14 @@ describe('prototype samples', () => {
     const ALLOWED = new Set([ 'line', 'current-line', 'text-selection' ]);
     const offences = classes.flatMap(({ text, classes }) => {
       const colour = classes.filter(name => /^(ansi|syn)-/.test(name));
-      const other = classes.filter(name => !ALLOWED.has(name) && !colour.includes(name));
+      // An ANSI colour as a background, under a span that has a colour class too.
+      const ground = classes.filter(name => /^on-(red|green|yellow|blue|magenta|cyan)$/.test(name));
+      const other = classes.filter(name => !ALLOWED.has(name) && !colour.includes(name) && !ground.includes(name));
       return [
         ...other.map(name => `"${text}": class ${name} is not a sample class`),
-        ...(colour.length > 1 ? [ `"${text}": two colour classes` ] : [])
+        ...(colour.length > 1 ? [ `"${text}": two colour classes` ] : []),
+        ...(ground.length > 1 ? [ `"${text}": two background classes` ] : []),
+        ...(ground.length && !colour.length ? [ `"${text}": a background with no colour class` ] : [])
       ];
     });
     assert.deepEqual(offences, []);

@@ -15,6 +15,14 @@
   <a href="index.html" aria-current="page">Window shell</a>
   <a href="gallery.html">Gallery</a>
   <a href="samples.html">Samples</a>
+  <!-- The wallpaper behind the windows, chosen without a script: shell.css reads which one is checked. -->
+  <span class="wallpapers" role="radiogroup" aria-label="Wallpaper">
+    <input type="radio" name="wallpaper" id="wp0"><label for="wp0">No wallpaper</label>
+    <input type="radio" name="wallpaper" id="wp1"><label for="wp1">Wallpaper #1</label>
+    <input type="radio" name="wallpaper" id="wp2"><label for="wp2">Wallpaper #2</label>
+    <input type="radio" name="wallpaper" id="wp3"><label for="wp3">Wallpaper #3</label>
+    <input type="radio" name="wallpaper" id="wp4" checked><label for="wp4">Wallpaper #4</label>
+  </span>
 </nav>
 
 <!-- The window shell (roadmap P1.2): an inactive window behind an active one. -->
@@ -99,130 +107,6 @@
     <div class="status">10 items, 3 folders</div>
   </div>
 
-</section>
-
-<!-- Candidates for O-4: each figure changes one thing from the starting values. -->
-<section class="candidates" aria-label="Candidates">
-  <h2>Window outline</h2>
-  <p class="dim">The window outline: its colour against the tones it can sit on, and its width.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: start
-      <span class="dim">tone 4, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="1.58">1.58:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="1.49">1.49:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="1.36">1.36:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline: #585248">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 2:1
-      <span class="dim">#585248, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="2.38">2.38:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="2.24">2.24:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="2.05">2.05:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline: #746e63">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 3:1
-      <span class="dim">#746e63, 1 px</span>
-      <data class="ratio" data-pair="outline on tone-0" value="3.64">3.64:1 on tone 0</data>
-      <data class="ratio" data-pair="outline on tone-1" value="3.43">3.43:1 on tone 1</data>
-      <data class="ratio" data-pair="outline on tone-2" value="3.13">3.13:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--outline-width: 2px">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Outline: 2 px
-      <span class="dim">tone 4, 2 px</span>
-    </figcaption>
-  </figure>
-  </div>
-  <h2>Window glow</h2>
-  <p class="dim">The window glow of the active window: accent at the window outline, fading to nothing.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Glow: start
-      <span class="dim">accent 28 %, 24 px</span>
-      <data class="ratio" data-pair="glow on tone-0" value="1.81">1.81:1 on tone 0</data>
-      <data class="ratio" data-pair="glow on tone-1" value="1.82">1.82:1 on tone 1</data>
-      <data class="ratio" data-pair="glow on tone-2" value="1.82">1.82:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--glow: color-mix(in srgb, var(--accent) 18%, transparent)">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Glow: 18 %
-      <span class="dim">accent 18 %, 24 px</span>
-      <data class="ratio" data-pair="glow on tone-0" value="1.41">1.41:1 on tone 0</data>
-      <data class="ratio" data-pair="glow on tone-1" value="1.44">1.44:1 on tone 1</data>
-      <data class="ratio" data-pair="glow on tone-2" value="1.46">1.46:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--glow: color-mix(in srgb, var(--accent) 40%, transparent)">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Glow: 40 %
-      <span class="dim">accent 40 %, 24 px</span>
-      <data class="ratio" data-pair="glow on tone-0" value="2.42">2.42:1 on tone 0</data>
-      <data class="ratio" data-pair="glow on tone-1" value="2.43">2.43:1 on tone 1</data>
-      <data class="ratio" data-pair="glow on tone-2" value="2.40">2.40:1 on tone 2</data>
-    </figcaption>
-  </figure>
-  </div>
-  <h2>Shadow</h2>
-  <p class="dim">The shadow of an inactive window. It shows no state and has no contrast pair.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Shadow: start
-      <span class="dim">black 50 %, 24 px</span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--shadow: rgb(0 0 0 / 80%); --shadow-size: 48px">
-    <div class="vignette">
-      <div class="window mini-back"><div class="title-bar"><span class="title">Behind</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-      <div class="window is-active mini-front"><div class="title-bar"><span class="title">In front</span></div><div class="mini-body"><span class="mini-side"></span></div></div>
-    </div>
-    <figcaption>
-      Shadow: 80 %, 48 px
-      <span class="dim">black 80 %, 48 px</span>
-    </figcaption>
-  </figure>
-  </div>
 </section>
 
 </body>

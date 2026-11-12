@@ -43,8 +43,8 @@ describe('tokens tool', () => {
     assert.equal(status, 0);
     const values = Object.fromEntries(JSON.parse(stdout).map(row => [ row.name, row.value ]));
     assert.equal(values['outline-width'], '1px');
-    assert.equal(values.glow, 'color-mix(in srgb, var(--accent) 28%, transparent)');
-    assert.equal(values.shadow, '#000000 / 50%');
+    assert.equal(values.glow, 'color-mix(in srgb, var(--accent) 14%, transparent)');
+    assert.equal(values.shadow, '#000000 / 55%');
   });
 
   it('refuses to resolve a length', () => {
@@ -65,7 +65,7 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'well=#0c0a07', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.changed.length, 4);
+    assert.equal(result.changed.length, 3);
     assert.equal(result.failing, 0);
   });
 
@@ -93,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('99 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('110 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 99);
+    assert.equal(result.total, 110);
     assert.equal(result.failing, 0);
   });
 
@@ -123,8 +123,8 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'text-dim=#9c958a', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 3);
-    assert.equal(result.changed.length, 14);
+    assert.equal(result.failing, 4);
+    assert.equal(result.changed.length, 15);
   });
 
   it('shows no change', () => {

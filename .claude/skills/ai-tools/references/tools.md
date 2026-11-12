@@ -76,10 +76,10 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "99 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "110 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
-# Put dim text back to its old value: shows 14 changed pairs, three FAIL, exits 1
+# Put dim text back to its old value: shows 15 changed pairs, four FAIL, exits 1
 node tools/src/bin/tokens.mjs try 'text-dim=#9c958a'
 
 # The colour of a token: prints "text-dim  -  oklch(71.5% 0.018 79.3)  #a9a297", exits 0
@@ -131,7 +131,9 @@ node tools/src/bin/tokens.mjs resolve text-dim
   listed in the spec), `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour
   in an attribute, a `style` that sets anything but custom properties, and a colour
   set outside a candidate. A colour written outside the tokens must be warm:
-  OKLCH hue 30 to 110, or black (my call). A script (`prototype/*.js`) may
+  OKLCH hue 30 to 110, or black (my call). A candidate's `--ansi-*`
+  override may be any hue with a chroma of at least 0.05: a hue is not a
+  grey. A script (`prototype/*.js`) may
   only copy a value into `--value` (D-48). It is read against an allowlist:
   it may use only the names a slider needs (`document`, `querySelectorAll`,
   `addEventListener`, `setProperty`, `value`, `min`, `max`, `Number` and a few
@@ -205,7 +207,7 @@ Look at a screenshot with the Read tool.
   the page has loaded.
 - **`colours`** reads any computed form (`rgb()`, `color(srgb …)` from a
   `color-mix`, `oklch()`) and names an opaque colour by every token that resolves to it, such
-  as `#3c3832 (tone-4, outline)`, or prints the bare hex. Fully transparent is
+  as `#3c3832 (tone-4, thumb, selected)`, or prints the bare hex. Fully transparent is
   `transparent`; part-transparent is `rgb(r g b / N%)`, with no token name.
 - **Chrome missing.** Every command that opens a page exits 1 with "Google
   Chrome could not be started …". The specs that need Chrome are skipped with

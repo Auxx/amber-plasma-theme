@@ -113,9 +113,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Well**
 : A widget that sits darker than its surface, such as a text field.
 
-**Well edge**
-: A solid bar at least three pixels high at the foot of a well, in a tone
-  lighter than the surface. A candidate cue for O-1. It is not a hairline.
+**Focus bar**
+: A solid accent bar three pixels high at the foot of a focused well. It
+  is how a well shows focus, since a well is not tinted. It is not a
+  hairline.
 
 **Raised widget**
 : A widget that sits lighter than its surface, such as a button. It is not a
@@ -206,8 +207,8 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Window outline**
 : The thin line that the window decoration draws along every edge of a
   window, so that windows which overlap can be told apart. It is the only
-  hairline in Amber, and it is square at the corners. Its width is not yet
-  settled. _Avoid_ "window
+  hairline in Amber, and it is square at the corners. It is one pixel
+  wide. _Avoid_ "window
   border" (KWin's name for the frame, whose width is a system setting) and
   plain "outline".
 

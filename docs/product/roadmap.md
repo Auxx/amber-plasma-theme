@@ -69,14 +69,14 @@ The gate for everything after it: the owner approves the look here.
 | P1.4 Gallery: toggles and ranges | Check boxes, radio buttons, sliders, progress bars, scrollbars | As P1.3 | done |
 | P1.5 Gallery: navigation, views and popups | Tabs, list items, tree and table views with headers, menus, popups, tooltips, a dialog | As P1.3 | done |
 | P1.6 Terminal and code samples | Terminal colours and syntax colours shown on real-looking samples | Every colour except ANSI black, which is exempt, has a contrast pair and passes | done |
-| P1.7 Owner review | Tuned values; the owner's choices for the open questions O-1, O-3 and O-4 | The owner approves the prototype and O-1, O-3 and O-4 are closed in the decisions | todo |
+| P1.7 Owner review | Tuned values; the owner's choices for the open questions O-1, O-3 and O-4 | The owner approves the prototype and O-1, O-3 and O-4 are closed in the decisions | done |
 
-P1.3 and P1.4 show text fields, check boxes, radio buttons and slider tracks
-with candidate tones and their measured contrast side by side, so that the
-owner can decide O-1 by eye in P1.7. They show the focused tone the same
-way, for O-3. P1.2 shows the window outline, the window glow and the shadow the same
-way, for O-4, and the
-owner decides it in P1.7 too.
+P1.3 to P1.6 showed candidates beside the starting values, each with its
+measured contrast, so that the owner could decide by eye. In P1.7 the
+owner chose among them, the open questions O-1, O-3, O-4 and O-5 were
+closed, and the owner approved the prototype on 2026-11-12: D-59 to D-85
+in the [decisions](../architecture/decisions.md). The prototype shows no
+candidate now.
 
 ## Step 2 — Colour scheme
 

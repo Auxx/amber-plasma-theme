@@ -74,7 +74,9 @@ body {
   background: var(--tone-0);
 }
 
-/* Candidates: a tone 1 band, each vignette a patch of the tone 2 surface. */
+/* Candidates: a tone 1 band, each vignette a patch of the tone 2 surface.
+   No page shows any since the owner's review (P1.7); the rules stay for the
+   next time a value is put to the owner. */
 .candidates {
   padding: 8px 24px 32px;
   background: var(--tone-1);
@@ -106,14 +108,6 @@ body {
   gap: 12px;
   padding: 24px 20px;
   background: var(--tone-2);
-}
-
-.vignette.is-stacked {
-  flex-direction: column;
-}
-
-.vignette .text-field {
-  width: 124px;
 }
 
 .candidate figcaption {
@@ -155,13 +149,4 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-}
-
-.vignette .item-view {
-  flex: 1;
-}
-
-/* Room below a popup for its shadow. */
-.vignette.has-popup {
-  padding-bottom: 32px;
 }

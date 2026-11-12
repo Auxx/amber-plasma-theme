@@ -1,8 +1,6 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. Three questions are deferred to
-> the prototype: O-1, O-3 and O-4 in the [decisions](decisions.md). O-5,
-> light text on ANSI colours, is open too.
+> Status: **Accepted** on 2026-11-11.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -28,52 +26,58 @@ Disabled controls are exempt in WCAG, and are exempt here.
 2. **Indicators: 3:1.** Accent reaches 3:1 against every tone it marks: the
    check mark's fill against the surface, a block marker against its item, a
    fill against its track. The block marker is measured on the selected tone
-   (6.54:1), on a hovered selected item (tone 4, 5.63:1), on a focused one
-   (raised focus, 3.16:1) and on a focused selected tab (well focus,
+   (tone 4, 5.63:1), which a hovered selected item keeps, on a focused one
+   (raised focus, 3.16:1) and on a focused selected tab (surface focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
    tonal step, kept above a floor of 1.1 (my call).
-3. **Syntax and terminal colours: 4.5:1** against every background they
-   are read on: the terminal colours on the terminal; the syntax colours on
-   the editor, the current line and the text selection. ANSI black is
-   exempt, since it is meant to match a dark background. The text selection
-   is the hardest of these: comments in dim text measure 4.71:1 on it, and
-   fail beyond a tint of about 14 % accent (4.50:1, FAIL, at 16 %; measured
-   2026-11-11, P1.6). Programs such as `less` and `htop` also draw ANSI
-   colours as backgrounds. With the terminal background or ANSI black as
-   text, contrast is symmetric, so those are the same ratios as the pairs on
-   the terminal, and ANSI black, darker than the terminal, passes wherever
-   they do; they need no pairs of their own. **Light text on an ANSI
-   colour is not checked and does not pass:** text measures 1.62:1 to
-   1.88:1 on the six normal colours, and bright white 1.84:1 to 2.13:1
-   (measured 2026-11-11, P1.6). Midnight Commander's blue panels, powerline
-   prompts and some `ls` colours draw that. It is open question O-5 in the
-   [decisions](decisions.md). The text selection and the
-   current line are told apart by a floor of 1.1 (1.13:1) and by the
-   accent's hue (my call).
-4. **Focused widgets: open.** A focused widget is shown by a tone tinted
-   with accent. How far that tone must stand from the widget at rest and
-   from the surface is open question O-3 in the [decisions](decisions.md).
-   Text on the focused tone reaches 4.5:1 like any other text, and so does
-   the placeholder of a focused well. Until O-3 is closed, the pairs of
-   `raised-focus` and `well-focus` against the widget at rest and the
-   surface have a provisional minimum of 1.2 (my call): a floor, not a WCAG
-   rule. A placeholder in dim text passes 4.5:1 on a focused well tinted up to
-   20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
-   which caps the tint of a focused well near 20 %. A focused toggle holds
-   no text, so no cap applies to it: `toggle-focus` has the same
-   provisional 1.2 against tone 2 and the toggle at rest, and its tint can
-   reach 3:1 against tone 2 at 60 % (3.52:1; measured 2026-11-11, P1.4).
-5. **Window outline: open.** The window outline tells one window from the
-   window or desktop behind it. What contrast it must reach is open
-   question O-4 in the [decisions](decisions.md); its contrast pairs are
-   declared with its token. The window glow marks the active window; it
-   is settled in the same question, and the dim title text of an inactive
-   window marks the same state. Until O-4 is closed, the pairs of
-   `outline` and `glow` on tones 0 to 2 have a provisional minimum of 1.3
-   (my call): a floor that keeps them from fading, not a WCAG rule. The
-   shadow shows no state and has no pair. On the active window the
-   outline also meets its own glow, against which it measures less (1.14:1
-   over tone 0); whether that is measured is part of O-4.
+3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
+   every background they are read on: the editor, the current line and
+   the text selection. The text selection is the hardest of these.
+   It is accent 20 % over tone 2, so that it stands apart from the current
+   line (1.29:1; decided, D-82). Six syntax colours keep 4.5:1 on it
+   (4.60:1 to 5.08:1). **A comment inside a text selection does not:** it
+   measures 4.15:1, and the owner accepts that, since a comment is
+   low-priority text. Its pair there has a floor of 4 (my call, D-84).
+   The terminal's foreground, white, bright black and the bright colours
+   reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to
+   match a dark background. **The six normal colours reach 3.5:1 as text,
+   not 4.5:1**, because programs also draw them as backgrounds under light
+   text: Midnight Commander's panels, status badges, powerline prompts.
+   No colour does both at 4.5:1 on tone 1: the two meet near 3:1 as text
+   and 4.4:1 under text. The owner chose the set that does each at about
+   3.7:1 (decided, D-80): 3.68:1 to 3.73:1 as text, the terminal's
+   foreground on them at 3.64:1 to 3.69:1, and bright white at 4.13:1 to
+   4.19:1 (measured 2026-11-12). A darker set at 3:1 as text was harder to
+   read on the dark terminal. Both directions have pairs with a minimum
+   of 3.5 (my call, D-81). Amber accepts that these do not reach 4.5:1.
+4. **Focused widgets.** A focused raised widget, toggle, tab or scroll
+   area is shown by a tone tinted with accent. Text on the focused tone
+   reaches 4.5:1 like any other text. The tints are accent 30 % over
+   tone 4 for a raised widget and over tone 1 for a toggle (decided,
+   D-64). The pairs of `raised-focus`, `toggle-focus` and
+   `surface-focus` against the widget at rest and the surface have a
+   minimum of 1.2 (my call, D-77): a floor, not a WCAG rule.
+   A focused well is not shown by a tint. It stays below the surface, at
+   tone 1, and carries a focus bar: accent, three pixels high, at its
+   foot. (decided, D-69) The bar is the cue: `well-focus-edge` reaches 3:1
+   on the focused well (8.40:1) and on the surface (7.66:1). The focused
+   well's tone has no minimum against the well at rest or the surface
+   (1.06:1 and 1.10:1; my call, D-70), because no tone that stays below
+   the surface can reach one. Text and the placeholder keep 4.5:1 on it.
+   A primary button and a checked toggle are already accent, so they show
+   focus with their hovered tone and have no focused tone of their own.
+   (decided, D-76)
+5. **Window outline: 2:1.** The window outline tells one window from the
+   window behind it, and reaches 2:1 against tones 0 to 2, the tones a
+   window shows at its edge. (decided, D-62; the minimum of the pairs is
+   my call, D-63) It is not measured against the window glow (decided,
+   D-62), against which it reaches 1.84:1 over tone 0, nor against the
+   desktop, which may be any wallpaper. The window glow marks the active
+   window, as the dim title text of an inactive window marks the same
+   state. The glow is a faint indicator and has no contrast minimum and
+   no pair (decided, D-60): at accent 14 % it measures 1.29:1, 1.31:1 and
+   1.33:1 over tones 0, 1 and 2 (2026-11-12). The shadow shows no state
+   and has no pair.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.
 
@@ -94,31 +98,22 @@ by design, from 1.06:1 to about 1.2:1. That is far below 3:1.
 Reaching 3:1 there would need an edge or a much lighter fill, which is the
 opposite of what Amber is for.
 
-### Open question (the owner's)
+### The owner's decision
 
-How should Amber treat controls identified only by tone?
+The owner looked at these controls in the prototype, beside candidates
+with a darker well, a lighter box, a lighter track and a bar at the foot
+of every well, and decided on 2026-11-12 to keep them as they were: an
+empty well, an unchecked toggle and an empty track are tone 0 on the
+surface and are told from it by tone alone. (decided, D-75) Amber accepts
+that they do not reach 3:1.
 
-- Accept the departure and record it as a known gap; or
-- give only those controls a stronger cue that is not a hairline, such as a
-  clearly lighter box for an unchecked check box.
-
-The owner deferred this on 2026-11-11 to the prototype, where the tones can
-be seen. The gallery plans P1.3 and P1.4 show these controls with candidate
-tones and their measured ratios side by side, and the owner chooses in P1.7.
-Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
-
-- **A darker well cannot get there.** Even black measures only 1.33:1 on
-  tone 2 (measured 2026-11-11), so a stronger cue must be lighter than the
-  surface, or a well edge.
-- Until O-1 is closed, the pairs of `well` and `well-edge` on tone 2 have a
-  provisional minimum of 1.1 (my call). At the start the well edge has no
-  width and the well's own tone.
-- Since P1.4 the gallery also shows candidates for the unchecked toggle and
-  the empty track. `toggle`, `track` and `scroll-thumb` have the same
-  provisional 1.1 on the surfaces they sit on (my call).
-- **A track cannot carry a 3:1 cue by itself.** A track at 3:1 on tone 2
+- The pairs of `well`, `toggle`, `track` and the three thumb tokens on the
+  surfaces they sit on have a minimum of 1.1 (my call, D-77): a floor
+  that keeps the step from fading, not a WCAG rule.
+- **A darker well could not get there.** Even black measures only 1.33:1
+  on tone 2 (measured 2026-11-11).
+- **A track could not carry a 3:1 cue by itself.** A track at 3:1 on tone 2
   (`#746e63`, 3.13:1) drops the accent fill on it to 2.45:1, below rule 2.
-  On a 2:1 track the fill keeps 3.74:1 (measured 2026-11-11).
 
 ## First measurements
 
@@ -145,89 +140,99 @@ falls below its minimum.
 | accent | tone 3 | 6.54:1 | 3 | pass |
 | accent | tone 4 | 5.63:1 | 3 | pass |
 | on-danger | danger | 4.97:1 | 4.5 | pass |
-| window outline | tone 0 | 1.58:1 | 1.3 (provisional) | pass |
-| window outline | tone 1 | 1.49:1 | 1.3 (provisional) | pass |
-| window outline | tone 2 | 1.36:1 | 1.3 (provisional) | pass |
-| window glow | tone 0 | 1.81:1 | 1.3 (provisional) | pass |
-| window glow | tone 1 | 1.82:1 | 1.3 (provisional) | pass |
-| window glow | tone 2 | 1.82:1 | 1.3 (provisional) | pass |
+| window outline | tone 0 | 2.38:1 | 2 | pass |
+| window outline | tone 1 | 2.24:1 | 2 | pass |
+| window outline | tone 2 | 2.05:1 | 2 | pass |
 | text | well | 14.40:1 | 4.5 | pass |
 | text | raised focus | 5.11:1 | 4.5 | pass |
-| text | well focus | 9.91:1 | 4.5 | pass |
+| text | well focus | 13.58:1 | 4.5 | pass |
 | dim text | well | 7.27:1 | 4.5 | pass |
-| dim text | well focus | 5.01:1 | 4.5 | pass |
+| dim text | well focus | 6.86:1 | 4.5 | pass |
 | accent | raised focus | 3.16:1 | 3 | pass |
 | on-accent | accent hover | 9.94:1 | 4.5 | pass |
 | on-accent | accent pressed | 6.68:1 | 4.5 | pass |
 | accent hover | tone 2 | 8.74:1 | 3 | pass |
-| raised focus | tone 3 | 2.07:1 | 1.2 (provisional) | pass |
-| raised focus | tone 2 | 2.42:1 | 1.2 (provisional) | pass |
-| well focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |
-| well focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
-| well | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| well edge | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| raised focus | tone 3 | 2.07:1 | 1.2 (floor) | pass |
+| raised focus | tone 2 | 2.42:1 | 1.2 (floor) | pass |
+| well | tone 2 | 1.16:1 | 1.1 (floor) | pass |
 | accent | track | 8.91:1 | 3 | pass |
-| toggle | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| track | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| scroll thumb | tone 2 | 1.36:1 | 1.1 (provisional) | pass |
-| scroll thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
-| toggle focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
-| toggle focus | toggle | 1.45:1 | 1.2 (provisional) | pass |
-| text | selected | 10.58:1 | 4.5 | pass |
+| toggle | tone 2 | 1.16:1 | 1.1 (floor) | pass |
+| track | tone 2 | 1.16:1 | 1.1 (floor) | pass |
+| thumb | tone 2 | 1.36:1 | 1.1 (floor) | pass |
+| thumb | tone 1 | 1.49:1 | 1.1 (floor) | pass |
+| thumb hover | tone 2 | 2.05:1 | 1.1 (floor) | pass |
+| thumb hover | tone 1 | 2.24:1 | 1.1 (floor) | pass |
+| thumb pressed | tone 2 | 3.13:1 | 1.1 (floor) | pass |
+| thumb pressed | tone 1 | 3.43:1 | 1.1 (floor) | pass |
+| toggle focus | tone 2 | 1.74:1 | 1.2 (floor) | pass |
+| toggle focus | toggle | 2.02:1 | 1.2 (floor) | pass |
+| surface focus | tone 0 | 1.45:1 | 1.2 (floor) | pass |
+| surface focus | tone 2 | 1.25:1 | 1.2 (floor) | pass |
+| text | surface focus | 9.91:1 | 4.5 | pass |
+| dim text | surface focus | 5.01:1 | 4.5 | pass |
+| accent | surface focus | 6.13:1 | 3 | pass |
+| well focus edge | well focus | 8.40:1 | 3 | pass |
+| well focus edge | tone 2 | 7.66:1 | 3 | pass |
+| text | selected | 9.11:1 | 4.5 | pass |
 | text | popup | 10.58:1 | 4.5 | pass |
-| dim text | selected | 5.34:1 | 4.5 | pass |
+| dim text | selected | 4.60:1 | 4.5 | pass |
 | dim text | popup | 5.34:1 | 4.5 | pass |
-| accent | selected | 6.54:1 | 3 | pass |
-| accent | well focus | 6.13:1 | 3 | pass |
+| accent | selected | 5.63:1 | 3 | pass |
+| accent | well focus | 8.40:1 | 3 | pass |
 | accent | popup | 6.54:1 | 3 | pass |
-| selected | tone 2 | 1.17:1 | 1.1 (floor) | pass |
-| selected | tone 1 | 1.28:1 | 1.1 (floor) | pass |
+| selected | tone 2 | 1.36:1 | 1.1 (floor) | pass |
+| selected | tone 1 | 1.49:1 | 1.1 (floor) | pass |
 | text | editor | 12.38:1 | 4.5 | pass |
 | text | editor gutter | 13.58:1 | 4.5 | pass |
 | text | editor current line | 10.58:1 | 4.5 | pass |
-| text | editor selection | 9.33:1 | 4.5 | pass |
+| text | editor selection | 8.22:1 | 4.5 | pass |
 | dim text | editor gutter | 6.86:1 | 4.5 | pass |
-| terminal text | terminal | 12.38:1 | 4.5 | pass |
-| ansi red | terminal | 6.61:1 | 4.5 | pass |
-| ansi green | terminal | 7.03:1 | 4.5 | pass |
-| ansi yellow | terminal | 7.66:1 | 4.5 | pass |
-| ansi blue | terminal | 6.92:1 | 4.5 | pass |
-| ansi magenta | terminal | 6.59:1 | 4.5 | pass |
-| ansi cyan | terminal | 7.31:1 | 4.5 | pass |
-| ansi white | terminal | 12.38:1 | 4.5 | pass |
-| ansi bright black | terminal | 6.25:1 | 4.5 | pass |
-| ansi bright red | terminal | 8.79:1 | 4.5 | pass |
-| ansi bright green | terminal | 9.29:1 | 4.5 | pass |
-| ansi bright yellow | terminal | 9.96:1 | 4.5 | pass |
-| ansi bright blue | terminal | 9.16:1 | 4.5 | pass |
-| ansi bright magenta | terminal | 8.78:1 | 4.5 | pass |
-| ansi bright cyan | terminal | 9.52:1 | 4.5 | pass |
-| ansi bright white | terminal | 14.05:1 | 4.5 | pass |
-| syntax keyword | editor | 6.59:1 | 4.5 | pass |
-| syntax keyword | editor current line | 5.63:1 | 4.5 | pass |
-| syntax keyword | editor selection | 4.97:1 | 4.5 | pass |
+| terminal text | terminal | 13.58:1 | 4.5 | pass |
+| terminal text | ansi red | 3.68:1 | 3.5 | pass |
+| terminal text | ansi green | 3.68:1 | 3.5 | pass |
+| terminal text | ansi yellow | 3.66:1 | 3.5 | pass |
+| terminal text | ansi blue | 3.65:1 | 3.5 | pass |
+| terminal text | ansi magenta | 3.64:1 | 3.5 | pass |
+| terminal text | ansi cyan | 3.69:1 | 3.5 | pass |
+| ansi red | terminal | 3.69:1 | 3.5 | pass |
+| ansi green | terminal | 3.69:1 | 3.5 | pass |
+| ansi yellow | terminal | 3.71:1 | 3.5 | pass |
+| ansi blue | terminal | 3.72:1 | 3.5 | pass |
+| ansi magenta | terminal | 3.73:1 | 3.5 | pass |
+| ansi cyan | terminal | 3.68:1 | 3.5 | pass |
+| ansi white | terminal | 13.58:1 | 4.5 | pass |
+| ansi bright black | terminal | 6.86:1 | 4.5 | pass |
+| ansi bright red | terminal | 9.64:1 | 4.5 | pass |
+| ansi bright green | terminal | 10.19:1 | 4.5 | pass |
+| ansi bright yellow | terminal | 10.92:1 | 4.5 | pass |
+| ansi bright blue | terminal | 10.05:1 | 4.5 | pass |
+| ansi bright magenta | terminal | 9.63:1 | 4.5 | pass |
+| ansi bright cyan | terminal | 10.44:1 | 4.5 | pass |
+| ansi bright white | terminal | 15.41:1 | 4.5 | pass |
+| syntax keyword | editor | 6.98:1 | 4.5 | pass |
+| syntax keyword | editor current line | 5.96:1 | 4.5 | pass |
+| syntax keyword | editor selection | 4.63:1 | 4.5 | pass |
 | syntax function | editor | 6.92:1 | 4.5 | pass |
 | syntax function | editor current line | 5.92:1 | 4.5 | pass |
-| syntax function | editor selection | 5.22:1 | 4.5 | pass |
+| syntax function | editor selection | 4.60:1 | 4.5 | pass |
 | syntax type | editor | 7.31:1 | 4.5 | pass |
 | syntax type | editor current line | 6.25:1 | 4.5 | pass |
-| syntax type | editor selection | 5.51:1 | 4.5 | pass |
+| syntax type | editor selection | 4.85:1 | 4.5 | pass |
 | syntax string | editor | 7.03:1 | 4.5 | pass |
 | syntax string | editor current line | 6.00:1 | 4.5 | pass |
-| syntax string | editor selection | 5.30:1 | 4.5 | pass |
-| syntax number | editor | 6.61:1 | 4.5 | pass |
-| syntax number | editor current line | 5.64:1 | 4.5 | pass |
-| syntax number | editor selection | 4.98:1 | 4.5 | pass |
+| syntax string | editor selection | 4.66:1 | 4.5 | pass |
+| syntax number | editor | 6.99:1 | 4.5 | pass |
+| syntax number | editor current line | 5.97:1 | 4.5 | pass |
+| syntax number | editor selection | 4.64:1 | 4.5 | pass |
 | syntax preprocessor | editor | 7.66:1 | 4.5 | pass |
 | syntax preprocessor | editor current line | 6.54:1 | 4.5 | pass |
-| syntax preprocessor | editor selection | 5.77:1 | 4.5 | pass |
+| syntax preprocessor | editor selection | 5.08:1 | 4.5 | pass |
 | syntax comment | editor | 6.25:1 | 4.5 | pass |
 | syntax comment | editor current line | 5.34:1 | 4.5 | pass |
-| syntax comment | editor selection | 4.71:1 | 4.5 | pass |
-| editor selection | editor | 1.33:1 | 1.1 (floor) | pass |
-| editor selection | editor current line | 1.13:1 | 1.1 (floor) | pass |
+| syntax comment | editor selection | 4.15:1 | 4 (floor) | pass |
+| editor selection | editor | 1.51:1 | 1.1 (floor) | pass |
+| editor selection | editor current line | 1.29:1 | 1.1 (floor) | pass |
 | editor current line | editor | 1.17:1 | 1.1 (floor) | pass |
-| syntax comment | accent 16 % over tone 2 (`#41392c`) | 4.50:1 (4.496) | 4.5 | fail: caps the text selection's tint near 14 % |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | dim text | raised focus | 2.58:1 | 4.5 | fail: a focused item shows secondary text in text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
@@ -240,8 +245,7 @@ chroma, so that it passes on tone 4, a hovered raised widget. The old value
 measured 3.92:1 there and 4.56:1 (close) on tone 3.
 
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
-(`#695c45`), is the starting `raised-focus` (P1.3). The gallery shows it
-beside 20 %, 40 % and 60 % (O-3).
+(`#695c45`), is `raised-focus` (P1.3; decided, D-64).
 
 ## How the check works
 

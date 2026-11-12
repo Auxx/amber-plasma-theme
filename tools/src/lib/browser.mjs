@@ -184,7 +184,7 @@ export async function applyState(page, { hover, focus, press } = {}) {
  * of 50 % on a square element is a round widget and passes), a box
  * shadow, an underline, an outline anywhere but on a `.window`, or a line
  * drawn as a box: an element or pseudo-element less than 3 px thick (the least size of a block
- * marker or a well edge) that paints a background. Looks at every element and
+ * marker or a focus bar) that paints a background. Looks at every element and
  * at its ::before and ::after.
  */
 export function renderedOffences(page) {
