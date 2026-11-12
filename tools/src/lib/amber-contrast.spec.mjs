@@ -107,22 +107,22 @@ describe('Amber contrast pairs', () => {
   it('passes every terminal colour on the terminal', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     const expected = {
-      'terminal-text': '12.38',
-      'ansi-red': '6.61',
-      'ansi-green': '7.03',
-      'ansi-yellow': '7.66',
-      'ansi-blue': '6.92',
-      'ansi-magenta': '6.59',
-      'ansi-cyan': '7.31',
-      'ansi-white': '12.38',
-      'ansi-bright-black': '6.25',
-      'ansi-bright-red': '8.79',
-      'ansi-bright-green': '9.29',
-      'ansi-bright-yellow': '9.96',
-      'ansi-bright-blue': '9.16',
-      'ansi-bright-magenta': '8.78',
-      'ansi-bright-cyan': '9.52',
-      'ansi-bright-white': '14.05'
+      'terminal-text': '13.58',
+      'ansi-red': '7.24',
+      'ansi-green': '7.70',
+      'ansi-yellow': '8.40',
+      'ansi-blue': '7.59',
+      'ansi-magenta': '7.23',
+      'ansi-cyan': '8.02',
+      'ansi-white': '13.58',
+      'ansi-bright-black': '6.86',
+      'ansi-bright-red': '9.64',
+      'ansi-bright-green': '10.19',
+      'ansi-bright-yellow': '10.92',
+      'ansi-bright-blue': '10.05',
+      'ansi-bright-magenta': '9.63',
+      'ansi-bright-cyan': '10.44',
+      'ansi-bright-white': '15.41'
     };
     const actual = Object.fromEntries(Object.keys(expected).map(name => [ name, ratio(`${name} on terminal`) ]));
     assert.deepEqual(actual, expected);

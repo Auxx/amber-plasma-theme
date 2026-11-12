@@ -186,22 +186,22 @@ falls below its minimum.
 | text | editor current line | 10.58:1 | 4.5 | pass |
 | text | editor selection | 9.33:1 | 4.5 | pass |
 | dim text | editor gutter | 6.86:1 | 4.5 | pass |
-| terminal text | terminal | 12.38:1 | 4.5 | pass |
-| ansi red | terminal | 6.61:1 | 4.5 | pass |
-| ansi green | terminal | 7.03:1 | 4.5 | pass |
-| ansi yellow | terminal | 7.66:1 | 4.5 | pass |
-| ansi blue | terminal | 6.92:1 | 4.5 | pass |
-| ansi magenta | terminal | 6.59:1 | 4.5 | pass |
-| ansi cyan | terminal | 7.31:1 | 4.5 | pass |
-| ansi white | terminal | 12.38:1 | 4.5 | pass |
-| ansi bright black | terminal | 6.25:1 | 4.5 | pass |
-| ansi bright red | terminal | 8.79:1 | 4.5 | pass |
-| ansi bright green | terminal | 9.29:1 | 4.5 | pass |
-| ansi bright yellow | terminal | 9.96:1 | 4.5 | pass |
-| ansi bright blue | terminal | 9.16:1 | 4.5 | pass |
-| ansi bright magenta | terminal | 8.78:1 | 4.5 | pass |
-| ansi bright cyan | terminal | 9.52:1 | 4.5 | pass |
-| ansi bright white | terminal | 14.05:1 | 4.5 | pass |
+| terminal text | terminal | 13.58:1 | 4.5 | pass |
+| ansi red | terminal | 7.24:1 | 4.5 | pass |
+| ansi green | terminal | 7.70:1 | 4.5 | pass |
+| ansi yellow | terminal | 8.40:1 | 4.5 | pass |
+| ansi blue | terminal | 7.59:1 | 4.5 | pass |
+| ansi magenta | terminal | 7.23:1 | 4.5 | pass |
+| ansi cyan | terminal | 8.02:1 | 4.5 | pass |
+| ansi white | terminal | 13.58:1 | 4.5 | pass |
+| ansi bright black | terminal | 6.86:1 | 4.5 | pass |
+| ansi bright red | terminal | 9.64:1 | 4.5 | pass |
+| ansi bright green | terminal | 10.19:1 | 4.5 | pass |
+| ansi bright yellow | terminal | 10.92:1 | 4.5 | pass |
+| ansi bright blue | terminal | 10.05:1 | 4.5 | pass |
+| ansi bright magenta | terminal | 9.63:1 | 4.5 | pass |
+| ansi bright cyan | terminal | 10.44:1 | 4.5 | pass |
+| ansi bright white | terminal | 15.41:1 | 4.5 | pass |
 | syntax keyword | editor | 6.59:1 | 4.5 | pass |
 | syntax keyword | editor current line | 5.63:1 | 4.5 | pass |
 | syntax keyword | editor selection | 4.97:1 | 4.5 | pass |

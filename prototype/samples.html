@@ -22,7 +22,7 @@
      realistic content. Each coloured span has one class, named for its token. -->
 <section class="family" aria-label="Terminal">
   <h2>Terminal</h2>
-  <p class="dim">Konsole's terminal colours on the window's main surface. Every colour but ANSI black reaches 4.5:1.</p>
+  <p class="dim">Konsole's terminal colours on tone 1, a tone below the window's main surface. Every colour but ANSI black reaches 4.5:1.</p>
 
   <div class="sample-scene">
     <div class="window is-active sample konsole">
@@ -103,38 +103,6 @@
 </section>
 
 <section class="candidates" aria-label="Candidates">
-  <h2>Terminal background</h2>
-  <p class="dim">The terminal on the window's main surface, or a tone or two darker, as many terminals are.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
-    <figcaption>
-      Start, tone 2
-      <span class="dim">tone 2</span>
-      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="6.25">6.25:1 on terminal</data></span>
-      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="6.59">6.59:1 on terminal</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--terminal: var(--tone-1)">
-    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
-    <figcaption>
-      Tone 1
-      <span class="dim">tone 1</span>
-      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="6.86">6.86:1 on terminal</data></span>
-      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="7.23">7.23:1 on terminal</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--terminal: var(--tone-0)">
-    <div class="vignette" inert><div class="terminal"><span class="line"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev</span> $ make</span><span class="line"><span class="ansi-magenta">warning:</span> unused variable</span><span class="line"><span class="ansi-bright-black">make: Nothing to be done.</span></span><span class="line"><span class="ansi-red">red</span> <span class="ansi-green">green</span> <span class="ansi-yellow">yellow</span> <span class="ansi-blue">blue</span> <span class="ansi-magenta">magenta</span> <span class="ansi-cyan">cyan</span></span></div></div>
-    <figcaption>
-      Tone 0
-      <span class="dim">tone 0</span>
-      <span class="ratio-line">bright black <data class="ratio" data-pair="ansi-bright-black on terminal" value="7.27">7.27:1 on terminal</data></span>
-      <span class="ratio-line">magenta <data class="ratio" data-pair="ansi-magenta on terminal" value="7.66">7.66:1 on terminal</data></span>
-    </figcaption>
-  </figure>
-  </div>
-
   <h2>Text selection</h2>
   <p class="dim">The text selection against the current line. More accent tells them apart better, but the comments in dim text fail on it beyond about 14 %.</p>
   <div class="candidate-row">

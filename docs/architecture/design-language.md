@@ -261,7 +261,7 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
 
 | Token | Value | Built as |
 |---|---|---|
-| `--terminal` | `var(--tone-2)` | the window's main surface, so that the terminal matches its frame (D-56) |
+| `--terminal` | `var(--tone-1)` | the terminal background, a tone below the window's main surface (decided, D-78) |
 | `--terminal-text` | `var(--text)` | Konsole's foreground |
 | `--ansi-black` | `var(--tone-0)` | exempt from contrast (D-53) |
 | `--ansi-red` | `#e39383` | OKLCH 74 % 0.10 32: shifted towards orange |
@@ -283,8 +283,7 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
   O-5 in the [decisions](decisions.md).
 - Konsole's intense and faint variants of the foreground and background,
   and the cursor (a profile setting), are settled in P4.1.
-- The prototype shows the terminal on `prototype/samples.html`, with the
-  terminal background's candidates.
+- The prototype shows the terminal on `prototype/samples.html`.
 
 ## Editor theme
 
@@ -292,7 +291,7 @@ Kate's editor area. Starting values (my call, P1.6):
 
 | Token | Value | Used for |
 |---|---|---|
-| `--editor` | `var(--tone-2)` | the editor background, as the terminal's (D-56) |
+| `--editor` | `var(--tone-2)` | the editor background, the window's main surface (D-56) |
 | `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
 | `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
 | `--editor-selection` | `#3d362b` | the text selection: accent 14 % over tone 2 (D-58) |
