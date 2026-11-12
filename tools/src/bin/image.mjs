@@ -112,7 +112,8 @@ when its longest run of drawn pixels covers a quarter of it, so text alone
 is not judged; a corner only when both its sides are. A corner is rounded
 when its pixel is nearer the surface than the widget's most common colour.
 A side has a line when its outer colour differs from the colour 3 px in and
-runs for 1 or 2 px; 3 px or more is a band, such as a focus bar.
+runs for 1 or 2 px, or when the whole widget is only 1 or 2 px across it;
+3 px or more is a band, such as a focus bar.
 ${REGION_HELP}`,
       options: { surface: { type: 'string' }, region: { type: 'string' }, json: { type: 'boolean' } },
       run(values, positionals) {

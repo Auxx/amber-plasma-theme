@@ -322,8 +322,11 @@ node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png -
     widget's most common colour. A circle, such as a radio button, reports
     four rounded corners: a round widget is excused by the caller.
   - A side has a **line** when its outer colour differs from the colour 3 px
-    in and runs for 1 or 2 px. A run of 3 px or more is a band, such as a
-    focus bar or a block marker, and is not a line.
+    in and runs for 1 or 2 px, or when the whole widget is only 1 or 2 px
+    across that side, as a separator drawn alone is. A run of 3 px or more is
+    a band, such as a focus bar or a block marker, and is not a line.
+  - Colours are read without their alpha: a part-transparent pixel counts as
+    its own colour. Draw on an opaque surface, as the probe does.
 - **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], marked }`;
   `colours` prints `[{ hex, count, token? }]`.
   `frame` prints `{ drawn, box, corners, sides, lines }`, each corner

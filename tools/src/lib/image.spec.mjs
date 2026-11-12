@@ -219,6 +219,24 @@ describe('frame', () => {
     assert.deepEqual(result.sides, sides('not judged'));
   });
 
+  it('finds a separator one pixel wide, drawn alone, a line', () => {
+    const c = canvas(20, 40);
+    c.rect(10, 10, 1, 20, BORDER);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.equal(result.sides.left, 'line');
+    assert.equal(result.sides.right, 'line');
+    assert.deepEqual(result.lines.left, { hex: BORDER, thickness: 1 });
+  });
+
+  it('finds a separator two pixels high, drawn alone, a line', () => {
+    const c = canvas(40, 20);
+    c.rect(5, 10, 30, 2, BORDER);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.equal(result.sides.top, 'line');
+    assert.equal(result.sides.bottom, 'line');
+    assert.deepEqual(result.lines.top, { hex: BORDER, thickness: 2 });
+  });
+
   it('reports nothing drawn on a bare surface', () => {
     const result = frame(canvas(20, 20).image, { surface: SURFACE });
     assert.equal(result.drawn, false);

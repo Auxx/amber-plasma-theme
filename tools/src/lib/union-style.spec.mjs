@@ -133,7 +133,9 @@ function blocks(source) {
       line++;
     }
     if (char === '{') {
-      const block = { selector: buffer.trim(), declarations: [] };
+      const parent = stack.at(-1) ?? null;
+      const block = { selector: buffer.trim(), declarations: [], parent, children: [] };
+      parent?.children.push(block);
       found.push(block);
       stack.push(block);
       buffer = '';
@@ -162,6 +164,84 @@ describe('the block reader of this spec', () => {
     ]);
     assert.equal(found[2].declarations[0].line, 5);
     assert.equal(found[2].declarations[0].comment, 'round widget');
+    assert.equal(found[1].parent, found[0]);
+    assert.deepEqual(found[0].children, [ found[1], found[2] ]);
+  });
+});
+
+const parts = selector => selector.split(',').map(p => p.trim()).filter(Boolean);
+/** `&.x`, `&[a]`, `&:state`: the same element, narrowed; not `x &` or `& > y`. */
+const refines = selector => parts(selector).every(p => /^&[.[:][^\s>]*$/.test(p));
+const thinProperties = block => block.declarations
+  .filter(d => /^(width|height)$/.test(d.property) && /^(1|2)px$/.test(d.value)).map(d => d.property);
+const setsThin = block => thinProperties(block).length > 0;
+/** The block and the refinements below it: the same element in narrower states. */
+const sameElement = block => [ block, ...block.children.filter(c => refines(c.selector)).flatMap(sameElement) ];
+
+/**
+ * Whether a block draws on an element one or two pixels thick: the thickness
+ * may be set in the block or a refinement below it, in an enclosing block
+ * (unless the block sets that dimension itself), in a sibling
+ * that names one of its selectors, or, for a block that is not a refinement
+ * such as `toolbar.header &`, in a refinement of its parent such as
+ * `&.horizontal`.
+ */
+function thin(block) {
+  if (sameElement(block).some(setsThin)) {
+    return true;
+  }
+  const own = new Set(block.declarations.map(d => d.property));
+  for (let b = block.parent; b; b = b.parent) {
+    if (thinProperties(b).some(property => !own.has(property))) {
+      return true;
+    }
+  }
+  const siblings = block.parent ? block.parent.children.filter(c => c !== block) : [];
+  const mine = new Set(parts(block.selector));
+  if (siblings.some(s => parts(s.selector).some(p => mine.has(p)) && setsThin(s))) {
+    return true;
+  }
+  return !refines(block.selector) && siblings.some(s => refines(s.selector) && setsThin(s));
+}
+
+describe('the thickness reader of this spec', () => {
+  const sample = blocks(`a {
+    &[shape="line"], &[shape="other"] { background-color: red; }
+    &[shape="line"] { width: 1px; }
+    &[shape="box"] { background-color: blue; }
+  }
+  b {
+    &.horizontal { height: 1px; }
+    toolbar.header & { background-color: red; }
+  }
+  c {
+    background-color: green;
+    & > separator { width: 1px; }
+  }
+  d {
+    height: 1px;
+    &.with-title { height: 24px; background-color: red; }
+  }`);
+  const named = selector => sample.find(b => b.selector === selector);
+
+  it('finds a thickness set in a sibling that names the same selector', () => {
+    assert.equal(thin(named('&[shape="line"], &[shape="other"]')), true);
+  });
+
+  it('finds a thickness set in a refinement of the parent of a context block', () => {
+    assert.equal(thin(named('toolbar.header &')), true);
+  });
+
+  it('does not borrow the thickness of a sibling refinement for another refinement', () => {
+    assert.equal(thin(named('&[shape="box"]')), false);
+  });
+
+  it('does not take a child element\'s thickness for its parent\'s', () => {
+    assert.equal(thin(named('c')), false);
+  });
+
+  it('lets a refinement that sets its own height override its parent\'s', () => {
+    assert.equal(thin(named('&.with-title')), false);
   });
 });
 
@@ -201,8 +281,7 @@ describe('the Union style\'s global rules (P3.2)', () => {
     assert.deepEqual(offending(d => d.property === '--button-shadow' && d.value !== 'none'), []);
   });
 
-  it('fills no separator one pixel thick', () => {
-    assert.deepEqual(rules.filter(d => d.property === 'background-color'
-      && d.block.declarations.some(o => /^(width|height)$/.test(o.property) && o.value === '1px')).map(d => d.where), []);
+  it('fills no separator one or two pixels thick, wherever its thickness is set', () => {
+    assert.deepEqual(rules.filter(d => d.property === 'background-color' && thin(d.block)).map(d => d.where), []);
   });
 });

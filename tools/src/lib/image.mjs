@@ -164,7 +164,8 @@ function mode(colours) {
  * that text alone is not judged; a corner only when both its sides are. A
  * corner is rounded when its pixel is nearer the surface than the box's most
  * common colour. A side has a line when its outer colour differs from the
- * colour 3 px in and runs for 1 or 2 px.
+ * colour 3 px in and runs for 1 or 2 px, or when the whole box is only 1 or
+ * 2 px across it, as a separator drawn alone is.
  */
 export function frame(image, { surface, region } = {}) {
   const { x: rx, y: ry, width: rw, height: rh } = bounds(image, region);
@@ -238,7 +239,9 @@ export function frame(image, { surface, region } = {}) {
     }
     runs[side] = best;
     if (depthMax(side) < LINE_DEPTH) {
-      sides[side] = 'clear';
+      // The whole box is 1 or 2 px across this side: a separator drawn alone.
+      sides[side] = 'line';
+      lines[side] = { hex: fillHex, thickness: depthMax(side) + 1 };
       continue;
     }
     const colourAt = d => {

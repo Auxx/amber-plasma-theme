@@ -255,7 +255,6 @@ textarea {
     &[shape="horizontal-line"] {
         border-radius: 0px;
         border: none;
-        background-color: var(--window-border-color);
         padding: 0px;
         inset: 1px;
     }
