@@ -219,6 +219,12 @@ roundbutton.flat
         background-color: var(--tone-2);
     }
 
+    /* Two states outrank :disabled alone, so a checked, disabled one is held still here (P3.3) */
+    &:checked:disabled {
+        background: none;
+        color: var(--text-dim);
+    }
+
     &:disabled {
         border: none;
         background: none;
@@ -257,6 +263,15 @@ toolbutton.raised
     padding-bottom: var(--button-padding);
     padding-left: var(--button-padding-x);
     padding-right: var(--button-padding-x);
+
+    /* As a push button, over the flat tool button's checked states (P3.3, D-99) */
+    &:checked:disabled {
+        background-color: var(--tone-3);
+    }
+
+    &:checked:pressed {
+        background-color: var(--tone-1);
+    }
 }
 
 roundbutton

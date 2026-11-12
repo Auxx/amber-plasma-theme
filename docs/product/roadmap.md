@@ -143,8 +143,8 @@ screen.
 P3.3 restyled push buttons, tool buttons and read-only combo boxes; the
 probe's pictures match the gallery in every state they reach, and the owner
 tried them in Dolphin. Union cannot tell the default button of a dialog from
-the others, so the primary button is drawn as any other and is a known gap
-(D-100). For the plans after it: `browser states` and `image states`
+the others, so the primary button is drawn as any other, in Qt Quick too,
+and is a known gap (D-100). For the plans after it: `browser states` and `image states`
 compare a family's states with the gallery, as P3.3 did; P3.4 takes the
 editable combo box, which is a well; P3.8 finds out why a combo box's popup
 list is transparent (seen before P3.3 too).

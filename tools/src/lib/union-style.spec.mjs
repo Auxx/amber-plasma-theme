@@ -354,6 +354,24 @@ describe('the Union style\'s buttons (P3.3)', () => {
     assert.equal(value(child(combo, '&:checked'), 'background-color'), undefined, 'the open combo box keeps the tone of its other states');
   });
 
+  it('keeps a disabled tool button still, even when checked and hovered, which outranks :disabled', () => {
+    const tool = top(p => p.includes('toolbutton') && p.includes('button.flat'));
+    const names = tool.children.map(c => c.selector);
+    const disabled = child(tool, '&:checked:disabled');
+    assert.ok(disabled, 'a &:checked:disabled block');
+    assert.equal(value(disabled, 'background'), 'none');
+    assert.equal(value(disabled, 'color'), 'var(--text-dim)');
+    for (const compound of [ '&:checked:hovered', '&:checked:visual-focus', '&:checked:pressed' ]) {
+      assert.ok(names.indexOf('&:checked:disabled') > names.indexOf(compound), `&:checked:disabled after ${compound}`);
+    }
+  });
+
+  it('draws a raised tool button that is checked as a push button when pressed or disabled (D-99)', () => {
+    const raised = top(p => p.length === 1 && p[0] === 'toolbutton.raised');
+    assert.equal(value(child(raised, '&:checked:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(raised, '&:checked:pressed'), 'background-color'), 'var(--tone-1)');
+  });
+
   it('makes a button 30 px high', () => {
     const root = all.find(b => b.selector === ':root');
     assert.equal(value(root, '--button-default-size'), '30px');
