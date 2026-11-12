@@ -114,7 +114,7 @@ next starts.
 |---|---|---|---|
 | P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | done |
 | P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | done |
-| P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
+| P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | done |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | todo |
@@ -139,6 +139,15 @@ with those borders, and the highlight of a selected tab now wait for their
 family's plan. A line Qt draws itself stays: the grid of a table view
 (P3.7). A menu was checked only as `render()` draws it; P3.8 sees one on
 screen.
+
+P3.3 restyled push buttons, tool buttons and read-only combo boxes; the
+probe's pictures match the gallery in every state they reach, and the owner
+tried them in Dolphin. Union cannot tell the default button of a dialog from
+the others, so the primary button is drawn as any other and is a known gap
+(D-100). For the plans after it: `browser states` and `image states`
+compare a family's states with the gallery, as P3.3 did; P3.4 takes the
+editable combo box, which is a well; P3.8 finds out why a combo box's popup
+list is transparent (seen before P3.3 too).
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from

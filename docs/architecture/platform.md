@@ -42,6 +42,35 @@ Verified on 2026-11-10 unless marked.
   except the text cursor. A tree or table view marks its current item with
   accent mixed over the view (`#584c38`). Seen with the Amber colour scheme.
   (verified, 2026-11-12, P3.2)
+- **What Union tells a button in a Qt Widgets application** (verified,
+  2026-11-12, P3.3, by marker rules read in the probe's pixels):
+  - `:highlighted` is given to every auto-default push button, not to the
+    default one alone. In a `QDialog` every push button is auto-default, so
+    every button of a dialog has it; outside a dialog none has. No other
+    selector tried (`.default`, `[default="true"]`, `.auto-default`) told
+    the default button apart. Qt moves the default to whichever push button
+    has focus; nothing in Union's states follows it. Amber draws
+    `:highlighted` as a plain button (D-100).
+  - `:active-focus` is keyboard focus, shown or not; `:visual-focus` is
+    focus shown by the keyboard. A window's first widget has active focus
+    as soon as the window opens.
+  - A tool button without auto-raise has the hint `raised`; one with
+    auto-raise has none.
+  - A combo box whose popup is open is `:checked`.
+- **Which rule wins.** A hint counts: `toolbutton.raised` beats a later
+  `toolbutton`. Between two rules that match equally, the later one wins:
+  in `button { &:hovered {…} &:visual-focus {…} }` a hovered, focused
+  button takes the second, and with the blocks swapped the first. So the
+  order of state blocks gives precedence. (verified, 2026-11-12, P3.3)
+- **A `padding` with two values is not read as browser CSS reads it.**
+  `padding: 6px 12px` gave 12 px at the top and bottom and 6 px at the
+  sides, both written as a value and through a variable. Amber's style sets
+  each side alone. (verified, 2026-11-12, P3.3)
+- **A button's height is its padding plus its content**; `height` is a
+  minimum. With 6 px at the top and bottom, a push button and a text-only
+  tool button are 30 px high at scale 1, as `sizeHint()` gives it; a
+  combo box, whose arrow is 20 px high, needs 4 px. (verified, 2026-11-12,
+  P3.3)
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -167,7 +196,11 @@ Verified on 2026-11-10 unless marked.
   `QMenu.popup()` without an input event shows nothing on Wayland, and
   `pyatspi`'s `ShowMenu` on Dolphin's and Konsole's toolbar menu buttons
   did nothing; their menu bars are hidden in this session. A menu was
-  checked through `render()` only. (verified, 2026-11-12, P3.2)
+  checked through `render()` only. (verified, 2026-11-12, P3.2) In P3.3, `ShowMenu` on a combo box
+  in Dolphin's settings dialog opened its popup once, right after the owner
+  had clicked in the session, and never again from a script; nor did
+  `QComboBox.showPopup()` in the probe. A pressed combo box is not reached
+  in `render()` either. (verified, 2026-11-12, P3.3)
 - Environment variables found in the Union libraries: `UNION_STYLE_NAME`,
   `UNION_DISABLE_STYLE_CACHE`, `UNION_FORCE_RECREATE_STYLE_CACHE`,
   `UNION_FORCE_PLATFORM`, `UNION_DISABLE_INPUT_PLUGINS`.
@@ -180,6 +213,7 @@ Verified on 2026-11-10 unless marked.
 |---|---|
 | Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. The prototype draws one (D-49), and the gallery shows a "No shadow" candidate beside it since P1.5. | P3.8 |
 | Which key selects the style for the whole system? | P6.2 |
+| Why is a combo box's popup list transparent? In Dolphin's settings dialog the owner saw the dialog through it, with P3.3's style and with P3.2's alike (2026-11-12); the popup's rules (`popup.combobox`) were not touched. | P3.8 |
 
 The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner
 decided on 2026-11-11 that Amber has none: D-4 in the
