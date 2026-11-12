@@ -26,36 +26,42 @@ textarea,
 spinbox,
 searchfield
 {
-    height: var(--large-element-size);
-    padding: var(--medium-spacing);
+    /* A well (P3.4): 30 px high, as the prototype's */
+    height: 30px;
+    padding-top: var(--medium-spacing);
+    padding-bottom: var(--medium-spacing);
+    padding-left: var(--large-spacing);
+    padding-right: var(--large-spacing);
     border-radius: var(--corner-radius);
 
     border: none;
-    background-color: var(--view-background-color);
-    color: var(--view-text-color);
+    background-color: var(--well);
+    color: var(--text);
 
-    &:hovered,
-    &:active-focus {
-        border: none;
+    &:hovered {
+        background-color: var(--tone-1);
     }
 
+    /* The focus bar, 3 px of accent at the foot: not a hairline (D-69) */
     &:visual-focus {
+        background-color: var(--well-focus);
+        border-bottom: var(--well-focus-edge-width) solid var(--well-focus-edge);
         outline: none;
     }
 
     & > .placeholder
     {
-        color: mix(var(--view-text-color), var(--view-background-color), 0.3);
+        color: var(--text-dim);
     }
 
     &:disabled {
-        color: var(--view-disabled-text-color);
-        background-color: var(--view-disabled-background-color);
+        color: var(--text-dim);
+        background-color: var(--well);
         border: none;
 
         & > .placeholder
         {
-            color: mix(var(--view-text-color), var(--view-background-color), 0.7);
+            color: var(--text-dim);
         }
     }
 }
@@ -75,12 +81,32 @@ textarea
 {
     text-alignment: content start start 0;
     width: var(--text-field-width);
+
+    &[shape="no-frame"] {
+        border: none;
+    }
+
+    /*
+     * In Qt Widgets a text area is a frame around a viewport that the palette
+     * fills with the View set, tone 2; no rule reaches the viewport (P3.4). The
+     * frame draws a border only if it has one at rest, so the band that carries
+     * the focus bar is there at rest in the viewport's tone.
+     */
+    &[shape="panel"],
+    &[shape="box"] {
+        border: none;
+        border-bottom: var(--well-focus-edge-width) solid var(--tone-2);
+
+        &:visual-focus {
+            border-bottom-color: var(--well-focus-edge);
+        }
+    }
 }
 
 spinbox
 {
     width: var(--medium-element-size);
-    height: var(--large-element-size);
+    height: 30px;
     layout-alignment: content fill fill 0;
     text-alignment: content center fill 0;
     padding-left: var(--large-spacing);
@@ -88,14 +114,16 @@ spinbox
     padding-top: var(--small-spacing);
     padding-bottom: var(--small-spacing);
 
-    color: var(--button-active-text-color);
+    color: var(--text);
 
+    /* The steps (P3.4). Qt Widgets draws them itself, in text: a known gap */
     & > indicator
     {
         width: var(--large-element-size);
         height: var(--small-element-size);
         border-radius: var(--corner-radius);
-        color: var(--button-active-text-color);
+        background-color: transparent;
+        icon-color: var(--text-dim);
 
         margin-top: var(--corner-radius);
         margin-bottom: var(--corner-radius);
@@ -114,17 +142,20 @@ spinbox
         &:hovered
         {
             border: none;
+            background-color: var(--tone-3);
+            icon-color: var(--text);
         }
 
         &:pressed
         {
-            background-color: var(--button-active-highlight-color);
+            background-color: var(--tone-2);
             border: none;
         }
 
         &:disabled
         {
-            color: var(--button-disabled-text-color);
+            background-color: transparent;
+            icon-color: var(--text-dim);
         }
 
         &.decrease
@@ -177,13 +208,27 @@ spinbox
         border: none;
         margin: 0px;
         margin-right: var(--minimal-spacing);
+        background-color: transparent;
+        icon-color: var(--text-dim);
 
-        &:hover,
+        &:hovered
+        {
+            border: none;
+            background-color: var(--tone-3);
+            icon-color: var(--text);
+        }
+
         &:pressed
         {
             border: none;
-            background: none;
-            icon-color: var(--highlight-color);
+            background-color: var(--tone-2);
+            icon-color: var(--text);
+        }
+
+        &:disabled
+        {
+            background-color: transparent;
+            icon-color: var(--text-dim);
         }
 
         &.decrease {

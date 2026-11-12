@@ -305,34 +305,38 @@ combobox
         visibility: visible;
     }
 
+    /* An editable combo box is a well (D-99, P3.4) */
     &.editable,
     &.flat.editable
     {
-        background-color: var(--view-background-color);
+        background-color: var(--well);
+        color: var(--text);
         border: none;
         box-shadow: none;
         text-elide: none;
 
         &:hovered {
-            border-color: var(--button-active-border-highlight-color);
+            background-color: var(--tone-1);
         }
 
+        /* A well has no pressed tone: held down, it stays hovered */
         &:pressed {
-            border-color: var(--button-active-border-highlight-color);
-
-            & > indicator {
-                icon-color: var(--button-active-border-highlight-color);
-            }
+            background-color: var(--tone-1);
         }
 
         &:visual-focus {
-            border-color: var(--button-active-border-highlight-color);
+            background-color: var(--well-focus);
+            border-bottom: var(--well-focus-edge-width) solid var(--well-focus-edge);
+        }
+
+        /* Open, Union marks it :checked; it keeps its look (P3.3) */
+        &:checked {
+            color: var(--text);
         }
 
         &:disabled {
-            background-color: var(--view-disabled-background-color);
-            color: var(--view-disabled-text-color);
-            border-color: var(--view-disabled-border-color);
+            background-color: var(--well);
+            color: var(--text-dim);
         }
     }
 }
