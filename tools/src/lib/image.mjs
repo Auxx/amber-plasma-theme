@@ -23,6 +23,33 @@ function bounds(image, region) {
   return region;
 }
 
+/**
+ * Whether a colour lies within 8-bit rounding (±1 on each channel) of a warm
+ * colour that has a hue. Two warm tones mixed at a part-pixel edge, as a 1 px
+ * border at scale 1.49 is, round to such colours. A grey with r = g = b is not
+ * excused by this: it has no hue at all. (my call)
+ */
+function roundsToWarm(hex) {
+  const [ r, g, b ] = [ 1, 3, 5 ].map(i => parseInt(hex.slice(i, i + 2), 16));
+  if (r === g && g === b) {
+    return false;
+  }
+  for (const dr of [ -1, 0, 1 ]) {
+    for (const dg of [ -1, 0, 1 ]) {
+      for (const db of [ -1, 0, 1 ]) {
+        const near = [ r + dr, g + dg, b + db ];
+        if (near.some(v => v < 0 || v > 255) || (near[0] === near[1] && near[1] === near[2])) {
+          continue;
+        }
+        if (!warmthOffence(toHex(...near), { noHue: NO_HUE })) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 /** Every opaque colour with its count and bounding box, skipping fully transparent pixels. */
 function tally(image, region) {
   const { x: x0, y: y0, width, height } = bounds(image, region);
@@ -62,7 +89,7 @@ export function coolGreys(image, { region } = {}) {
       continue;
     }
     const why = warmthOffence(entry.hex, { noHue: NO_HUE });
-    if (why) {
+    if (why && !roundsToWarm(entry.hex)) {
       found.push({ hex: entry.hex, count: entry.count, box: box(entry), why });
     }
   }

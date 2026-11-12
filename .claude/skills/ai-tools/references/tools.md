@@ -276,6 +276,12 @@ node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png -
   check uses. One difference (my call): a pixel counts as having no hue only
   below chroma 0.001, where r = g = b, since tone 0 itself has a chroma of
   only 0.003. Anti-aliased text, a mix of two warm colours, stays warm.
+- **Rounding is excused** (my call): a colour within ±1 on each channel of a
+  warm colour that has a hue is not reported. Two warm dark tones mixed at a
+  part-pixel edge, such as a 1 px border at scale 1.49, round to colours like
+  `#161515`. A grey with r = g = b is still reported: no rounding explains it.
+  Text should be drawn with greyscale anti-aliasing: subpixel fringes are
+  coloured and are reported.
 - **Fully transparent pixels** are skipped; any other pixel is judged by its
   colour alone.
 - **`--region x,y,width,height`** in whole pixels from the top left corner.

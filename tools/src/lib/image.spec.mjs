@@ -51,8 +51,18 @@ describe('coolGreys', () => {
   });
 
   it('reports a near-black that leans cool, which tone 0 is beside', () => {
-    // #141415 is OKLCH chroma 0.002 at hue 286; tone 0 is 0.003 at hue 68.
-    assert.deepEqual(coolGreys(picture([ rgba('tone-0'), hex('#141415') ])).map(f => f.hex), [ '#141415' ]);
+    // #131416 leans blue by more than rounding explains; tone 0 is chroma 0.003 at hue 68.
+    assert.deepEqual(coolGreys(picture([ rgba('tone-0'), hex('#131416') ])).map(f => f.hex), [ '#131416' ]);
+  });
+
+  it('does not report a pixel that 8-bit rounding of warm colours explains', () => {
+    // A 1 px border of tone 0 drawn at scale 1.49 over tone 2 gave #161515: between
+    // the two on every channel, but at hue 20 once rounded. #161514 is warm.
+    assert.deepEqual(coolGreys(picture([ hex('#161515') ])), []);
+  });
+
+  it('still reports a grey with no hue at all, which no rounding explains', () => {
+    assert.deepEqual(coolGreys(picture([ hex('#5d5d5d') ])).map(f => f.hex), [ '#5d5d5d' ]);
   });
 
   it('does not report black or a hue', () => {
