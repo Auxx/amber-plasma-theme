@@ -92,6 +92,7 @@ text in other documents.
 | D-82 | The editor theme is approved as shown: the syntax colours, the gutter a tone below the code, the current line a tone above, and tone 2 as the editor's background although the terminal is tone 1. The text selection is accent 20 % over tone 2 (`#473e30`), which replaces accent 14 % of D-58; a comment inside a selection may fall under 4.5:1 | Owner | 2026-11-12, P1.7. "Syntax colours look great." "Background as tone 2 is good too, that helps to differentiate text editor area from the gutter." "Gutter and current line look great." "Text selection **Accent 20 %** variant looks best. The other two have selection very similar to current line... Comment text contrast can be sacrificed as comments are usually low priority text." |
 | D-83 | Keywords and numbers are 1.5 points lighter (`#d79bb7`, `#e89887`, OKLCH lightness 75.5 %), so that they keep 4.5:1 on the text selection of D-82 | Owner | 2026-11-12, P1.7. On the stronger selection they measured 4.37:1 and 4.38:1, which the candidate's caption had not shown. Asked, the owner chose to lighten both slightly over leaving them or weakening the selection |
 | D-84 | Following D-82: the pair of the comment on the text selection has a floor of 4 (it measures 4.15:1) | Designer | The owner gave up 4.5:1 there; the floor keeps a later change from taking more. 2026-11-12 |
+| D-85 | The prototype is approved as the look that Amber's parts are built from | Owner | 2026-11-12, at the end of P1.7, after a last look at the three pages with every choice in place: "I approve, everything looks great!" This is the gate of step 1 of the roadmap |
 
 ## Accessibility
 
@@ -106,4 +107,4 @@ text in other documents.
 
 ## Open
 
-No question is open. O-1, O-3, O-4 and O-5 were closed in P1.7 (D-59 to D-84).
+No question is open. O-1, O-3, O-4 and O-5 were closed in P1.7 (D-59 to D-84), and the owner approved the prototype (D-85).

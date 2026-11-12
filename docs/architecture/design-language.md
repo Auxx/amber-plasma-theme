@@ -23,7 +23,7 @@ updated.
    what is selected, checked or filled.
    (my call)
 
-## Starting tokens (my call)
+## Tokens
 
 | Token | Name | Value | Used for |
 |---|---|---|---|
@@ -43,8 +43,9 @@ The values live in [`prototype/tokens.css`](../../prototype/tokens.css); when
 this table and that file disagree, the file is right. Token names are written
 without a prefix (my call, D-43). The tones of widgets are in "Widgets"
 below; the terminal and syntax colours are in "Terminal colours" and
-"Editor theme". The owner approves them in the prototype before they go
-into real files.
+"Editor theme". The designer chose the tones, the text colours and the
+accent; the owner approved them, and the whole prototype, on 2026-11-12
+(D-85).
 
 ## Surfaces
 
@@ -168,7 +169,7 @@ background / text, and the block marker or tick where the widget has one.
 Tokens of the widgets (P1.3 to P1.5; reviewed by the owner in P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the
 token holds the plain colour (D-47).
 
-| Token | Starting value | Used for |
+| Token | Value | Used for |
 |---|---|---|
 | `--well` | `var(--tone-0)` | a well at rest (decided, D-75) |
 | `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
@@ -205,7 +206,7 @@ token holds the plain colour (D-47).
   cannot draw it, a popup has no shadow: the owner accepts that. (decided,
   D-74)
 
-  | Token | Starting value | Used for |
+  | Token | Value | Used for |
   |---|---|---|
   | `--popup` | `var(--tone-3)` | a menu, a combo box list, a tooltip |
 
