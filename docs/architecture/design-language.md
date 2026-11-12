@@ -257,8 +257,7 @@ token holds the plain colour (D-47).
 
 Konsole's terminal colours: a background, a foreground and the 16 ANSI
 colours. They are muted, warm-shifted hues that sit with the Sand palette
-(D-20). The six normal colours are on trial in P1.7: the owner is
-choosing between the set below and a darker one (O-5).
+(D-20). The six normal colours are the owner's choice (decided, D-80).
 
 | Token | Value | Built as |
 |---|---|---|
@@ -281,16 +280,14 @@ choosing between the set below and a darker one (O-5).
   a warm tone or text token.
 - **A normal colour has two jobs:** text on the terminal, and a background
   under light text, as in Midnight Commander's panels and in status
-  badges. The owner found the starting normal colours, at lightness
-  74–75 %, too close to the bright ones and unusable as backgrounds. No
-  colour does both jobs at 4.5:1 on tone 1; the two meet near 3:1 as text
-  and 4.4:1 under text. The set on trial is 3.7:1 as text and about 3.7:1
-  under text; the other is 3:1 and 4.4:1. Open question O-5 in the
-  [decisions](decisions.md).
+  badges. So the normal colours sit at lightness 55–57 %, well apart from
+  the bright ones at 82–85 %. (decided, D-80) No colour does both jobs at
+  4.5:1 on tone 1; these do each at about 3.7:1. See rule 3 of
+  [accessibility](accessibility.md).
 - Konsole's intense and faint variants of the foreground and background,
   and the cursor (a profile setting), are settled in P4.1.
-- The prototype shows the terminal on `prototype/samples.html`, with a
-  second window in the other set while the owner chooses.
+- The prototype shows the terminal on `prototype/samples.html`, with
+  status badges and a Midnight Commander panel on coloured backgrounds.
 
 ## Editor theme
 

@@ -12,26 +12,9 @@
   padding: 32px;
 }
 
-.window.sample,
-.window.compare {
+.window.sample {
   position: relative;
   width: 720px;
-}
-
-/* A second window beside the first, for comparing two sets of colours. */
-.sample-scene:has(.compare) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 64px;
-}
-
-.sample-scene .candidate {
-  width: auto;
-}
-
-.sample-scene .candidate figcaption {
-  padding-top: 56px;
 }
 
 /* Konsole's terminal area: the terminal colours' background and foreground. */

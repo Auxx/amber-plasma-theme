@@ -114,40 +114,46 @@
     "why": "Accessibility rule 3: the terminal's foreground is text (D-53)"
   },
   {
+    "foreground": "terminal-text",
+    "on": ["ansi-red", "ansi-green", "ansi-yellow", "ansi-blue", "ansi-magenta", "ansi-cyan"],
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: programs draw the normal ANSI colours as backgrounds under light text (Midnight Commander's panels, status badges), which reaches 3.5:1 on them (D-80, D-81)."
+  },
+  {
     "foreground": "ansi-red",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-green",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-yellow",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-blue",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-magenta",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-cyan",
     "on": ["terminal"],
-    "minimum": 3,
-    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3:1, not 4.5:1. On trial in P1.7: the owner is choosing between two sets."
+    "minimum": 3.5,
+    "why": "Accessibility rule 3: a normal ANSI colour is also a background under light text, so as text on the terminal it reaches 3.5:1, not 4.5:1 (D-80, D-81)."
   },
   {
     "foreground": "ansi-white",

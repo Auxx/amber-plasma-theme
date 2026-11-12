@@ -1,7 +1,6 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. One question is open: O-5 in the
-> [decisions](decisions.md), light text on ANSI colours.
+> Status: **Accepted** on 2026-11-11.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -40,16 +39,16 @@ Disabled controls are exempt in WCAG, and are exempt here.
    1.1 (1.13:1) and by the accent's hue (my call).
    The terminal's foreground, white, bright black and the bright colours
    reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to
-   match a dark background. **The six normal colours reach 3:1 as text,
+   match a dark background. **The six normal colours reach 3.5:1 as text,
    not 4.5:1**, because programs also draw them as backgrounds under light
    text: Midnight Commander's panels, status badges, powerline prompts.
    No colour does both at 4.5:1 on tone 1: the two meet near 3:1 as text
-   and 4.4:1 under text. This is on trial in P1.7 and is open question
-   O-5 in the [decisions](decisions.md): the set in the tokens measures
-   3.68:1 to 3.73:1 as text, with text on it at 3.64:1 to 3.69:1 and
-   bright white at 4.13:1 to 4.19:1; the darker set measures 3.04:1 to
-   3.09:1, 4.40:1 to 4.46:1 and 4.99:1 to 5.06:1 (measured 2026-11-12).
-   Light text on a normal colour has no pair until the owner chooses.
+   and 4.4:1 under text. The owner chose the set that does each at about
+   3.7:1 (decided, D-80): 3.68:1 to 3.73:1 as text, the terminal's
+   foreground on them at 3.64:1 to 3.69:1, and bright white at 4.13:1 to
+   4.19:1 (measured 2026-11-12). A darker set at 3:1 as text was harder to
+   read on the dark terminal. Both directions have pairs with a minimum
+   of 3.5 (my call, D-81). Amber accepts that these do not reach 4.5:1.
 4. **Focused widgets.** A focused raised widget, toggle, tab or scroll
    area is shown by a tone tinted with accent. Text on the focused tone
    reaches 4.5:1 like any other text. The tints are accent 30 % over
@@ -188,12 +187,18 @@ falls below its minimum.
 | text | editor selection | 9.33:1 | 4.5 | pass |
 | dim text | editor gutter | 6.86:1 | 4.5 | pass |
 | terminal text | terminal | 13.58:1 | 4.5 | pass |
-| ansi red | terminal | 3.69:1 | 3 (on trial) | pass |
-| ansi green | terminal | 3.69:1 | 3 (on trial) | pass |
-| ansi yellow | terminal | 3.71:1 | 3 (on trial) | pass |
-| ansi blue | terminal | 3.72:1 | 3 (on trial) | pass |
-| ansi magenta | terminal | 3.73:1 | 3 (on trial) | pass |
-| ansi cyan | terminal | 3.68:1 | 3 (on trial) | pass |
+| terminal text | ansi red | 3.68:1 | 3.5 | pass |
+| terminal text | ansi green | 3.68:1 | 3.5 | pass |
+| terminal text | ansi yellow | 3.66:1 | 3.5 | pass |
+| terminal text | ansi blue | 3.65:1 | 3.5 | pass |
+| terminal text | ansi magenta | 3.64:1 | 3.5 | pass |
+| terminal text | ansi cyan | 3.69:1 | 3.5 | pass |
+| ansi red | terminal | 3.69:1 | 3.5 | pass |
+| ansi green | terminal | 3.69:1 | 3.5 | pass |
+| ansi yellow | terminal | 3.71:1 | 3.5 | pass |
+| ansi blue | terminal | 3.72:1 | 3.5 | pass |
+| ansi magenta | terminal | 3.73:1 | 3.5 | pass |
+| ansi cyan | terminal | 3.68:1 | 3.5 | pass |
 | ansi white | terminal | 13.58:1 | 4.5 | pass |
 | ansi bright black | terminal | 6.86:1 | 4.5 | pass |
 | ansi bright red | terminal | 9.64:1 | 4.5 | pass |

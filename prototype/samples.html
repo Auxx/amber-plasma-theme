@@ -22,11 +22,11 @@
      realistic content. Each coloured span has one class, named for its token. -->
 <section class="family" aria-label="Terminal">
   <h2>Terminal</h2>
-  <p class="dim">Konsole's terminal colours on tone 1, a tone below the window's main surface. The normal colours are dark enough to carry light text as backgrounds, in <code>mc</code> and in status badges. Two sets to compare: the first window is "Lighter, 3.7:1" (red 3.69:1 and blue 3.72:1 on the terminal; text on blue 3.65:1, bright white 4.14:1); the second is "Even, 3:1".</p>
+  <p class="dim">Konsole's terminal colours on tone 1, a tone below the window's main surface. The bright colours reach 4.5:1. The normal colours are darker, so that they also carry light text as backgrounds, in <code>mc</code> and in status badges: about 3.7:1 either way.</p>
 
   <div class="sample-scene">
     <div class="window is-active sample konsole">
-      <div class="title-bar"><span class="title">Lighter, 3.7:1 — Konsole</span></div>
+      <div class="title-bar"><span class="title">amber : bash — Konsole</span></div>
       <div class="tab-bar" role="tablist"><button class="tab is-selected" role="tab" aria-selected="true">amber</button><button class="tab" role="tab" aria-selected="false">tools</button></div>
 <pre class="terminal"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ ls --color
 <span class="ansi-blue">docs/</span>  <span class="ansi-blue">parts/</span>  <span class="ansi-blue">prototype/</span>  <span class="ansi-blue">tools/</span>  <span class="ansi-green">install.sh*</span>  <span class="ansi-cyan">latest -&gt; docs/</span>  README.md
@@ -57,49 +57,6 @@
 <span class="ansi-white on-blue">   README.md               1204   Nov 10 17:40      </span>
 <span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git<span class="ansi-bright-black"> push</span></pre>
     </div>
-
-    <!-- The other set of normal colours the owner is choosing between (P1.7). -->
-    <figure class="candidate" style="--ansi-red: #9b5244; --ansi-green: #596e31; --ansi-yellow: #7f6321; --ansi-blue: #3b6d89; --ansi-magenta: #8d5771; --ansi-cyan: #397069">
-      <div class="window is-active compare" inert>
-        <div class="title-bar"><span class="title">Even, 3:1</span></div>
-        <div class="tab-bar" role="tablist"><button class="tab is-selected" role="tab" aria-selected="true">amber</button><button class="tab" role="tab" aria-selected="false">tools</button></div>
-<pre class="terminal"><span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ ls --color
-<span class="ansi-blue">docs/</span>  <span class="ansi-blue">parts/</span>  <span class="ansi-blue">prototype/</span>  <span class="ansi-blue">tools/</span>  <span class="ansi-green">install.sh*</span>  <span class="ansi-cyan">latest -&gt; docs/</span>  README.md
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git status --short
- <span class="ansi-red">M</span> prototype/tokens.css
-<span class="ansi-green">A</span>  prototype/samples.html
-<span class="ansi-red">??</span> notes.txt
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ npm --prefix tools test
-<span class="ansi-green">✔</span> tokens pairs (12 ms)
-<span class="ansi-yellow">⚠ 1 close pair</span>
-<span class="ansi-bright-red">✖ samples: span with no token</span>
-<span class="ansi-cyan">ℹ tests 214</span>
-<span class="ansi-bright-black">ℹ duration_ms 8042</span>
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ journalctl --user -p warning -n 2
-<span class="ansi-magenta">Nov 11 09:14:02</span> forge kwin_wayland[1402]: No decoration plugin found, using the default
-<span class="ansi-magenta">Nov 11 09:14:05</span> forge konsole[2210]: Colour scheme "Amber" not found
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ npx jest
-<span class="ansi-black on-green"> PASS </span> tokens.spec.mjs
-<span class="ansi-bright-white on-red"> FAIL </span> samples.spec.mjs
-<span class="ansi-black on-yellow"> WARN </span> 1 close pair
-<span class="ansi-white on-magenta"> INFO </span> 214 tests in 8.0 s
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ mc
-<span class="ansi-black on-cyan">  Left     File     Command     Options     Right   </span>
-<span class="ansi-bright-yellow on-blue">  Name                     Size   Modify time       </span>
-<span class="ansi-bright-white on-blue">  /docs                    4096   Nov 11 09:12      </span>
-<span class="ansi-black on-cyan">  /prototype               4096   Nov 12 00:31      </span>
-<span class="ansi-bright-green on-blue">  *install.sh               812   Nov 10 18:02      </span>
-<span class="ansi-white on-blue">   README.md               1204   Nov 10 17:40      </span>
-<span class="ansi-bright-green">aux@forge</span> <span class="ansi-bright-blue">~/dev/amber</span><span class="ansi-yellow"> (feat/p1.6)</span> $ git<span class="ansi-bright-black"> push</span></pre>
-      </div>
-      <figcaption>
-        Even, 3:1
-        <span class="dim">normal colours at lightness 50–53 %</span>
-        <span class="ratio-line">red <data class="ratio" data-pair="ansi-red on terminal" value="3.04">3.04:1 on terminal</data></span>
-        <span class="ratio-line">blue <data class="ratio" data-pair="ansi-blue on terminal" value="3.09">3.09:1 on terminal</data></span>
-        <span class="dim">text on blue 4.40:1, bright white 4.99:1</span>
-      </figcaption>
-    </figure>
 
     <div class="ansi-palette terminal" aria-label="The 16 ANSI colours"><span class="ansi-black">black (exempt)</span><span class="ansi-red">red</span><span class="ansi-green">green</span><span class="ansi-yellow">yellow</span><span class="ansi-blue">blue</span><span class="ansi-magenta">magenta</span><span class="ansi-cyan">cyan</span><span class="ansi-white">white</span><span class="ansi-bright-black">bright black</span><span class="ansi-bright-red">bright red</span><span class="ansi-bright-green">bright green</span><span class="ansi-bright-yellow">bright yellow</span><span class="ansi-bright-blue">bright blue</span><span class="ansi-bright-magenta">bright magenta</span><span class="ansi-bright-cyan">bright cyan</span><span class="ansi-bright-white">bright white</span></div>
   </div>

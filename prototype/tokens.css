@@ -56,7 +56,7 @@
 
   /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
      Hues are OKLCH: normal at lightness 55-57 %, so that they also carry light
-     text as backgrounds; bright at 82-85 %. */
+     text as backgrounds (D-80); bright at 82-85 %. */
   --terminal: var(--tone-1);              /* the terminal background: a tone below the window's main surface (D-78) */
   --terminal-text: var(--text);           /* Konsole's foreground */
   --ansi-black: var(--tone-0);            /* colour 0; exempt from contrast (D-53) */

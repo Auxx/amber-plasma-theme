@@ -87,6 +87,8 @@ text in other documents.
 | D-77 | Following D-75 and D-76: the well edge is removed (`--well-edge`, `--well-edge-width`, its pair and its glossary entry). The floors stay and are no longer provisional: 1.1 for `well`, `toggle`, `track` and the thumbs on their surfaces, 1.2 for `raised-focus`, `toggle-focus` and `surface-focus` | Designer | A candidate that was not chosen leaves no token behind. The floors are not WCAG rules; they stop a later change of tone from fading a step the owner approved. 2026-11-12 |
 | D-78 | The terminal background is tone 1. It replaces tone 2 of D-56, which still holds for the editor until the owner looks at it | Owner | 2026-11-12, P1.7, from the samples page's candidates: "I prefer Tone 1 for background." Every terminal colour gains contrast on it |
 | D-79 | The editor's syntax colours are separate from the terminal colours. It replaces D-57: the syntax colours keep the values they had (the hues of the terminal at lightness 74–75 %; preprocessor is the accent, comments are dim text), which the owner reviews with the editor | Owner | 2026-11-12, P1.7: "Yes, editor colours should be separate from terminal. Editor has a fixed background, which is only affected by active line and selection." A terminal colour must also serve as a background; a syntax colour never does |
+| D-80 | The six normal ANSI colours are darker, at OKLCH lightness 55–57 % (`#aa5f51`, `#667b3e`, `#8d7030`, `#487a97`, `#9b647e`, `#467d76`), so that they stand apart from the bright ones and carry light text as backgrounds. As text on the terminal they reach about 3.7:1, which sets aside the 4.5:1 of D-53 for them. ANSI yellow is no longer the accent. This closes O-5 | Owner | 2026-11-12, P1.7. Of the starting colours: "there is little to no brightness difference between darker and brighter colours. Apps like `mc` will be unusable." After comparing two sets at full size: "Lighter, 3.7:1 looks better to me, dark shades are harder to read on dark background in 3:1 variant. Let's go with Lighter, 3.7:1." |
+| D-81 | Following D-80: the normal colours have a minimum of 3.5 as text on the terminal, and the terminal's foreground has pairs on each of them, also at 3.5 | Designer | The owner found 3:1 hard to read and 3.7:1 good, so 3.5 is the floor that keeps a later change from sliding towards the set that was turned down. 2026-11-12 |
 
 ## Accessibility
 
@@ -101,6 +103,4 @@ text in other documents.
 
 ## Open
 
-| ID | Question | Whose |
-|---|---|---|
-| O-5 | How dark are the six normal ANSI colours? The owner decided on 2026-11-12 that they get darker, so that they stand apart from the bright ones and carry light text as backgrounds ("Apps like `mc` will be unusable... status messages will be impossible to see"), which sets aside the 4.5:1 of D-53 for them as text. Still to choose: "Lighter, 3.7:1" (in the tokens on trial: 3.7:1 as text, text on it 3.7:1) or "Even, 3:1" (3.0:1 as text, text on it 4.4:1). Both are on `prototype/samples.html` as full windows. With the choice come the minimum of the normal colours as text and pairs for light text on them. See [accessibility](accessibility.md), rule 3 | Owner |
+No question is open. O-1, O-3, O-4 and O-5 were closed in P1.7 (D-59 to D-81).
