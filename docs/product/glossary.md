@@ -191,6 +191,15 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : One of the buttons of a tab bar. The selected tab names the page shown
   below it.
 
+**Chevron**
+: The arrow beside a folder of a tree that opens and closes it: dim text,
+  turned when open. _Avoid_ "branch indicator", Qt's name, and "expander".
+
+**Rubber band**
+: The rectangle dragged over a view to select the items under it. _Avoid_
+  "selection rectangle", Union's `selectionrectangle`, except when naming
+  Union's selector.
+
 **Header**
 : The row of column titles above a table or tree view. Each title is a
   header section, which may carry a sort arrow. _Avoid_ "column header" for

@@ -51,6 +51,8 @@
   --thumb-pressed: #746e63;       /* a pressed thumb: the lightest state */
   --selected: var(--tone-4);      /* a selected item of a list, tree, table or sidebar (D-72) */
   --marker-width: 3px;            /* the block marker on a selected item or tab (D-21: at least 3 px) */
+  --rubber-band: color-mix(in srgb, var(--selected) 50%, transparent); /* the rubber band: the selected tone at half strength, with no border (D-110) */
+  --text-selection: #605239;      /* text selected in a field, and the colour scheme's Selection, which folder icons take: accent 40 % over tone 0 (D-110) */
 
   /* Popups: menus, combo box lists, tooltips */
   --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */

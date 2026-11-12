@@ -10,11 +10,12 @@ import { checkPairs, describePair, loadPairs, loadTokens } from './tokens.mjs';
 
 // Colour tokens that need no pair: the shadow shows no state (D-4), the
 // window glow is a faint indicator with no minimum (D-60), and ANSI black is
-// meant to match a dark background, so it is exempt (D-53). Every
+// meant to match a dark background, so it is exempt (D-53). The rubber band
+// is a see-through tone over items whose own pairs hold (my call, P3.7). Every
 // other colour token carries text, marks state or lies under text, and must be
 // the foreground or a background layer of at least one pair
 // (docs/architecture/accessibility.md, "How the check works").
-const NO_PAIR = [ 'shadow', 'glow', 'ansi-black' ];
+const NO_PAIR = [ 'shadow', 'glow', 'ansi-black', 'rubber-band' ];
 
 describe('Amber contrast pairs', () => {
   const tokens = loadTokens();
@@ -22,7 +23,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 141);
+    assert.equal(pairs.length, 146);
   });
 
   it('resolves every token of every pair', () => {
@@ -94,6 +95,13 @@ describe('Amber contrast pairs', () => {
     assert.equal(ratio('accent on surface-focus'), '6.13');
     assert.equal(ratio('selected on tone-2'), '1.36');
     assert.equal(ratio('selected on tone-1'), '1.49');
+  });
+
+  it('keeps text readable on a text selection, and folders apart (D-110)', () => {
+    const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
+    assert.equal(ratio('text on text-selection'), '5.95');
+    assert.equal(ratio('text-selection on tone-2'), '2.08');
+    assert.equal(ratio('text-selection on selected'), '1.53');
   });
 
   it('keeps secondary text on selections and popups', () => {

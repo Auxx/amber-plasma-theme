@@ -165,7 +165,7 @@ Warm, never cool.</textarea></div>
 
 <section class="family" aria-label="Navigation">
   <h2>Navigation</h2>
-  <p class="dim">Tabs and items show selection with a block marker in accent. A selected tab takes the tone of its page.</p>
+  <p class="dim">A selected tab, and a selected item of a sidebar, carry a block marker in accent; a selected item of a view is told by its tone. A selected tab takes the tone of its page.</p>
 
   <div class="state-row" data-widget="tab">
     <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab" role="tab" aria-selected="false">Downloads</button></div></div>
@@ -187,6 +187,16 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="item-view" role="listbox" aria-label="Files"><div class="item is-focused" role="option" tabindex="0" aria-selected="false"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
     <div class="state" data-state="selected"><span class="state-label dim">Selected</span><div class="item-view" role="listbox" aria-label="Files"><div class="item is-selected" role="option" tabindex="0" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
     <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="item-view" role="listbox" aria-label="Files"><div class="item" role="option" aria-disabled="true" aria-selected="false"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+    <div class="state" data-state="selected-focused"><span class="state-label dim">Selected, focused</span><div class="item-view" role="listbox" aria-label="Files"><div class="item is-selected is-focused" role="option" tabindex="0" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+    <div class="state" data-state="selected-disabled"><span class="state-label dim">Selected, disabled</span><div class="item-view" role="listbox" aria-label="Files"><div class="item is-selected" role="option" aria-disabled="true" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+  </div>
+
+  <!-- An item of a sidebar (P3.7, D-111): on tone 1; selected, it carries the block marker. -->
+  <div class="state-row" data-widget="sidebar-item">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="item-view is-sidebar" role="listbox" aria-label="Places"><div class="item" role="option" tabindex="0" aria-selected="false"><span class="item-name">Downloads</span></div></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="item-view is-sidebar" role="listbox" aria-label="Places"><div class="item is-hovered" role="option" tabindex="0" aria-selected="false"><span class="item-name">Downloads</span></div></div></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="item-view is-sidebar" role="listbox" aria-label="Places"><div class="item is-focused" role="option" tabindex="0" aria-selected="false"><span class="item-name">Downloads</span></div></div></div>
+    <div class="state" data-state="selected"><span class="state-label dim">Selected</span><div class="item-view is-sidebar" role="listbox" aria-label="Places"><div class="item is-selected" role="option" tabindex="0" aria-selected="true"><span class="item-name">Downloads</span></div></div></div>
   </div>
 </section>
 
@@ -199,6 +209,28 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="header" role="row"><div class="header-section is-hovered" role="columnheader">Name</div></div></div>
     <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="header" role="row"><div class="header-section is-pressed" role="columnheader">Name</div></div></div>
     <div class="state" data-state="sorted"><span class="state-label dim">Sorted</span><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div></div></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="header" role="row"><div class="header-section" role="columnheader" aria-disabled="true">Name</div></div></div>
+  </div>
+
+  <!-- A tree item (P3.7): the state is on the item marked is-state. -->
+  <div class="state-row" data-widget="tree-item">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="tree" role="tree" aria-label="Folders"><details><summary class="item is-state"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Documents</summary></details></div></div>
+    <div class="state" data-state="expanded"><span class="state-label dim">Expanded</span><div class="tree" role="tree" aria-label="Folders"><details open><summary class="item is-state"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Documents</summary><div class="tree-level"><div class="item" tabindex="-1">amber-notes.md</div></div></details></div></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="tree" role="tree" aria-label="Folders"><details><summary class="item is-focused is-state"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Documents</summary></details></div></div>
+    <div class="state" data-state="selected"><span class="state-label dim">Selected</span><div class="tree" role="tree" aria-label="Folders"><details open><summary class="item" tabindex="-1"><svg class="glyph chevron" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>Documents</summary><div class="tree-level"><div class="item is-selected is-state" tabindex="0" aria-selected="true">amber-notes.md</div></div></details></div></div>
+  </div>
+
+  <!-- A table row (P3.7): the whole row is the item; no marker in a view (D-111). -->
+  <div class="state-row" data-widget="table-row">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="table" role="grid" aria-label="Files"><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div><div class="header-section" role="columnheader">Size</div></div><div class="item is-row is-state" role="row" tabindex="0" aria-selected="false"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="table" role="grid" aria-label="Files"><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div><div class="header-section" role="columnheader">Size</div></div><div class="item is-row is-hovered is-state" role="row" tabindex="0" aria-selected="false"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+    <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="table" role="grid" aria-label="Files"><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div><div class="header-section" role="columnheader">Size</div></div><div class="item is-row is-focused is-state" role="row" tabindex="0" aria-selected="false"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+    <div class="state" data-state="selected"><span class="state-label dim">Selected</span><div class="table" role="grid" aria-label="Files"><div class="header" role="row"><div class="header-section is-sorted" role="columnheader" aria-sort="ascending">Name<svg class="glyph sort-arrow" viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></div><div class="header-section" role="columnheader">Size</div></div><div class="item is-row is-selected is-state" role="row" tabindex="0" aria-selected="true"><span class="item-name">amber-notes.md</span><span class="item-detail">6 KB</span></div></div></div>
+  </div>
+
+  <!-- The rubber band (P3.7, D-110): the selected tone at half strength, with no border. -->
+  <div class="state-row" data-widget="rubber-band">
+    <div class="state" data-state="rest"><span class="state-label dim">Dragged</span><div class="item-view rubber-band-view" role="listbox" aria-label="Files"><div class="item" role="option" aria-selected="false"><svg class="glyph folder-glyph" viewBox="0 0 16 16"><path d="M1.5 3h5l1.5 1.5h6.5v9h-13z" fill="currentColor" stroke="none"/></svg><span class="item-name">Documents</span></div><div class="item" role="option" aria-selected="false"><svg class="glyph folder-glyph" viewBox="0 0 16 16"><path d="M1.5 3h5l1.5 1.5h6.5v9h-13z" fill="currentColor" stroke="none"/></svg><span class="item-name">Invoices</span></div><div class="item" role="option" aria-selected="false"><svg class="glyph folder-glyph" viewBox="0 0 16 16"><path d="M1.5 3h5l1.5 1.5h6.5v9h-13z" fill="currentColor" stroke="none"/></svg><span class="item-name">Letters</span></div><div class="rubber-band"></div></div></div>
   </div>
 
   <div class="live is-wide"><span class="state-label dim">Live</span><div class="live-row">

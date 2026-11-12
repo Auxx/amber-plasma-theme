@@ -148,6 +148,7 @@ const WIDGETS = {
       hovered: [ 'danger', 'on-danger' ]
     }
   },
+  // An item of a view: selection is its tone alone, with no block marker (D-111).
   item: {
     control: '.item',
     read: MARKED_ITEM,
@@ -155,8 +156,21 @@ const WIDGETS = {
       rest: [ 'transparent', 'text', 'transparent' ],
       hovered: [ 'tone-3', 'text', 'transparent' ],
       focused: [ 'raised-focus', 'text', 'transparent' ],
-      selected: [ 'selected', 'text', 'accent' ],
-      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+      selected: [ 'selected', 'text', 'transparent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ],
+      'selected-focused': [ 'raised-focus', 'text', 'transparent' ],
+      'selected-disabled': [ 'selected', 'text-dim', 'transparent' ]
+    }
+  },
+  // An item of a sidebar carries the block marker when selected (D-111).
+  'sidebar-item': {
+    control: '.item',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-3', 'text', 'transparent' ],
+      focused: [ 'raised-focus', 'text', 'transparent' ],
+      selected: [ 'selected', 'text', 'accent' ]
     }
   },
   header: {
@@ -165,9 +179,34 @@ const WIDGETS = {
       rest: [ 'transparent', 'text-dim' ],
       hovered: [ 'tone-3', 'text' ],
       pressed: [ 'tone-1', 'text' ],
-      sorted: [ 'transparent', 'text' ]
+      sorted: [ 'transparent', 'text' ],
+      disabled: [ 'transparent', 'text-dim' ]
     }
   },
+  // A tree item and a table row (P3.7): the state is on the item marked is-state.
+  'tree-item': {
+    control: '.item.is-state',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      expanded: [ 'transparent', 'text', 'transparent' ],
+      focused: [ 'raised-focus', 'text', 'transparent' ],
+      selected: [ 'selected', 'text', 'transparent' ]
+    }
+  },
+  'table-row': {
+    control: '.item.is-state',
+    read: MARKED_ITEM,
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-3', 'text', 'transparent' ],
+      focused: [ 'raised-focus', 'text', 'transparent' ],
+      selected: [ 'selected', 'text', 'transparent' ]
+    }
+  },
+  // The rubber band (P3.7, D-110): the selected tone at half strength.
+  // Its see-through colour is no token name; its own test reads it.
+  'rubber-band': { control: '.rubber-band', read: [ 'background-color' ], states: { rest: [] } },
   // A menu title of a tone 0 menu bar (P3.6): open, it joins its menu.
   'menu-title': {
     control: '.menu-title',
@@ -250,6 +289,14 @@ function controlTag(body, selector) {
 }
 
 const names = tokenNames(loadTokens());
+
+/** The accent as Chrome writes it in a computed gradient, rgb(r, g, b). */
+function getComputedAccent() {
+  const { r, g, b } = Object.fromEntries(
+    Object.entries(loadTokens().get('accent').colour).filter(([ key ]) => 'rgb'.includes(key) && key.length === 1).map(([ key, value ]) => [ key, Math.round(value * 255) ])
+  );
+  return `rgb(${r}, ${g}, ${b})`;
+}
 
 /** Whether a computed colour is the token expected: `transparent`, or among its names. */
 const isToken = (computed, expected) => isTokenColour(computed, expected, names);
@@ -407,14 +454,16 @@ describe('prototype gallery', () => {
           continue;
         }
         const forced = found.classes.filter(name => Object.values(FORCED).includes(name));
-        const expected = FORCED[state] ? [ FORCED[state] ] : [];
+        // A compound state, such as selected-focused, forces each of its parts.
+        const parts = state.split('-');
+        const expected = parts.map(part => FORCED[part]).filter(Boolean);
         if (forced.join() !== expected.join()) {
           offences.push(`${widget} ${state}: forced ${forced.join(' ') || 'nothing'}, expected ${expected.join(' ') || 'nothing'}`);
         }
         const target = WIDGETS[widget]?.target?.split(' ').at(-1);
         const disabledOn = target ? controlTag(body, target)?.tag ?? '' : found.tag;
-        if (/\sdisabled\b|\saria-disabled="true"/.test(disabledOn) !== (state === 'disabled')) {
-          offences.push(`${widget} ${state}: disabled is ${state === 'disabled' ? 'missing' : 'set'}`);
+        if (/\sdisabled\b|\saria-disabled="true"/.test(disabledOn) !== parts.includes('disabled')) {
+          offences.push(`${widget} ${state}: disabled is ${parts.includes('disabled') ? 'missing' : 'set'}`);
         }
         if (/\schecked\b/.test(found.tag) !== Boolean(WIDGETS[widget]?.checked)) {
           offences.push(`${widget} ${state}: checked is ${WIDGETS[widget]?.checked ? 'missing' : 'set'}`);
@@ -492,10 +541,13 @@ describe('prototype gallery', () => {
     const [ offBackground, mark ] = await coloursOf(page, off, MARKED);
     assert.ok(isToken(offBackground, 'toggle') && isToken(mark, 'text-dim'), `disabled checked and hovered: ${nameColour(offBackground, names)}`);
 
-    // Selected items and tabs keep their marker when hovered or focused.
+    // Selected items and tabs keep their tone, and a sidebar's item and a tab
+    // their marker, when hovered or focused.
     const combined = [
-      [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
-      [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
+      [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'transparent' ] ],
+      [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'transparent' ] ],
+      [ 'sidebar-item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
+      [ 'sidebar-item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
       [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
       [ 'tab', { focus: 'selected' }, [ 'surface-focus', 'text', 'accent' ] ],
       [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ],
@@ -645,7 +697,7 @@ describe('prototype gallery', () => {
       .filter(([ , { states } ]) => states.focused)
       .flatMap(([ widget, { states } ]) =>
       Object.keys(states)
-        .filter(state => state !== 'disabled')
+        .filter(state => !state.split('-').includes('disabled'))
         .map(state => `${widget} ${state}`)
     );
     await page.locator('.pages a').last().focus();
@@ -700,7 +752,7 @@ describe('prototype gallery', () => {
     const offences = [];
     for (const state of Object.keys(WIDGETS.item.states)) {
       const [ colour ] = await coloursOf(page, `${cell('item', state)} .item-detail`, [ 'color' ]);
-      const expected = state === 'focused' ? 'text' : 'text-dim';
+      const expected = state.split('-').includes('focused') ? 'text' : 'text-dim';
       if (!isToken(colour, expected)) {
         offences.push(`item ${state}: detail ${nameColour(colour, names)}, expected ${expected}`);
       }
@@ -713,27 +765,41 @@ describe('prototype gallery', () => {
     }
     // The chevron of a focused tree folder too: it shows open or closed.
     ({ page } = await gallery());
-    await page.locator('.tree summary').first().focus();
-    const [ chevron ] = await coloursOf(page, '.tree > details > summary .chevron', [ 'color' ]);
+    await page.locator('.live .tree summary').first().focus();
+    const [ chevron ] = await coloursOf(page, '.live .tree > details > summary .chevron', [ 'color' ]);
     if (!isToken(chevron, 'text')) {
       offences.push(`tree summary, focused: chevron ${nameColour(chevron, names)}, expected text`);
     }
     assert.deepEqual(offences, []);
   });
 
+  withChrome('draws the rubber band as the selected tone at half strength', async () => {
+    const { page } = await gallery();
+    const [ background ] = await coloursOf(page, controlOf('rubber-band', 'rest'), [ 'background-color' ]);
+    const [ selected ] = await coloursOf(page, controlOf('item', 'selected'), [ 'background-color' ]);
+    // Chrome writes a color-mix as color(srgb r g b / a), with channels 0 to 1.
+    const channels = text => text.match(/[\d.]+/g).map(Number);
+    const [ r, g, b, alpha ] = channels(background);
+    assert.deepEqual([ r, g, b ].map(c => Math.round(c * 255)), channels(selected).slice(0, 3), background);
+    assert.equal(alpha, 0.5, background);
+  });
+
   withChrome('marks the selected item in the window shell', async () => {
+    // A selected place carries the block marker; a selected row of the view is
+    // told by its tone alone (D-111).
     const { browser, page } = await openPage(pageUrl('prototype/index.html'));
     try {
       const shown = await page.evaluate(() =>
         [ ...document.querySelectorAll('.is-selected') ].map(element => {
           const style = getComputedStyle(element);
-          return [ style.backgroundColor, style.getPropertyValue('--marker').trim() ];
+          return [ element.classList.contains('place'), style.backgroundColor, style.backgroundImage ];
         })
       );
-      assert.ok(shown.length > 0);
+      assert.ok(shown.some(([ place ]) => place) && shown.some(([ place ]) => !place));
+      const accent = getComputedAccent();
       const offences = shown
-        .filter(([ background, marker ]) => !isToken(background, 'selected') || !isToken(marker, 'accent'))
-        .map(pair => pair.map(c => nameColour(c, names)).join(' / '));
+        .filter(([ place, background, image ]) => !isToken(background, 'selected') || image.includes(accent) !== place)
+        .map(([ place, background, image ]) => `${place ? 'place' : 'row'}: ${nameColour(background, names)} / ${image}`);
       assert.deepEqual(offences, []);
     } finally {
       await browser.close();
@@ -744,7 +810,7 @@ describe('prototype gallery', () => {
     const { page } = await gallery();
     // The Invoices folder, closed at first. A selector by state would stop
     // matching once it opens.
-    const details = page.locator('.tree details details').first();
+    const details = page.locator('.live .tree details details').first();
     const summary = details.locator('> summary');
     const open = () => details.evaluate(element => element.open);
     assert.equal(await open(), false, 'closed at first');
@@ -773,10 +839,10 @@ describe('prototype gallery', () => {
 
   withChrome('draws views with no line', async () => {
     let { page } = await gallery();
-    await page.locator('.table .item').nth(1).hover();
+    await page.locator('.live .table .item').nth(1).hover();
     const offences = (await renderedOffences(page)).map(o => `table row hovered: ${o}`);
     ({ page } = await gallery());
-    await page.locator('.tree summary').first().focus();
+    await page.locator('.live .tree summary').first().focus();
     offences.push(...(await renderedOffences(page)).map(o => `tree summary focused: ${o}`));
     assert.deepEqual(offences, []);
   });
@@ -881,8 +947,8 @@ describe('prototype gallery', () => {
     const { page } = await gallery();
     const starts = await page.evaluate(() => {
       const textStart = element => element.getBoundingClientRect().left + parseFloat(getComputedStyle(element).paddingLeft);
-      const header = [ ...document.querySelectorAll('.table .header-section') ].map(textStart);
-      const rows = [ ...document.querySelectorAll('.table .item.is-row') ].map(row => [ ...row.children ].map(textStart));
+      const header = [ ...document.querySelectorAll('.live .table .header-section') ].map(textStart);
+      const rows = [ ...document.querySelectorAll('.live .table .item.is-row') ].map(row => [ ...row.children ].map(textStart));
       return { header, rows };
     });
     assert.equal(starts.header.length, 3);
