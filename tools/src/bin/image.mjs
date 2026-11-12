@@ -105,7 +105,9 @@ ${REGION_HELP}
       usage: '<png> --surface <hex> [--region x,y,w,h] [--json]',
       summary: 'Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a surface; exits 1 when there is one',
       help: `The widget is every pixel that is not the --surface colour (±1 a
-channel; a fully transparent pixel counts as surface). A side is judged only
+channel; a fully transparent pixel counts as surface); choose a surface colour
+the widget does not use. Nothing is judged unless one colour fills half the
+widget's box, which text never does. A side is judged only
 when its longest run of drawn pixels covers a quarter of it, so text alone
 is not judged; a corner only when both its sides are. A corner is rounded
 when its pixel is nearer the surface than the widget's most common colour.

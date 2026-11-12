@@ -207,6 +207,18 @@ describe('frame', () => {
     assert.deepEqual(result.sides, sides('not judged'));
   });
 
+  it('judges nothing in text whose strokes reach the edge of its box', () => {
+    // "Tl": a crossbar along the top and a stem down the right side, as the
+    // glyphs of a text field's text drawn on its own surface.
+    const c = canvas(60, 40);
+    c.rect(10, 10, 9, 1, '#e8e3da');
+    c.rect(14, 10, 1, 11, '#e8e3da');
+    c.rect(24, 10, 1, 11, '#e8e3da');
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.corners, all('not judged'));
+    assert.deepEqual(result.sides, sides('not judged'));
+  });
+
   it('reports nothing drawn on a bare surface', () => {
     const result = frame(canvas(20, 20).image, { surface: SURFACE });
     assert.equal(result.drawn, false);

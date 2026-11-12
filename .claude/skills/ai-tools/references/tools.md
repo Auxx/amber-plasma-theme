@@ -267,8 +267,8 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 # A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --region 0,30,1280,770 --mark tmp/check-colour-scheme/shots/dolphin-marked.png
 
-# A push button drawn on tone 2 by the P3.2 probe: "top: line #3c3832 1 px", "top left: rounded", exits 1
-node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-rest.png --surface '#25221f'
+# A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
+node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'
 
 # The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
 node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
@@ -303,8 +303,12 @@ node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png -
   message saying why.
 - **`frame` reads a widget, not a screen** (P3.2, my call). Draw the widget
   alone on a surface of one known colour, as the P3.2 probe does with
-  `QWidget.render()` at scale 1. The widget is every pixel that is not the
-  surface (±1 a channel; fully transparent counts as surface).
+  `QWidget.render()` at scale 1, on a colour the widget does not use, such as
+  magenta `#ff00ff`: a widget filled with the surface's own colour shows only
+  its text. The widget is every pixel that is not the surface (±1 a channel;
+  fully transparent counts as surface).
+  - Nothing is judged unless one colour fills at least half of the widget's
+    box. Text never does, so the edges of glyphs are never read as lines.
   - A side is judged only when its longest run of drawn pixels covers a
     quarter of it, so text alone is not judged; a corner only when both its
     sides are.

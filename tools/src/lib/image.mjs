@@ -158,7 +158,8 @@ function mode(colours) {
 /**
  * Whether a widget drawn on a known surface has rounded corners or lines one
  * or two pixels thick at its edges (P3.2). The box is every pixel that is not
- * the surface (±1 a channel; fully transparent counts as surface). A side is
+ * the surface (±1 a channel; fully transparent counts as surface). Nothing is
+ * judged unless one colour fills half the box, which text never does. A side is
  * judged only when its longest run of drawn pixels covers a quarter of it, so
  * that text alone is not judged; a corner only when both its sides are. A
  * corner is rounded when its pixel is nearer the surface than the box's most
@@ -195,7 +196,13 @@ export function frame(image, { surface, region } = {}) {
   if (x1 < 0) {
     return { drawn: false, box: null, ...unjudged, lines: {} };
   }
-  const fill = rgbOf(mode(drawnColours));
+  const fillHex = mode(drawnColours);
+  const fill = rgbOf(fillHex);
+  // Text has no colour that fills half of its box; a widget's background does.
+  const solid = drawnColours.filter(c => c === fillHex).length * 2 >= (x1 - x0 + 1) * (y1 - y0 + 1);
+  if (!solid) {
+    return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, ...unjudged, lines: {} };
+  }
 
   // The pixel of a side at position `i` along it and `d` px in from the edge.
   const point = {
