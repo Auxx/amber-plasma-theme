@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UsageError, main, print, table } from '../lib/cli.mjs';
-import { colourCounts, coolGreys, markPixels } from '../lib/image.mjs';
+import { colourCounts, coolGreys, frame, markPixels } from '../lib/image.mjs';
 import { decodePng, encodePng } from '../lib/png.mjs';
 import { loadTokens } from '../lib/tokens.mjs';
 
@@ -46,7 +46,7 @@ the picture, in pixels from its top left corner.`;
 
 main({
   name: 'image',
-  summary: 'Reads the colours of a PNG picture: cool greys, and colours named as tokens.',
+  summary: 'Reads the colours of a PNG picture: cool greys, colours named as tokens, rounded corners and lines.',
   commands: {
     greys: {
       usage: '<png> [--region x,y,w,h] [--mark <out.png>] [--json]',
@@ -99,6 +99,49 @@ ${REGION_HELP}
         print(values.json, shown, () =>
           table(shown.map(({ hex, count, token }) => [ hex, `${count} px`, token ?? '' ])));
         return 0;
+      }
+    },
+    frame: {
+      usage: '<png> --surface <hex> [--region x,y,w,h] [--json]',
+      summary: 'Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a surface; exits 1 when there is one',
+      help: `The widget is every pixel that is not the --surface colour (±1 a
+channel; a fully transparent pixel counts as surface). A side is judged only
+when its longest run of drawn pixels covers a quarter of it, so text alone
+is not judged; a corner only when both its sides are. A corner is rounded
+when its pixel is nearer the surface than the widget's most common colour.
+A side has a line when its outer colour differs from the colour 3 px in and
+runs for 1 or 2 px; 3 px or more is a band, such as a focus bar.
+${REGION_HELP}`,
+      options: { surface: { type: 'string' }, region: { type: 'string' }, json: { type: 'boolean' } },
+      run(values, positionals) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(values.surface ?? '')) {
+          throw new UsageError(`--surface must be a colour as #rrggbb: ${values.surface ?? '(missing)'}`);
+        }
+        const region = parseRegion(values.region);
+        const result = frame(readPicture(positionals), { surface: values.surface.toLowerCase(), region });
+        const names = { tl: 'top left', tr: 'top right', bl: 'bottom left', br: 'bottom right' };
+        const failed = Object.values(result.corners).includes('rounded') || Object.values(result.sides).includes('line');
+        print(values.json, result, () => {
+          if (!result.drawn) {
+            return 'nothing drawn';
+          }
+          const lines = [];
+          for (const [ side, verdict ] of Object.entries(result.sides)) {
+            if (verdict === 'line') {
+              lines.push(`${side}: line ${result.lines[side].hex} ${result.lines[side].thickness} px`);
+            }
+          }
+          for (const [ corner, verdict ] of Object.entries(result.corners)) {
+            if (verdict === 'rounded') {
+              lines.push(`${names[corner]}: rounded`);
+            }
+          }
+          const judged = Object.values(result.sides).filter(v => v !== 'not judged').length;
+          const { x, y, width, height } = result.box;
+          lines.push(`box ${x},${y} ${width}×${height}${judged ? '' : ' (no side judged)'}`);
+          return lines.join('\n');
+        });
+        return failed ? 1 : 0;
       }
     }
   }

@@ -261,10 +261,14 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | --- | --- |
 | `greys <png> [--region x,y,w,h] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
+| `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
 
 ```shell
 # A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --region 0,30,1280,770 --mark tmp/check-colour-scheme/shots/dolphin-marked.png
+
+# A push button drawn on tone 2 by the P3.2 probe: "top: line #3c3832 1 px", "top left: rounded", exits 1
+node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-rest.png --surface '#25221f'
 
 # The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
 node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
@@ -297,9 +301,25 @@ node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png -
 - **PNGs read**: 8 bits a channel, RGB or RGBA, not interlaced. Any other
   type, a bad CRC or a file that is not a PNG is refused with exit 1 and a
   message saying why.
+- **`frame` reads a widget, not a screen** (P3.2, my call). Draw the widget
+  alone on a surface of one known colour, as the P3.2 probe does with
+  `QWidget.render()` at scale 1. The widget is every pixel that is not the
+  surface (±1 a channel; fully transparent counts as surface).
+  - A side is judged only when its longest run of drawn pixels covers a
+    quarter of it, so text alone is not judged; a corner only when both its
+    sides are.
+  - A corner is **rounded** when its pixel is nearer the surface than the
+    widget's most common colour. A circle, such as a radio button, reports
+    four rounded corners: a round widget is excused by the caller.
+  - A side has a **line** when its outer colour differs from the colour 3 px
+    in and runs for 1 or 2 px. A run of 3 px or more is a band, such as a
+    focus bar or a block marker, and is not a line.
 - **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], marked }`;
   `colours` prints `[{ hex, count, token? }]`.
-- **Exit codes.** 0 success; 1 a cool grey was found, or the picture could
+  `frame` prints `{ drawn, box, corners, sides, lines }`, each corner
+  `square`, `rounded` or `not judged`, each side `clear`, `line` or
+  `not judged`, and `lines.<side>` `{ hex, thickness }`.
+- **Exit codes.** 0 success; 1 a cool grey was found, `frame` found a rounded corner or a line, or the picture could
   not be read; 2 the command line was wrong, including a region that is not
   four whole numbers, an empty region and a `--mark` path outside the
   repository.

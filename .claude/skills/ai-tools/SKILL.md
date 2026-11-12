@@ -7,7 +7,8 @@ description: |
   hovered, focused or pressed state, the rendered anti-goal check, computed
   colours named as tokens), generating Amber's parts (the colour
   scheme now, the others to follow), and reading the colours of a
-  screenshot (cool greys, colours named as tokens). Use
+  screenshot (cool greys, colours named as tokens) or of one widget
+  (rounded corners and lines). Use
   BEFORE writing any one-off script (node -e, python, a heredoc in the
   scratchpad) to compute, check, look at or generate something in this
   repository, and when a task needs a tool that does not exist yet: this

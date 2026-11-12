@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { srgb8 } from './colour.mjs';
-import { colourCounts, coolGreys, markPixels } from './image.mjs';
+import { colourCounts, coolGreys, frame, markPixels } from './image.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const tokens = loadTokens();
@@ -98,5 +98,137 @@ describe('markPixels', () => {
     const marked = markPixels(image, [ '#808080' ]);
     assert.deepEqual([ ...marked.pixels ], [ 255, 0, 255, 255, 0x15, 0x14, 0x13, 255 ]);
     assert.deepEqual([ ...image.pixels.slice(0, 4) ], [ 128, 128, 128, 255 ], 'the original is unchanged');
+  });
+});
+
+describe('frame', () => {
+  const SURFACE = '#25221f';
+  const FILL = '#312e29';
+  const BORDER = '#3c3832';
+  const ACCENT = '#d1b072';
+
+  /** A blank canvas of `fill` (or transparent with `null`), with helpers to paint on it. */
+  function canvas(width, height, fill = SURFACE) {
+    const pixels = new Uint8Array(width * height * 4);
+    const set = (x, y, colour) => pixels.set(colour === null ? [ 0, 0, 0, 0 ] : hex(colour), (y * width + x) * 4);
+    const rect = (x0, y0, w, h, colour) => {
+      for (let y = y0; y < y0 + h; y++) {
+        for (let x = x0; x < x0 + w; x++) {
+          set(x, y, colour);
+        }
+      }
+    };
+    rect(0, 0, width, height, fill);
+    return { image: { width, height, pixels }, set, rect };
+  }
+
+  /** A rectangle with corners cut by a circle of radius `r`, by pixel centres. */
+  function rounded(c, x0, y0, w, h, r, colour) {
+    for (let y = y0; y < y0 + h; y++) {
+      for (let x = x0; x < x0 + w; x++) {
+        const cx = Math.min(Math.max(x + 0.5, x0 + r), x0 + w - r);
+        const cy = Math.min(Math.max(y + 0.5, y0 + r), y0 + h - r);
+        if ((x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2 <= r * r) {
+          c.set(x, y, colour);
+        }
+      }
+    }
+  }
+
+  const all = value => ({ tl: value, tr: value, bl: value, br: value });
+  const sides = value => ({ top: value, right: value, bottom: value, left: value });
+
+  it('finds a plain rectangle square and clear', () => {
+    const c = canvas(60, 40);
+    c.rect(10, 10, 40, 20, FILL);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.equal(result.drawn, true);
+    assert.deepEqual(result.box, { x: 10, y: 10, width: 40, height: 20 });
+    assert.deepEqual(result.corners, all('square'));
+    assert.deepEqual(result.sides, sides('clear'));
+  });
+
+  it('finds a 1 px border as a line on every side', () => {
+    const c = canvas(60, 40);
+    c.rect(10, 10, 40, 20, BORDER);
+    c.rect(11, 11, 38, 18, FILL);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.sides, sides('line'));
+    assert.deepEqual(result.lines.top, { hex: BORDER, thickness: 1 });
+    assert.deepEqual(result.corners, all('square'));
+  });
+
+  it('finds a 2 px border as a line two pixels thick', () => {
+    const c = canvas(60, 40);
+    c.rect(10, 10, 40, 20, BORDER);
+    c.rect(12, 12, 36, 16, FILL);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.sides, sides('line'));
+    assert.deepEqual(result.lines.left, { hex: BORDER, thickness: 2 });
+  });
+
+  it('takes a bar 3 px high at the foot as a band, not a line', () => {
+    const c = canvas(60, 40);
+    c.rect(10, 10, 40, 20, FILL);
+    c.rect(10, 27, 40, 3, ACCENT);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.sides, sides('clear'));
+    assert.deepEqual(result.corners, all('square'));
+  });
+
+  it('finds corners cut by a radius of 5 rounded', () => {
+    const c = canvas(60, 40);
+    rounded(c, 10, 10, 40, 20, 5, FILL);
+    assert.deepEqual(frame(c.image, { surface: SURFACE }).corners, all('rounded'));
+  });
+
+  it('finds the ends of a thumb with a radius of 10 rounded', () => {
+    const c = canvas(50, 40);
+    rounded(c, 10, 10, 30, 20, 10, FILL);
+    assert.deepEqual(frame(c.image, { surface: SURFACE }).corners, all('rounded'));
+  });
+
+  it('finds a 16 px circle rounded, as a round widget is', () => {
+    const c = canvas(30, 30);
+    rounded(c, 7, 7, 16, 16, 8, FILL);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.corners, all('rounded'));
+    assert.deepEqual(result.sides, sides('clear'));
+  });
+
+  it('judges nothing where scattered pixels, like text, fill no side', () => {
+    const c = canvas(60, 40);
+    for (const [ x, y ] of [ [ 10, 10 ], [ 14, 12 ], [ 20, 10 ], [ 26, 15 ], [ 33, 11 ], [ 40, 18 ], [ 12, 18 ], [ 30, 18 ] ]) {
+      c.set(x, y, '#e8e3da');
+    }
+    const result = frame(c.image, { surface: SURFACE });
+    assert.equal(result.drawn, true);
+    assert.deepEqual(result.corners, all('not judged'));
+    assert.deepEqual(result.sides, sides('not judged'));
+  });
+
+  it('reports nothing drawn on a bare surface', () => {
+    const result = frame(canvas(20, 20).image, { surface: SURFACE });
+    assert.equal(result.drawn, false);
+    assert.equal(result.box, null);
+    assert.deepEqual(result.corners, all('not judged'));
+    assert.deepEqual(result.sides, sides('not judged'));
+  });
+
+  it('counts a transparent pixel as surface', () => {
+    const c = canvas(60, 40, null);
+    c.rect(10, 10, 40, 20, FILL);
+    const result = frame(c.image, { surface: SURFACE });
+    assert.deepEqual(result.box, { x: 10, y: 10, width: 40, height: 20 });
+    assert.deepEqual(result.corners, all('square'));
+    assert.deepEqual(result.sides, sides('clear'));
+  });
+
+  it('looks only inside a region', () => {
+    const c = canvas(120, 40);
+    c.rect(10, 10, 40, 20, FILL);
+    rounded(c, 70, 10, 40, 20, 5, FILL);
+    const result = frame(c.image, { surface: SURFACE, region: { x: 0, y: 0, width: 60, height: 40 } });
+    assert.deepEqual(result.corners, all('square'));
   });
 });
