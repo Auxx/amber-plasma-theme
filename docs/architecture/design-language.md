@@ -59,6 +59,10 @@ accent; the owner approved them, and the whole prototype, on 2026-11-12
 - The menu bar and toolbar continue the title bar in tone 0, as one header.
   The status area is tone 1, like the sidebars. (my call; seen in the window
   shell of plan P1.2)
+- Only a header toolbar, one at the top of a main window, is tone 0. A
+  toolbar at the foot of a window, or outside a main window, has no fill and
+  takes the tone of its surface. A toolbar's separator is a gap, with no
+  line. (my call, D-108)
 - Two surfaces that touch differ by at least one tone, unless they are meant
   to read as one area, as the header is.
 - Menus, popups and tooltips are one tone away from what they cover and carry
@@ -87,7 +91,7 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
 | Check box, radio button, checked | accent / on-accent | accent hover / on-accent | accent hover / on-accent | — | toggle / dim text |
 | Slider | thumb / accent fill | thumb hover / accent | raised focus / accent | thumb pressed / accent | tone 3 / dim text |
 | Progress bar | track / accent fill | — | — | — | track / dim text |
-| Scrollbar thumb | thumb | thumb hover | — | thumb pressed | — |
+| Scrollbar thumb | thumb | thumb hover | — | thumb pressed | tone 3 (my call, D-108) |
 
 Navigation, views and popups (my call, P1.5). Each cell gives the
 background / text, and the block marker or tick where the widget has one.
@@ -95,8 +99,10 @@ background / text, and the block marker or tick where the widget has one.
 | Widget | At rest | Hovered | Focused | Pressed | Selected, checked or sorted | Disabled |
 |---|---|---|---|---|---|---|
 | Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | surface focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
+| Tab's close button (my call, D-108) | no fill / dim text | danger / on danger | — | danger / on danger | — | — |
 | Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | — | selected: selected / text, marker | no fill / dim text |
 | Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | — |
+| Menu title, on a tone 0 menu bar (my call, D-108) | no fill / text | tone 3 / text | tone 3 / text | — | open: popup / text | no fill / dim text |
 | Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
 
 - **Precedence:** pressed wins over focused, and focused over hovered. A
@@ -149,8 +155,13 @@ background / text, and the block marker or tick where the widget has one.
   surface by tone alone, as an empty well is. (decided, D-75)
 - **Selection**: a selected item has the selected tone, tone 4 (decided,
   D-72), one tone above a hovered item, and carries a block marker in
-  accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its top
-  edge and takes tone 2, so that it joins the page below it. The marker is
+  accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its outer
+  edge, the one away from its page: the top of a tab bar above its pages, the
+  bottom of one below them, the left or right of one beside them (my call,
+  D-108). It takes tone 2, so that it joins the page. In Qt Widgets
+  applications Union draws no tab bar, so a tab at rest paints tone 0
+  itself, and past the last tab the bar shows the window's tone (decided,
+  D-109). The marker is
   part of selection: only the marker reaches 3:1. Hovered, a selected item
   keeps tone 4 and does not change (my call, D-73); focused, it takes
   raised focus and keeps the marker. A selected tab does
@@ -188,7 +199,9 @@ background / text, and the block marker or tick where the widget has one.
   `#746e63` (D-66; approved by the owner, D-71). A focused
   slider's thumb is the focused raised tone.
 - **Scrollbars** (my call, P1.4): a 12 px thumb with no track fill and no
-  arrow buttons.
+  arrow buttons. In Qt Widgets applications the clear track shows the
+  window's tone, not the view's, and the thumb lightens whenever the
+  pointer is over the bar (decided, D-109).
   Every page of the prototype links `scrollbars.css`, so its own
   scrollbars are Amber's. A scroller that takes keyboard focus is tinted
   with the focused tab's tone, and its thumb rises to dim text there: the

@@ -4,31 +4,31 @@
  */
 
 /*
- * Tab bars and buttons
+ * Tab bars and buttons (P3.6, D-108). Union draws no tab bar, so a tab at rest
+ * paints the bar's tone 0 itself; past the last tab the bar shows its parent.
+ * A selected tab takes tone 2, the tone of its page, and carries the block
+ * marker on its outer edge: a border of --marker-width, set at rest in tone 0,
+ * since Union draws only a border that is there at rest. The
+ * background is not drawn under that edge, so each state colours the edge
+ * with its own fill. Kirigami's immutable tabs and Kate's side tab bars take
+ * the same rules.
  */
 
 :root
 {
-    --tab-background-color: mix(var(--view-background-color), var(--view-text-color), 0.17);
-    --tab-text-color: var(--view-text-color);
-    --tab-open-background-color: var(--window-background-color);
-    --tab-open-text-color: var(--window-text-color);
-    --tab-disabled-text-color: var(--button-disabled-text-color);
-    --tab-disabled-background-color: var(--button-disabled-background-color);
-
-    --tab-highlight-size: 3px;
     --tab-default-width: 100px;
-    --tab-default-height: 24px;
-
-    --tab-highlight-border: var(--tab-highlight-size) solid var(--highlight-color);
+    --tab-default-height: 28px;
 }
 
 tabbutton {
     width: var(--tab-default-width);
     height: var(--tab-default-height);
-    padding: var(--medium-spacing);
-    background-color: var(--tab-background-color);
-    color: var(--tab-text-color);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: var(--tone-0);
+    color: var(--text);
 
     text-wrap-mode: no-wrap;
 
@@ -36,55 +36,29 @@ tabbutton {
     text-alignment: content center center 0;
 
     &[direction="top"] {
-        border-bottom: none;
-
-        &.first {
-            border-top-left-radius: var(--corner-radius);
-        }
-
-        &.last {
-            border-top-right-radius: var(--corner-radius);
-        }
+        border-top: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="bottom"] {
-        border-top: none;
-
-        &.first {
-            border-bottom-left-radius: var(--corner-radius);
-        }
-
-        &.last {
-            border-bottom-right-radius: var(--corner-radius);
-        }
+        border-bottom: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="left"] {
-        width: var(--tab-default-height);
-        height: var(--tab-default-width);
-        border-left: none;
-
-        &.first {
-            border-top-left-radius: var(--corner-radius);
-        }
-
-        &.last {
-            border-bottom-left-radius: var(--corner-radius);
-        }
+        border-left: var(--marker-width) solid var(--tone-0);
     }
 
     &[direction="right"] {
+        border-right: var(--marker-width) solid var(--tone-0);
+    }
+
+    &[direction="left"],
+    &[direction="right"] {
         width: var(--tab-default-height);
         height: var(--tab-default-width);
-        border-right: none;
-
-        &.first {
-            border-top-right-radius: var(--corner-radius);
-        }
-
-        &.last {
-            border-bottom-right-radius: var(--corner-radius);
-        }
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 
     &[display="icon-only"] {
@@ -105,62 +79,42 @@ tabbutton {
         }
     }
 
-    &:disabled {
-        background-color: var(--tab-disabled-background-color);
-        color: var(--button-disabled-text-color);
+    &:hovered {
+        background-color: var(--tone-1);
+        border-color: var(--tone-1);
     }
 
-    &:hovered
-    {
-        background-color: var(--button-active-highlight-color);
-        color: var(--button-active-text-color);
+    &:visual-focus {
+        background-color: var(--surface-focus);
+        border-color: var(--surface-focus);
     }
 
-    &:pressed
-    {
-        background-color: var(--button-active-highlight-color);
-        color: var(--button-active-text-color);
-    }
-
+    /* Selected: Qt Widgets marks it :checked; :highlighted is kept from Breeze. */
     &:checked,
-    &:highlighted /* Widgets uses highlighted */
-    {
-        background-color: var(--tab-open-background-color);
-        color: var(--tab-open-text-color);
-        border: none;
-        /*         border-radius: var(--corner-radius); */
+    &:highlighted {
+        background-color: var(--tone-2);
+        color: var(--text);
+        border-color: var(--accent);
+    }
 
-        &[direction="top"] {
-            border-top-width: 0px;
-            border-top-color: var(--highlight-color);
-            border-bottom-color: var(--tab-open-background-color);
-            border-top-left-radius: var(--corner-radius);
-            border-top-right-radius: var(--corner-radius);
-        }
+    &:checked:visual-focus,
+    &:highlighted:visual-focus {
+        background-color: var(--surface-focus);
+        border-color: var(--accent);
+    }
 
-        &[direction="bottom"] {
-            border-bottom-width: 0px;
-            border-bottom-color: var(--highlight-color);
-            border-top-color: var(--tab-open-background-color);
-            border-bottom-left-radius: var(--corner-radius);
-            border-bottom-right-radius: var(--corner-radius);
-        }
+    &:disabled {
+        background-color: var(--tone-0);
+        border-color: var(--tone-0);
+        color: var(--text-dim);
+    }
 
-        &[direction="left"] {
-            border-left-width: 0px;
-            border-left-color: var(--highlight-color);
-            border-right-color: var(--tab-open-background-color);
-            border-top-left-radius: var(--corner-radius);
-            border-bottom-left-radius: var(--corner-radius);
-        }
-
-        &[direction="right"] {
-            border-right-width: 0px;
-            border-right-color: var(--highlight-color);
-            border-left-color: var(--tab-open-background-color);
-            border-top-right-radius: var(--corner-radius);
-            border-bottom-right-radius: var(--corner-radius);
-        }
+    /* A disabled selected tab keeps its tone and marker; only its text dims. */
+    &:checked:disabled,
+    &:highlighted:disabled {
+        background-color: var(--tone-2);
+        border-color: var(--accent);
+        color: var(--text-dim);
     }
 
     & > closebutton {
@@ -168,81 +122,20 @@ tabbutton {
         width: var(--icon-size-small);
         height: var(--icon-size-small);
         icon-name: "window-close-symbolic";
+        background-color: transparent;
+        color: var(--text-dim);
 
         &:hovered,
         &:pressed {
-            color: var(--highlight-text-color);
-            background-color: var(--negative-text);
+            background-color: var(--danger);
+            color: var(--on-danger);
             border-radius: 0px;
         }
 
         &:disabled {
-            color: var(--button-disabled-text-color);
-            icon-color: var(--button-disabled-text-color);
-        }
-    }
-}
-
-tabbutton.immutable
-{
-    background-color: var(--button-active-background-color);
-    border: none;
-    border-radius: 0px;
-    border-right: none;
-    padding: var(--medium-spacing);
-    text-elide: none;
-
-    &:checked,
-    &:highlighted,
-    &.first,
-    &.last
-    {
-        border-radius: 0px;
-    }
-
-    &:checked
-    {
-        background-color: var(--highlight-hover-color);
-        color: var(--button-active-text-color);
-    }
-
-    &[direction="top"]
-    {
-        border-bottom: none;
-
-        &:checked
-        {
-            border-top: none;
-        }
-    }
-
-    &[direction="bottom"]
-    {
-        border-top: none;
-
-        &:checked
-        {
-            border-bottom: none;
-        }
-    }
-
-    &[direction="left"]
-    {
-        border-right: none;
-
-        &:checked
-        {
-            border-left: none;
-        }
-    }
-
-    &[direction="right"]
-    {
-        border-left: none;
-
-        &:checked
-        {
-            border-right: none;
+            background-color: transparent;
+            color: var(--text-dim);
+            icon-color: var(--text-dim);
         }
     }
 }
@@ -251,55 +144,13 @@ tabbar {
     height: var(--tab-default-height);
     width: var(--tab-default-width);
     spacing: 0px;
-
-    &.immutable {
-        background-color: var(--button-active-background-color);
-    }
-    &[direction="top"] {
-        border-bottom: none;
-    }
-    &[direction="bottom"] {
-        border-top: none;
-    }
-    &[direction="left"] {
-        border-right: none;
-    }
-    &[direction="right"] {
-        border-left: none;
-    }
-    /* KMultiTabBar borders, used by Kate */
-    &.kmultitabbar {
-        &[direction="top"],
-        &[direction="bottom"],
-        &[direction="left"],
-        &[direction="right"] {
-            border: none;
-        }
-        &[direction="left"] {
-            border-right: none;
-        }
-        &[direction="right"] {
-            border-left: none;
-        }
-    }
-
+    background-color: var(--tone-0);
+    border: none;
 }
 
 tabwidget {
     padding: var(--small-spacing);
     border: none;
-    border-radius: var(--corner-radius);
-    background-color: var(--view-background-color);
-    &[direction="top"] {
-        inset-top: 1px;
-    }
-    &[direction="bottom"] {
-        inset-bottom: 1px;
-    }
-    &[direction="left"] {
-        inset-left: 1px;
-    }
-    &[direction="right"] {
-        inset-right: 1px;
-    }
+    border-radius: 0px;
+    background-color: var(--tone-2);
 }

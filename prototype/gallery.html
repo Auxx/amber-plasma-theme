@@ -157,6 +157,7 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="scrollbar"><span class="scroll-thumb"></span></div></div>
     <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="scrollbar"><span class="scroll-thumb is-hovered"></span></div></div>
     <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="scrollbar"><span class="scroll-thumb is-pressed"></span></div></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="scrollbar"><span class="scroll-thumb" aria-disabled="true"></span></div></div>
   </div>
 
   <div class="live"><span class="state-label dim">Live</span><div class="scroll-area" role="region" aria-label="Files"><div>amber-notes.md</div><div>colours.txt</div><div>decisions.md</div><div>design-language.md</div><div>gallery.html</div><div>glossary.md</div><div>index.html</div><div>notes-2026-11.md</div><div>platform.md</div><div>roadmap.md</div><div>shell.css</div><div>tokens.css</div><div>tooling.md</div><div>vision.md</div><div>widgets.css</div><div>window.css</div></div></div>
@@ -172,6 +173,12 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="focused"><span class="state-label dim">Focused</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab is-focused" role="tab" aria-selected="false">Downloads</button></div></div>
     <div class="state" data-state="selected"><span class="state-label dim">Selected</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab is-selected" role="tab" aria-selected="true">Documents</button></div></div>
     <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab" role="tab" aria-selected="false" disabled>Downloads</button></div></div>
+  </div>
+
+  <!-- A tab's close button (P3.6, D-108): dim text at rest, danger when hovered, as the window's close button. -->
+  <div class="state-row" data-widget="tab-close">
+    <div class="state" data-state="rest"><span class="state-label dim">Close, at rest</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab" role="tab" aria-selected="false" tabindex="-1">Downloads<span class="tab-close" aria-label="Close tab"><svg class="glyph" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></button></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Close, hovered</span><div class="tab-bar" role="tablist" aria-label="Places"><button class="tab" role="tab" aria-selected="false" tabindex="-1">Downloads<span class="tab-close is-hovered" aria-label="Close tab"><svg class="glyph" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></button></div></div>
   </div>
 
   <div class="state-row" data-widget="item">
@@ -224,6 +231,14 @@ Warm, never cool.</textarea></div>
 <section class="family" aria-label="Popups">
   <h2>Popups</h2>
   <p class="dim">Menus, combo box lists and tooltips sit one tone above the surface, with a shadow below. Space, not a line, divides a menu.</p>
+
+  <!-- Menu titles (P3.6, D-108): a tone 0 menu bar; open, a title takes the menu's tone and joins it. -->
+  <div class="state-row" data-widget="menu-title">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="menu-bar" role="menubar" aria-label="Main"><button class="menu-title" role="menuitem" aria-haspopup="menu" tabindex="-1">View</button></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="menu-bar" role="menubar" aria-label="Main"><button class="menu-title is-hovered" role="menuitem" aria-haspopup="menu" tabindex="-1">View</button></div></div>
+    <div class="state" data-state="open"><span class="state-label dim">Open</span><div class="menu-drop"><div class="menu-bar" role="menubar" aria-label="Main"><button class="menu-title is-open" role="menuitem" aria-haspopup="menu" tabindex="-1" aria-expanded="true">View</button></div><div class="popup menu" role="menu" aria-label="View"><button class="menu-item" role="menuitem" tabindex="-1"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Hidden Files</span><span class="menu-shortcut">Ctrl+H</span></button></div></div></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="menu-bar" role="menubar" aria-label="Main"><button class="menu-title" role="menuitem" aria-haspopup="menu" tabindex="-1" disabled>View</button></div></div>
+  </div>
 
   <div class="state-row" data-widget="menu-item">
     <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="popup menu" role="menu" aria-label="View"><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Hidden Files</span><span class="menu-shortcut">Ctrl+H</span></button></div></div>

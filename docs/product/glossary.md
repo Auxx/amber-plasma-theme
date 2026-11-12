@@ -158,6 +158,31 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A progress bar that has no value to show, only that work goes on.
   _Avoid_ "indeterminate" for it, Qt's and ARIA's word.
 
+**Tab bar**
+: The row of tabs above, below or beside the pages they name. It is tone 0.
+
+**Toolbar**
+: A row of tool buttons. A header toolbar sits at the top of a window and
+  continues the title bar in tone 0; any other toolbar takes the tone of its
+  surface.
+
+**Menu bar**
+: The row of menu titles at the top of a window, in tone 0, under the title
+  bar.
+
+**Menu title**
+: One word of a menu bar, such as File, that opens a menu. _Avoid_ "menu bar
+  item", Union's `menubaritem`, except when naming Union's selector: an item
+  is an entry of a view.
+
+**Status bar**
+: The strip at the foot of a window that tells the state of its content, in
+  tone 1.
+
+**Scrollbar**
+: The bar beside a view whose thumb moves the view. Amber's has no track
+  fill and no arrow buttons. _Avoid_ "scroll bar".
+
 **Item**
 : One entry of a list, tree or table view, or of a sidebar. In a table view
   an item is a whole row.

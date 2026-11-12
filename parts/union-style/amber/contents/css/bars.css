@@ -9,12 +9,8 @@
  */
 
 :root {
-    --bar-active-background-color: mix(var(--window-background-color), var(--window-text-color), 0.075);
-    --bar-track-active-background-color: mix(var(--window-background-color), var(--highlight-color), 0.333);
-    --bar-track-active-border-color: var(--highlight-color);
     --bar-handle-active-background-color: var(--button-active-background-color);
 
-    --bar-disabled-background-color: var(--window-disabled-background-color);
     --bar-handle-disabled-background-color: var(--button-disabled-background-color);
 
     --bar-tickmark-margin: 1px;
@@ -189,12 +185,22 @@ dial
     }
 }
 
+/*
+ * Scrollbars (P3.6, D-108): a 12 px thumb on no track, with no arrow buttons
+ * and no padding. The thumb takes a slider thumb's tones (D-65, D-66), and
+ * tone 3 when disabled. Union counts it hovered whenever the pointer is over
+ * the bar, on the track too.
+ */
 scrollbar
 {
     width: var(--scrollbar-size);
     height: var(--scrollbar-size);
 
-    padding: var(--medium-spacing);
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: transparent;
 
     &.horizontal
     {
@@ -207,20 +213,22 @@ scrollbar
     }
 
     & > handle {
-        background-color: var(--bar-active-background-color);
+        background-color: var(--thumb);
         border: none;
         border-radius: 0px;
 
-        &:hovered,
+        &:hovered
+        {
+            background-color: var(--thumb-hover);
+        }
+
         &:pressed
         {
-            background-color: var(--bar-track-active-background-color);
-            border-color: var(--bar-track-active-border-color);
+            background-color: var(--thumb-pressed);
         }
 
         &:disabled {
-            background-color: var(--bar-disabled-background-color);
-            border: none;
+            background-color: var(--tone-3);
         }
     }
 
@@ -229,7 +237,7 @@ scrollbar
         border-left: none;
         padding: var(--small-spacing);
         & > handle {
-            background-color: var(--bar-handle-disabled-background-color);
+            background-color: var(--thumb);
             border: none;
         }
     }

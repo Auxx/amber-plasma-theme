@@ -10,7 +10,6 @@
 :root {
     --window-active-background-color: custom-color("kcolorscheme", "active", "window", "background", "normal");
     --window-active-text-color: custom-color("kcolorscheme", "active", "window", "foreground", "text");
-    --window-active-border-color: custom-color("kcolorscheme", "active", "window", "decoration", "frame");
 
     --window-inactive-background-color: custom-color("kcolorscheme", "inactive", "window", "background", "normal");
     --window-inactive-text-color: custom-color("kcolorscheme", "inactive", "window", "foreground", "text");
@@ -18,19 +17,10 @@
 
     --header-active-background-color: custom-color("kcolorscheme", "active", "header", "background", "normal");
     --header-active-text-color: custom-color("kcolorscheme", "active", "header", "foreground", "text");
-    --header-active-border-color: custom-color("kcolorscheme", "active", "header", "decoration", "frame");
 
     --header-inactive-background-color: custom-color("kcolorscheme", "inactive", "header", "background", "normal");
     --header-inactive-text-color: custom-color("kcolorscheme", "inactive", "header", "foreground", "text");
     --header-inactive-border-color: custom-color("kcolorscheme", "inactive", "header", "decoration", "frame");
-
-    --complementary-active-background-color: custom-color("kcolorscheme", "active", "header", "background", "normal");
-    --complementary-active-text-color: custom-color("kcolorscheme", "active", "header", "foreground", "text");
-    --complementary-active-border-color: custom-color("kcolorscheme", "active", "header", "decoration", "frame");
-
-    --complementary-inactive-background-color: custom-color("kcolorscheme", "inactive", "header", "background", "normal");
-    --complementary-inactive-text-color: custom-color("kcolorscheme", "inactive", "header", "foreground", "text");
-    --complementary-inactive-border-color: custom-color("kcolorscheme", "inactive", "header", "decoration", "frame");
 }
 
 applicationwindow
@@ -55,14 +45,21 @@ page
     }
 }
 
+/*
+ * Toolbars (P3.6, D-108). A header toolbar, one Union marks .header (every
+ * toolbar of a main window's top area) or that is in the Header or
+ * Complementary colour set, continues the title bar in tone 0. Any other
+ * toolbar has no fill and takes its surface. Qt draws a separator with the
+ * grip's rule, so neither has a fill: a separator is a gap.
+ */
 toolbar
 {
     height: 46px; /* large-element-size + medium-spacing + large-spacing */
     padding: var(--small-spacing);
     padding-top: var(--medium-spacing);
     padding-bottom: var(--large-spacing);
-    color: var(--window-active-text-color);
-    background-color: var(--window-active-background-color);
+    color: var(--text);
+    background-color: transparent;
 
     &.footer {
         border-top: none;
@@ -72,53 +69,25 @@ toolbar
         border-bottom: none;
     }
 
-    .inactive & {
-        background-color: var(--window-inactive-background-color);
-        border-color: var(--window-inactive-border-color);
-    }
-
     &.header,
     &[colorset="header"],
     [colorset="header"] &
     {
-        background-color: var(--header-active-background-color);
-        border-color: var(--header-active-border-color);
-
-        .inactive & {
-            background-color: var(--header-inactive-background-color);
-            border-color: var(--header-inactive-border-color);
-        }
-    }
-
-    &.header[colorset="window"]
-    {
-        background-color: var(--window-active-background-color);
-        border-color: var(--window-active-border-color);
-
-        .inactive & {
-            background-color: var(--window-inactive-background-color);
-            border-color: var(--window-inactive-border-color);
-        }
+        background-color: var(--tone-0);
     }
 
     &[colorset="complementary"],
     [colorset="complementary"] &,
     &.header[colorset="complementary"]
     {
-        background-color: var(--complementary-active-background-color);
-        color: var(--complementary-active-text-color);
-        border-color: var(--complementary-active-border-color);
-
-        .inactive & {
-            background-color: var(--complementary-inactive-background-color);
-            color: var(--complementary-inactive-text-color);
-            border-color: var(--complementary-active-border-color);
-        }
+        background-color: var(--tone-0);
+        color: var(--text);
     }
 
     & > separator {
-        width: 1px;
-        height: 1px;
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
         border: none;
         border-radius: 0px;
         padding: 0px;
@@ -127,10 +96,9 @@ toolbar
     & > handle {
         width: 4px;
         height: 4px;
+        background-color: transparent;
         border: none;
         border-radius: 0px;
-        border-left: none;
-        border-right: none;
         padding: 0px;
     }
 }
@@ -336,9 +304,10 @@ dockwidget {
     }
 }
 
+/* The corner between two scrollbars takes the view's tone (P3.6, D-108). */
 scrollareacorner {
-    background-color: var(--window-background-color);
-    color: var(--window-text-color);
+    background-color: transparent;
+    color: var(--text);
 }
 
 panel,

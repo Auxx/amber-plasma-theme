@@ -621,6 +621,27 @@
   background-color: var(--raised-focus);
 }
 
+/* A tab's close button (P3.6, D-108): dim text at rest, danger when hovered
+   or pressed, as the window's close button. */
+
+.tab:has(.tab-close) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.tab-close {
+  display: inline-flex;
+  color: var(--text-dim);
+  background-color: transparent;
+}
+
+.tab-close:is(:hover, .is-hovered, :active) {
+  color: var(--on-danger);
+  background-color: var(--danger);
+}
+
 /* Disabled */
 
 .tab:disabled,
@@ -757,6 +778,52 @@
 .popup {
   color: var(--text);
   background: var(--popup);
+}
+
+/*
+ * Menu bar (P3.6, D-108): tone 0, under the title bar. A hovered title takes
+ * a hovered tool button's tone; its keyboard highlight is the same, since Qt
+ * does not tell them apart. Open, it takes the menu's tone and joins it, as a
+ * selected tab joins its page.
+ */
+
+.menu-bar {
+  display: flex;
+  background: var(--tone-0);
+}
+
+.menu-title {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 10px;
+  cursor: default;
+  color: var(--text);
+  background-color: transparent;
+}
+
+.menu-title:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) {
+  background-color: var(--tone-3);
+}
+
+.menu-title.is-open:enabled {
+  background-color: var(--popup);
+}
+
+.menu-title:disabled {
+  color: var(--text-dim);
+}
+
+/* An open title with its menu right below it. */
+.menu-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .menu {

@@ -117,7 +117,7 @@ next starts.
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | done |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | done |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | done |
-| P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | todo |
+| P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | done |
 | P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
 | P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
 | P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
@@ -166,6 +166,13 @@ as tone 1 is a dialog's body (D-106). A busy progress bar, drawn as a full
 fill, and Union's 9 tick marks out of 11 are known gaps (D-107). `image
 states --region` and `browser states --text-property` compare one part of a
 widget, such as a box or a thumb.
+
+P3.6 gave toolbars, the menu bar, the status bar, tabs and scrollbars
+Amber's tones (D-108): a selected tab carries the block marker on its outer
+edge, and a scrollbar is a 12 px thumb with no arrows. Union draws no tab
+bar, so each tab paints tone 0; the strip past the last tab, the track
+beside a view, the status bar's text, a disabled menu title and the thumb's
+hover are known gaps (D-109).
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from
