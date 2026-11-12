@@ -217,6 +217,40 @@ describe('browser tool', () => {
     assert.equal(filled.text.hex, '#e8e3da');
   });
 
+  withChrome('reads a custom property as the text (P3.5)', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stdout } = browser('states', page, '--widget', 'toggle', '--selector', '.box', '--text-property=--mark', '--json');
+    assert.equal(status, 0, stdout);
+    const [ off, on ] = JSON.parse(stdout);
+    assert.equal(off.text, null);
+    assert.equal(off.background.hex, '#151413');
+    assert.equal(on.text.hex, '#1b160b');
+    assert.ok(on.text.tokens.includes('on-accent'), JSON.stringify(on));
+  });
+
+  withChrome('reads a custom property as the background (P3.5)', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stdout } = browser('states', page, '--widget', 'toggle', '--selector', '.box', '--fill-property=--mark', '--json');
+    assert.equal(status, 0, stdout);
+    const [ off, on ] = JSON.parse(stdout);
+    assert.equal(off.background, null);
+    assert.equal(on.background.hex, '#1b160b');
+  });
+
+  withChrome('refuses a property the widget does not have (P3.5 review)', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stderr } = browser('states', page, '--widget', 'toggle', '--selector', '.box', '--text-property=--nope');
+    assert.equal(status, 1);
+    assert.match(stderr, /--nope.*no value/);
+  });
+
+  withChrome('refuses a property that is not a colour (P3.5 review)', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stderr } = browser('states', page, '--widget', 'toggle', '--selector', '.box', '--fill-property=display');
+    assert.equal(status, 1);
+    assert.match(stderr, /display.*not a colour/);
+  });
+
   withChrome('fails on a missing row', () => {
     const { status, stderr } = browser('states', 'tools/src/bin/fixtures/states-page.html', '--widget', 'nope', '--selector', '.button');
     assert.equal(status, 1);

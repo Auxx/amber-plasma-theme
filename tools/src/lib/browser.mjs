@@ -240,48 +240,79 @@ export function renderedOffences(page) {
 /**
  * One state of a gallery row, as `browser states` gives it. `raw.backgrounds`
  * are the computed backgrounds of the widget and its ancestors, nearest first;
- * the first that is not transparent is the widget's background.
+ * the first that is not transparent is the widget's background. With
+ * `raw.own`, the one background is a property read in its place, and a
+ * transparent one is `null`, as a transparent text is (P3.5).
  */
-export function stateRow({ state, backgrounds, colour }, names) {
+export function stateRow({ state, backgrounds, colour, own = false }, names) {
   const opaque = backgrounds.map(parseCssColour).find(c => c.alpha > 0);
-  if (!opaque) {
+  if (!opaque && !own) {
     throw new Error(`${state}: no background on the widget or any ancestor`);
   }
   const named = c => {
     const hex = hexOf(c);
     return { hex, tokens: names.get(hex) ?? [] };
   };
-  return { state, background: named(opaque), text: named(parseCssColour(colour)) };
+  const text = parseCssColour(colour);
+  return { state, background: opaque ? named(opaque) : null, text: text.alpha > 0 ? named(text) : null };
 }
 
 /**
  * The raw states of `.state-row[data-widget=<widget>]`: for each `.state`, in
  * document order, its `data-state`, and the backgrounds and text colour of the
  * element `selector` finds in it. The text colour of an empty input or text
- * area with a placeholder is its placeholder's.
+ * area with a placeholder is its placeholder's. `fillProperty` and
+ * `textProperty` read a property of the element, such as the custom property
+ * `--mark`, as its background or its text (P3.5).
  */
-export async function readStates(page, widget, selector) {
-  const raw = await page.evaluate(({ widget, selector }) => {
+export async function readStates(page, widget, selector, { fillProperty, textProperty } = {}) {
+  const raw = await page.evaluate(({ widget, selector, fillProperty, textProperty }) => {
+    // A property's value as a computed colour: set on a scratch element's color. A missing value or
+    // one that is not a colour is an error, never a colour by default (P3.5 review).
+    const colourOf = (element, property) => {
+      const value = getComputedStyle(element).getPropertyValue(property).trim();
+      if (!value) {
+        throw new Error(`${property} has no value on ${selector}`);
+      }
+      if (!CSS.supports('color', value)) {
+        throw new Error(`${property} is not a colour on ${selector}: ${value}`);
+      }
+      const scratch = document.createElement('span');
+      document.body.append(scratch);
+      scratch.style.color = value;
+      const colour = getComputedStyle(scratch).color;
+      scratch.remove();
+      return colour;
+    };
     const row = document.querySelector(`.state-row[data-widget="${widget}"]`);
     if (!row) {
       return { error: `no .state-row[data-widget="${widget}"]` };
     }
     const states = [];
-    for (const state of row.querySelectorAll('.state')) {
-      const element = state.querySelector(selector);
-      if (!element) {
-        return { error: `${selector} is missing in the state ${state.dataset.state} of ${widget}` };
+    try {
+      for (const state of row.querySelectorAll('.state')) {
+        const element = state.querySelector(selector);
+        if (!element) {
+          return { error: `${selector} is missing in the state ${state.dataset.state} of ${widget}` };
+        }
+        const backgrounds = [];
+        if (fillProperty) {
+          backgrounds.push(colourOf(element, fillProperty));
+        } else {
+          for (let e = element; e; e = e.parentElement) {
+            backgrounds.push(getComputedStyle(e).backgroundColor);
+          }
+        }
+        // An empty field shows its placeholder, not its text (P3.4).
+        const empty = (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) && element.value === '' && element.placeholder;
+        const colour = textProperty ? colourOf(element, textProperty) : getComputedStyle(element, empty ? '::placeholder' : null).color;
+        states.push({ state: state.dataset.state, backgrounds, colour, own: Boolean(fillProperty) });
       }
-      const backgrounds = [];
-      for (let e = element; e; e = e.parentElement) {
-        backgrounds.push(getComputedStyle(e).backgroundColor);
-      }
-      // An empty field shows its placeholder, not its text (P3.4).
-      const empty = (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) && element.value === '' && element.placeholder;
-      states.push({ state: state.dataset.state, backgrounds, colour: getComputedStyle(element, empty ? '::placeholder' : null).color });
+    } catch (error) {
+      return { error: error.message };
     }
     return { states };
-  }, { widget, selector });
+  }, { widget, selector, fillProperty, textProperty });
   if (raw.error) {
     throw new Error(raw.error);
   }

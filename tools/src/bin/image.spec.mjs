@@ -175,6 +175,40 @@ describe('image tool', () => {
       assert.equal(rows.find(r => r.state === 'rest').found.background, '#312e29');
     });
 
+    describe('a region (P3.5)', () => {
+      const boxes = join(folder, 'boxes');
+      mkdirSync(boxes, { recursive: true });
+      // A check box 120 x 24 on tone 2, its box 16 x 16 of accent at 4,4.
+      const pixels = new Uint8Array(120 * 24 * 4);
+      for (let y = 0; y < 24; y++) {
+        for (let x = 0; x < 120; x++) {
+          const c = x >= 4 && x < 20 && y >= 4 && y < 20 ? '#d1b072' : '#25221f';
+          pixels.set([ 1, 3, 5 ].map(i => parseInt(c.slice(i, i + 2), 16)).concat(255), (y * 120 + x) * 4);
+        }
+      }
+      writeFileSync(join(boxes, 'check-box-checked.png'), encodePng({ width: 120, height: 24, pixels }));
+      writeFileSync(join(boxes, 'manifest.json'), JSON.stringify([ { file: 'check-box-checked.png', widget: 'check-box', state: 'checked', reached: true } ]));
+      writeFileSync(join(boxes, 'expect.json'), JSON.stringify([ { state: 'checked', background: { hex: '#d1b072', tokens: [] }, text: null } ]));
+      const bdir = relative(root, boxes);
+      const expect = join(bdir, 'expect.json');
+
+      it('reads only the region, and leaves an expected text of null uncompared', () => {
+        const { status, stdout } = image('states', bdir, '--case', 'check-box', '--expect', expect, '--region', '4,4,16,16');
+        assert.equal(status, 0, stdout);
+        assert.match(stdout, /checked\s+ok\s+#d1b072 \(accent\) \/ —/);
+      });
+
+      it('fails without the region, naming the fill', () => {
+        const { status, stdout } = image('states', bdir, '--case', 'check-box', '--expect', expect);
+        assert.equal(status, 1, stdout);
+        assert.match(stdout, /checked\s+background #25221f.*expected #d1b072/);
+      });
+
+      it('wants a region of four numbers', () => {
+        assert.equal(image('states', bdir, '--case', 'check-box', '--expect', expect, '--region', '4,4,16').status, 2);
+      });
+    });
+
     describe('a focus bar (P3.4)', () => {
       const wells = join(folder, 'wells');
       mkdirSync(wells, { recursive: true });

@@ -94,4 +94,17 @@ describe('browser', () => {
     const names = tokenNames(loadTokens());
     assert.throws(() => stateRow({ state: 'rest', backgrounds: [ 'rgba(0, 0, 0, 0)' ], colour: 'rgb(1, 2, 3)' }, names), /rest: no background/);
   });
+
+  it('gives no text for a transparent colour (P3.5)', () => {
+    const names = tokenNames(loadTokens());
+    const row = stateRow({ state: 'off', backgrounds: [ 'rgb(21, 20, 19)' ], colour: 'rgba(0, 0, 0, 0)' }, names);
+    assert.equal(row.text, null);
+    assert.equal(row.background.hex, '#151413');
+  });
+
+  it('gives no background when a property read in its place is transparent (P3.5)', () => {
+    const names = tokenNames(loadTokens());
+    const row = stateRow({ state: 'off', backgrounds: [ 'rgba(0, 0, 0, 0)' ], colour: 'rgb(232, 227, 218)', own: true }, names);
+    assert.equal(row.background, null);
+  });
 });

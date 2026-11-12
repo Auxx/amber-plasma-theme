@@ -35,7 +35,7 @@ const WELL = {
 
 const TOGGLE_OFF = {
   rest: [ 'toggle', 'transparent' ],
-  hovered: [ 'tone-1', 'transparent' ],
+  hovered: [ 'well-hover', 'transparent' ],
   focused: [ 'toggle-focus', 'transparent' ],
   disabled: [ 'toggle', 'transparent' ]
 };
@@ -90,7 +90,12 @@ const WIDGETS = {
   spin: { control: '.spin', target: '.spin .spin-field', states: WELL },
   'text-area': { control: '.text-area', states: WELL },
   'check-box': { control: '.check-box', read: MARKED, states: TOGGLE_OFF },
-  'check-box-on': { control: '.check-box', read: MARKED, checked: true, states: TOGGLE_ON },
+  'check-box-on': {
+    control: '.check-box',
+    read: MARKED,
+    checked: true,
+    states: { ...TOGGLE_ON, indeterminate: [ 'accent', 'on-accent' ] }
+  },
   radio: { control: '.radio', read: MARKED, states: TOGGLE_OFF },
   'radio-on': { control: '.radio', read: MARKED, checked: true, states: TOGGLE_ON },
   slider: {
@@ -111,8 +116,14 @@ const WIDGETS = {
       rest: [ 'track', 'accent' ],
       empty: [ 'track', 'accent' ],
       full: [ 'track', 'accent' ],
-      disabled: [ 'track', 'text-dim' ]
+      disabled: [ 'track', 'text-dim' ],
+      busy: [ 'track', 'accent' ]
     }
+  },
+  'slider-ticks': {
+    control: '.slider',
+    read: [ '--tick', '--fill' ],
+    states: { rest: [ 'text-dim', 'accent' ], disabled: [ 'tone-3', 'text-dim' ] }
   },
   scrollbar: {
     control: '.scroll-thumb',
@@ -288,7 +299,8 @@ describe('prototype gallery', () => {
       count++;
       const value = tag.match(/\saria-valuenow="([^"]*)"/)?.[1];
       const fill = tag.match(/style="--value: ([^";]*)"/)?.[1];
-      if (value === undefined || fill !== `${value}%`) {
+      // A busy bar has no value, so no aria-valuenow; --value places its block (P3.5).
+      if (/\bis-busy\b/.test(tag) ? value !== undefined || fill === undefined : value === undefined || fill !== `${value}%`) {
         offences.push(`${tag}: --value ${fill}, value ${value}`);
       }
     }
@@ -452,7 +464,7 @@ describe('prototype gallery', () => {
 
     ({ page } = await gallery());
     await applyState(page, { press: box });
-    assert.match(await boxBackground(), /tone-1/, 'check box pressed');
+    assert.match(await boxBackground(), /well-hover/, 'check box pressed');
     await page.mouse.up();
 
     ({ page } = await gallery());
@@ -507,7 +519,7 @@ describe('prototype gallery', () => {
     const position = { x: width - 4, y: height / 2 };
     const box = targetOf('check-box', 'rest');
     await label.hover({ position });
-    assert.match(nameColour((await coloursOf(page, box))[0], names), /tone-1/, 'hovered from the label');
+    assert.match(nameColour((await coloursOf(page, box))[0], names), /well-hover/, 'hovered from the label');
     await label.click({ position });
     assert.ok(await page.locator(box).isChecked(), 'a click on the label checks the box');
     assert.match(nameColour((await coloursOf(page, box))[0], names), /accent-hover/, 'checked and hovered');

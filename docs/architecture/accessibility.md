@@ -158,7 +158,11 @@ falls below its minimum.
 | raised focus | tone 2 | 2.42:1 | 1.2 (floor) | pass |
 | well | tone 2 | 1.16:1 | 1.1 (floor) | pass |
 | accent | track | 8.91:1 | 3 | pass |
+| dim text | toggle | 7.27:1 | 3 | pass |
+| dim text | track | 7.27:1 | 3 | pass |
 | toggle | tone 2 | 1.16:1 | 1.1 (floor) | pass |
+| well hover | tone 1 | 1.22:1 | 1.1 (floor) | pass |
+| well hover | toggle | 1.29:1 | 1.1 (floor) | pass |
 | track | tone 2 | 1.16:1 | 1.1 (floor) | pass |
 | thumb | tone 2 | 1.36:1 | 1.1 (floor) | pass |
 | thumb | tone 1 | 1.49:1 | 1.1 (floor) | pass |

@@ -108,6 +108,35 @@ Verified on 2026-11-10 unless marked.
   - A later rule of another file wins: Breeze's `application.css`, imported
     after `text.css`, gave `textfield` and `textarea` a `:visual-focus`
     rule of its own, which took the bar away until P3.4 took them out of it.
+- **What Union reaches on a check box, radio button, slider and progress
+  bar in a Qt Widgets application** (verified, 2026-11-12, P3.5, by marker
+  rules read in the probe's pixels and in Dolphin):
+  - `checkbox > indicator` and `radiobutton > indicator` take a background
+    in every state: at rest, `:hovered`, `:visual-focus`, `:checked` and
+    its combinations, `:disabled`, and `checkbox.indeterminate` for a
+    partly checked box. Hovering the label hovers the box: Qt has one
+    widget. The box is 16 × 16 px; the label is `spacing` away from it.
+  - A disabled label takes Union's `color`, unlike a text field's text.
+  - A mark is `background-image: url(…) mask <colour>`, drawn at the box's
+    origin at the SVG's own size, so a 16 × 16 SVG places it as the
+    prototype does. A checked, disabled mark takes
+    `background-image-mask-color`, not the colour after `mask`.
+  - A slider's own background is its track, `> fill` the fill and
+    `> handle` the thumb; `.horizontal > handle` sets the thumb's size.
+    `slider:hovered > handle` and `slider > handle:hovered` both match
+    when the pointer is anywhere over the slider. Pressed is reached by a
+    mouse press on the thumb, not by `setSliderDown()`, and `:pressed`
+    then matches the slider as well as the thumb. `> tickmark` is a tick
+    mark, `.active` below the value; Union draws 9 of 11 on a 200 px
+    slider, none at the ends or under the thumb (D-107).
+  - A progress bar's own background is its track and `> track` its fill;
+    `> chunk` is never drawn. `inset: 0px` and `padding: 0px` make the
+    track the widget's width. The text takes Union's `color`, and
+    `color: transparent` hides it. A busy bar (`setRange(0, 0)`) is drawn
+    as a full fill, with no block and no hint that tells it apart (D-107).
+  - Dolphin 25 shows no zoom slider in its status bar; its free-space bar
+    is its own painting, and a copy's progress goes to the notification
+    service.
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;

@@ -10,40 +10,14 @@
 
 :root {
     --bar-active-background-color: mix(var(--window-background-color), var(--window-text-color), 0.075);
-    --bar-active-border-color: var(--window-border-color);
     --bar-track-active-background-color: mix(var(--window-background-color), var(--highlight-color), 0.333);
     --bar-track-active-border-color: var(--highlight-color);
     --bar-handle-active-background-color: var(--button-active-background-color);
-    --bar-handle-active-border-color: var(--button-active-border-color);
-
-    --bar-handle-active-highlight-color: var(--button-active-highlight-color);
-    --bar-handle-active-highlight-border-color: var(--button-active-border-highlight-color);
 
     --bar-disabled-background-color: var(--window-disabled-background-color);
-    --bar-disabled-border-color: var(--window-disabled-border-color);
-    --bar-track-disabled-background-color: mix(var(--window-disabled-background-color), var(--window-background-color), 0.75);
-    --bar-track-disabled-border-color: var(--window-disabled-border-color);
     --bar-handle-disabled-background-color: var(--button-disabled-background-color);
-    --bar-handle-disabled-border-color: var(--button-disabled-border-color);
 
-    --bar-handle-size: 20px;
-    --bar-tickmark-thickness: 2px;
-    --bar-tickmark-length: 8px;
     --bar-tickmark-margin: 1px;
-
-    --dial-inactive-background-color: mix(var(--button-inactive-background-color), var(--window-background-color), 0.5);
-    --dial-inactive-border-color: var(--button-inactive-border-color);
-    --dial-active-background-color: mix(var(--button-active-background-color), var(--window-background-color), 0.5);
-    --dial-active-border-color: var(--button-active-border-color);
-    --dial-disabled-background-color: mix(var(--button-disabled-background-color), var(--window-background-color), 0.5);
-    --dial-disabled-border-color: var(--button-disabled-border-color);
-
-    --dial-handle-inactive-background-color: var(--button-inactive-background-color);
-    --dial-handle-inactive-border-color: var(--button-inactive-border-color);
-    --dial-handle-active-background-color:  mix(var(--button-active-background-color), var(--highlight-color), 0.5);
-    --dial-handle-active-border-color: mix(var(--button-active-border-color), var(--highlight-color), 0.5);
-    --dial-handle-disabled-background-color: var(--button-disabled-background-color);
-    --dial-handle-disabled-border-color: var(--button-disabled-border-color);
 }
 
 busyindicator
@@ -53,32 +27,38 @@ busyindicator
     icon-name: "process-working-symbolic";
 }
 
+/*
+ * Ranges (P3.5): a fill is accent on a 6 px track below the surface, and dim
+ * text when disabled. A progress bar has no text and no inset: its track is the
+ * widget, and its > track is the fill. A busy one is drawn by Union as a full
+ * fill (platform.md).
+ */
 progressbar
 {
-    padding: 0px var(--large-spacing);
-    inset: 0px var(--large-spacing);
+    padding: 0px;
+    inset: 0px;
     text-alignment: content center center 0;
 
-    background-color: var(--bar-active-background-color);
+    background-color: var(--track);
+    color: transparent;
     border: none;
     border-radius: var(--corner-radius);
 
     &.horizontal
     {
         width: 200px;
-        height: var(--medium-spacing);
+        height: 6px;
     }
 
     &.vertical
     {
-        width: var(--medium-spacing);
+        width: 6px;
         height: 200px;
     }
 
-
     & > track,
     & > chunk {
-        background-color: var(--bar-track-active-background-color);
+        background-color: var(--accent);
         border: none;
         border-radius: var(--corner-radius);
     }
@@ -88,56 +68,51 @@ progressbar
     }
 
     &:disabled {
-        background-color: var(--bar-disabled-background-color);
-        border-color: var(--bar-disabled-border-color);
+        background-color: var(--track);
 
         & > track,
         & > chunk {
-            background-color: var(--bar-track-disabled-background-color);
-            border-color: var(--bar-track-disabled-border-color);
+            background-color: var(--text-dim);
         }
     }
 }
 
+/*
+ * A slider: the widget is the track, > fill the fill, > handle the thumb,
+ * 10 x 20 px. The thumb takes a scrollbar thumb's tones (D-65, D-66), and the
+ * focused raised tone. Union matches :pressed on the slider too, so only the
+ * thumb changes with a state. Tick marks are --marker-width wide, never a line,
+ * and dim text, with no accent (D-105). A dial and a range slider share it.
+ */
 slider,
 rangeslider,
 dial
 {
-    background-color: var(--bar-active-background-color);
+    background-color: var(--track);
     border: none;
     border-radius: var(--corner-radius);
 
     & > fill {
-        background-color: var(--bar-track-active-background-color);
+        background-color: var(--accent);
         border: none;
         border-radius: var(--corner-radius);
     }
 
     & > handle {
-        width: var(--bar-handle-size);
-        height: var(--bar-handle-size);
-        background-color: var(--bar-handle-active-background-color);
+        width: 20px;
+        height: 20px;
+        background-color: var(--thumb);
         border: none;
         border-radius: 0px;
         box-shadow: none;
-
-        &:hovered
-        {
-            border-color: var(--bar-handle-active-highlight-border-color);
-        }
-
-        &:pressed
-        {
-            box-shadow: none;
-        }
     }
 
     & > tickmark
     {
-        background-color: var(--bar-active-border-color);
+        background-color: var(--text-dim);
 
         &.active {
-            background-color: var(--bar-track-active-border-color);
+            background-color: var(--text-dim);
         }
     }
 
@@ -146,9 +121,14 @@ dial
         width: 200px;
         height: 6px;
 
+        & > handle {
+            width: 10px;
+            height: 20px;
+        }
+
         & > tickmark {
-            width: var(--bar-tickmark-thickness);
-            height: var(--bar-tickmark-length);
+            width: var(--marker-width);
+            height: 6px;
             margin-top: var(--bar-tickmark-margin);
         }
     }
@@ -158,47 +138,55 @@ dial
         width: 6px;
         height: 200px;
 
+        & > handle {
+            width: 20px;
+            height: 10px;
+        }
+
         & > tickmark {
-            width: var(--bar-tickmark-length);
-            height: var(--bar-tickmark-thickness);
+            width: 6px;
+            height: var(--marker-width);
             margin-left: var(--bar-tickmark-margin);
         }
     }
 
+    &:hovered > handle
+    {
+        background-color: var(--thumb-hover);
+    }
+
+    &:visual-focus > handle,
+    & > handle:active-focus
+    {
+        outline: none;
+        background-color: var(--raised-focus);
+    }
+
+    &:pressed > handle,
+    & > handle:pressed
+    {
+        background-color: var(--thumb-pressed);
+        box-shadow: none;
+    }
+
     &:disabled {
-        background-color: var(--bar-disabled-background-color);
+        background-color: var(--track);
         border: none;
 
         & > fill {
-            background-color: var(--bar-track-disabled-background-color);
-            border-color: var(--bar-track-disabled-border-color);
+            background-color: var(--text-dim);
         }
 
         & > handle {
-            background-color: var(--bar-handle-disabled-background-color);
-            border-color: var(--bar-handle-disabled-border-color);
+            background-color: var(--tone-3);
             box-shadow: none;
         }
 
         & > tickmark,
         & > tickmark.active {
-            background-color: var(--bar-disabled-border-color);
+            background-color: var(--tone-3);
         }
     }
-}
-
-slider:visual-focus > handle,
-rangeslider > handle:active-focus
-{
-    border-color: var(--bar-handle-active-highlight-border-color);
-    outline: none;
-}
-
-slider:pressed > handle,
-rangeslider > handle:pressed
-{
-    background-color: var(--bar-handle-active-highlight-color);
-    border-color: var(--bar-handle-active-highlight-border-color);
 }
 
 scrollbar
@@ -247,44 +235,26 @@ scrollbar
     }
 }
 
+/* A dial is a round widget with a slider's tones: a track, and a thumb. */
 dial {
     width: 128px;
     height: 128px;
     border-radius: 64px; /* round widget: half of its width */
-    background-color: var(--dial-inactive-background-color);
-    border-color: var(--dial-inactive-border-color);
-
-    &:hovered {
-        background-color: var(--dial-active-background-color);
-        border-color: var(--dial-active-border-color);
-    }
-
-    &:pressed {
-        border-color: var(--highlight-color);
-    }
-
-    &:disabled {
-        background-color: var(--dial-disabled-background-color);
-        border-color: var(--dial-disabled-border-color);
-    }
+    background-color: var(--track);
 
     & > handle {
-        background-color: var(--dial-handle-inactive-background-color);
-        border-color: var(--dial-handle-inactive-border-color);
+        background-color: var(--thumb);
 
         &:hovered {
-            background-color: var(--dial-handle-active-background-color);
-            border-color: var(--dial-handle-active-border-color);
+            background-color: var(--thumb-hover);
         }
 
         &:pressed {
-            background-color: var(--highlight-color);
-            border-color: var(--highlight-color);
+            background-color: var(--thumb-pressed);
         }
 
         &:disabled {
-            background-color: var(--dial-handle-disabled-background-color);
-            border-color: var(--dial-handle-disabled-border-color);
+            background-color: var(--tone-3);
         }
     }
 }

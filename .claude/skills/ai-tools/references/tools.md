@@ -168,7 +168,7 @@ path from the repository root, opened as `file://`.
 | `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--wait ms]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides; `--wait` waits up to 10000 ms after the state, for what shows late, such as a tooltip |
 | `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state, including a line drawn as a filled box (an element or a pseudo-element) less than 3 px thick; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
-| `states <page> --widget <name> --selector <css>` | For each `.state` of the gallery row `.state-row[data-widget=<name>]`, in order: the background and text colour of the widget `--selector` finds in it, each with every token of that hex. A transparent widget takes the background of its nearest ancestor that has one, so a tool button with no fill reads as its toolbar. The text of an empty input or text area that has a placeholder is the placeholder's colour. Exits 1 when the row or a widget is missing |
+| `states <page> --widget <name> --selector <css> [--fill-property=<name>] [--text-property=<name>]` | For each `.state` of the gallery row `.state-row[data-widget=<name>]`, in order: the background and text colour of the widget `--selector` finds in it, each with every token of that hex. A transparent widget takes the background of its nearest ancestor that has one, so a tool button with no fill reads as its toolbar. The text of an empty input or text area that has a placeholder is the placeholder's colour. `--fill-property` and `--text-property` read a property of the widget in their place, such as `--mark` (P3.5). Exits 1 when the row or a widget is missing |
 
 Every command takes `--width` and `--height` (200 to 4000; default
 1300 × 900, device scale 1) and `--json`.
@@ -185,6 +185,9 @@ node tools/src/bin/browser.mjs colours prototype/index.html '.scene-front .is-mi
 
 # What a widget family must match (P3.3): rows such as "focused  #695c45 raised-focus  #e8e3da text, …", exits 0
 node tools/src/bin/browser.mjs states prototype/gallery.html --widget button --selector .button --json > tmp/expect-button.json
+
+# A check box's box and tick (P3.5): "rest  #d1b072 accent, …  #1b160b on-accent", exits 0
+node tools/src/bin/browser.mjs states prototype/gallery.html --widget check-box-on --selector .check-box --text-property=--mark
 ```
 
 Look at a screenshot with the Read tool.
@@ -211,6 +214,13 @@ Look at a screenshot with the Read tool.
   `::placeholder`, scrollbars, the inside of native controls (a native check
   box may be drawn rounded while its computed radius is 0), and errors after
   the page has loaded.
+- **`states`: a property in place of a colour** (P3.5). `--fill-property`
+  and `--text-property` read a property of the widget, such as the gallery's
+  `--mark` (a toggle's tick or dot), `--thumb-tone` or `--fill` (a range), as
+  its background or text. Write a custom property's name after `=`:
+  `--text-property=--mark`, since a value starting with `--` is otherwise read
+  as an option. A transparent value is `null` in `--json` and `—` in the
+  table: an unchecked box has no mark.
 - **`colours`** reads any computed form (`rgb()`, `color(srgb …)` from a
   `color-mix`, `oklch()`) and names an opaque colour by every token that resolves to it, such
   as `#3c3832 (tone-4, thumb, selected)`, or prints the bare hex. Fully transparent is
@@ -272,7 +282,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | `greys <png> [--region x,y,w,h] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
-| `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
+| `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
 
 ```shell
 # A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
@@ -289,9 +299,18 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.3-amber --c
 
 # A text field against the gallery (P3.4): the focused states must carry the accent bar 3 px high, the others none
 node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.4-amber --case line-edit --expect tmp/expect-text-field.json --foot 3 --bar '#d1b072' --bar-states focused,hovered-focused --alias hovered-focused=focused
+
+# A check box's box against the gallery (P3.5): the box only, from the probe's manifest regions
+node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --case check-box-on --expect tmp/expect-check-box-on.json --region 0,5,16,16
 ```
 
 - **`states`: fill and text.** The fill is an image's most common colour. The text is the colour farthest from the fill in RGB: small text at scale 1 is mostly anti-aliased blends, and only a few pixels reach the full text colour. An icon in another colour, such as a coloured arrow, would be taken for the text, so the probe draws text-only widgets. Both are compared by hex within ±1 a channel. A state on one side only is "not compared"; a state the probe could not reach is marked.
+- **`states`: a region and no text** (P3.5). `--region x,y,w,h` reads every
+  image only inside that rectangle, such as a toggle's box or a slider's
+  thumb, which are too small to be their widget's most common colour. The
+  probe writes each case's regions into its manifest. An expected background
+  or text of `null` (from `browser states` on a transparent property) is not
+  compared and is printed as `—`.
 - **`states`: the foot and ignored colours** (P3.4). `--foot <px>` leaves the bottom rows out of the fill and the text, and reads their most common colour, the foot. With `--bar`, a state named in `--bar-states` passes only when its foot is the bar's colour, and every other state only when its foot is its own fill: a focus bar on a well that is not focused fails too. `--ignore <hex>` (repeatable) leaves a colour out of the fill, the text and the foot, such as a text cursor that `render()` draws.
 
 - **A cool grey** is a colour that is not a hue (OKLCH chroma below 0.05)

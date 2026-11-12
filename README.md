@@ -38,6 +38,11 @@ Amber is in early development and nothing can be installed yet.
 - **Disabled text in a field** is the colour scheme's `#a6a19a`, and a
   disabled placeholder `#7c766e`, not dim text: Qt draws them from the
   colour scheme. (seen in P3.4; D-104)
+- **A busy progress bar is a full fill.** In Qt Widgets applications Union
+  fills the whole track with accent, where Amber's design moves a 32 px
+  block along it; no rule reaches it. (seen in P3.5; D-107)
+- **A slider shows 9 of its tick marks out of 11**: Union leaves out the
+  two at the ends and the one under the thumb. (seen in P3.5; D-107)
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)

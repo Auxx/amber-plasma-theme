@@ -10,6 +10,9 @@
   .tool { background: transparent; color: #e8e3da; }
   .field { background: #151413; color: #e8e3da; }
   .field::placeholder { color: #a9a297; }
+  .box { display: block; width: 16px; height: 16px; }
+  .box.off { --mark: transparent; background: #151413; }
+  .box.on { --mark: #1b160b; background: #d1b072; }
 </style>
 <div class="state-row" data-widget="button">
   <div class="state" data-state="rest"><span class="state-label">At rest</span><button class="button">Save</button></div>
@@ -21,5 +24,9 @@
 <div class="state-row" data-widget="text-field">
   <div class="state" data-state="rest"><input class="field" placeholder="Search files"></div>
   <div class="state" data-state="filled"><input class="field" placeholder="Search files" value="amber-notes.md"></div>
+</div>
+<div class="state-row" data-widget="toggle">
+  <div class="state" data-state="off"><span class="box off"></span></div>
+  <div class="state" data-state="on"><span class="box on"></span></div>
 </div>
 </html>

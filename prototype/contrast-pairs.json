@@ -60,10 +60,22 @@
     "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
+    "foreground": "text-dim",
+    "on": ["toggle", "track"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: the mark of a disabled checked toggle and the fill of a disabled slider or progress bar are dim text, and still mark state (P3.5). A tick mark of a slider is dim text on the surface, covered by dim text on tone-2."
+  },
+  {
     "foreground": "toggle",
     "on": ["tone-2"],
     "minimum": 1.1,
     "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
+  },
+  {
+    "foreground": "well-hover",
+    "on": ["tone-1", "toggle"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a hovered well or unchecked toggle is told by tone from a dialog's tone 1 body, where it vanished, and from the toggle at rest (D-102, D-106). On tone 2 it measures 1.11:1, which the owner accepted in D-102; a pair there would sit within 2 % of the floor. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "toggle-focus",

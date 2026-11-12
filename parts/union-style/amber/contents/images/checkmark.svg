@@ -2,68 +2,12 @@
 <!--
 SPDX-License-Identifier: BSD-2-Clause
 SPDX-FileCopyrightText: 2025 Arjen Hiemstra <ahiemstra@heimr.nl>
+SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov
 -->
-
-<svg
-   fill="none"
-   viewBox="0 0 16 16"
-   version="1.1"
-   id="svg1"
-   sodipodi:docname="checkmark.svg"
-   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
-   width="16"
-   height="16"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="36.851054"
-     inkscape:cx="2.3744232"
-     inkscape:cy="12.089206"
-     inkscape:window-width="2508"
-     inkscape:window-height="1404"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1"
-     showgrid="true">
-    <inkscape:grid
-       id="grid1"
-       units="px"
-       originx="0"
-       originy="0"
-       spacingx="1"
-       spacingy="1"
-       empcolor="#0099e5"
-       empopacity="0.30196078"
-       color="#0099e5"
-       opacity="0.14901961"
-       empspacing="4"
-       enabled="true"
-       visible="true" />
-  </sodipodi:namedview>
-  <defs
-     id="defs1">
-    <style
-       type="text/css"
-       id="current-color-scheme" />
-  </defs>
-  <path
-     stroke="#232629"
-     stroke-linecap="round"
-     stroke-linejoin="round"
-     stroke-width="2.53157"
-     d="m 4,8 3,3 6,-6"
-     id="path1"
-     style="stroke-width:2.5;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none"
-     sodipodi:nodetypes="ccc" />
+<!-- The tick (P3.5): two bars 2 px thick with square ends, in a 5 x 9 box turned 45 degrees, as the prototype's .check-box::before. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g transform="rotate(45 7.5 6.5)" fill="#000000">
+    <rect x="8" y="2" width="2" height="9" />
+    <rect x="5" y="9" width="5" height="2" />
+  </g>
 </svg>

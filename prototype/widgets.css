@@ -344,7 +344,7 @@
 :is(.check-box, .radio):not(:checked):enabled:hover,
 .toggle:where(:hover) > :is(.check-box, .radio):not(:checked):enabled,
 :is(.check-box, .radio):not(:checked):enabled.is-hovered {
-  background-color: var(--tone-1);
+  background-color: var(--well-hover); /* tone 1 is a dialog's body (D-106) */
 }
 
 :is(.check-box, .radio):checked:enabled:hover,
@@ -363,6 +363,21 @@
 :is(.check-box, .radio):checked:enabled:focus-visible,
 :is(.check-box, .radio):checked:enabled.is-focused {
   background-color: var(--accent-hover);
+}
+
+/*
+ * Partly checked (P3.5, D-105): a checked box whose mark is an 8 x 2 bar, a
+ * stroke of the tick's weight, painted as the tick's bars are. The gallery
+ * forces it with .is-indeterminate, as it forces every state.
+ */
+
+.check-box.is-indeterminate::before {
+  left: 4px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(var(--mark), var(--mark)) center / 100% 2px no-repeat;
+  transform: none;
 }
 
 /* Disabled */
@@ -444,6 +459,36 @@
 
 .progress[aria-disabled="true"] {
   --fill: var(--text-dim);
+}
+
+/*
+ * A busy progress bar (P3.5, D-105): a block of fill 32 px long runs along the
+ * track. The gallery shows it still, at --value, as it shows every state; the
+ * motion is the design language's.
+ */
+.progress.is-busy {
+  background-image: linear-gradient(var(--fill), var(--fill));
+  background-size: 32px 100%;
+  background-repeat: no-repeat;
+  background-position: var(--value) 0;
+}
+
+/*
+ * Tick marks (P3.5, D-105): one every step of 10 %, under the track, centred on
+ * the thumb's positions. --marker-width wide, so never a line; dim text, and
+ * tone 3 when the slider is disabled. Never accent: only the fill is.
+ */
+.slider.has-ticks {
+  --tick: var(--text-dim);
+  height: 32px;
+  background-image: linear-gradient(to right, var(--tick) var(--marker-width), transparent var(--marker-width));
+  background-size: calc((100% - 10px) / 10) 6px;
+  background-repeat: repeat-x;
+  background-position: calc(5px - var(--marker-width) / 2) bottom;
+}
+
+.slider.has-ticks:disabled {
+  --tick: var(--tone-3);
 }
 
 /* A live list that scrolls, beside the drawn scrollbars. */

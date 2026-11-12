@@ -110,6 +110,7 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><label class="toggle"><input type="checkbox" class="check-box is-hovered" checked>Show hidden files</label></div>
     <div class="state" data-state="focused"><span class="state-label dim">Focused</span><label class="toggle"><input type="checkbox" class="check-box is-focused" checked>Show hidden files</label></div>
     <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><label class="toggle"><input type="checkbox" class="check-box" checked disabled>Show hidden files</label></div>
+    <div class="state" data-state="indeterminate"><span class="state-label dim">Partly checked</span><label class="toggle"><input type="checkbox" class="check-box is-indeterminate" checked>Show hidden files</label></div>
   </div>
 
   <div class="state-row" data-widget="radio">
@@ -144,6 +145,12 @@ Warm, never cool.</textarea></div>
     <div class="state" data-state="empty"><span class="state-label dim">Empty</span><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="--value: 0%"></div></div>
     <div class="state" data-state="full"><span class="state-label dim">Full</span><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" style="--value: 100%"></div></div>
     <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%" aria-disabled="true"></div></div>
+    <div class="state" data-state="busy"><span class="state-label dim">Busy</span><div class="progress is-busy" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" style="--value: 30%"></div></div>
+  </div>
+
+  <div class="state-row" data-widget="slider-ticks">
+    <div class="state" data-state="rest"><span class="state-label dim">With tick marks</span><input type="range" class="slider has-ticks" min="0" max="100" step="10" value="40" aria-label="Zoom" tabindex="-1"></div>
+    <div class="state" data-state="disabled"><span class="state-label dim">Disabled</span><input type="range" class="slider has-ticks" min="0" max="100" step="10" value="40" aria-label="Zoom" tabindex="-1" disabled></div>
   </div>
 
   <div class="state-row" data-widget="scrollbar">

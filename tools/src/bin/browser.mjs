@@ -164,16 +164,24 @@ ${SIZE_HELP}`,
       }
     },
     states: {
-      usage: '<page> --widget <name> --selector <css> [--width n] [--height n] [--json]',
+      usage: '<page> --widget <name> --selector <css> [--fill-property <name>] [--text-property <name>] [--width n] [--height n] [--json]',
       summary: 'Prints the background and text colour of each state of a gallery row, named as tokens.',
       help: `Reads .state-row[data-widget=<name>]: for each .state, in order, the element
 --selector finds in it. Its background is its own, or, when that is
 transparent, that of the nearest ancestor that has one: a tool button with no
 fill reads as its toolbar. Each colour lists every token with exactly its hex.
+The text of an empty field with a placeholder is the placeholder's colour.
+
+--fill-property and --text-property read a property of the widget in place of
+its background or its text, such as a custom property: --text-property=--mark
+gives the colour of a check box's tick (P3.5). Write a custom property's name
+after "=", since a value starting with "--" is otherwise read as an option. A
+transparent value gives none, printed as "—" and written as null.
+
 Exits 1 when the row or a widget is missing.
 
 ${SIZE_HELP}`,
-      options: { widget: { type: 'string' }, selector: { type: 'string' }, ...SIZE_OPTIONS, json: { type: 'boolean' } },
+      options: { widget: { type: 'string' }, selector: { type: 'string' }, 'fill-property': { type: 'string' }, 'text-property': { type: 'string' }, ...SIZE_OPTIONS, json: { type: 'boolean' } },
       async run(options, positionals) {
         const url = page(positionals);
         if (!options.widget) {
@@ -185,8 +193,11 @@ ${SIZE_HELP}`,
         viewport(options);
         const names = tokenNames(loadTokens());
         const rows = await withPage(url, options, async opened =>
-          (await readStates(opened, options.widget, options.selector)).map(raw => stateRow(raw, names)));
-        const shown = c => `${c.hex}${c.tokens.length ? ` ${c.tokens.join(', ')}` : ''}`;
+          (await readStates(opened, options.widget, options.selector, {
+            fillProperty: options['fill-property'],
+            textProperty: options['text-property']
+          })).map(raw => stateRow(raw, names)));
+        const shown = c => (c === null ? '—' : `${c.hex}${c.tokens.length ? ` ${c.tokens.join(', ')}` : ''}`);
         print(options.json, rows, () =>
           table([ [ 'state', 'background', 'text' ], ...rows.map(r => [ r.state, shown(r.background), shown(r.text) ]) ])
         );

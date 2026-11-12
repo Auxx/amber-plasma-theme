@@ -130,6 +130,14 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Toggle**
 : A check box or a radio button. A toggle button is a button, not a toggle.
 
+**Mark**
+: What a checked toggle carries on its accent: the tick of a check box, the
+  dot of a radio button, or the bar of a partly checked check box.
+
+**Tick**
+: The mark of a checked check box, or of a checked menu item. _Avoid_ "check
+  mark" and "tick" for a slider's tick mark.
+
 **Track**
 : The groove of a slider or a progress bar that the fill runs along.
   _Avoid_ "groove" and "trough".
@@ -140,6 +148,15 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Thumb**
 : The part of a slider or a scrollbar that is dragged. _Avoid_ "handle"
   and "knob".
+
+**Tick mark**
+: One of the short marks of a slider's scale, beside its track. Always
+  written in full, so that it is not taken for a tick. _Avoid_ "tickmark",
+  Union's name, except when naming Union's selectors.
+
+**Busy progress bar**
+: A progress bar that has no value to show, only that work goes on.
+  _Avoid_ "indeterminate" for it, Qt's and ARIA's word.
 
 **Item**
 : One entry of a list, tree or table view, or of a sidebar. In a table view
@@ -250,6 +267,11 @@ The names follow Union CSS.
 
 **Checked**
 : A check box, radio button or toggle button is on.
+
+**Partly checked**
+: A check box that is neither on nor off, as when it stands for a group of
+  which some are on. _Avoid_ "indeterminate" and "mixed" (Qt's and ARIA's
+  words) except when naming their states.
 
 **Selected**
 : An item of a list, sidebar or tab bar is the chosen one.

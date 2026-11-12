@@ -83,7 +83,7 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
 
 | Widget | At rest | Hovered | Focused | Pressed | Disabled |
 |---|---|---|---|---|---|
-| Check box, radio button, unchecked | toggle / no mark | tone 1 | toggle focus | — | toggle |
+| Check box, radio button, unchecked | toggle / no mark | well hover | toggle focus | — | toggle |
 | Check box, radio button, checked | accent / on-accent | accent hover / on-accent | accent hover / on-accent | — | toggle / dim text |
 | Slider | thumb / accent fill | thumb hover / accent | raised focus / accent | thumb pressed / accent | tone 3 / dim text |
 | Progress bar | track / accent fill | — | — | — | track / dim text |
@@ -139,7 +139,12 @@ background / text, and the block marker or tick where the widget has one.
   down, it stays hovered. Hovering its label hovers the box. Its label is
   dim text when it is disabled, and a disabled checked toggle keeps its
   mark in dim text. A checked toggle shows focus with its hovered tone, as
-  the primary button does. (decided, D-76)
+  the primary button does. (decided, D-76) A partly checked check box is
+  drawn as a checked one, with an on-accent bar 8 × 2 px in the centre in
+  place of the tick. (my call, D-105)
+- **A hovered unchecked toggle** takes `well hover`, as a hovered well
+  does: tone 1 is a dialog's body, where the box vanished. (decided,
+  D-106)
 - **An unchecked toggle** and **an empty track** are told from their
   surface by tone alone, as an empty well is. (decided, D-75)
 - **Selection**: a selected item has the selected tone, tone 4 (decided,
@@ -168,8 +173,15 @@ background / text, and the block marker or tick where the widget has one.
   glow; no line sits above its buttons.
 - **Ranges** (my call, P1.4): a fill is accent on a 6 px track below the
   surface; a disabled fill is dim text. A slider's thumb is 10 × 20 px.
-  A progress bar has no text on it. A busy progress bar needs motion and
-  is drawn in P3.5.
+  A progress bar has no text on it.
+- **A busy progress bar** moves a block of accent 32 px long along its
+  track, left to right, over 1.5 s; when the reader asks for less motion,
+  it stands still at the start of the track. The gallery shows it still,
+  as it shows every state. (my call, D-105)
+- **Tick marks** of a slider are `--marker-width` (3 px) wide and 6 px
+  long, under the track, one at each step: dim text, and tone 3 when the
+  slider is disabled. They have no accent: only the fill has. (my call,
+  D-105)
 - **Thumbs.** The thumb of a slider and of a scrollbar take the same
   tones: lighter when hovered and lightest when pressed, as Breeze's do.
   (decided, D-65) At rest a thumb is tone 4, hovered `#585248`, pressed

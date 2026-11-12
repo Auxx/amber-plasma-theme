@@ -73,9 +73,9 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'track=#746e63', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 1);
+    assert.equal(result.failing, 2);
     const failing = result.changed.filter(c => c.after.status === 'fail').map(c => [ c.after.pair, c.after.ratio.toFixed(2) ]);
-    assert.deepEqual(failing, [ [ 'accent on track', '2.45' ] ]);
+    assert.deepEqual(failing, [ [ 'accent on track', '2.45' ], [ 'text-dim on track', '2.00' ] ]);
   });
 
   it('names an unknown token', () => {
@@ -93,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('137 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('141 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 137);
+    assert.equal(result.total, 141);
     assert.equal(result.failing, 0);
   });
 
@@ -124,7 +124,7 @@ describe('tokens tool', () => {
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
     assert.equal(result.failing, 4);
-    assert.equal(result.changed.length, 16);
+    assert.equal(result.changed.length, 18);
   });
 
   it('shows no change', () => {

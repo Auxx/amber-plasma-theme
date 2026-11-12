@@ -103,7 +103,7 @@ ${REGION_HELP}
       }
     },
     states: {
-      usage: '<folder> --case <name> --expect <json> [--alias probe=expected]... [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]',
+      usage: '<folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]',
       summary: 'Compares the fill and text of each state of a probe case with the states a gallery row expects; exits 1 on a mismatch',
       help: `<folder> holds the probe's images and its manifest.json, a list of
 { file, widget, state, reached }. --case names the widget; --expect is a file
@@ -119,11 +119,17 @@ one side only is listed as "not compared". --surface leaves out pixels of that
 colour, the probe's surface, from both, and --ignore (repeatable) another
 colour, such as a text cursor.
 
+--region x,y,width,height reads every image only inside that rectangle, such
+as a check box's box or a slider's thumb, which are too small to be the most
+common colour of their widget (P3.5). An expected background or text of null,
+which browser states writes for a transparent property, is not compared, and
+is printed as "—".
+
 --foot <px> leaves the bottom rows out of the fill and the text and reads
 their colour, the foot (P3.4). With --bar, a state named in --bar-states
 passes only when its foot is the --bar colour, the focus bar of a focused
 well, and every other state only when its foot is its own fill.`,
-      options: { case: { type: 'string' }, expect: { type: 'string' }, alias: { type: 'string', multiple: true }, surface: { type: 'string' }, ignore: { type: 'string', multiple: true }, foot: { type: 'string' }, bar: { type: 'string' }, 'bar-states': { type: 'string' }, json: { type: 'boolean' } },
+      options: { case: { type: 'string' }, expect: { type: 'string' }, alias: { type: 'string', multiple: true }, region: { type: 'string' }, surface: { type: 'string' }, ignore: { type: 'string', multiple: true }, foot: { type: 'string' }, bar: { type: 'string' }, 'bar-states': { type: 'string' }, json: { type: 'boolean' } },
       run(values, positionals) {
         if (positionals.length !== 1) {
           throw new UsageError('Give the probe folder.');
@@ -149,6 +155,7 @@ well, and every other state only when its foot is its own fill.`,
         if (values['bar-states'] !== undefined && values.bar === undefined) {
           throw new UsageError('--bar-states needs --bar, the colour of the bar.');
         }
+        const region = parseRegion(values.region);
         const bar = values.bar?.toLowerCase();
         const barStates = new Set((values['bar-states'] ?? '').split(',').filter(Boolean));
         const ignore = (values.ignore ?? []).map(h => h.toLowerCase());
@@ -169,6 +176,7 @@ well, and every other state only when its foot is its own fill.`,
         const names = tokenNames(loadTokens());
         const surface = values.surface?.toLowerCase();
         const close = (a, b) => a !== null && b !== null && [ 1, 3, 5 ].every(i => Math.abs(parseInt(a.slice(i, i + 2), 16) - parseInt(b.slice(i, i + 2), 16)) <= 1);
+        const agrees = (found, want) => want === null || close(found, want);
         const used = new Set();
         const rows = manifest.map(({ file, state, reached }) => {
           const target = expected.find(e => e.state === (aliases.get(state) ?? state));
@@ -176,12 +184,13 @@ well, and every other state only when its foot is its own fill.`,
             return { state, reached, compared: false };
           }
           used.add(target.state);
-          const found = fill(decodePng(readFileSync(join(folder, file))), { surface, foot, ignore });
-          const want = { background: target.background.hex, text: target.text.hex };
+          const found = fill(decodePng(readFileSync(join(folder, file))), { surface, region, foot, ignore });
+          // An expectation of null is not compared (P3.5).
+          const want = { background: target.background?.hex ?? null, text: target.text?.hex ?? null };
           if (foot) {
             want.foot = bar && barStates.has(state) ? bar : found.background;
           }
-          const match = close(found.background, want.background) && close(found.text, want.text) && (!foot || close(found.foot, want.foot));
+          const match = agrees(found.background, want.background) && agrees(found.text, want.text) && (!foot || close(found.foot, want.foot));
           return { state, reached, compared: true, expected: target.state, found, want, match };
         });
         for (const e of expected) {
@@ -198,13 +207,14 @@ well, and every other state only when its foot is its own fill.`,
           }
           if (r.match) {
             const footNote = r.want.foot !== undefined ? `, foot ${named(r.found.foot)}` : '';
-            return [ r.state, `ok  ${named(r.found.background)} / ${named(r.found.text)}${footNote}${note}` ];
+            const shown = (found, want) => (want === null ? '—' : named(found));
+            return [ r.state, `ok  ${shown(r.found.background, r.want.background)} / ${shown(r.found.text, r.want.text)}${footNote}${note}` ];
           }
           const parts = [];
-          if (!close(r.found.background, r.want.background)) {
+          if (!agrees(r.found.background, r.want.background)) {
             parts.push(`background ${named(r.found.background)} expected ${named(r.want.background)}`);
           }
-          if (!close(r.found.text, r.want.text)) {
+          if (!agrees(r.found.text, r.want.text)) {
             parts.push(`text ${named(r.found.text)} expected ${named(r.want.text)}`);
           }
           if (r.want.foot !== undefined && !close(r.found.foot, r.want.foot)) {

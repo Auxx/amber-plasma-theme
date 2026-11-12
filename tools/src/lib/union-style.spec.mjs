@@ -503,3 +503,144 @@ describe('the Union style\'s wells (P3.4)', () => {
     assert.deepEqual(offending, []);
   });
 });
+
+describe('the Union style\'s toggles and ranges (P3.5)', () => {
+  const check = blocks(read('check.css'));
+  const bars = blocks(read('bars.css'));
+  const chain = block => (block ? [ block, ...chain(block.parent) ] : []);
+  const TOGGLE = /(^|[\s,>(])(checkbox|radiobutton|checkdelegate|radiodelegate|switch|switchdelegate)(?![\w-])/;
+  const RANGE = /(^|[\s,>(])(slider|rangeslider|dial|progressbar|busyindicator)(?![\w-])/;
+  const OTHER = /\.changed|scrollbar|menuitem/;
+  const of = (all, file, test) => all.filter(b => chain(b).some(c => test.test(c.selector)) && !chain(b).some(c => OTHER.test(c.selector)))
+    .map(b => [ file, b ]);
+  const family = [ ...of(check, 'check.css', TOGGLE), ...of(bars, 'bars.css', RANGE) ];
+  const top = (all, test) => {
+    const found = all.filter(b => !b.parent && test(parts(b.selector)));
+    assert.equal(found.length, 1, `one top-level block expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => parts(c.selector).join(', ') === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  const toggles = () => top(check, p => [ 'checkbox', 'checkdelegate', 'radiobutton', 'radiodelegate' ].every(n => p.includes(n)) && !p.includes('menuitem'));
+  const slider = () => top(bars, p => [ 'slider', 'rangeslider', 'dial' ].every(n => p.includes(n)));
+  const progress = () => top(bars, p => p.length === 1 && p[0] === 'progressbar');
+  const COLOURS = [ 'color', 'background-color', 'icon-color', 'background-image-mask-color' ];
+
+  it('colours a toggle and a range only with the tokens', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .flatMap(d => (COLOURS.includes(d.property) ? [ [ d, d.value ] ] : d.property === 'background-image' && / mask (.+)$/.test(d.value) ? [ [ d, d.value.match(/ mask (.+)$/)[1] ] ] : []))
+      .filter(([ , v ]) => !tokenVar.test(v) && v !== 'none' && v !== 'transparent')
+      .map(([ d ]) => `${file}:${d.line} ${b.selector.replace(/\s+/g, ' ')} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a check box and a radio button the tones of the prototype, and its mark', () => {
+    const t = toggles();
+    assert.equal(value(child(t, '& > indicator'), 'background-color'), 'var(--toggle)');
+    assert.equal(value(child(t, '& > indicator'), 'width'), '16px');
+    assert.equal(value(child(t, '&:hovered > indicator'), 'background-color'), 'var(--well-hover)');
+    assert.equal(value(child(t, '&:visual-focus > indicator'), 'background-color'), 'var(--toggle-focus)');
+    assert.equal(value(child(t, '&:checked > indicator'), 'background-color'), 'var(--accent)');
+    assert.equal(value(child(t, '&:checked:hovered > indicator'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(t, '&:checked:visual-focus > indicator'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(t, '&:disabled'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(child(t, '&:disabled'), '& > indicator'), 'background-color'), 'var(--toggle)');
+    assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-color'), 'var(--toggle)');
+    assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
+    const marks = check.filter(b => !b.parent && !/menuitem/.test(b.selector) && /checkbox|radiobutton/.test(b.selector))
+      .flatMap(b => b.children.filter(c => /:checked > indicator$|indeterminate > indicator$/.test(c.selector)))
+      .map(c => value(c, 'background-image')).filter(Boolean);
+    assert.deepEqual([ ...new Set(marks.map(m => m.replace(/^url\("\.\.\/images\/[a-z]+\.svg"\) mask /, ''))) ], [ 'var(--on-accent)' ]);
+    assert.ok(marks.some(m => m.includes('checkmark.svg')) && marks.some(m => m.includes('radio.svg')) && marks.some(m => m.includes('indeterminate.svg')), marks.join('\n'));
+  });
+
+  it('draws a partly checked box as a checked one, with its own mark (D-105)', () => {
+    const box = top(check, p => p.join(', ') === 'checkbox, checkdelegate');
+    assert.equal(value(child(box, '&.indeterminate > indicator'), 'background-color'), 'var(--accent)');
+    assert.equal(value(child(box, '&.indeterminate:hovered > indicator'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(box, '&.indeterminate:visual-focus > indicator'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(box, '&.indeterminate:disabled > indicator'), 'background-color'), 'var(--toggle)');
+    assert.equal(value(child(box, '&.indeterminate:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
+  });
+
+  it('keeps the label 8 px from the box, as the prototype does', () => {
+    const label = top(check, p => p.join(', ') === 'checkbox, radiobutton, switch');
+    assert.equal(value(label, 'spacing'), '8px');
+    assert.equal(value(label, 'color'), 'var(--text)');
+  });
+
+  it('gives a slider the tones and sizes of the prototype', () => {
+    const s = slider();
+    assert.equal(value(s, 'background-color'), 'var(--track)');
+    assert.equal(value(child(s, '& > fill'), 'background-color'), 'var(--accent)');
+    assert.equal(value(child(s, '& > handle'), 'background-color'), 'var(--thumb)');
+    assert.equal(value(child(s, '&:hovered > handle'), 'background-color'), 'var(--thumb-hover)');
+    assert.equal(value(child(s, '&:visual-focus > handle, & > handle:active-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(s, '&:pressed > handle, & > handle:pressed'), 'background-color'), 'var(--thumb-pressed)');
+    const disabled = child(s, '&:disabled');
+    assert.equal(value(disabled, 'background-color'), 'var(--track)');
+    assert.equal(value(child(disabled, '& > fill'), 'background-color'), 'var(--text-dim)');
+    assert.equal(value(child(disabled, '& > handle'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(disabled, '& > tickmark, & > tickmark.active'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(s, '& > tickmark'), 'background-color'), 'var(--text-dim)');
+    assert.equal(value(child(child(s, '& > tickmark'), '&.active'), 'background-color'), 'var(--text-dim)');
+    const horizontal = child(s, '&.horizontal');
+    assert.equal(value(horizontal, 'height'), '6px');
+    assert.equal(value(child(horizontal, '& > handle'), 'width'), '10px');
+    assert.equal(value(child(horizontal, '& > handle'), 'height'), '20px');
+    assert.equal(value(child(horizontal, '& > tickmark'), 'width'), 'var(--marker-width)');
+    const vertical = child(s, '&.vertical');
+    assert.equal(value(vertical, 'width'), '6px');
+    assert.equal(value(child(vertical, '& > handle'), 'width'), '20px');
+    assert.equal(value(child(vertical, '& > handle'), 'height'), '10px');
+    assert.equal(value(child(vertical, '& > tickmark'), 'height'), 'var(--marker-width)');
+    // :pressed also matches the slider itself, so no state block but :disabled colours the track (Task 1).
+    assert.deepEqual(s.children.filter(c => /:(hovered|visual-focus|pressed)/.test(c.selector) && value(c, 'background-color') && !/handle/.test(c.selector)).map(c => c.selector), []);
+  });
+
+  it('gives a progress bar the tones and size of the prototype, with no text and no inset', () => {
+    const p = progress();
+    assert.equal(value(p, 'background-color'), 'var(--track)');
+    assert.equal(value(p, 'color'), 'transparent');
+    assert.equal(value(p, 'inset'), '0px');
+    assert.equal(value(p, 'padding'), '0px');
+    assert.equal(value(child(p, '& > track, & > chunk'), 'background-color'), 'var(--accent)');
+    assert.equal(value(child(p, '&.horizontal'), 'height'), '6px');
+    assert.equal(value(child(p, '&.vertical'), 'width'), '6px');
+    const disabled = child(p, '&:disabled');
+    assert.equal(value(disabled, 'background-color'), 'var(--track)');
+    assert.equal(value(child(disabled, '& > track, & > chunk'), 'background-color'), 'var(--text-dim)');
+  });
+
+  it('orders the states of each block so that the later wins: hovered, focused, pressed, disabled', () => {
+    const rank = selector => [ /:hovered/, /:visual-focus|:active-focus/, /:pressed/, /:disabled/ ].findIndex(r => r.test(selector));
+    const offending = family.flatMap(([ file, b ]) => {
+      const seen = b.children.filter(c => value(c, 'background-color') || c.children.some(g => value(g, 'background-color')))
+        .map(c => ({ selector: c.selector, checked: /:checked|\.indeterminate/.test(c.selector), rank: rank(c.selector) }))
+        .filter(c => c.rank >= 0);
+      const out = [];
+      for (const group of [ false, true ]) {
+        const ranks = seen.filter(c => c.checked === group).map(c => c.rank);
+        if (ranks.some((r, i) => i && r < ranks[i - 1])) {
+          out.push(`${file}: ${b.selector.replace(/\s+/g, ' ')}`);
+        }
+      }
+      return out;
+    });
+    assert.deepEqual(offending, []);
+  });
+
+  it('draws no mark with a round end or join', () => {
+    const images = join(STYLE, 'contents/images');
+    const offending = readdirSync(images).filter(f => f.endsWith('.svg')).filter(f => /round/.test(readFileSync(join(images, f), 'utf8')));
+    assert.deepEqual(offending, []);
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
+      .map(d => `${file}:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+});
