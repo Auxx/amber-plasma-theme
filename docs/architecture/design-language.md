@@ -75,7 +75,7 @@ of plans P1.3 to P1.5, `prototype/gallery.html`).
 | Button, combo box | tone 3 / text | tone 4 / text | raised focus / text | tone 1 / text | — | tone 3 / dim text |
 | Primary button | accent / on-accent | accent hover / on-accent | accent hover / on-accent | accent pressed / on-accent | — | tone 3 / dim text |
 | Tool button, on a tone 0 toolbar | no fill / text | tone 3 / text | raised focus / text | tone 2 / text | tone 3 / accent | no fill / dim text |
-| Text field, spin box, text area | well / text | tone 1 / text | well focus / text, accent bar | — | — | well / dim text |
+| Text field, spin box, text area | well / text | well hover / text | well focus / text, accent bar | — | — | well / dim text |
 | Close button | as title bar | danger fill | — | darker danger | — | — |
 
 Toggles and ranges (my call, P1.4). Each cell gives the box / mark, the
@@ -117,10 +117,18 @@ background / text, and the block marker or tick where the widget has one.
 - **The focused tone** of a raised widget, a toggle, a tab or a scroll
   area is accent mixed over the tone the widget has when hovered: 30 %
   for a raised widget and a toggle. (decided, D-64)
+- **A hovered well** takes `well hover`, a faint tint of accent over
+  tone 0, so that it stands apart from a dialog's tone 1 body and from a
+  tone 2 view. (decided, D-102)
 - **A focused well** is not tinted, so that it does not look raised. It
-  keeps tone 1, the tone of a hovered well, and gains a bar of accent
-  three pixels high at its foot. (decided, D-69) A spin box's step
-  buttons stay clear of the bar.
+  takes tone 1 and gains a bar of accent three pixels high at its foot.
+  (decided, D-69) A spin box's step buttons stay clear of the bar. A well
+  shows focus whenever it has the text cursor, clicked or tabbed, as a
+  browser does. (decided, D-103)
+- **Wells in Qt Widgets applications** have three known gaps: a text
+  area's inside stays tone 2, a spin box's steps are drawn in text with no
+  hovered tone, and disabled text is a little lighter than dim text.
+  (decided, D-104; see [platform](platform.md#union))
 - **An empty well** is told from its surface by tone alone: tone 0 on
   tone 2, with no bar at its foot. (decided, D-75)
 - **Toggles** (my call, P1.4): a 16 px box, or a circle for a radio
@@ -179,6 +187,7 @@ token holds the plain colour (D-47).
 | Token | Value | Used for |
 |---|---|---|
 | `--well` | `var(--tone-0)` | a well at rest (decided, D-75) |
+| `--well-hover` | `#2f2a20`, accent 14 % over tone 0 | a hovered well (decided, D-102) |
 | `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
 | `--well-focus` | `var(--tone-1)` | a focused well (decided, D-69) |
 | `--surface-focus` | `#393226`, accent 16 % over tone 1 | a focused tab or scroll area (my call, D-68) |
