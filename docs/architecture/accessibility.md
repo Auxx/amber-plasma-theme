@@ -32,11 +32,12 @@ Disabled controls are exempt in WCAG, and are exempt here.
    tonal step, kept above a floor of 1.1 (my call).
 3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
    every background they are read on: the editor, the current line and
-   the text selection. The text selection is the hardest of these:
-   comments in dim text measure 4.71:1 on it, and fail beyond a tint of
-   about 14 % accent (4.50:1, FAIL, at 16 %; measured 2026-11-11, P1.6).
-   The text selection and the current line are told apart by a floor of
-   1.1 (1.13:1) and by the accent's hue (my call).
+   the text selection. The text selection is the hardest of these.
+   It is accent 20 % over tone 2, so that it stands apart from the current
+   line (1.29:1; decided, D-82). Six syntax colours keep 4.5:1 on it
+   (4.60:1 to 5.08:1). **A comment inside a text selection does not:** it
+   measures 4.15:1, and the owner accepts that, since a comment is
+   low-priority text. Its pair there has a floor of 4 (my call, D-84).
    The terminal's foreground, white, bright black and the bright colours
    reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to
    match a dark background. **The six normal colours reach 3.5:1 as text,
@@ -184,7 +185,7 @@ falls below its minimum.
 | text | editor | 12.38:1 | 4.5 | pass |
 | text | editor gutter | 13.58:1 | 4.5 | pass |
 | text | editor current line | 10.58:1 | 4.5 | pass |
-| text | editor selection | 9.33:1 | 4.5 | pass |
+| text | editor selection | 8.22:1 | 4.5 | pass |
 | dim text | editor gutter | 6.86:1 | 4.5 | pass |
 | terminal text | terminal | 13.58:1 | 4.5 | pass |
 | terminal text | ansi red | 3.68:1 | 3.5 | pass |
@@ -208,31 +209,30 @@ falls below its minimum.
 | ansi bright magenta | terminal | 9.63:1 | 4.5 | pass |
 | ansi bright cyan | terminal | 10.44:1 | 4.5 | pass |
 | ansi bright white | terminal | 15.41:1 | 4.5 | pass |
-| syntax keyword | editor | 6.59:1 | 4.5 | pass |
-| syntax keyword | editor current line | 5.63:1 | 4.5 | pass |
-| syntax keyword | editor selection | 4.97:1 | 4.5 | pass |
+| syntax keyword | editor | 6.98:1 | 4.5 | pass |
+| syntax keyword | editor current line | 5.96:1 | 4.5 | pass |
+| syntax keyword | editor selection | 4.63:1 | 4.5 | pass |
 | syntax function | editor | 6.92:1 | 4.5 | pass |
 | syntax function | editor current line | 5.92:1 | 4.5 | pass |
-| syntax function | editor selection | 5.22:1 | 4.5 | pass |
+| syntax function | editor selection | 4.60:1 | 4.5 | pass |
 | syntax type | editor | 7.31:1 | 4.5 | pass |
 | syntax type | editor current line | 6.25:1 | 4.5 | pass |
-| syntax type | editor selection | 5.51:1 | 4.5 | pass |
+| syntax type | editor selection | 4.85:1 | 4.5 | pass |
 | syntax string | editor | 7.03:1 | 4.5 | pass |
 | syntax string | editor current line | 6.00:1 | 4.5 | pass |
-| syntax string | editor selection | 5.30:1 | 4.5 | pass |
-| syntax number | editor | 6.61:1 | 4.5 | pass |
-| syntax number | editor current line | 5.64:1 | 4.5 | pass |
-| syntax number | editor selection | 4.98:1 | 4.5 | pass |
+| syntax string | editor selection | 4.66:1 | 4.5 | pass |
+| syntax number | editor | 6.99:1 | 4.5 | pass |
+| syntax number | editor current line | 5.97:1 | 4.5 | pass |
+| syntax number | editor selection | 4.64:1 | 4.5 | pass |
 | syntax preprocessor | editor | 7.66:1 | 4.5 | pass |
 | syntax preprocessor | editor current line | 6.54:1 | 4.5 | pass |
-| syntax preprocessor | editor selection | 5.77:1 | 4.5 | pass |
+| syntax preprocessor | editor selection | 5.08:1 | 4.5 | pass |
 | syntax comment | editor | 6.25:1 | 4.5 | pass |
 | syntax comment | editor current line | 5.34:1 | 4.5 | pass |
-| syntax comment | editor selection | 4.71:1 | 4.5 | pass |
-| editor selection | editor | 1.33:1 | 1.1 (floor) | pass |
-| editor selection | editor current line | 1.13:1 | 1.1 (floor) | pass |
+| syntax comment | editor selection | 4.15:1 | 4 (floor) | pass |
+| editor selection | editor | 1.51:1 | 1.1 (floor) | pass |
+| editor selection | editor current line | 1.29:1 | 1.1 (floor) | pass |
 | editor current line | editor | 1.17:1 | 1.1 (floor) | pass |
-| syntax comment | accent 16 % over tone 2 (`#41392c`) | 4.50:1 (4.496) | 4.5 | fail: caps the text selection's tint near 14 % |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | dim text | raised focus | 2.58:1 | 4.5 | fail: a focused item shows secondary text in text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |

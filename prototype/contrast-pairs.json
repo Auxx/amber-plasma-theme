@@ -247,9 +247,15 @@
   },
   {
     "foreground": "syntax-comment",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor and the current line (D-53)"
+  },
+  {
+    "foreground": "syntax-comment",
+    "on": ["editor-selection"],
+    "minimum": 4,
+    "why": "Accessibility rule 3: a comment inside a text selection is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84)."
   },
   {
     "foreground": "editor-selection",

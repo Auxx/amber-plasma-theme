@@ -291,19 +291,19 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
 
 ## Editor theme
 
-Kate's editor area. Starting values (my call, P1.6):
+Kate's editor area, reviewed by the owner in P1.7 (D-82):
 
 | Token | Value | Used for |
 |---|---|---|
 | `--editor` | `var(--tone-2)` | the editor background, the window's main surface (D-56) |
 | `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
 | `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
-| `--editor-selection` | `#3d362b` | the text selection: accent 14 % over tone 2 (D-58) |
-| `--syntax-keyword` | `#d296b2` | keywords; OKLCH 74 % 0.08 350 |
+| `--editor-selection` | `#473e30` | the text selection: accent 20 % over tone 2 (decided, D-82) |
+| `--syntax-keyword` | `#d79bb7` | keywords; OKLCH 75.5 % 0.08 350 |
 | `--syntax-function` | `#7fb2d1` | function names; OKLCH 74 % 0.07 235 |
 | `--syntax-type` | `#82bbb3` | type names; OKLCH 75 % 0.06 185 |
 | `--syntax-string` | `#9eb576` | strings and characters; OKLCH 74 % 0.09 125 |
-| `--syntax-number` | `#e39383` | numbers and constants; OKLCH 74 % 0.10 32 |
+| `--syntax-number` | `#e89887` | numbers and constants; OKLCH 75.5 % 0.10 32 |
 | `--syntax-preprocessor` | `var(--accent)` | `#include` and imports |
 | `--syntax-comment` | `var(--text-dim)` | comments |
 
@@ -311,19 +311,21 @@ Kate's editor area. Starting values (my call, P1.6):
   colours. (decided, D-79) The editor has a fixed background, changed only
   by the current line and the text selection, so its colours are tuned
   as text alone; a terminal colour must also serve as a background. They
-  share the terminal's hues, at the lightness the normal colours started
-  with. Plain code is text. Line numbers are dim text; the current line's number is text.
+  share the terminal's hues, at a lightness of 74 to 76 %. Plain code is text. Line numbers are dim text; the current line's number is text.
 - **No line.** The gutter is told from the code by tone alone. Kate can
   draw indentation lines and a word wrap marker; those are hairlines, and
   P4.2 finds out whether the editor theme can leave them out. How
   KSyntaxHighlighting's text styles and its other editor colours (search
   highlight, bracket matching, spelling, markers) map onto these tokens is
   settled in P4.2.
-- The text selection and the current line are close in lightness (1.13:1)
-  and are told apart by the accent's hue. More accent makes comments fail
-  4.5:1 on the selection (see [accessibility](accessibility.md), rule 3).
-- The prototype shows the editor on `prototype/samples.html`, with the text
-  selection's candidates.
+- The text selection stands apart from the current line (1.29:1) so that
+  the two are not mistaken for each other. (decided, D-82) Every syntax
+  colour but the comment keeps 4.5:1 on it; a comment inside a selection
+  measures 4.15:1, which the owner accepts. Keywords and numbers are a
+  little lighter than the other hues so that they pass there (D-83).
+- The editor stays on tone 2 while the terminal is tone 1: the step to
+  the gutter tells the code from it. (decided, D-82)
+- The prototype shows the editor on `prototype/samples.html`.
 
 ## What must not appear
 

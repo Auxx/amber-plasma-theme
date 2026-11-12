@@ -130,11 +130,11 @@ describe('Amber contrast pairs', () => {
 
   it('keeps syntax colours readable on every editor background', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
-    assert.equal(ratio('syntax-comment on editor-selection'), '4.71');
-    assert.equal(ratio('syntax-number on editor-selection'), '4.98');
-    assert.equal(ratio('syntax-keyword on editor-selection'), '4.97');
+    assert.equal(ratio('syntax-comment on editor-selection'), '4.15');
+    assert.equal(ratio('syntax-number on editor-selection'), '4.64');
+    assert.equal(ratio('syntax-keyword on editor-selection'), '4.63');
     assert.equal(ratio('text-dim on editor-gutter'), '6.86');
-    assert.equal(ratio('editor-selection on editor-current-line'), '1.13');
+    assert.equal(ratio('editor-selection on editor-current-line'), '1.29');
     assert.equal(ratio('editor-current-line on editor'), '1.17');
   });
 

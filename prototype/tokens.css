@@ -80,12 +80,12 @@
   --editor: var(--tone-2);                /* the editor background, as the terminal's (D-56) */
   --editor-gutter: var(--tone-1);         /* the gutter, a tone below the editor */
   --editor-current-line: var(--tone-3);   /* the current line, a tone above the editor */
-  --editor-selection: #3d362b;            /* the text selection: accent 14 % over tone 2 (D-58) */
-  --syntax-keyword: #d296b2;              /* keywords: if, return, static, const; oklch(74% 0.08 350) */
+  --editor-selection: #473e30;            /* the text selection: accent 20 % over tone 2 (D-82) */
+  --syntax-keyword: #d79bb7;              /* keywords: if, return, static, const; oklch(75.5% 0.08 350) */
   --syntax-function: #7fb2d1;             /* function names; oklch(74% 0.07 235) */
   --syntax-type: #82bbb3;                 /* type names; oklch(75% 0.06 185) */
   --syntax-string: #9eb576;               /* strings and characters; oklch(74% 0.09 125) */
-  --syntax-number: #e39383;               /* numbers and constants; oklch(74% 0.10 32) */
+  --syntax-number: #e89887;               /* numbers and constants; oklch(75.5% 0.10 32) */
   --syntax-preprocessor: var(--accent);   /* #include and imports: the accent is a muted gold */
   --syntax-comment: var(--text-dim);      /* comments */
 }
