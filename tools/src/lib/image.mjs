@@ -128,14 +128,23 @@ const channels = h => [ 1, 3, 5 ].map(i => parseInt(h.slice(i, i + 2), 16));
  * common colour. The text is the colour farthest from the fill in RGB, or null
  * when every other colour is within ±1 a channel of the fill: small text at
  * scale 1 is mostly anti-aliased blends of the two, and only a few pixels
- * reach the full text colour (P3.3). Pixels within ±1 of `surface` are left
- * out of both.
+ * reach the full text colour (P3.3). Pixels within ±1 of `surface`, or of a
+ * colour in `ignore` (such as a text cursor), are left out of both. With
+ * `foot`, the bottom `foot` rows, where a focused well has its focus bar, are
+ * left out too, and their most common colour is returned as `foot` (P3.4).
  */
-export function fill(image, { surface, region } = {}) {
-  const away = surface ? channels(surface) : null;
-  const counted = tally(image, region).filter(e => !away || !near(channels(e.hex), away));
+export function fill(image, { surface, region, foot = 0, ignore = [] } = {}) {
+  const whole = bounds(image, region);
+  const away = [ surface, ...ignore ].filter(Boolean).map(channels);
+  const keep = e => !away.some(a => near(channels(e.hex), a));
+  const body = foot > 0 ? { ...whole, height: whole.height - foot } : whole;
+  if (body.height < 1) {
+    throw new Error(`a foot of ${foot} rows leaves nothing of a picture ${whole.height} px high`);
+  }
+  const counted = tally(image, body).filter(keep);
+  const footed = foot > 0 ? { foot: tally(image, { ...whole, y: whole.y + body.height, height: foot }).filter(keep)[0]?.hex ?? null } : {};
   if (!counted.length) {
-    return { background: null, text: null };
+    return { background: null, text: null, ...footed };
   }
   const [ first, ...rest ] = counted;
   const bg = channels(first.hex);
@@ -143,7 +152,7 @@ export function fill(image, { surface, region } = {}) {
   const text = rest
     .filter(e => !near(channels(e.hex), bg))
     .reduce((best, e) => (!best || distance(e) > distance(best) ? e : best), null);
-  return { background: first.hex, text: text ? text.hex : null };
+  return { background: first.hex, text: text ? text.hex : null, ...footed };
 }
 
 /** A copy of the picture with every pixel of the given colours painted magenta. */

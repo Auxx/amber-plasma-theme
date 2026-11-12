@@ -315,6 +315,22 @@ describe('fill', () => {
     assert.equal(fill(image).text, '#1b160b');
   });
 
+  it('leaves the foot out of the fill and the text, and gives its colour (P3.4)', () => {
+    const rects = [ [ 0, 27, 60, 3, '#d1b072' ] ];
+    for (const x of [ 10, 26, 42 ]) {
+      rects.push([ x, 9, 2, 12, '#a9a297' ]);
+    }
+    const image = canvas(60, 30, '#1c1a18', rects);
+    assert.deepEqual(fill(image, { foot: 3 }), { background: '#1c1a18', text: '#a9a297', foot: '#d1b072' });
+    assert.deepEqual(fill(image), { background: '#1c1a18', text: '#d1b072' });
+  });
+
+  it('leaves out the colours it is told to ignore, such as a text cursor (P3.4)', () => {
+    const image = canvas(60, 30, '#151413', [ [ 10, 9, 2, 12, '#a9a297' ], [ 30, 6, 1, 18, '#eaebec' ] ]);
+    assert.equal(fill(image, { ignore: [ '#eaebec' ] }).text, '#a9a297');
+    assert.equal(fill(image).text, '#eaebec');
+  });
+
   it('counts colours within 1 a channel of the fill as no text', () => {
     const image = canvas(40, 20, '#312e29', [ [ 0, 0, 5, 5, '#322f2a' ] ]);
     assert.equal(fill(image).text, null);

@@ -207,6 +207,16 @@ describe('browser tool', () => {
     assert.ok(row.background.tokens.includes('tone-0') && row.background.tokens.includes('well'));
   });
 
+  withChrome('reads the placeholder as the text of an empty field (P3.4)', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stdout } = browser('states', page, '--widget', 'text-field', '--selector', '.field', '--json');
+    assert.equal(status, 0, stdout);
+    const [ empty, filled ] = JSON.parse(stdout);
+    assert.equal(empty.text.hex, '#a9a297');
+    assert.ok(empty.text.tokens.includes('text-dim'), JSON.stringify(empty));
+    assert.equal(filled.text.hex, '#e8e3da');
+  });
+
   withChrome('fails on a missing row', () => {
     const { status, stderr } = browser('states', 'tools/src/bin/fixtures/states-page.html', '--widget', 'nope', '--selector', '.button');
     assert.equal(status, 1);

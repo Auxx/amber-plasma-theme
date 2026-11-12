@@ -257,7 +257,8 @@ export function stateRow({ state, backgrounds, colour }, names) {
 /**
  * The raw states of `.state-row[data-widget=<widget>]`: for each `.state`, in
  * document order, its `data-state`, and the backgrounds and text colour of the
- * element `selector` finds in it.
+ * element `selector` finds in it. The text colour of an empty input or text
+ * area with a placeholder is its placeholder's.
  */
 export async function readStates(page, widget, selector) {
   const raw = await page.evaluate(({ widget, selector }) => {
@@ -275,7 +276,9 @@ export async function readStates(page, widget, selector) {
       for (let e = element; e; e = e.parentElement) {
         backgrounds.push(getComputedStyle(e).backgroundColor);
       }
-      states.push({ state: state.dataset.state, backgrounds, colour: getComputedStyle(element).color });
+      // An empty field shows its placeholder, not its text (P3.4).
+      const empty = (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) && element.value === '' && element.placeholder;
+      states.push({ state: state.dataset.state, backgrounds, colour: getComputedStyle(element, empty ? '::placeholder' : null).color });
     }
     return { states };
   }, { widget, selector });

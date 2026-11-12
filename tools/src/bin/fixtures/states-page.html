@@ -8,6 +8,8 @@
   .button.is-hovered { background: #3c3832; }
   .strip { background: #151413; }
   .tool { background: transparent; color: #e8e3da; }
+  .field { background: #151413; color: #e8e3da; }
+  .field::placeholder { color: #a9a297; }
 </style>
 <div class="state-row" data-widget="button">
   <div class="state" data-state="rest"><span class="state-label">At rest</span><button class="button">Save</button></div>
@@ -15,5 +17,9 @@
 </div>
 <div class="state-row" data-widget="tool">
   <div class="state" data-state="rest"><div class="strip"><button class="tool">Back</button></div></div>
+</div>
+<div class="state-row" data-widget="text-field">
+  <div class="state" data-state="rest"><input class="field" placeholder="Search files"></div>
+  <div class="state" data-state="filled"><input class="field" placeholder="Search files" value="amber-notes.md"></div>
 </div>
 </html>
