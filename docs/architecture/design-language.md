@@ -174,6 +174,7 @@ token holds the plain colour (D-47).
 | `--well-edge-width` | `0px` | its height: none at the start (O-1) |
 | `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
 | `--well-focus` | `#393226`, accent 16 % over tone 1 | a focused well (O-3; the owner finds it too light, and the gallery shows candidates that stay below the surface) |
+| `--surface-focus` | `#393226`, accent 16 % over tone 1 | a focused tab or scroll area (my call, D-68) |
 | `--well-focus-edge` | `var(--accent)` | a bar at the foot of a focused well, a candidate cue (O-3) |
 | `--well-focus-edge-width` | `0px` | its height: none at the start (O-3) |
 | `--accent-hover` | `#debc7d`, accent at OKLCH lightness 81 % | a hovered or focused primary button |

@@ -458,10 +458,10 @@
   background: var(--tone-2);
 }
 
-/* A scroller takes keyboard focus in Chrome; focused, it is tinted like a
-   focused well, which text on it keeps 4.5:1 against. */
+/* A scroller takes keyboard focus in Chrome; focused, it is tinted as a
+   focused tab is, which text on it keeps 4.5:1 against. */
 .scroll-area:focus-visible {
-  background: var(--well-focus);
+  background: var(--surface-focus);
 }
 
 .scroll-area > div {
@@ -538,7 +538,7 @@
    2.58:1, so a focused item shows its secondary columns in text. */
 
 .tab:enabled:not(.is-selected):is(:focus-visible, .is-focused) {
-  background-color: var(--well-focus);
+  background-color: var(--surface-focus);
 }
 
 .item:not([aria-disabled="true"]):is(:focus-visible, .is-focused) {
@@ -557,7 +557,7 @@
 }
 
 .tab.is-selected:enabled:is(:focus-visible, .is-focused) {
-  background-color: var(--well-focus);
+  background-color: var(--surface-focus);
 }
 
 .item.is-selected {

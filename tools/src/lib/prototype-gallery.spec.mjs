@@ -124,7 +124,7 @@ const WIDGETS = {
     states: {
       rest: [ 'transparent', 'text', 'transparent' ],
       hovered: [ 'tone-1', 'text', 'transparent' ],
-      focused: [ 'well-focus', 'text', 'transparent' ],
+      focused: [ 'surface-focus', 'text', 'transparent' ],
       selected: [ 'tone-2', 'text', 'accent' ],
       disabled: [ 'transparent', 'text-dim', 'transparent' ]
     }
@@ -466,7 +466,7 @@ describe('prototype gallery', () => {
       [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
       [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
       [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
-      [ 'tab', { focus: 'selected' }, [ 'well-focus', 'text', 'accent' ] ],
+      [ 'tab', { focus: 'selected' }, [ 'surface-focus', 'text', 'accent' ] ],
       [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ],
       [ 'menu-item', { hover: 'checked' }, [ 'tone-4', 'text', 'accent' ] ]
     ];
@@ -555,7 +555,7 @@ describe('prototype gallery', () => {
     await page.keyboard.press('Tab');
     assert.equal(await page.evaluate(() => document.activeElement?.className), 'scroll-area');
     const [ background ] = await coloursOf(page, '.scroll-area');
-    assert.ok(isToken(background, 'well-focus'), `focused scroll area: ${nameColour(background, names)}, at rest ${nameColour(before, names)}`);
+    assert.ok(isToken(background, 'surface-focus'), `focused scroll area: ${nameColour(background, names)}, at rest ${nameColour(before, names)}`);
   });
 
   withChrome('scrolls the scroll area', async () => {

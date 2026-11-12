@@ -59,7 +59,7 @@
   background: var(--thumb-pressed);
 }
 
-/* On a focused scroll area (well focus) the thumb at rest would measure
+/* On a focused scroll area (surface focus) the thumb at rest would measure
    1.09:1, so it rises to dim text there, which keeps 5.01:1. */
 .scroll-area:focus-visible::-webkit-scrollbar-thumb {
   background: var(--text-dim);

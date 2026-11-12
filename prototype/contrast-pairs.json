@@ -1,19 +1,19 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "selected", "popup", "editor-gutter"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "surface-focus", "selected", "popup", "editor-gutter"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },
   {
     "foreground": "accent",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "popup"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "raised-focus", "track", "selected", "well-focus", "surface-focus", "popup"],
     "minimum": 3,
     "why": "Accessibility rule 2: accent reaches 3:1 against every tone it marks (check marks, ticks in menus, block markers, fills on tracks)"
   },
@@ -52,6 +52,12 @@
     "on": ["tone-0", "tone-2"],
     "minimum": 1.2,
     "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+  },
+  {
+    "foreground": "surface-focus",
+    "on": ["tone-0", "tone-2"],
+    "minimum": 1.2,
+    "why": "Accessibility rule 4: the focused tone of a tab or a scroll area stands apart from the tab bar and from the surface. 1.2 is provisional until O-3 sets the minimum."
   },
   {
     "foreground": "well",

@@ -93,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('102 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('107 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 102);
+    assert.equal(result.total, 107);
     assert.equal(result.failing, 0);
   });
 
@@ -123,8 +123,8 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'text-dim=#9c958a', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 3);
-    assert.equal(result.changed.length, 14);
+    assert.equal(result.failing, 4);
+    assert.equal(result.changed.length, 15);
   });
 
   it('shows no change', () => {

@@ -39,6 +39,7 @@
   --well-edge-width: 0px;         /* its height; none at the start (O-1) */
   --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (D-64) */
   --well-focus: #393226;          /* a focused well: accent 16 % over tone 1 (O-3) */
+  --surface-focus: #393226;       /* a focused tab or scroll area: accent 16 % over tone 1 */
   --well-focus-edge: var(--accent); /* a bar at the foot of a focused well (O-3) */
   --well-focus-edge-width: 0px;   /* its height; none at the start (O-3) */
   --accent-hover: #debc7d;        /* a hovered or focused primary button: accent at OKLCH lightness 81 % */

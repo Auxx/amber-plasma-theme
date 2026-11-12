@@ -180,6 +180,11 @@ falls below its minimum.
 | thumb pressed | tone 1 | 3.43:1 | 1.1 (provisional) | pass |
 | toggle focus | tone 2 | 1.74:1 | 1.2 (provisional) | pass |
 | toggle focus | toggle | 2.02:1 | 1.2 (provisional) | pass |
+| surface focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |
+| surface focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
+| text | surface focus | 9.91:1 | 4.5 | pass |
+| dim text | surface focus | 5.01:1 | 4.5 | pass |
+| accent | surface focus | 6.13:1 | 3 | pass |
 | well focus edge | well focus | 6.13:1 | 3 | pass |
 | well focus edge | tone 2 | 7.66:1 | 3 | pass |
 | text | selected | 10.58:1 | 4.5 | pass |
