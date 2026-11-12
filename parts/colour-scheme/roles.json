@@ -1,0 +1,151 @@
+{
+  "Colors:View": {
+    "BackgroundNormal": { "token": "tone-2", "why": "Lists and views are tone 2, as in the prototype. A well (tone 0) is drawn by the Union style from its own variable, not from this set (D-90)" },
+    "BackgroundAlternate": { "token": "tone-2", "why": "The prototype's views have no stripes, so the alternate row is the normal tone (D-90)" },
+    "ForegroundNormal": { "token": "text", "why": "Primary text" },
+    "ForegroundInactive": { "token": "text-dim", "why": "Secondary text" },
+    "ForegroundActive": { "token": "accent", "why": "Accent is the one strong colour; as text it reaches 4.5:1 through the pairs of neutral" },
+    "ForegroundLink": { "token": "link", "why": "D-87" },
+    "ForegroundVisited": { "token": "visited", "why": "D-87" },
+    "ForegroundNegative": { "token": "negative", "why": "D-87; danger is a fill, too dark for text" },
+    "ForegroundNeutral": { "token": "neutral", "why": "D-87" },
+    "ForegroundPositive": { "token": "positive", "why": "D-87" },
+    "DecorationFocus": { "token": "accent", "why": "Keyboard focus stays visible where an application draws its own frame (D-88)" },
+    "DecorationHover": { "token": "tone-2", "why": "The set's BackgroundNormal, so that a hover frame drawn by an application does not show (D-4, D-88)" }
+  },
+  "Colors:Window": {
+    "BackgroundNormal": { "token": "tone-2", "why": "The main surface of a window" },
+    "BackgroundAlternate": { "token": "tone-1", "why": "Sidebars and secondary panels" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "tone-2" }
+  },
+  "Colors:Button": {
+    "BackgroundNormal": { "token": "tone-3", "why": "A raised widget" },
+    "BackgroundAlternate": { "token": "tone-4", "why": "A hovered raised widget" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "tone-3" }
+  },
+  "Colors:Selection": {
+    "BackgroundNormal": { "token": "accent", "why": "Selection is an accent fill (D-86)" },
+    "BackgroundAlternate": { "token": "accent", "why": "A selected alternate row is the same fill (D-86)" },
+    "ForegroundNormal": { "token": "on-accent", "why": "Every text on a selection is on-accent, 8.72:1; status colours lose their hue there, as Breeze's do (D-86)" },
+    "ForegroundInactive": { "token": "on-accent" },
+    "ForegroundActive": { "token": "on-accent" },
+    "ForegroundLink": { "token": "on-accent" },
+    "ForegroundVisited": { "token": "on-accent" },
+    "ForegroundNegative": { "token": "on-accent" },
+    "ForegroundNeutral": { "token": "on-accent" },
+    "ForegroundPositive": { "token": "on-accent" },
+    "DecorationFocus": { "token": "on-accent", "why": "Accent cannot mark focus on accent (D-88)" },
+    "DecorationHover": { "token": "accent" }
+  },
+  "Colors:Tooltip": {
+    "BackgroundNormal": { "token": "popup", "why": "Popups are tone 3" },
+    "BackgroundAlternate": { "token": "popup", "why": "A tooltip has no second tone" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "popup" }
+  },
+  "Colors:Complementary": {
+    "BackgroundNormal": { "token": "tone-0", "why": "The darkest surface, for overlays; Plasma's shell is out of scope (D-18)" },
+    "BackgroundAlternate": { "token": "tone-1" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "tone-0" }
+  },
+  "Colors:Header": {
+    "BackgroundNormal": { "token": "tone-0", "why": "The title bar and the toolbar are tone 0" },
+    "BackgroundAlternate": { "token": "tone-1" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "tone-0" }
+  },
+  "Colors:Header][Inactive": {
+    "BackgroundNormal": { "token": "tone-0", "why": "The same as Header: an inactive window is shown by the decoration (shadow, dim title), not by a toolbar tone (D-90)" },
+    "BackgroundAlternate": { "token": "tone-1" },
+    "ForegroundNormal": { "token": "text" },
+    "ForegroundInactive": { "token": "text-dim" },
+    "ForegroundActive": { "token": "accent" },
+    "ForegroundLink": { "token": "link" },
+    "ForegroundVisited": { "token": "visited" },
+    "ForegroundNegative": { "token": "negative" },
+    "ForegroundNeutral": { "token": "neutral" },
+    "ForegroundPositive": { "token": "positive" },
+    "DecorationFocus": { "token": "accent" },
+    "DecorationHover": { "token": "tone-0" }
+  },
+  "ColorEffects:Disabled": {
+    "Color": { "token": "tone-2", "why": "Unused while ColorEffect is 0; a warm value, so that the file holds no grey" },
+    "ColorAmount": { "value": 0, "why": "No colour is mixed in" },
+    "ColorEffect": { "value": 0, "why": "No colour effect" },
+    "ContrastAmount": { "rule": "The amount a, rounded to two places, at which text faded towards tone-2 has the relative luminance of text-dim. The generator computes it (P2.2); the fade formula is unverified and is checked by eye in P2.3", "why": "Disabled text is dim text in the prototype (D-91)" },
+    "ContrastEffect": { "value": 1, "why": "Fade towards the background (D-91)" },
+    "IntensityAmount": { "value": 0, "why": "No change of intensity" },
+    "IntensityEffect": { "value": 0, "why": "No intensity effect" }
+  },
+  "ColorEffects:Inactive": {
+    "ChangeSelectionColor": { "value": false, "why": "A selection keeps its accent in an inactive window" },
+    "Color": { "token": "tone-2", "why": "Unused while the effect is off; a warm value, so that the file holds no grey" },
+    "ColorAmount": { "value": 0, "why": "The effect is off" },
+    "ColorEffect": { "value": 0, "why": "The effect is off" },
+    "ContrastAmount": { "value": 0, "why": "The effect is off" },
+    "ContrastEffect": { "value": 0, "why": "The effect is off" },
+    "Enable": { "value": false, "why": "An inactive window is shown by the decoration alone (D-91)" },
+    "IntensityAmount": { "value": 0, "why": "The effect is off" },
+    "IntensityEffect": { "value": 0, "why": "The effect is off" }
+  },
+  "General": {
+    "ColorScheme": { "value": "Amber", "why": "Every part is shown as Amber" },
+    "Name": { "value": "Amber", "why": "Every part is shown as Amber" },
+    "shadeSortColumn": { "value": false, "why": "The prototype tints no sorted column (D-91)" }
+  },
+  "KDE": {
+    "contrast": { "value": 0, "why": "Flattens the bevel roles Qt derives (Light, Mid, Dark, Shadow); unverified, checked in P2.3 (D-91)" },
+    "frameContrast": { "value": 0, "why": "The derived frame colour then equals the background, so no hairline frame shows; group and effect unverified, checked in P2.3 (D-91)" }
+  },
+  "WM": {
+    "activeBackground": { "token": "tone-0", "why": "The title bar; read by other decorations and some applications, not by Amber's" },
+    "activeBlend": { "token": "text" },
+    "activeForeground": { "token": "text" },
+    "inactiveBackground": { "token": "tone-0" },
+    "inactiveBlend": { "token": "text-dim" },
+    "inactiveForeground": { "token": "text-dim", "why": "An inactive title is dim" }
+  }
+}

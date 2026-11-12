@@ -943,6 +943,26 @@ describe('prototype gallery', () => {
     assert.deepEqual(order, [ 'Rename', 'Cancel' ]);
   });
 
+  withChrome('draws the text colours in their tokens', async () => {
+    const { page } = await gallery();
+    const rows = [ [ '.text-colours:not(.is-raised)', 'tone-2' ], [ '.text-colours.is-raised', 'tone-4' ] ];
+    const samples = [ 'link', 'visited', 'positive', 'neutral', 'negative' ];
+    const offences = [];
+    for (const [ row, tone ] of rows) {
+      const [ background ] = await coloursOf(page, row);
+      if (!isToken(background, tone)) {
+        offences.push(`${row}: background ${nameColour(background, names)}, not ${tone}`);
+      }
+      for (const token of samples) {
+        const [ , colour ] = await coloursOf(page, `${row} .text-colour.is-${token}`);
+        if (!isToken(colour, token)) {
+          offences.push(`${row} .is-${token}: ${nameColour(colour, names)}`);
+        }
+      }
+    }
+    assert.deepEqual(offences, []);
+  });
+
   withChrome('draws the focus bar on a focused well alone', async () => {
     // A well has no bar at its foot unless it is focused; then the bar is
     // accent and three pixels high (D-69).

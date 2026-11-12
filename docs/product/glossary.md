@@ -187,6 +187,20 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.
 
+**Colour set**
+: One group of the colour scheme, such as View, Window, Button, Selection,
+  Tooltip, Complementary or Header. Every colour set has the same roles.
+  _Avoid_ "colour group".
+
+**Role**
+: One key of the colour scheme, such as `ForegroundLink` in a colour set,
+  or `contrast` in one of the other groups. Each role is given a token or a
+  written rule. _Avoid_ "colour role" when the colour set is clear.
+
+**Status colour**
+: The positive, neutral or negative text colour of the colour scheme.
+  _Avoid_ "state colour": a state belongs to a widget.
+
 **Glow**
 : A soft, blurred, coloured light around something. No widget in Amber has
   one: Union cannot draw it in Qt Widgets applications, and a widget's

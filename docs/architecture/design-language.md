@@ -38,6 +38,11 @@ updated.
 | on-accent | `--on-accent` | `#1b160b` | text on accent |
 | danger | `--danger` | `#b5442f` | close button when hovered, negative states |
 | on-danger | `--on-danger` | `#fbf3e6` | text and icons on danger; the text token is too dark for it |
+| link | `--link` | `var(--syntax-function)`, `#7fb2d1` | a link, in the colour scheme (D-87) |
+| visited | `--visited` | `var(--syntax-keyword)`, `#d79bb7` | a visited link, in the colour scheme (D-87) |
+| positive | `--positive` | `var(--syntax-string)`, `#9eb576` | positive text, a status colour (D-87) |
+| neutral | `--neutral` | `var(--accent)`, `#d1b072` | neutral text, a status colour (D-87) |
+| negative | `--negative` | `var(--syntax-number)`, `#e89887` | negative text, a status colour; danger is a fill and too dark for text (D-87) |
 
 The values live in [`prototype/tokens.css`](../../prototype/tokens.css); when
 this table and that file disagree, the file is right. Token names are written

@@ -19,7 +19,9 @@ Disabled controls are exempt in WCAG, and are exempt here.
 ## Amber's rules (my call)
 
 1. **Text: 4.5:1.** Primary text and dim text reach 4.5:1 on every tone they
-   can appear on; on-accent reaches it on accent, and on-danger on danger. The lower 3:1 for large text
+   can appear on; on-accent reaches it on accent, and on-danger on danger.
+   The link and status colours of the colour scheme reach it on tones 0 to 4
+   ([measured](#first-measurements) in P2.1). The lower 3:1 for large text
    is not used. Dim text on raised focus measures 2.58:1 (measured
    2026-11-11, P1.5), so a focused item shows its secondary columns, and a
    focused tree folder its chevron, in text.
@@ -233,6 +235,11 @@ falls below its minimum.
 | editor selection | editor | 1.51:1 | 1.1 (floor) | pass |
 | editor selection | editor current line | 1.29:1 | 1.1 (floor) | pass |
 | editor current line | editor | 1.17:1 | 1.1 (floor) | pass |
+| link | tone 4 | 5.10:1 | 4.5 | pass |
+| visited | tone 4 | 5.13:1 | 4.5 | pass |
+| positive | tone 4 | 5.17:1 | 4.5 | pass |
+| negative | tone 4 | 5.14:1 | 4.5 | pass |
+| neutral | tone 4 | 5.63:1 | 4.5 | pass |
 | text | danger | 4.29:1 | 4.5 | fail: use on-danger on danger, never text |
 | dim text | raised focus | 2.58:1 | 4.5 | fail: a focused item shows secondary text in text |
 | tone 3 | tone 2 | 1.17:1 | — | tonal step |
@@ -260,6 +267,10 @@ The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
 - **The same check runs in the tests**, so a token change that breaks a pair
   fails them. The tests also fail when a colour token other than `shadow`
   is in no pair, as foreground or background.
+- **The colour scheme makes no pairing that is not declared.** Every text
+  role of a colour set, on that set's backgrounds, must be a pair of at
+  least 4.5, and its focus decoration a pair of at least 3; a test fails
+  otherwise ([colour-scheme](colour-scheme.md#the-check)).
 - **Try before changing.** `tokens try name=value` shows the pairs a change
   would affect, before and after.
 - **Find a value that passes.** `colour solve` gives the lightness range in

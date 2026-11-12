@@ -150,3 +150,23 @@ body {
   justify-content: flex-end;
   gap: 8px;
 }
+
+/* Text colours of the colour scheme (P2.1): on the surface, and on tone 4,
+   the lightest tone text sits on. */
+.text-colours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 8px 12px;
+  background: var(--tone-2);
+}
+
+.text-colours.is-raised {
+  background: var(--tone-4);
+}
+
+.text-colour.is-link { color: var(--link); }
+.text-colour.is-visited { color: var(--visited); }
+.text-colour.is-positive { color: var(--positive); }
+.text-colour.is-neutral { color: var(--neutral); }
+.text-colour.is-negative { color: var(--negative); }
