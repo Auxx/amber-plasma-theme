@@ -316,14 +316,15 @@ combobox
         text-elide: none;
 
         &:hovered {
-            background-color: var(--tone-1);
+            background-color: var(--well-hover);
         }
 
         /* A well has no pressed tone: held down, it stays hovered */
         &:pressed {
-            background-color: var(--tone-1);
+            background-color: var(--well-hover);
         }
 
+        &:active-focus,
         &:visual-focus {
             background-color: var(--well-focus);
             border-bottom: var(--well-focus-edge-width) solid var(--well-focus-edge);

@@ -39,10 +39,14 @@ searchfield
     color: var(--text);
 
     &:hovered {
-        background-color: var(--tone-1);
+        background-color: var(--well-hover);
     }
 
-    /* The focus bar, 3 px of accent at the foot: not a hairline (D-69) */
+    /*
+     * The focus bar, 3 px of accent at the foot: not a hairline (D-69). A well
+     * shows focus whenever it has the text cursor, clicked or tabbed (D-103).
+     */
+    &:active-focus,
     &:visual-focus {
         background-color: var(--well-focus);
         border-bottom: var(--well-focus-edge-width) solid var(--well-focus-edge);
@@ -97,6 +101,7 @@ textarea
         border: none;
         border-bottom: var(--well-focus-edge-width) solid var(--tone-2);
 
+        &:active-focus,
         &:visual-focus {
             border-bottom-color: var(--well-focus-edge);
         }

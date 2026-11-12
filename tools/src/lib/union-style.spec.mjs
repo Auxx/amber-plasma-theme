@@ -272,7 +272,7 @@ describe('the Union style\'s global rules (P3.2)', () => {
   const FOCUS_BAR = 'var(--well-focus-edge-width) solid var(--well-focus-edge)';
   const BAR_BAND = 'var(--well-focus-edge-width) solid var(--tone-2)';
   const focusBar = d => [ 'text.css', 'button.css' ].includes(d.file) && d.property === 'border-bottom'
-    && ((d.value === FOCUS_BAR && d.block.selector === '&:visual-focus') || (d.value === BAR_BAND && d.block.selector.includes('[shape="panel"]')));
+    && ((d.value === FOCUS_BAR && parts(d.block.selector).includes('&:visual-focus')) || (d.value === BAR_BAND && d.block.selector.includes('[shape="panel"]')));
 
   it('draws no border, but the focus bar of a well', () => {
     assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d)), []);
@@ -409,6 +409,10 @@ describe('the Union style\'s wells (P3.4)', () => {
     return found[0];
   };
   const child = (block, selector) => block?.children.find(c => c.selector === selector);
+  // A well shows focus whenever it has the text cursor, clicked or tabbed (D-103): Union's :visual-focus is
+  // keyboard focus only.
+  const FOCUS = '&:active-focus, &:visual-focus';
+  const focus = block => block?.children.find(c => parts(c.selector).join(', ') === FOCUS);
   const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
   const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
   const BAR = 'var(--well-focus-edge-width) solid var(--well-focus-edge)';
@@ -430,9 +434,9 @@ describe('the Union style\'s wells (P3.4)', () => {
     const well = base();
     assert.equal(value(well, 'background-color'), 'var(--well)');
     assert.equal(value(well, 'color'), 'var(--text)');
-    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--tone-1)');
-    assert.equal(value(child(well, '&:visual-focus'), 'background-color'), 'var(--well-focus)');
-    assert.equal(value(child(well, '&:visual-focus'), 'border-bottom'), BAR);
+    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--well-hover)');
+    assert.equal(value(focus(well), 'background-color'), 'var(--well-focus)');
+    assert.equal(value(focus(well), 'border-bottom'), BAR);
     assert.equal(value(child(well, '&:disabled'), 'background-color'), 'var(--well)');
     assert.equal(value(child(well, '&:disabled'), 'color'), 'var(--text-dim)');
     assert.equal(value(child(well, '& > .placeholder'), 'color'), 'var(--text-dim)');
@@ -445,9 +449,9 @@ describe('the Union style\'s wells (P3.4)', () => {
     assert.ok(well, 'an &.editable block in combobox');
     assert.equal(value(well, 'background-color'), 'var(--well)');
     assert.equal(value(well, 'color'), 'var(--text)');
-    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--tone-1)');
-    assert.equal(value(child(well, '&:visual-focus'), 'background-color'), 'var(--well-focus)');
-    assert.equal(value(child(well, '&:visual-focus'), 'border-bottom'), BAR);
+    assert.equal(value(child(well, '&:hovered'), 'background-color'), 'var(--well-hover)');
+    assert.equal(value(focus(well), 'background-color'), 'var(--well-focus)');
+    assert.equal(value(focus(well), 'border-bottom'), BAR);
     assert.equal(value(child(well, '&:disabled'), 'background-color'), 'var(--well)');
     assert.equal(value(child(well, '&:disabled'), 'color'), 'var(--text-dim)');
     const arrows = button.filter(b => b.selector === '& > indicator' && chain(b).some(c => /combobox|&\.editable/.test(c.selector))
@@ -475,7 +479,7 @@ describe('the Union style\'s wells (P3.4)', () => {
     const panel = area.children.find(c => parts(c.selector).includes('&[shape="panel"]'));
     assert.ok(panel, 'a &[shape="panel"] block in textarea');
     assert.equal(value(panel, 'border-bottom'), 'var(--well-focus-edge-width) solid var(--tone-2)');
-    assert.equal(value(child(panel, '&:visual-focus'), 'border-bottom-color'), 'var(--well-focus-edge)');
+    assert.equal(value(focus(panel), 'border-bottom-color'), 'var(--well-focus-edge)');
   });
 
   it('leaves no later rule that takes the bar away: application.css names no text field or text area', () => {
@@ -484,9 +488,9 @@ describe('the Union style\'s wells (P3.4)', () => {
   });
 
   it('orders the states of each well block so that the later wins: hovered, focused, disabled', () => {
-    const order = [ '&:hovered', '&:visual-focus', '&:disabled' ];
+    const order = [ '&:hovered', FOCUS, '&:disabled' ];
     const offending = wells.flatMap(([ , b ]) => {
-      const seen = b.children.filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
+      const seen = b.children.map(c => ({ ...c, selector: parts(c.selector).join(', ') })).filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
       return seen.some((v, i) => i && v < seen[i - 1]) ? [ b.selector.replace(/\s+/g, ' ') ] : [];
     });
     assert.deepEqual(offending, []);

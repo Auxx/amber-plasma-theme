@@ -11,7 +11,7 @@ import { formatTokenValue } from './tokens.mjs';
 export const UNION_TOKENS = [
   'tone-0', 'tone-1', 'tone-2', 'tone-3', 'tone-4',
   'text', 'text-dim', 'accent', 'on-accent', 'danger', 'on-danger',
-  'well', 'raised-focus', 'well-focus', 'surface-focus', 'well-focus-edge', 'well-focus-edge-width',
+  'well', 'well-hover', 'raised-focus', 'well-focus', 'surface-focus', 'well-focus-edge', 'well-focus-edge-width',
   'accent-hover', 'accent-pressed', 'toggle', 'toggle-focus',
   'track', 'thumb', 'thumb-hover', 'thumb-pressed', 'selected', 'marker-width', 'popup'
 ];

@@ -35,6 +35,7 @@
 
   /* Widgets */
   --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (D-75) */
+  --well-hover: #2f2a20;         /* a hovered well: accent 14 % over tone 0, apart from tones 1 and 2 (D-102) */
   --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (D-64) */
   --well-focus: var(--tone-1);    /* a focused well: tone 1, below the surface (D-69) */
   --surface-focus: #393226;       /* a focused tab or scroll area: accent 16 % over tone 1 */

@@ -1,13 +1,13 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-hover", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
   {
     "foreground": "text-dim",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-focus", "surface-focus", "selected", "popup", "editor-gutter"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-hover", "well-focus", "surface-focus", "selected", "popup", "editor-gutter"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: dim text reaches 4.5:1 on every tone"
   },

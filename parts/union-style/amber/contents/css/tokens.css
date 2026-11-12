@@ -19,6 +19,7 @@
     --danger: #b5442f;
     --on-danger: #fbf3e6;
     --well: #151413; /* var(--tone-0) */
+    --well-hover: #2f2a20;
     --raised-focus: #695c45;
     --well-focus: #1c1a18; /* var(--tone-1) */
     --surface-focus: #393226;
