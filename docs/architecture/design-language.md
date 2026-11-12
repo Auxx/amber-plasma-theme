@@ -69,7 +69,7 @@ of plans P1.3 to P1.5, `prototype/gallery.html`).
 | Button, combo box | tone 3 / text | tone 4 / text | raised focus / text | tone 1 / text | — | tone 3 / dim text |
 | Primary button | accent / on-accent | accent hover / on-accent | accent hover / on-accent | accent pressed / on-accent | — | tone 3 / dim text |
 | Tool button, on a tone 0 toolbar | no fill / text | tone 3 / text | raised focus / text | tone 2 / text | tone 3 / accent | no fill / dim text |
-| Text field, spin box, text area | well / text | tone 1 / text | well focus / text | — | — | well / dim text |
+| Text field, spin box, text area | well / text | tone 1 / text | well focus / text, accent bar | — | — | well / dim text |
 | Close button | as title bar | danger fill | — | darker danger | — | — |
 
 Toggles and ranges (my call, P1.4). Each cell gives the box / mark, the
@@ -106,11 +106,13 @@ background / text, and the block marker or tick where the widget has one.
 - **Wells:** a placeholder is dim text; selected text is on-accent on
   accent. A spin box's step buttons take no keyboard focus; the well around
   the field shows it.
-- **The focused tone** is accent mixed over the tone a widget has when
-  hovered. How strong it must be is open question O-3, and the gallery shows
-  candidates with their measured contrast. The placeholder caps how strong
-  a focused well's tint can be: see rule 4 of
-  [accessibility](accessibility.md).
+- **The focused tone** of a raised widget, a toggle, a tab or a scroll
+  area is accent mixed over the tone the widget has when hovered: 30 %
+  for a raised widget and a toggle. (decided, D-64)
+- **A focused well** is not tinted, so that it does not look raised. It
+  keeps tone 1, the tone of a hovered well, and gains a bar of accent
+  three pixels high at its foot. (decided, D-69) A spin box's step
+  buttons stay clear of the bar.
 - **An empty well** is told from its surface by tone alone (open question
   O-1). The gallery shows candidates: a darker well, and a well edge.
 - **Toggles** (my call, P1.4): a 16 px box, or a circle for a radio
@@ -160,7 +162,7 @@ background / text, and the block marker or tick where the widget has one.
   arrow buttons.
   Every page of the prototype links `scrollbars.css`, so its own
   scrollbars are Amber's. A scroller that takes keyboard focus is tinted
-  with the focused well's tone, and its thumb rises to dim text there: the
+  with the focused tab's tone, and its thumb rises to dim text there: the
   thumb at rest would measure 1.09:1 on that tint.
 
 Tokens of the widgets (my call, P1.3 to P1.5; the owner chooses O-1 and O-3 in
@@ -173,10 +175,10 @@ token holds the plain colour (D-47).
 | `--well-edge` | `var(--well)` | the colour of the well edge (O-1) |
 | `--well-edge-width` | `0px` | its height: none at the start (O-1) |
 | `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
-| `--well-focus` | `#393226`, accent 16 % over tone 1 | a focused well (O-3; the owner finds it too light, and the gallery shows candidates that stay below the surface) |
+| `--well-focus` | `var(--tone-1)` | a focused well (decided, D-69) |
 | `--surface-focus` | `#393226`, accent 16 % over tone 1 | a focused tab or scroll area (my call, D-68) |
-| `--well-focus-edge` | `var(--accent)` | a bar at the foot of a focused well, a candidate cue (O-3) |
-| `--well-focus-edge-width` | `0px` | its height: none at the start (O-3) |
+| `--well-focus-edge` | `var(--accent)` | the bar at the foot of a focused well (decided, D-69) |
+| `--well-focus-edge-width` | `3px` | its height (decided, D-69) |
 | `--accent-hover` | `#debc7d`, accent at OKLCH lightness 81 % | a hovered or focused primary button |
 | `--accent-pressed` | `#ba995b`, accent at OKLCH lightness 70 % | a pressed primary button |
 | `--toggle` | `var(--tone-0)` | an unchecked toggle at rest (O-1) |

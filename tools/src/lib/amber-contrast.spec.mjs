@@ -22,7 +22,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 107);
+    assert.equal(pairs.length, 105);
   });
 
   it('resolves every token of every pair', () => {
@@ -59,8 +59,8 @@ describe('Amber contrast pairs', () => {
   it('starts the focused tones where O-3 starts', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('raised-focus on tone-3'), '2.07');
-    assert.equal(ratio('well-focus on tone-0'), '1.45');
-    assert.equal(ratio('text-dim on well-focus'), '5.01');
+    assert.equal(ratio('well-focus-edge on well-focus'), '8.40');
+    assert.equal(ratio('text-dim on well-focus'), '6.86');
   });
 
   it('starts the well where O-1 starts', () => {
@@ -92,7 +92,7 @@ describe('Amber contrast pairs', () => {
   it('marks a selected item at 3:1', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('accent on selected'), '6.54');
-    assert.equal(ratio('accent on well-focus'), '6.13');
+    assert.equal(ratio('accent on surface-focus'), '6.13');
     assert.equal(ratio('selected on tone-2'), '1.17');
     assert.equal(ratio('selected on tone-1'), '1.28');
   });

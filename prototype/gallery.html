@@ -61,7 +61,7 @@
 
 <section class="family" aria-label="Inputs">
   <h2>Inputs</h2>
-  <p class="dim">Wells sit a tone below the surface. Hovered moves up a tone, focused is tinted with accent. A placeholder is in dim text.</p>
+  <p class="dim">Wells sit below the surface. Hovered moves up a tone; focused keeps that tone and gains a bar of accent at its foot. A placeholder is in dim text.</p>
 
   <div class="state-row" data-widget="text-field">
     <div class="state" data-state="rest"><span class="state-label dim">At rest</span><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
@@ -251,63 +251,6 @@ Warm, never cool.</textarea></div>
 </section>
 
 <section class="candidates" aria-label="Candidates">
-  <h2>Focused well</h2>
-  <p class="dim">The start is lighter than the surface, so a focused well looks raised. The others stay below the surface: a faint tint, or a bar of accent three pixels high at the foot of the well (O-3). A text field at rest beside a focused one.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Start, 16 %
-      <span class="dim">accent 16 % over tone 1, #393226</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.45">1.45:1 on tone 0</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.25">1.25:1 on tone 2</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="5.01">5.01:1 on well focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-focus: #201d19">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Tint, 6 %
-      <span class="dim">accent 6 % over tone 0, #201d19</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.10">1.10:1 on tone 0</data> <span class="dim">fails</span></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.06">1.06:1 on tone 2</data> <span class="dim">fails</span></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.64">6.64:1 on well focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-focus: var(--tone-0); --well-focus-edge-width: 3px">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Accent edge
-      <span class="dim">the well at rest, with an accent edge of 3 px</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.00">1.00:1 on tone 0</data> <span class="dim">fails</span></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.16">1.16:1 on tone 2</data> <span class="dim">fails</span></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="7.27">7.27:1 on well focus</data></span>
-      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.91">8.91:1 on well focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-focus: #201d19; --well-focus-edge-width: 3px">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Tint, 6 %, accent edge
-      <span class="dim">accent 6 % over tone 0, with an accent edge of 3 px</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.10">1.10:1 on tone 0</data> <span class="dim">fails</span></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.06">1.06:1 on tone 2</data> <span class="dim">fails</span></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.64">6.64:1 on well focus</data></span>
-      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.12">8.12:1 on well focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-focus: var(--tone-1); --well-focus-edge-width: 3px">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Tone 1, accent edge
-      <span class="dim">tone 1, with an accent edge of 3 px</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.06">1.06:1 on tone 0</data> <span class="dim">fails</span></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.10">1.10:1 on tone 2</data> <span class="dim">fails</span></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.86">6.86:1 on well focus</data></span>
-      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.40">8.40:1 on well focus</data></span>
-    </figcaption>
-  </figure>
-  </div>
   <h2>Empty well</h2>
   <p class="dim">An empty well against its surface (O-1). No darker well can pass 1.33:1 on tone 2, so a stronger cue is lighter or is a well edge.</p>
   <div class="candidate-row">

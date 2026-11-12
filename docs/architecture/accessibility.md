@@ -29,7 +29,7 @@ Disabled controls are exempt in WCAG, and are exempt here.
    check mark's fill against the surface, a block marker against its item, a
    fill against its track. The block marker is measured on the selected tone
    (6.54:1), on a hovered selected item (tone 4, 5.63:1), on a focused one
-   (raised focus, 3.16:1) and on a focused selected tab (well focus,
+   (raised focus, 3.16:1) and on a focused selected tab (surface focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
    tonal step, kept above a floor of 1.1 (my call).
 3. **Syntax and terminal colours: 4.5:1** against every background they
@@ -50,25 +50,22 @@ Disabled controls are exempt in WCAG, and are exempt here.
    [decisions](decisions.md). The text selection and the
    current line are told apart by a floor of 1.1 (1.13:1) and by the
    accent's hue (my call).
-4. **Focused widgets: open.** A focused widget is shown by a tone tinted
-   with accent. How far that tone must stand from the widget at rest and
-   from the surface is open question O-3 in the [decisions](decisions.md).
-   Text on the focused tone reaches 4.5:1 like any other text, and so does
-   the placeholder of a focused well. Until O-3 is closed, the pairs of
-   `raised-focus` and `well-focus` against the widget at rest and the
-   surface have a provisional minimum of 1.2 (my call): a floor, not a WCAG
-   rule. A placeholder in dim text passes 4.5:1 on a focused well tinted up to
-   20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
-   which caps the tint of a focused well near 20 %. A focused toggle holds
-   no text, so no cap applies to it: `toggle-focus` has the same
-   provisional 1.2 against tone 2 and the toggle at rest, and is accent
-   30 % over tone 1 (decided, D-64), which measures 1.74:1 and 2.02:1.
-   The owner finds the focused well's starting tone too light: it sits
-   above the surface and looks raised. A focused well that stays below
-   the surface cannot reach the provisional 1.2 by tone (1.10:1 at most
-   against the well at rest), so the gallery shows a bar of accent at the
-   foot of the focused well as a cue, `well-focus-edge`, which reaches
-   3:1 on the well and on the surface (measured 2026-11-12, P1.7).
+4. **Focused widgets: partly open.** A focused raised widget, toggle,
+   tab or scroll area is shown by a tone tinted with accent. Text on the
+   focused tone reaches 4.5:1 like any other text. The tints are decided
+   for the raised widget and the toggle (D-64): accent 30 % over tone 4
+   and over tone 1. The pairs of `raised-focus`, `toggle-focus` and
+   `surface-focus` against the widget at rest and the surface have a
+   provisional minimum of 1.2 (my call): a floor, not a WCAG rule.
+   A focused well is not shown by a tint. It stays below the surface, at
+   tone 1, and carries a bar of accent three pixels high at its foot.
+   (decided, D-69) The bar is the cue: `well-focus-edge` reaches 3:1 on
+   the focused well (8.40:1) and on the surface (7.66:1). The focused
+   well's tone has no minimum against the well at rest or the surface
+   (1.06:1 and 1.10:1; my call, D-70), because no tone that stays below
+   the surface can reach one. Text and the placeholder keep 4.5:1 on it.
+   Still open in O-3 of the [decisions](decisions.md): whether the
+   primary button and a checked toggle get a focused tone of their own.
 5. **Window outline: 2:1.** The window outline tells one window from the
    window behind it, and reaches 2:1 against tones 0 to 2, the tones a
    window shows at its edge. (decided, D-62; the minimum of the pairs is
@@ -156,17 +153,15 @@ falls below its minimum.
 | window outline | tone 2 | 2.05:1 | 2 | pass |
 | text | well | 14.40:1 | 4.5 | pass |
 | text | raised focus | 5.11:1 | 4.5 | pass |
-| text | well focus | 9.91:1 | 4.5 | pass |
+| text | well focus | 13.58:1 | 4.5 | pass |
 | dim text | well | 7.27:1 | 4.5 | pass |
-| dim text | well focus | 5.01:1 | 4.5 | pass |
+| dim text | well focus | 6.86:1 | 4.5 | pass |
 | accent | raised focus | 3.16:1 | 3 | pass |
 | on-accent | accent hover | 9.94:1 | 4.5 | pass |
 | on-accent | accent pressed | 6.68:1 | 4.5 | pass |
 | accent hover | tone 2 | 8.74:1 | 3 | pass |
 | raised focus | tone 3 | 2.07:1 | 1.2 (provisional) | pass |
 | raised focus | tone 2 | 2.42:1 | 1.2 (provisional) | pass |
-| well focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |
-| well focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
 | well | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
 | well edge | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
 | accent | track | 8.91:1 | 3 | pass |
@@ -185,14 +180,14 @@ falls below its minimum.
 | text | surface focus | 9.91:1 | 4.5 | pass |
 | dim text | surface focus | 5.01:1 | 4.5 | pass |
 | accent | surface focus | 6.13:1 | 3 | pass |
-| well focus edge | well focus | 6.13:1 | 3 | pass |
+| well focus edge | well focus | 8.40:1 | 3 | pass |
 | well focus edge | tone 2 | 7.66:1 | 3 | pass |
 | text | selected | 10.58:1 | 4.5 | pass |
 | text | popup | 10.58:1 | 4.5 | pass |
 | dim text | selected | 5.34:1 | 4.5 | pass |
 | dim text | popup | 5.34:1 | 4.5 | pass |
 | accent | selected | 6.54:1 | 3 | pass |
-| accent | well focus | 6.13:1 | 3 | pass |
+| accent | well focus | 8.40:1 | 3 | pass |
 | accent | popup | 6.54:1 | 3 | pass |
 | selected | tone 2 | 1.17:1 | 1.1 (floor) | pass |
 | selected | tone 1 | 1.28:1 | 1.1 (floor) | pass |
@@ -254,8 +249,7 @@ chroma, so that it passes on tone 4, a hovered raised widget. The old value
 measured 3.92:1 there and 4.56:1 (close) on tone 3.
 
 The focused tone of the sample in spike P0.5, tone 4 mixed 30 % with accent
-(`#695c45`), is the starting `raised-focus` (P1.3). The gallery shows it
-beside 20 %, 40 % and 60 % (O-3).
+(`#695c45`), is `raised-focus` (P1.3; decided, D-64).
 
 ## How the check works
 

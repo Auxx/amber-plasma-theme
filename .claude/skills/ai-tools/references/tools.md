@@ -76,10 +76,10 @@ Every command takes `--json`. The `pairs` filter keeps pairs whose description
 contains it, such as `text-dim` or `on tone-4`.
 
 ```shell
-# Every pair: prints a table ending "107 pairs, 0 failing, 0 close.", exits 0
+# Every pair: prints a table ending "105 pairs, 0 failing, 0 close.", exits 0
 node tools/src/bin/tokens.mjs pairs
 
-# Put dim text back to its old value: shows 15 changed pairs, four FAIL, exits 1
+# Put dim text back to its old value: shows 15 changed pairs, three FAIL, exits 1
 node tools/src/bin/tokens.mjs try 'text-dim=#9c958a'
 
 # The colour of a token: prints "text-dim  -  oklch(71.5% 0.018 79.3)  #a9a297", exits 0

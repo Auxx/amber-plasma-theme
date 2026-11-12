@@ -122,14 +122,21 @@
 .spin-steps {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* The steps stay clear of the focused well's bar. */
+.spin:has(.spin-field:focus-visible) .spin-steps,
+.spin.is-focused .spin-steps {
+  padding-bottom: var(--well-focus-edge-width);
 }
 
 .spin-step {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
   width: 22px;
-  height: 15px;
   padding: 0;
   cursor: default;
   color: var(--text-dim);
@@ -217,7 +224,7 @@
 .spin:has(.spin-field:focus-visible),
 .spin.is-focused {
   background-color: var(--well-focus);
-  /* The focused well's own edge (O-3) lies over the well edge; none at the start. */
+  /* The focused well's bar of accent (D-69) lies over the well edge. */
   background-image:
     linear-gradient(to top, var(--well-focus-edge) var(--well-focus-edge-width), transparent var(--well-focus-edge-width)),
     linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
