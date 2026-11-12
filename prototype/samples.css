@@ -1,7 +1,7 @@
 /*
  * The samples page (roadmap P1.6): the terminal colours on a mock Konsole and
- * the editor theme on a mock Kate. The page itself, its families and its
- * candidates take gallery.css. Each coloured run of text is a span whose one
+ * the editor theme on a mock Kate. The page itself and its families take
+ * gallery.css. Each coloured run of text is a span whose one
  * colour class names its token: ansi-<name> reads --ansi-<name>, syn-<kind>
  * reads --syntax-<kind>. A span may also sit on an ANSI colour: on-<name>
  * reads --ansi-<name> as its background.
@@ -125,20 +125,3 @@
 .syn-number { color: var(--syntax-number); }
 .syn-preprocessor { color: var(--syntax-preprocessor); }
 .syn-comment { color: var(--syntax-comment); }
-
-/* The candidates' small samples fill their vignette, edge to edge. */
-.vignette:has(> .terminal, > .code) {
-  padding: 0;
-}
-
-.vignette .terminal,
-.vignette .code {
-  flex: 1;
-  min-width: 0;
-  padding: 16px 12px;
-}
-
-/* Lines are padded themselves, so the current line meets both edges. */
-.vignette .code {
-  padding-inline: 0;
-}
