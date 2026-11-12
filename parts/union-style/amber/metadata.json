@@ -1,0 +1,14 @@
+{
+    "input-type": "css",
+    "input-version": 1,
+    "name": "Amber",
+    "description": "Amber's Union style: dark, warm and flat.",
+    "version": "0.1",
+    "license": "BSD-2-Clause",
+    "url": "https://github.com/Auxx/amber-plasma-theme",
+    "authors": [
+        "Arjen Hiemstra",
+        "Akseli Lahtinen",
+        "Aleksandr 'Aux' Ivanov"
+    ]
+}

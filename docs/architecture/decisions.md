@@ -103,6 +103,7 @@ text in other documents.
 | D-93 | The derived negative background (`#492829` in Dolphin's message) is accepted: a dark red that reads as an error, not a grey | Owner | Seen in P2.3; it sits just under the 0.05 chroma at which the tool counts a hue. 2026-11-12 |
 | D-94 | Greys drawn by icons, by Qt's inverted text cursor and by KWin's dimming do not breach "no cool grey": they are not part of Amber | Owner | P2.3's "done when". 2026-11-12 |
 | D-95 | The Window colour set is tone 1, not tone 2: Dolphin's places and information panels and status bar, and Kate's sidebar, sit a tone below the view | Owner | Seen in P2.3: with Window at tone 2 they merged with the view, while Breeze tells them apart. Changes D-90. A dialog's body is tone 1 too. 2026-11-12 |
+| D-96 | Amber's Union style is the Breeze style of `plasma-union` 6.8.2, copied unchanged into `parts/union-style/amber/` and kept BSD-2-Clause with Breeze's notices and a `LICENSE`. Its identifier is `amber`, since Union takes it from the folder's name. Its rules are written by hand, not generated | Designer | Starts every plan of Step 3 from a style that is known to draw, so each change shows as a diff against Breeze. Tones come from the colour scheme or from variables generated later, as the [overview](overview.md) says. 2026-11-12, P3.1 |
 
 ## Accessibility
 
