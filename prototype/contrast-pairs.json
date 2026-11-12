@@ -45,49 +45,43 @@
     "foreground": "raised-focus",
     "on": ["tone-3", "tone-2"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "surface-focus",
     "on": ["tone-0", "tone-2"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone of a tab or a scroll area stands apart from the tab bar and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone of a tab or a scroll area stands apart from the tab bar and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "well",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
-  },
-  {
-    "foreground": "well-edge",
-    "on": ["tone-2"],
-    "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an empty well is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "toggle",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an unchecked toggle is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "toggle-focus",
     "on": ["tone-2", "toggle"],
     "minimum": 1.2,
-    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is provisional until O-3 sets the minimum."
+    "why": "Accessibility rule 4: the focused tone stands apart from the widget at rest and from the surface. 1.2 is a floor that keeps the focused tone from fading, not a WCAG rule (D-77)."
   },
   {
     "foreground": "track",
     "on": ["tone-2"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "thumb",
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: the thumb of a slider or a scrollbar is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: the thumb of a slider or a scrollbar is told from its surface by tone. 1.1 is a floor that keeps the step from fading, not a WCAG rule (D-75, D-77)."
   },
   {
     "foreground": "thumb-hover",

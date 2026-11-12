@@ -101,8 +101,8 @@ background / text, and the block marker or tick where the widget has one.
 - **A checked tool button** keeps its accent text in every state. Hovered,
   it goes to tone 4, one above its checked tone; focused and pressed, it
   takes the tones of an unchecked tool button. (my call)
-- **The primary button** shows focus with its hovered tone for now (my
-  call); this is part of O-3 in the [decisions](decisions.md).
+- **The primary button** shows focus with its hovered tone: it is already
+  accent, so it has no focused tone of its own. (decided, D-76)
 - **Wells:** a placeholder is dim text; selected text is on-accent on
   accent. A spin box's step buttons take no keyboard focus; the well around
   the field shows it.
@@ -113,8 +113,8 @@ background / text, and the block marker or tick where the widget has one.
   keeps tone 1, the tone of a hovered well, and gains a bar of accent
   three pixels high at its foot. (decided, D-69) A spin box's step
   buttons stay clear of the bar.
-- **An empty well** is told from its surface by tone alone (open question
-  O-1). The gallery shows candidates: a darker well, and a well edge.
+- **An empty well** is told from its surface by tone alone: tone 0 on
+  tone 2, with no bar at its foot. (decided, D-75)
 - **Toggles** (my call, P1.4): a 16 px box, or a circle for a radio
   button, which is a round widget. Unchecked, it sits below the surface
   like a well; checked, it fills with accent and carries an on-accent mark:
@@ -122,9 +122,9 @@ background / text, and the block marker or tick where the widget has one.
   down, it stays hovered. Hovering its label hovers the box. Its label is
   dim text when it is disabled, and a disabled checked toggle keeps its
   mark in dim text. A checked toggle shows focus with its hovered tone, as
-  the primary button does (part of O-3).
-- **An unchecked toggle** is told from its surface by tone alone (O-1); the
-  gallery shows a darker box beside lighter ones.
+  the primary button does. (decided, D-76)
+- **An unchecked toggle** and **an empty track** are told from their
+  surface by tone alone, as an empty well is. (decided, D-75)
 - **Selection**: a selected item has the selected tone, tone 4 (decided,
   D-72), one tone above a hovered item, and carries a block marker in
   accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its top
@@ -165,15 +165,12 @@ background / text, and the block marker or tick where the widget has one.
   with the focused tab's tone, and its thumb rises to dim text there: the
   thumb at rest would measure 1.09:1 on that tint.
 
-Tokens of the widgets (my call, P1.3 to P1.5; the owner chooses O-1 and O-3 in
-P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the
+Tokens of the widgets (P1.3 to P1.5; reviewed by the owner in P1.7). Mixes are in sRGB; a mix is written in the token's comment, and the
 token holds the plain colour (D-47).
 
 | Token | Starting value | Used for |
 |---|---|---|
-| `--well` | `var(--tone-0)` | a well at rest (O-1) |
-| `--well-edge` | `var(--well)` | the colour of the well edge (O-1) |
-| `--well-edge-width` | `0px` | its height: none at the start (O-1) |
+| `--well` | `var(--tone-0)` | a well at rest (decided, D-75) |
 | `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
 | `--well-focus` | `var(--tone-1)` | a focused well (decided, D-69) |
 | `--surface-focus` | `#393226`, accent 16 % over tone 1 | a focused tab or scroll area (my call, D-68) |
@@ -181,9 +178,9 @@ token holds the plain colour (D-47).
 | `--well-focus-edge-width` | `3px` | its height (decided, D-69) |
 | `--accent-hover` | `#debc7d`, accent at OKLCH lightness 81 % | a hovered or focused primary button |
 | `--accent-pressed` | `#ba995b`, accent at OKLCH lightness 70 % | a pressed primary button |
-| `--toggle` | `var(--tone-0)` | an unchecked toggle at rest (O-1) |
+| `--toggle` | `var(--tone-0)` | an unchecked toggle at rest (decided, D-75) |
 | `--toggle-focus` | `#524733`, accent 30 % over tone 1 | a focused unchecked toggle (decided, D-64) |
-| `--track` | `var(--tone-0)` | the track of a slider or progress bar (O-1) |
+| `--track` | `var(--tone-0)` | the track of a slider or progress bar (decided, D-75) |
 | `--thumb` | `var(--tone-4)` | the thumb of a slider or a scrollbar at rest |
 | `--thumb-hover` | `#585248` | a hovered thumb |
 | `--thumb-pressed` | `#746e63` | a pressed thumb |

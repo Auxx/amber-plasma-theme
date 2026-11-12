@@ -33,10 +33,8 @@
   --shadow-inset-side: 17px;      /* the same at the sides: 19 px show */
   --shadow-inset-bottom: 4px;     /* the same at the foot: 32 px show */
 
-  /* Widgets (O-1 and O-3: starting values) */
-  --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (O-1) */
-  --well-edge: var(--well);       /* the well edge, a bar at the foot of a well (O-1) */
-  --well-edge-width: 0px;         /* its height; none at the start (O-1) */
+  /* Widgets */
+  --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (D-75) */
   --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (D-64) */
   --well-focus: var(--tone-1);    /* a focused well: tone 1, below the surface (D-69) */
   --surface-focus: #393226;       /* a focused tab or scroll area: accent 16 % over tone 1 */
@@ -44,9 +42,9 @@
   --well-focus-edge-width: 3px;   /* its height (D-69) */
   --accent-hover: #debc7d;        /* a hovered or focused primary button: accent at OKLCH lightness 81 % */
   --accent-pressed: #ba995b;      /* a pressed primary button: accent at OKLCH lightness 70 % */
-  --toggle: var(--tone-0);        /* an unchecked check box or radio button at rest (O-1) */
+  --toggle: var(--tone-0);        /* an unchecked check box or radio button at rest (D-75) */
   --toggle-focus: #524733;        /* a focused toggle: accent 30 % over tone 1 (D-64) */
-  --track: var(--tone-0);         /* the track of a slider or progress bar (O-1) */
+  --track: var(--tone-0);         /* the track of a slider or progress bar (D-75) */
   --thumb: var(--tone-4);         /* the thumb of a slider or a scrollbar at rest (D-71) */
   --thumb-hover: #585248;         /* a hovered thumb */
   --thumb-pressed: #746e63;       /* a pressed thumb: the lightest state */

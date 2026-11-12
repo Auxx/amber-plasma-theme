@@ -113,14 +113,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Well**
 : A widget that sits darker than its surface, such as a text field.
 
-**Well edge**
-: A solid bar at least three pixels high at the foot of a well, in a tone
-  lighter than the surface. A candidate cue for O-1. It is not a hairline.
-
 **Focus bar**
 : A solid accent bar three pixels high at the foot of a focused well. It
   is how a well shows focus, since a well is not tinted. It is not a
-  hairline, and it is not the well edge.
+  hairline.
 
 **Raised widget**
 : A widget that sits lighter than its surface, such as a button. It is not a

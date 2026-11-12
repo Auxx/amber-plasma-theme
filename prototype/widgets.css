@@ -83,8 +83,6 @@
 .spin {
   width: 100%;
   background-color: var(--well);
-  /* The well edge (O-1): none at the start, where its width is 0. */
-  background-image: linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
 }
 
 .text-field {
@@ -224,10 +222,8 @@
 .spin:has(.spin-field:focus-visible),
 .spin.is-focused {
   background-color: var(--well-focus);
-  /* The focused well's bar of accent (D-69) lies over the well edge. */
-  background-image:
-    linear-gradient(to top, var(--well-focus-edge) var(--well-focus-edge-width), transparent var(--well-focus-edge-width)),
-    linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
+  /* The focus bar (D-69). */
+  background-image: linear-gradient(to top, var(--well-focus-edge) var(--well-focus-edge-width), transparent var(--well-focus-edge-width));
 }
 
 /* Pressed */

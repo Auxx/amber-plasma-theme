@@ -22,7 +22,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 105);
+    assert.equal(pairs.length, 104);
   });
 
   it('resolves every token of every pair', () => {
@@ -56,20 +56,19 @@ describe('Amber contrast pairs', () => {
     assert.equal(ratio('outline on tone-2'), '2.05');
   });
 
-  it('starts the focused tones where O-3 starts', () => {
+  it('holds the focused tones (D-64, D-69)', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('raised-focus on tone-3'), '2.07');
     assert.equal(ratio('well-focus-edge on well-focus'), '8.40');
     assert.equal(ratio('text-dim on well-focus'), '6.86');
   });
 
-  it('starts the well where O-1 starts', () => {
+  it('holds the well a tone step below the surface (D-75)', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('well on tone-2'), '1.16');
-    assert.equal(ratio('well-edge on tone-2'), '1.16');
   });
 
-  it('starts the toggles and tracks where O-1 starts', () => {
+  it('holds the toggles, tracks and thumbs (D-75)', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('toggle on tone-2'), '1.16');
     assert.equal(ratio('track on tone-2'), '1.16');
@@ -83,7 +82,7 @@ describe('Amber contrast pairs', () => {
     assert.equal(result.pair.minimum, 3);
   });
 
-  it('starts the focused toggle where O-3 starts', () => {
+  it('holds the focused toggle (D-64)', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
     assert.equal(ratio('toggle-focus on tone-2'), '1.74');
     assert.equal(ratio('toggle-focus on toggle'), '2.02');

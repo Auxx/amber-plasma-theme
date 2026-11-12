@@ -943,14 +943,24 @@ describe('prototype gallery', () => {
     assert.deepEqual(order, [ 'Rename', 'Cancel' ]);
   });
 
-  withChrome('draws no well edge at the start', async () => {
-    // At the start the well edge has no width, so no bar shows in any state.
+  withChrome('draws the focus bar on a focused well alone', async () => {
+    // A well has no bar at its foot unless it is focused; then the bar is
+    // accent and three pixels high (D-69).
     const { page } = await gallery();
+    const accent = await page.evaluate(() => {
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--accent)';
+      document.body.append(probe);
+      const colour = getComputedStyle(probe).color;
+      probe.remove();
+      return colour;
+    });
     const offences = [];
     for (const widget of [ 'text-field', 'spin', 'text-area' ]) {
       for (const state of Object.keys(WIDGETS[widget].states)) {
         const image = await page.locator(controlOf(widget, state)).evaluate(element => getComputedStyle(element).backgroundImage);
-        if (image !== 'none' && !/\b0px\b/.test(image)) {
+        const expected = state === 'focused' ? image.includes(`${accent} 3px`) : image === 'none';
+        if (!expected) {
           offences.push(`${widget} ${state}: ${image}`);
         }
       }

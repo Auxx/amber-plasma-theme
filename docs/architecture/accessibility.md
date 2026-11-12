@@ -1,8 +1,7 @@
 # Amber — Accessibility: contrast
 
-> Status: **Accepted** on 2026-11-11. Two questions are deferred to
-> the prototype: O-1 and O-3 in the [decisions](decisions.md). O-5,
-> light text on ANSI colours, is open too.
+> Status: **Accepted** on 2026-11-11. One question is open: O-5 in the
+> [decisions](decisions.md), light text on ANSI colours.
 
 Amber checks its colours against the contrast rules of WCAG 2.2, level AA.
 WCAG is written for web content, but its contrast measure works for any pair
@@ -50,22 +49,23 @@ Disabled controls are exempt in WCAG, and are exempt here.
    [decisions](decisions.md). The text selection and the
    current line are told apart by a floor of 1.1 (1.13:1) and by the
    accent's hue (my call).
-4. **Focused widgets: partly open.** A focused raised widget, toggle,
-   tab or scroll area is shown by a tone tinted with accent. Text on the
-   focused tone reaches 4.5:1 like any other text. The tints are decided
-   for the raised widget and the toggle (D-64): accent 30 % over tone 4
-   and over tone 1. The pairs of `raised-focus`, `toggle-focus` and
+4. **Focused widgets.** A focused raised widget, toggle, tab or scroll
+   area is shown by a tone tinted with accent. Text on the focused tone
+   reaches 4.5:1 like any other text. The tints are accent 30 % over
+   tone 4 for a raised widget and over tone 1 for a toggle (decided,
+   D-64). The pairs of `raised-focus`, `toggle-focus` and
    `surface-focus` against the widget at rest and the surface have a
-   provisional minimum of 1.2 (my call): a floor, not a WCAG rule.
+   minimum of 1.2 (my call, D-77): a floor, not a WCAG rule.
    A focused well is not shown by a tint. It stays below the surface, at
-   tone 1, and carries a bar of accent three pixels high at its foot.
-   (decided, D-69) The bar is the cue: `well-focus-edge` reaches 3:1 on
-   the focused well (8.40:1) and on the surface (7.66:1). The focused
+   tone 1, and carries a focus bar: accent, three pixels high, at its
+   foot. (decided, D-69) The bar is the cue: `well-focus-edge` reaches 3:1
+   on the focused well (8.40:1) and on the surface (7.66:1). The focused
    well's tone has no minimum against the well at rest or the surface
    (1.06:1 and 1.10:1; my call, D-70), because no tone that stays below
    the surface can reach one. Text and the placeholder keep 4.5:1 on it.
-   Still open in O-3 of the [decisions](decisions.md): whether the
-   primary button and a checked toggle get a focused tone of their own.
+   A primary button and a checked toggle are already accent, so they show
+   focus with their hovered tone and have no focused tone of their own.
+   (decided, D-76)
 5. **Window outline: 2:1.** The window outline tells one window from the
    window behind it, and reaches 2:1 against tones 0 to 2, the tones a
    window shows at its edge. (decided, D-62; the minimum of the pairs is
@@ -97,31 +97,22 @@ by design, from 1.06:1 to about 1.2:1. That is far below 3:1.
 Reaching 3:1 there would need an edge or a much lighter fill, which is the
 opposite of what Amber is for.
 
-### Open question (the owner's)
+### The owner's decision
 
-How should Amber treat controls identified only by tone?
+The owner looked at these controls in the prototype, beside candidates
+with a darker well, a lighter box, a lighter track and a bar at the foot
+of every well, and decided on 2026-11-12 to keep them as they were: an
+empty well, an unchecked toggle and an empty track are tone 0 on the
+surface and are told from it by tone alone. (decided, D-75) Amber accepts
+that they do not reach 3:1.
 
-- Accept the departure and record it as a known gap; or
-- give only those controls a stronger cue that is not a hairline, such as a
-  clearly lighter box for an unchecked check box.
-
-The owner deferred this on 2026-11-11 to the prototype, where the tones can
-be seen. The gallery plans P1.3 and P1.4 show these controls with candidate
-tones and their measured ratios side by side, and the owner chooses in P1.7.
-Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
-
-- **A darker well cannot get there.** Even black measures only 1.33:1 on
-  tone 2 (measured 2026-11-11), so a stronger cue must be lighter than the
-  surface, or a well edge.
-- Until O-1 is closed, the pairs of `well` and `well-edge` on tone 2 have a
-  provisional minimum of 1.1 (my call). At the start the well edge has no
-  width and the well's own tone.
-- Since P1.4 the gallery also shows candidates for the unchecked toggle and
-  the empty track. `toggle`, `track` and the three thumb tokens have the same
-  provisional 1.1 on the surfaces they sit on (my call).
-- **A track cannot carry a 3:1 cue by itself.** A track at 3:1 on tone 2
+- The pairs of `well`, `toggle`, `track` and the three thumb tokens on the
+  surfaces they sit on have a minimum of 1.1 (my call, D-77): a floor
+  that keeps the step from fading, not a WCAG rule.
+- **A darker well could not get there.** Even black measures only 1.33:1
+  on tone 2 (measured 2026-11-11).
+- **A track could not carry a 3:1 cue by itself.** A track at 3:1 on tone 2
   (`#746e63`, 3.13:1) drops the accent fill on it to 2.45:1, below rule 2.
-  On a 2:1 track the fill keeps 3.74:1 (measured 2026-11-11).
 
 ## First measurements
 
@@ -160,23 +151,22 @@ falls below its minimum.
 | on-accent | accent hover | 9.94:1 | 4.5 | pass |
 | on-accent | accent pressed | 6.68:1 | 4.5 | pass |
 | accent hover | tone 2 | 8.74:1 | 3 | pass |
-| raised focus | tone 3 | 2.07:1 | 1.2 (provisional) | pass |
-| raised focus | tone 2 | 2.42:1 | 1.2 (provisional) | pass |
-| well | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| well edge | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
+| raised focus | tone 3 | 2.07:1 | 1.2 (floor) | pass |
+| raised focus | tone 2 | 2.42:1 | 1.2 (floor) | pass |
+| well | tone 2 | 1.16:1 | 1.1 (floor) | pass |
 | accent | track | 8.91:1 | 3 | pass |
-| toggle | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| track | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| thumb | tone 2 | 1.36:1 | 1.1 (provisional) | pass |
-| thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
-| thumb hover | tone 2 | 2.05:1 | 1.1 (provisional) | pass |
-| thumb hover | tone 1 | 2.24:1 | 1.1 (provisional) | pass |
-| thumb pressed | tone 2 | 3.13:1 | 1.1 (provisional) | pass |
-| thumb pressed | tone 1 | 3.43:1 | 1.1 (provisional) | pass |
-| toggle focus | tone 2 | 1.74:1 | 1.2 (provisional) | pass |
-| toggle focus | toggle | 2.02:1 | 1.2 (provisional) | pass |
-| surface focus | tone 0 | 1.45:1 | 1.2 (provisional) | pass |
-| surface focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
+| toggle | tone 2 | 1.16:1 | 1.1 (floor) | pass |
+| track | tone 2 | 1.16:1 | 1.1 (floor) | pass |
+| thumb | tone 2 | 1.36:1 | 1.1 (floor) | pass |
+| thumb | tone 1 | 1.49:1 | 1.1 (floor) | pass |
+| thumb hover | tone 2 | 2.05:1 | 1.1 (floor) | pass |
+| thumb hover | tone 1 | 2.24:1 | 1.1 (floor) | pass |
+| thumb pressed | tone 2 | 3.13:1 | 1.1 (floor) | pass |
+| thumb pressed | tone 1 | 3.43:1 | 1.1 (floor) | pass |
+| toggle focus | tone 2 | 1.74:1 | 1.2 (floor) | pass |
+| toggle focus | toggle | 2.02:1 | 1.2 (floor) | pass |
+| surface focus | tone 0 | 1.45:1 | 1.2 (floor) | pass |
+| surface focus | tone 2 | 1.25:1 | 1.2 (floor) | pass |
 | text | surface focus | 9.91:1 | 4.5 | pass |
 | dim text | surface focus | 5.01:1 | 4.5 | pass |
 | accent | surface focus | 6.13:1 | 3 | pass |

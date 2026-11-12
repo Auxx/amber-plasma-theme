@@ -155,7 +155,6 @@ Warm, never cool.</textarea></div>
   <div class="live"><span class="state-label dim">Live</span><div class="scroll-area" role="region" aria-label="Files"><div>amber-notes.md</div><div>colours.txt</div><div>decisions.md</div><div>design-language.md</div><div>gallery.html</div><div>glossary.md</div><div>index.html</div><div>notes-2026-11.md</div><div>platform.md</div><div>roadmap.md</div><div>shell.css</div><div>tokens.css</div><div>tooling.md</div><div>vision.md</div><div>widgets.css</div><div>window.css</div></div></div>
 </section>
 
-<!-- Candidates for O-3 and O-1: each figure changes one token from the starting values. -->
 <section class="family" aria-label="Navigation">
   <h2>Navigation</h2>
   <p class="dim">Tabs and items show selection with a block marker in accent. A selected tab takes the tone of its page.</p>
@@ -248,126 +247,6 @@ Warm, never cool.</textarea></div>
       </div>
     </div>
   </div>
-</section>
-
-<section class="candidates" aria-label="Candidates">
-  <h2>Empty well</h2>
-  <p class="dim">An empty well against its surface (O-1). No darker well can pass 1.33:1 on tone 2, so a stronger cue is lighter or is a well edge.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field" type="text" value="amber-notes.md" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Start
-      <span class="dim">tone 0, no well edge</span>
-      <span class="ratio-line">well <data class="ratio" data-pair="well on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-      <span class="ratio-line">well edge <data class="ratio" data-pair="well-edge on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well: #0c0a07; --well-edge: var(--well)">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field" type="text" value="amber-notes.md" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Darker well
-      <span class="dim">#0c0a07, no well edge</span>
-      <span class="ratio-line">well <data class="ratio" data-pair="well on tone-2" value="1.25">1.25:1 on tone 2</data></span>
-      <span class="ratio-line">well edge <data class="ratio" data-pair="well-edge on tone-2" value="1.25">1.25:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-edge: #585248; --well-edge-width: 3px">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field" type="text" value="amber-notes.md" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Edge 2:1
-      <span class="dim">tone 0, a 3 px well edge #585248</span>
-      <span class="ratio-line">well <data class="ratio" data-pair="well on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-      <span class="ratio-line">well edge <data class="ratio" data-pair="well-edge on tone-2" value="2.05">2.05:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--well-edge: #746e63; --well-edge-width: 3px">
-    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field" type="text" value="amber-notes.md" autocomplete="off" aria-label="Search"></div>
-    <figcaption>
-      Edge 3:1
-      <span class="dim">tone 0, a 3 px well edge #746e63</span>
-      <span class="ratio-line">well <data class="ratio" data-pair="well on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-      <span class="ratio-line">well edge <data class="ratio" data-pair="well-edge on tone-2" value="3.13">3.13:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  </div>
-  <h2>Unchecked toggle</h2>
-  <p class="dim">An unchecked toggle against its surface (O-1). A lighter box is the cue a darker one cannot give.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
-    <figcaption>
-      Start
-      <span class="dim">tone 0</span>
-      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle: var(--tone-4)">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
-    <figcaption>
-      Lighter box, tone 4
-      <span class="dim">tone 4</span>
-      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="1.36">1.36:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle: #585248">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
-    <figcaption>
-      Box 2:1
-      <span class="dim">#585248</span>
-      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="2.05">2.05:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle: #746e63">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box" aria-label="Show hidden files" checked><input type="radio" class="radio" aria-label="Large icons"><input type="radio" class="radio" aria-label="Large icons" checked></div>
-    <figcaption>
-      Box 3:1
-      <span class="dim">#746e63</span>
-      <span class="ratio-line">toggle <data class="ratio" data-pair="toggle on tone-2" value="3.13">3.13:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  </div>
-  <h2>Track</h2>
-  <p class="dim">An empty track against its surface, and the fill against its track (O-1). A track at 3:1 drops the fill below 3:1.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
-    <figcaption>
-      Start
-      <span class="dim">tone 0</span>
-      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="1.16">1.16:1 on tone 2</data></span>
-      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="8.91">8.91:1 on track</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--track: var(--tone-4)">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
-    <figcaption>
-      Lighter track, tone 4
-      <span class="dim">tone 4</span>
-      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="1.36">1.36:1 on tone 2</data></span>
-      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="5.63">5.63:1 on track</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--track: #585248">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
-    <figcaption>
-      Track 2:1
-      <span class="dim">#585248</span>
-      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="2.05">2.05:1 on tone 2</data></span>
-      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="3.74">3.74:1 on track</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--track: #746e63">
-    <div class="vignette is-stacked" inert><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"><div class="progress" role="progressbar" aria-label="Copying" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" style="--value: 40%"></div></div>
-    <figcaption>
-      Track 3:1
-      <span class="dim">#746e63</span>
-      <span class="ratio-line">track <data class="ratio" data-pair="track on tone-2" value="3.13">3.13:1 on tone 2</data></span>
-      <span class="ratio-line">fill <data class="ratio" data-pair="accent on track" value="2.45">2.45:1 on track</data> <span class="dim">fails</span></span>
-    </figcaption>
-  </figure>
-  </div>
-
 </section>
 
 </body>

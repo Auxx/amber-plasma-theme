@@ -65,7 +65,7 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'well=#0c0a07', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.changed.length, 4);
+    assert.equal(result.changed.length, 3);
     assert.equal(result.failing, 0);
   });
 
@@ -93,14 +93,14 @@ describe('tokens tool', () => {
   it('passes every pair', () => {
     const { status, stdout } = tokens('pairs');
     assert.equal(status, 0);
-    assert.ok(stdout.includes('105 pairs, 0 failing, 0 close.'), stdout);
+    assert.ok(stdout.includes('104 pairs, 0 failing, 0 close.'), stdout);
   });
 
   it('prints pairs as JSON', () => {
     const { status, stdout } = tokens('pairs', '--json');
     assert.equal(status, 0);
     const result = JSON.parse(stdout);
-    assert.equal(result.total, 105);
+    assert.equal(result.total, 104);
     assert.equal(result.failing, 0);
   });
 
