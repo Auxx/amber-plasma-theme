@@ -158,7 +158,10 @@ background / text, and the block marker or tick where the widget has one.
   accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its outer
   edge, the one away from its page: the top of a tab bar above its pages, the
   bottom of one below them, the left or right of one beside them (my call,
-  D-108). It takes tone 2, so that it joins the page. The marker is
+  D-108). It takes tone 2, so that it joins the page. In Qt Widgets
+  applications Union draws no tab bar, so a tab at rest paints tone 0
+  itself, and past the last tab the bar shows the window's tone (decided,
+  D-109). The marker is
   part of selection: only the marker reaches 3:1. Hovered, a selected item
   keeps tone 4 and does not change (my call, D-73); focused, it takes
   raised focus and keeps the marker. A selected tab does
@@ -196,7 +199,9 @@ background / text, and the block marker or tick where the widget has one.
   `#746e63` (D-66; approved by the owner, D-71). A focused
   slider's thumb is the focused raised tone.
 - **Scrollbars** (my call, P1.4): a 12 px thumb with no track fill and no
-  arrow buttons.
+  arrow buttons. In Qt Widgets applications the clear track shows the
+  window's tone, not the view's, and the thumb lightens whenever the
+  pointer is over the bar (decided, D-109).
   Every page of the prototype links `scrollbars.css`, so its own
   scrollbars are Amber's. A scroller that takes keyboard focus is tinted
   with the focused tab's tone, and its thumb rises to dim text there: the

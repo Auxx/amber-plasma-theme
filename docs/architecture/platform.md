@@ -137,6 +137,44 @@ Verified on 2026-11-10 unless marked.
   - Dolphin 25 shows no zoom slider in its status bar; its free-space bar
     is its own painting, and a copy's progress goes to the notification
     service.
+- **What Union reaches on toolbars, the menu bar, the status bar, tabs and
+  scrollbars in a Qt Widgets application** (verified, 2026-11-12, P3.6, by
+  marker rules read in the probe's pixels, in Dolphin and in Kate):
+  - Every toolbar in the top area of a main window has the hint `.header`,
+    one in the bottom area `.footer`, and a toolbar outside a main window
+    neither. `toolbar > separator` draws nothing: Qt draws a separator with
+    the `toolbar > handle` rule, the grip's, 6 px wide whatever `width`
+    says. A grip with no fill removes both.
+  - `menubar` and `menubaritem` take a background and `color`. A hovered
+    title is `:highlighted` (Qt's current action), with or without
+    `:hovered`; an open one is `:pressed`. Union's
+    `SH_MenuBar_AltKeyNavigation` is 0, so Alt alone highlights no title.
+    A title whose action is disabled gets no `:disabled`: it is drawn as at
+    rest.
+  - `statusbar` takes a background, but its `color` reaches neither a label
+    nor a `showMessage` text: Qt draws both from the colour scheme, in
+    text. Union has no element for a label.
+  - Union draws no `tabbar` background, in a `QTabBar` or a `QTabWidget`:
+    past the last tab the bar shows its parent, the Window set's tone 1 in
+    Dolphin and Kate. `tabwidget` takes a background, the page's. A tab is
+    `tabbutton`: `:hovered`, `:checked` when selected (not
+    `:highlighted`), `:checked:visual-focus` when its bar has keyboard focus
+    (focus is always on the current tab), `:disabled`. `[direction]`
+    follows the bar's shape. A `border-<edge>` of 3 px set at rest and
+    recoloured under `:checked` draws on that edge in every direction; the
+    background is not drawn under it, so each state colours the border with
+    its fill. `> closebutton` takes a background and `color` in each state.
+  - A scrollbar is `scrollbar` (its track) and `> handle` (its thumb).
+    `width: 12px` with each padding side 0 gives a 12 px bar whose thumb is
+    12 px across; no arrow buttons are drawn. `scrollbar:hovered > handle`
+    and `scrollbar > handle:hovered` both match whenever the pointer is over
+    the bar, on the track too. Pressed is reached by a mouse press on the
+    thumb. `:disabled` reaches the bar and the thumb. `scrollareacorner`
+    takes a background. Behind a clear track lies the window, not the view:
+    in Dolphin no `frame`, `scrollview` or `listview` rule reached it, so
+    the track shows tone 1 beside a tone 2 view.
+  - In the probe, the window (1280 × 772) is smaller than its grid, so rows
+    overlap and `render()` cuts a widget where a lower row's widget begins.
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;

@@ -43,6 +43,18 @@ Amber is in early development and nothing can be installed yet.
   block along it; no rule reaches it. (seen in P3.5; D-107)
 - **A slider shows 9 of its tick marks out of 11**: Union leaves out the
   two at the ends and the one under the thumb. (seen in P3.5; D-107)
+- **A tab bar is tone 0 only under its tabs.** Union draws no tab bar, so
+  each tab paints tone 0 itself and past the last tab the bar shows the
+  window's tone 1. (seen in P3.6; D-109)
+- **A scrollbar's track shows the window's tone.** Beside a tone 2 view,
+  such as Dolphin's, the clear track is a 12 px strip of tone 1: what lies
+  behind it is out of the style's reach. (seen in P3.6; D-109)
+- **The status bar's text is text, not dim text**: Qt draws it from the
+  colour scheme. (seen in P3.6; D-109)
+- **A disabled menu title looks enabled**: Union gives it no disabled
+  state. (seen in P3.6; D-109)
+- **A scrollbar's thumb lightens whenever the pointer is over its bar**,
+  not only over the thumb. (seen in P3.6; D-109)
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)
