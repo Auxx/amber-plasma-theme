@@ -50,6 +50,11 @@ tableviewdelegate {
         color: var(--text);
     }
 
+    &:highlighted:visual-focus,
+    &.selected:visual-focus {
+        background-color: var(--raised-focus);
+    }
+
     &.editing {
         border: none;
     }
@@ -57,6 +62,12 @@ tableviewdelegate {
     &:disabled {
         color: var(--text-dim);
         background-color: transparent;
+    }
+
+    &:highlighted:disabled,
+    &.selected:disabled {
+        color: var(--text-dim);
+        background-color: var(--selected);
     }
 }
 

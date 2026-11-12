@@ -185,10 +185,12 @@ background / text, and the block marker or tick where the widget has one.
   that has focus always has a current item, and Dolphin's view nearly
   always has focus. A view itself takes no focused tint in Qt Widgets
   applications. A pressed item is drawn as hovered. In Qt Widgets
-  applications a header section paints the view's tone 2 itself, an item's
-  text starts at its edge, a table or tree tints one cell rather than the
-  row, and a tree's indentation is never filled: known gaps (decided,
-  D-113; see [platform](platform.md#union)).
+  applications a header section paints the view's tone 2 itself (my call,
+  D-112). Known gaps there: an item's text starts at its edge, a table or
+  tree tints one cell rather than the row, a tree's indentation is never
+  filled, and a view's own background, such as a settings page list's,
+  and a header past its last section keep the colour scheme's tones
+  (decided, D-113; see [platform](platform.md#union)).
 - **The rubber band**, dragged over a view to select items, is the selected
   tone at half strength, `--rubber-band`, with no border (decided, D-110).
 - **Menus** (my call, P1.5): a menu item's keyboard highlight is its hovered

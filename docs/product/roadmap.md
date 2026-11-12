@@ -129,8 +129,8 @@ sections (P3.7); text fields drawn in tone 2 instead of a well, and a text
 cursor that Qt draws inverted, so that on tone 2 it is the cool grey
 `#dadde0` (P3.4, which decides whether the cursor becomes a known gap);
 rounded corners everywhere (P3.2). Since D-95 a settings dialog's page
-list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar: P3.7
-draws it as a sidebar.
+list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar; P3.7
+found it out of the style's reach, a known gap (D-113).
 
 P3.2 removed the border under the header toolbar, the accent frame of a
 selected item, the lines between header sections and every rounded corner,

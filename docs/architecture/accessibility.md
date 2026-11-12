@@ -26,15 +26,14 @@ Disabled controls are exempt in WCAG, and are exempt here.
    2026-11-11, P1.5), so a focused item shows its secondary columns, and a
    focused tree folder its chevron, in text.
 2. **Indicators: 3:1.** Accent reaches 3:1 against every tone it marks: the
-   check mark's fill against the surface, a block marker against its item, a
-   fill against its track. The block marker is measured on the selected tone
-   (tone 4, 5.63:1), which a hovered selected item keeps, on a focused one
-   (raised focus, 3.16:1) and on a focused selected tab (surface focus,
-   6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
-   tonal step, kept above a floor of 1.1 (my call). **A selected item
-   carries no marker** (decided, D-111): a selected file, list item or
-   place is told by its tone alone, 1.36:1 on tone 2 and 1.49:1 on tone 1,
-   below 3:1. A selected tab keeps its marker.
+   check mark's fill against the surface, a selected tab's block marker
+   against the tab, a fill against its track. The tab's marker is measured
+   on tone 2 (7.66:1) and on a focused selected tab (surface focus,
+   6.13:1). A menu's tick is accent on the popup tone (6.54:1). The marker
+   carries a tab's 3:1. **A selected item carries no marker** (decided,
+   D-111): a selected file, list item or place is told by its tone alone,
+   a tonal step kept above a floor of 1.1 (my call): 1.36:1 on tone 2 and
+   1.49:1 on tone 1, below 3:1.
 3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
    every background they are read on: the editor, the current line and
    the text selection. The text selection is the hardest of these.

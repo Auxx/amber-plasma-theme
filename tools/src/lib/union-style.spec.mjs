@@ -913,6 +913,10 @@ describe('the Union style\'s views (P3.7)', () => {
     assert.equal(value(child(q, '&:hovered'), 'background-color'), 'var(--tone-3)');
     assert.equal(value(child(q, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
     assert.equal(value(child(q, '&:highlighted, &.selected'), 'background-color'), 'var(--selected)');
+    // As an item (D-112): selected and focused takes raised focus; selected and disabled keeps the selected tone.
+    assert.equal(value(child(q, '&:highlighted:visual-focus, &.selected:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(q, '&:highlighted:disabled, &.selected:disabled'), 'background-color'), 'var(--selected)');
+    assert.equal(value(child(q, '&:highlighted:disabled, &.selected:disabled'), 'color'), 'var(--text-dim)');
   });
 
   it('fills no part of a view one pixel thick', () => {

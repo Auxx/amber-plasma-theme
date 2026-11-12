@@ -101,7 +101,8 @@ Verified on 2026-11-10 unless marked.
     the palette, not from Union's `color`: a placeholder is `#a9a297`
     (dim text), a disabled text `#a6a19a` and a disabled placeholder
     `#7c766e`, both from the colour scheme's disabled effect (D-91), and a
-    text selection accent with on-accent text. `textfield > .placeholder`
+    text selection from the Selection set: since P3.7 the dark gold
+    `text-selection` with text (D-110). `textfield > .placeholder`
     does not reach a Qt Widgets field. No Union property names the
     cursor, the caret, the selection or the placeholder.
   - A line of text is 20 px high, so a text field is 30 px with 5 px above
