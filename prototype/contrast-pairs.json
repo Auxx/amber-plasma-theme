@@ -268,5 +268,35 @@
     "on": ["editor"],
     "minimum": 1.1,
     "why": "The current line is told from the editor by tone; its text carries the 4.5:1. 1.1 is a floor that keeps it from fading (my call)."
+  },
+  {
+    "foreground": "link",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: the link colour of the colour scheme is text on every tone (P2.1)"
+  },
+  {
+    "foreground": "visited",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: the visited link colour of the colour scheme is text on every tone (P2.1)"
+  },
+  {
+    "foreground": "positive",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: a status colour of the colour scheme is text on every tone (P2.1)"
+  },
+  {
+    "foreground": "negative",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: a status colour of the colour scheme is text on every tone (P2.1)"
+  },
+  {
+    "foreground": "neutral",
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4"],
+    "minimum": 4.5,
+    "why": "Accessibility rule 1: a status colour of the colour scheme is text on every tone (P2.1)"
   }
 ]

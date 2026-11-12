@@ -54,6 +54,13 @@
   /* Popups: menus, combo box lists, tooltips */
   --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */
 
+  /* Text colours of the colour scheme: links and status colours (D-87) */
+  --link: var(--syntax-function);   /* a link: the function colour */
+  --visited: var(--syntax-keyword); /* a visited link: the keyword colour */
+  --positive: var(--syntax-string); /* positive text: the string colour */
+  --negative: var(--syntax-number); /* negative text: the number colour; danger is a fill, too dark for text */
+  --neutral: var(--accent);         /* neutral text: the accent */
+
   /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
      Hues are OKLCH: normal at lightness 55-57 %, so that they also carry light
      text as backgrounds (D-80); bright at 82-85 %. */
