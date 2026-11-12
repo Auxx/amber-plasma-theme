@@ -18,7 +18,7 @@ const PAGES = readdirSync(PROTOTYPE).filter(name => name.endsWith('.html')).sort
 
 // Figures and printed ratios on each page. A new page is added here.
 const COUNTS = {
-  'gallery.html': [ 28, 62 ],
+  'gallery.html': [ 22, 48 ],
   'index.html': [ 0, 0 ],
   'samples.html': [ 6, 12 ]
 };
@@ -80,7 +80,7 @@ describe('prototype candidates', () => {
   it('keeps block markers and well edges at least 3 px', () => {
     // A thinner marker or edge is a hairline: the tokens and every
     // candidate's override are 0 (none) or at least 3 px.
-    const NAMES = [ 'marker-width', 'well-edge-width' ];
+    const NAMES = [ 'marker-width', 'well-edge-width', 'well-focus-edge-width' ];
     const tokens = loadTokens();
     const offences = NAMES.map(name => [ `tokens.css: ${name}`, tokens.get(name)?.length?.value ]).concat(
       figures.flatMap(f =>

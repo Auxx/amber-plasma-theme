@@ -95,12 +95,12 @@ const WIDGETS = {
   'radio-on': { control: '.radio', read: MARKED, checked: true, states: TOGGLE_ON },
   slider: {
     control: '.slider',
-    read: [ '--thumb', '--fill' ],
+    read: [ '--thumb-tone', '--fill' ],
     states: {
-      rest: [ 'tone-3', 'accent' ],
-      hovered: [ 'tone-4', 'accent' ],
+      rest: [ 'thumb', 'accent' ],
+      hovered: [ 'thumb-hover', 'accent' ],
       focused: [ 'raised-focus', 'accent' ],
-      pressed: [ 'tone-1', 'accent' ],
+      pressed: [ 'thumb-pressed', 'accent' ],
       disabled: [ 'tone-3', 'text-dim' ]
     }
   },
@@ -116,7 +116,7 @@ const WIDGETS = {
   },
   scrollbar: {
     control: '.scroll-thumb',
-    states: { rest: [ 'scroll-thumb' ], hovered: [ 'text-dim' ], pressed: [ 'text' ] }
+    states: { rest: [ 'thumb' ], hovered: [ 'thumb-hover' ], pressed: [ 'thumb-pressed' ] }
   },
   tab: {
     control: '.tab',
@@ -751,8 +751,8 @@ describe('prototype gallery', () => {
   });
 
   withChrome('draws popups on the popup tone with a shadow', async () => {
-    // The shadow is the window's gradient, offset down: its box overhangs
-    // the popup by --popup-shadow-offset less at the top and more at the foot.
+    // The shadow is that of an inactive window: its box overhangs the popup
+    // by 9 px at the top and 32 px at the foot, and a tooltip's by a third.
     const { page } = await gallery();
     const shown = await page.evaluate(() =>
       [ ...document.querySelectorAll('.family .popup') ].map(element => {
@@ -775,8 +775,9 @@ describe('prototype gallery', () => {
       if (!image.includes('linear-gradient') || !image.includes('radial-gradient')) {
         offences.push(`${label}: no shadow (${image.slice(0, 40)})`);
       }
-      if (offset !== 8) {
-        offences.push(`${label}: shadow offset ${offset / 2} px, expected 4`);
+      const expected = label.includes('tooltip') ? 23 / 3 : 23;
+      if (Math.abs(offset - expected) > 0.01) {
+        offences.push(`${label}: the shadow reaches ${offset} px further down than up, expected ${expected}`);
       }
     }
     assert.deepEqual(offences, []);

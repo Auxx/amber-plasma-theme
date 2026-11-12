@@ -84,10 +84,28 @@
     "why": "Accessibility, departure from WCAG: an empty track is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
   },
   {
-    "foreground": "scroll-thumb",
+    "foreground": "thumb",
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
-    "why": "Accessibility, departure from WCAG: a scrollbar's thumb is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+    "why": "Accessibility, departure from WCAG: the thumb of a slider or a scrollbar is told from its surface by tone. 1.1 is provisional until O-1 sets the minimum."
+  },
+  {
+    "foreground": "thumb-hover",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a hovered thumb is told from its surface by tone, as the thumb at rest is."
+  },
+  {
+    "foreground": "thumb-pressed",
+    "on": ["tone-2", "tone-1"],
+    "minimum": 1.1,
+    "why": "Accessibility, departure from WCAG: a pressed thumb is told from its surface by tone, as the thumb at rest is."
+  },
+  {
+    "foreground": "well-focus-edge",
+    "on": ["well-focus", "tone-2"],
+    "minimum": 3,
+    "why": "Accessibility rule 4: a bar at the foot of a focused well marks state, so it reaches 3:1 on the well and on the surface. It has no height until O-3 gives it one."
   },
   {
     "foreground": "selected",

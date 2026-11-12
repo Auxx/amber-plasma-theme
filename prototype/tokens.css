@@ -27,7 +27,7 @@
   --outline-width: 1px;           /* the window outline's width */
   --glow: color-mix(in srgb, var(--accent) 14%, transparent); /* the window glow of the active window, at the outline */
   --glow-size: 48px;              /* how far the window glow fades to nothing */
-  --shadow: rgb(0 0 0 / 55%);     /* the shadow of an inactive window, where its fade starts; a popup's shadow too */
+  --shadow: rgb(0 0 0 / 55%);     /* the shadow of an inactive window and of a popup, where its fade starts */
   --shadow-size: 36px;            /* how long the shadow's fade is */
   --shadow-inset-top: 27px;       /* how far inside the window the shadow's fade starts at the top: 9 px show */
   --shadow-inset-side: 17px;      /* the same at the sides: 19 px show */
@@ -37,21 +37,23 @@
   --well: var(--tone-0);          /* a well at rest: text field, spin box, text area (O-1) */
   --well-edge: var(--well);       /* the well edge, a bar at the foot of a well (O-1) */
   --well-edge-width: 0px;         /* its height; none at the start (O-1) */
-  --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (O-3) */
+  --raised-focus: #695c45;        /* a focused raised widget: accent 30 % over tone 4 (D-64) */
   --well-focus: #393226;          /* a focused well: accent 16 % over tone 1 (O-3) */
+  --well-focus-edge: var(--accent); /* a bar at the foot of a focused well (O-3) */
+  --well-focus-edge-width: 0px;   /* its height; none at the start (O-3) */
   --accent-hover: #debc7d;        /* a hovered or focused primary button: accent at OKLCH lightness 81 % */
   --accent-pressed: #ba995b;      /* a pressed primary button: accent at OKLCH lightness 70 % */
   --toggle: var(--tone-0);        /* an unchecked check box or radio button at rest (O-1) */
-  --toggle-focus: #393226;        /* a focused toggle: accent 16 % over tone 1, as the focused well (O-3) */
+  --toggle-focus: #524733;        /* a focused toggle: accent 30 % over tone 1 (D-64) */
   --track: var(--tone-0);         /* the track of a slider or progress bar (O-1) */
-  --scroll-thumb: var(--tone-4);  /* a scrollbar's thumb at rest */
+  --thumb: var(--tone-4);         /* the thumb of a slider or a scrollbar at rest */
+  --thumb-hover: #585248;         /* a hovered thumb */
+  --thumb-pressed: #746e63;       /* a pressed thumb: the lightest state */
   --selected: var(--tone-3);      /* a selected item of a list, tree, table or sidebar */
   --marker-width: 3px;            /* the block marker on a selected item or tab (D-21: at least 3 px) */
 
   /* Popups: menus, combo box lists, tooltips */
   --popup: var(--tone-3);         /* a popup, one tone above the tone 2 surface */
-  --popup-shadow-size: 12px;      /* how far a popup's shadow fades to nothing */
-  --popup-shadow-offset: 4px;     /* how far the shadow sits below the popup */
 
   /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
      Hues are OKLCH: normal at lightness 74-75 %, bright at 82-85 %. */

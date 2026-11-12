@@ -79,9 +79,9 @@ thumb / fill, or the track / fill. A toggle's checked states are its own row.
 |---|---|---|---|---|---|
 | Check box, radio button, unchecked | toggle / no mark | tone 1 | toggle focus | — | toggle |
 | Check box, radio button, checked | accent / on-accent | accent hover / on-accent | accent hover / on-accent | — | toggle / dim text |
-| Slider | tone 3 thumb / accent fill | tone 4 / accent | raised focus / accent | tone 1 / accent | tone 3 / dim text |
+| Slider | thumb / accent fill | thumb hover / accent | raised focus / accent | thumb pressed / accent | tone 3 / dim text |
 | Progress bar | track / accent fill | — | — | — | track / dim text |
-| Scrollbar thumb | scroll thumb | dim text | — | text | — |
+| Scrollbar thumb | thumb | thumb hover | — | thumb pressed | — |
 
 Navigation, views and popups (my call, P1.5). Each cell gives the
 background / text, and the block marker or tick where the widget has one.
@@ -148,13 +148,16 @@ background / text, and the block marker or tick where the widget has one.
 - **A dialog** is a window, with a title bar, window outline and window
   glow; no line sits above its buttons.
 - **Ranges** (my call, P1.4): a fill is accent on a 6 px track below the
-  surface; a disabled fill is dim text. A slider's thumb is a 10 × 20 px
-  raised widget and takes the button's tones. Pressed, it goes to tone 1
-  and nearly vanishes against a tone 0 track (seen in P1.4; the owner
-  judges it in P1.7). A progress bar has no text on it. A busy progress
-  bar needs motion and is drawn in P3.5.
+  surface; a disabled fill is dim text. A slider's thumb is 10 × 20 px.
+  A progress bar has no text on it. A busy progress bar needs motion and
+  is drawn in P3.5.
+- **Thumbs.** The thumb of a slider and of a scrollbar take the same
+  tones: lighter when hovered and lightest when pressed, as Breeze's do.
+  (decided, D-65) At rest a thumb is tone 4, hovered `#585248`, pressed
+  `#746e63` (my call, D-66; the owner looks at them in P1.7). A focused
+  slider's thumb is the focused raised tone.
 - **Scrollbars** (my call, P1.4): a 12 px thumb with no track fill and no
-  arrow buttons. At rest it is tone 4, hovered dim text, pressed text.
+  arrow buttons.
   Every page of the prototype links `scrollbars.css`, so its own
   scrollbars are Amber's. A scroller that takes keyboard focus is tinted
   with the focused well's tone, and its thumb rises to dim text there: the
@@ -169,14 +172,18 @@ token holds the plain colour (D-47).
 | `--well` | `var(--tone-0)` | a well at rest (O-1) |
 | `--well-edge` | `var(--well)` | the colour of the well edge (O-1) |
 | `--well-edge-width` | `0px` | its height: none at the start (O-1) |
-| `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (O-3) |
-| `--well-focus` | `#393226`, accent 16 % over tone 1 | a focused well (O-3) |
+| `--raised-focus` | `#695c45`, accent 30 % over tone 4 | a focused raised widget (decided, D-64) |
+| `--well-focus` | `#393226`, accent 16 % over tone 1 | a focused well (O-3; the owner finds it too light, and the gallery shows candidates that stay below the surface) |
+| `--well-focus-edge` | `var(--accent)` | a bar at the foot of a focused well, a candidate cue (O-3) |
+| `--well-focus-edge-width` | `0px` | its height: none at the start (O-3) |
 | `--accent-hover` | `#debc7d`, accent at OKLCH lightness 81 % | a hovered or focused primary button |
 | `--accent-pressed` | `#ba995b`, accent at OKLCH lightness 70 % | a pressed primary button |
 | `--toggle` | `var(--tone-0)` | an unchecked toggle at rest (O-1) |
-| `--toggle-focus` | `#393226`, accent 16 % over tone 1 | a focused unchecked toggle (O-3) |
+| `--toggle-focus` | `#524733`, accent 30 % over tone 1 | a focused unchecked toggle (decided, D-64) |
 | `--track` | `var(--tone-0)` | the track of a slider or progress bar (O-1) |
-| `--scroll-thumb` | `var(--tone-4)` | a scrollbar's thumb at rest |
+| `--thumb` | `var(--tone-4)` | the thumb of a slider or a scrollbar at rest |
+| `--thumb-hover` | `#585248` | a hovered thumb |
+| `--thumb-pressed` | `#746e63` | a pressed thumb |
 | `--selected` | `var(--tone-3)` | a selected item (P1.5) |
 | `--marker-width` | `3px` | the block marker (P1.5; D-21) |
 
@@ -190,19 +197,17 @@ token holds the plain colour (D-47).
   decoration".
   Whether Union draws one under menus and popups is unverified; see
   [platform](platform.md).
-- A popup's shadow (my call, P1.5; D-49) is drawn in the prototype as the
-  window's shadow is, as gradients, black, and sits below the popup: the
-  popup's own rectangle and everything above its top edge are cut out of
-  it, so it never darkens the popup or what it opens from.
-  A combo box's list meets its combo box with no gap. The
+- A popup has the shadow of an inactive window: the same tokens, fade
+  and insets. (decided, D-67) The popup's own rectangle and everything
+  above its top edge are cut out of it, so it never darkens the popup or
+  what it opens from. A tooltip is small, so its shadow is a third of the
+  size (my call). A combo box's list meets its combo box with no gap. The
   gallery shows a "No shadow" candidate beside it, for the case that Union
   cannot draw it.
 
   | Token | Starting value | Used for |
   |---|---|---|
   | `--popup` | `var(--tone-3)` | a menu, a combo box list, a tooltip |
-  | `--popup-shadow-size` | `12px` | how far a popup's shadow fades to nothing |
-  | `--popup-shadow-offset` | `4px` | how far the shadow sits below the popup |
 
 ## Window decoration
 
@@ -233,7 +238,7 @@ token holds the plain colour (D-47).
   | `--outline-width` | `1px` | its width |
   | `--glow` | accent at 14 % | the window glow, at the window outline |
   | `--glow-size` | `48px` | how far the window glow fades to nothing |
-  | `--shadow` | black at 55 % | the shadow of an inactive window, where its fade starts; a popup's shadow too |
+  | `--shadow` | black at 55 % | the shadow of an inactive window and of a popup, where its fade starts |
   | `--shadow-size` | `36px` | how long the shadow's fade is |
   | `--shadow-inset-top` | `27px` | how far inside the window the fade starts at the top |
   | `--shadow-inset-side` | `17px` | the same at the sides |

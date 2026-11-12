@@ -22,7 +22,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 96);
+    assert.equal(pairs.length, 102);
   });
 
   it('resolves every token of every pair', () => {
@@ -74,7 +74,7 @@ describe('Amber contrast pairs', () => {
     assert.equal(ratio('toggle on tone-2'), '1.16');
     assert.equal(ratio('track on tone-2'), '1.16');
     assert.equal(ratio('accent on track'), '8.91');
-    assert.equal(ratio('scroll-thumb on tone-2'), '1.36');
+    assert.equal(ratio('thumb on tone-2'), '1.36');
   });
 
   it('keeps a hovered checked toggle at 3:1 on its surface', () => {
@@ -85,8 +85,8 @@ describe('Amber contrast pairs', () => {
 
   it('starts the focused toggle where O-3 starts', () => {
     const ratio = description => results.find(r => describePair(r.pair) === description).ratio.toFixed(2);
-    assert.equal(ratio('toggle-focus on tone-2'), '1.25');
-    assert.equal(ratio('toggle-focus on toggle'), '1.45');
+    assert.equal(ratio('toggle-focus on tone-2'), '1.74');
+    assert.equal(ratio('toggle-focus on toggle'), '2.02');
   });
 
   it('marks a selected item at 3:1', () => {

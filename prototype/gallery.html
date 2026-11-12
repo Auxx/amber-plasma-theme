@@ -129,7 +129,7 @@ Warm, never cool.</textarea></div>
 
 <section class="family" aria-label="Ranges">
   <h2>Ranges</h2>
-  <p class="dim">Fills are accent on a track below the surface. A slider's thumb is a raised widget.</p>
+  <p class="dim">Fills are accent on a track below the surface. A thumb gets lighter when hovered and is lightest when pressed.</p>
 
   <div class="state-row" data-widget="slider">
     <div class="state" data-state="rest"><span class="state-label dim">At rest</span><input type="range" class="slider" min="0" max="100" step="10" value="40" aria-label="Volume"></div>
@@ -251,52 +251,8 @@ Warm, never cool.</textarea></div>
 </section>
 
 <section class="candidates" aria-label="Candidates">
-  <h2>Focused raised widget</h2>
-  <p class="dim">How far the focused tone stands from the widget at rest and from the surface (O-3). A button at rest beside a focused one.</p>
-  <div class="candidate-row">
-  <figure class="candidate" style="--raised-focus: #5a503f">
-    <div class="vignette" inert><button class="button">Save</button><button class="button is-focused">Save</button></div>
-    <figcaption>
-      Accent 20 %
-      <span class="dim">accent 20 % over tone 4, #5a503f</span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-3" value="1.71">1.71:1 on tone 3</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-2" value="2.00">2.00:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on raised-focus" value="6.19">6.19:1 on raised focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate">
-    <div class="vignette" inert><button class="button">Save</button><button class="button is-focused">Save</button></div>
-    <figcaption>
-      Start, 30 %
-      <span class="dim">accent 30 % over tone 4, #695c45</span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-3" value="2.07">2.07:1 on tone 3</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-2" value="2.42">2.42:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on raised-focus" value="5.11">5.11:1 on raised focus</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--raised-focus: #78684c">
-    <div class="vignette" inert><button class="button">Save</button><button class="button is-focused">Save</button></div>
-    <figcaption>
-      Accent 40 %
-      <span class="dim">accent 40 % over tone 4, #78684c</span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-3" value="2.50">2.50:1 on tone 3</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-2" value="2.93">2.93:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on raised-focus" value="4.23">4.23:1 on raised focus</data> <span class="dim">fails</span></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--raised-focus: #998058">
-    <div class="vignette" inert><button class="button">Save</button><button class="button is-focused">Save</button></div>
-    <figcaption>
-      Accent 60 % (3:1)
-      <span class="dim">accent 60 % over tone 4, #998058</span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-3" value="3.59">3.59:1 on tone 3</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="raised-focus on tone-2" value="4.21">4.21:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on raised-focus" value="2.94">2.94:1 on raised focus</data> <span class="dim">fails</span></span>
-    </figcaption>
-  </figure>
-  </div>
   <h2>Focused well</h2>
-  <p class="dim">How far the focused tone stands from the widget at rest and from the surface (O-3). The placeholder in dim text must keep 4.5:1.</p>
+  <p class="dim">The start is lighter than the surface, so a focused well looks raised. The others stay below the surface: a faint tint, or a bar of accent three pixels high at the foot of the well (O-3). A text field at rest beside a focused one.</p>
   <div class="candidate-row">
   <figure class="candidate">
     <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
@@ -305,30 +261,50 @@ Warm, never cool.</textarea></div>
       <span class="dim">accent 16 % over tone 1, #393226</span>
       <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.45">1.45:1 on tone 0</data></span>
       <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.25">1.25:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on well-focus" value="9.91">9.91:1 on well focus</data></span>
       <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="5.01">5.01:1 on well focus</data></span>
     </figcaption>
   </figure>
-  <figure class="candidate" style="--well-focus: #524733">
+  <figure class="candidate" style="--well-focus: #201d19">
     <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
     <figcaption>
-      Accent 30 %
-      <span class="dim">accent 30 % over tone 1, #524733</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="2.02">2.02:1 on tone 0</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.74">1.74:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on well-focus" value="7.12">7.12:1 on well focus</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="3.60">3.60:1 on well focus</data> <span class="dim">fails</span></span>
+      Tint, 6 %
+      <span class="dim">accent 6 % over tone 0, #201d19</span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.10">1.10:1 on tone 0</data> <span class="dim">fails</span></span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.06">1.06:1 on tone 2</data> <span class="dim">fails</span></span>
+      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.64">6.64:1 on well focus</data></span>
     </figcaption>
   </figure>
-  <figure class="candidate" style="--well-focus: #64563c">
+  <figure class="candidate" style="--well-focus: var(--tone-0); --well-focus-edge-width: 3px">
     <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
     <figcaption>
-      Accent 40 %
-      <span class="dim">accent 40 % over tone 1, #64563c</span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="2.57">2.57:1 on tone 0</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="2.21">2.21:1 on tone 2</data></span>
-      <span class="ratio-line">text <data class="ratio" data-pair="text on well-focus" value="5.59">5.59:1 on well focus</data></span>
-      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="2.83">2.83:1 on well focus</data> <span class="dim">fails</span></span>
+      Accent edge
+      <span class="dim">the well at rest, with an accent edge of 3 px</span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.00">1.00:1 on tone 0</data> <span class="dim">fails</span></span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.16">1.16:1 on tone 2</data> <span class="dim">fails</span></span>
+      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="7.27">7.27:1 on well focus</data></span>
+      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.91">8.91:1 on well focus</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--well-focus: #201d19; --well-focus-edge-width: 3px">
+    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
+    <figcaption>
+      Tint, 6 %, accent edge
+      <span class="dim">accent 6 % over tone 0, with an accent edge of 3 px</span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.10">1.10:1 on tone 0</data> <span class="dim">fails</span></span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.06">1.06:1 on tone 2</data> <span class="dim">fails</span></span>
+      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.64">6.64:1 on well focus</data></span>
+      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.12">8.12:1 on well focus</data></span>
+    </figcaption>
+  </figure>
+  <figure class="candidate" style="--well-focus: var(--tone-1); --well-focus-edge-width: 3px">
+    <div class="vignette" inert><input class="text-field" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"><input class="text-field is-focused" type="text" placeholder="Search files" autocomplete="off" aria-label="Search"></div>
+    <figcaption>
+      Tone 1, accent edge
+      <span class="dim">tone 1, with an accent edge of 3 px</span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-0" value="1.06">1.06:1 on tone 0</data> <span class="dim">fails</span></span>
+      <span class="ratio-line"><data class="ratio" data-pair="well-focus on tone-2" value="1.10">1.10:1 on tone 2</data> <span class="dim">fails</span></span>
+      <span class="ratio-line">dim text <data class="ratio" data-pair="text-dim on well-focus" value="6.86">6.86:1 on well focus</data></span>
+      <span class="ratio-line">edge <data class="ratio" data-pair="well-focus-edge on well-focus" value="8.40">8.40:1 on well focus</data></span>
     </figcaption>
   </figure>
   </div>
@@ -369,46 +345,6 @@ Warm, never cool.</textarea></div>
       <span class="dim">tone 0, a 3 px well edge #746e63</span>
       <span class="ratio-line">well <data class="ratio" data-pair="well on tone-2" value="1.16">1.16:1 on tone 2</data></span>
       <span class="ratio-line">well edge <data class="ratio" data-pair="well-edge on tone-2" value="3.13">3.13:1 on tone 2</data></span>
-    </figcaption>
-  </figure>
-  </div>
-  <h2>Focused toggle</h2>
-  <p class="dim">How far the focused tone stands from the toggle at rest and from the surface (O-3). A toggle holds no text, so its tint is not capped by the placeholder.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
-    <figcaption>
-      Start, 16 %
-      <span class="dim">accent 16 % over tone 1, #393226</span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="1.25">1.25:1 on tone 2</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="1.45">1.45:1 on toggle</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle-focus: #524733">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
-    <figcaption>
-      Accent 30 %
-      <span class="dim">accent 30 % over tone 1, #524733</span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="1.74">1.74:1 on tone 2</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="2.02">2.02:1 on toggle</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle-focus: #64563c">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
-    <figcaption>
-      Accent 40 %
-      <span class="dim">accent 40 % over tone 1, #64563c</span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="2.21">2.21:1 on tone 2</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="2.57">2.57:1 on toggle</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--toggle-focus: #89744e">
-    <div class="vignette" inert><input type="checkbox" class="check-box" aria-label="Show hidden files"><input type="checkbox" class="check-box is-focused" aria-label="Show hidden files"><input type="radio" class="radio is-focused" aria-label="Large icons"></div>
-    <figcaption>
-      Accent 60 % (3:1)
-      <span class="dim">accent 60 % over tone 1, #89744e</span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on tone-2" value="3.52">3.52:1 on tone 2</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="toggle-focus on toggle" value="4.09">4.09:1 on toggle</data></span>
     </figcaption>
   </figure>
   </div>
@@ -530,11 +466,11 @@ Warm, never cool.</textarea></div>
     <div class="vignette has-popup" inert><div class="popup menu" role="menu" aria-label="Edit"><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Copy</span><span class="menu-shortcut">Ctrl+C</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Rename</span><span class="menu-shortcut">F2</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Delete</span><span class="menu-shortcut">Del</span></button></div></div>
     <figcaption>
       Start, with a shadow
-      <span class="dim">shadow 12 px, 4 px down</span>
+      <span class="dim">the shadow of an inactive window</span>
       <span class="ratio-line">shortcut <data class="ratio" data-pair="text-dim on popup" value="5.34">5.34:1 on popup</data></span>
     </figcaption>
   </figure>
-  <figure class="candidate" style="--popup-shadow-size: 0px; --popup-shadow-offset: 0px">
+  <figure class="candidate" style="--shadow: rgb(0 0 0 / 0%)">
     <div class="vignette has-popup" inert><div class="popup menu" role="menu" aria-label="Edit"><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Copy</span><span class="menu-shortcut">Ctrl+C</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Rename</span><span class="menu-shortcut">F2</span></button><button class="menu-item" role="menuitem"><svg class="glyph menu-tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg><span class="menu-label">Delete</span><span class="menu-shortcut">Del</span></button></div></div>
     <figcaption>
       No shadow

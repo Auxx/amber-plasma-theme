@@ -61,8 +61,14 @@ Disabled controls are exempt in WCAG, and are exempt here.
    20 %, but close at 20 % (4.57:1), and fails beyond it (3.60:1 at 30 %),
    which caps the tint of a focused well near 20 %. A focused toggle holds
    no text, so no cap applies to it: `toggle-focus` has the same
-   provisional 1.2 against tone 2 and the toggle at rest, and its tint can
-   reach 3:1 against tone 2 at 60 % (3.52:1; measured 2026-11-11, P1.4).
+   provisional 1.2 against tone 2 and the toggle at rest, and is accent
+   30 % over tone 1 (decided, D-64), which measures 1.74:1 and 2.02:1.
+   The owner finds the focused well's starting tone too light: it sits
+   above the surface and looks raised. A focused well that stays below
+   the surface cannot reach the provisional 1.2 by tone (1.10:1 at most
+   against the well at rest), so the gallery shows a bar of accent at the
+   foot of the focused well as a cue, `well-focus-edge`, which reaches
+   3:1 on the well and on the surface (measured 2026-11-12, P1.7).
 5. **Window outline: 2:1.** The window outline tells one window from the
    window behind it, and reaches 2:1 against tones 0 to 2, the tones a
    window shows at its edge. (decided, D-62; the minimum of the pairs is
@@ -114,7 +120,7 @@ Since P1.3 the empty well's candidates are on `prototype/gallery.html`.
   provisional minimum of 1.1 (my call). At the start the well edge has no
   width and the well's own tone.
 - Since P1.4 the gallery also shows candidates for the unchecked toggle and
-  the empty track. `toggle`, `track` and `scroll-thumb` have the same
+  the empty track. `toggle`, `track` and the three thumb tokens have the same
   provisional 1.1 on the surfaces they sit on (my call).
 - **A track cannot carry a 3:1 cue by itself.** A track at 3:1 on tone 2
   (`#746e63`, 3.13:1) drops the accent fill on it to 2.45:1, below rule 2.
@@ -166,10 +172,16 @@ falls below its minimum.
 | accent | track | 8.91:1 | 3 | pass |
 | toggle | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
 | track | tone 2 | 1.16:1 | 1.1 (provisional) | pass |
-| scroll thumb | tone 2 | 1.36:1 | 1.1 (provisional) | pass |
-| scroll thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
-| toggle focus | tone 2 | 1.25:1 | 1.2 (provisional) | pass |
-| toggle focus | toggle | 1.45:1 | 1.2 (provisional) | pass |
+| thumb | tone 2 | 1.36:1 | 1.1 (provisional) | pass |
+| thumb | tone 1 | 1.49:1 | 1.1 (provisional) | pass |
+| thumb hover | tone 2 | 2.05:1 | 1.1 (provisional) | pass |
+| thumb hover | tone 1 | 2.24:1 | 1.1 (provisional) | pass |
+| thumb pressed | tone 2 | 3.13:1 | 1.1 (provisional) | pass |
+| thumb pressed | tone 1 | 3.43:1 | 1.1 (provisional) | pass |
+| toggle focus | tone 2 | 1.74:1 | 1.2 (provisional) | pass |
+| toggle focus | toggle | 2.02:1 | 1.2 (provisional) | pass |
+| well focus edge | well focus | 6.13:1 | 3 | pass |
+| well focus edge | tone 2 | 7.66:1 | 3 | pass |
 | text | selected | 10.58:1 | 4.5 | pass |
 | text | popup | 10.58:1 | 4.5 | pass |
 | dim text | selected | 5.34:1 | 4.5 | pass |

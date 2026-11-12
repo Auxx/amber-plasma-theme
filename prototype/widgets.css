@@ -217,6 +217,10 @@
 .spin:has(.spin-field:focus-visible),
 .spin.is-focused {
   background-color: var(--well-focus);
+  /* The focused well's own edge (O-3) lies over the well edge; none at the start. */
+  background-image:
+    linear-gradient(to top, var(--well-focus-edge) var(--well-focus-edge-width), transparent var(--well-focus-edge-width)),
+    linear-gradient(to top, var(--well-edge) var(--well-edge-width), transparent var(--well-edge-width));
 }
 
 /* Pressed */
@@ -367,13 +371,14 @@
 
 /*
  * Ranges: sliders and progress bars (P1.4). A fill is accent on a track below
- * the surface; its length is --value. A slider's thumb is a raised widget and
- * takes the button's tones, through --thumb. A disabled fill is dim text.
+ * the surface; its length is --value. A slider's thumb takes the tones of a
+ * scrollbar's thumb, through --thumb-tone: lighter when hovered and lightest
+ * when pressed. A disabled fill is dim text.
  */
 
 .slider {
   --value: 0%; /* set from the slider's value by gallery.js (D-48) */
-  --thumb: var(--tone-3);
+  --thumb-tone: var(--thumb);
   --fill: var(--accent);
   appearance: none;
   border: 0;
@@ -402,7 +407,7 @@
   margin-top: -7px;
   border: 0;
   border-radius: 0;
-  background: var(--thumb);
+  background: var(--thumb-tone);
 }
 
 .progress {
@@ -416,21 +421,21 @@
 
 .slider:hover,
 .slider.is-hovered {
-  --thumb: var(--tone-4);
+  --thumb-tone: var(--thumb-hover);
 }
 
 .slider:focus-visible,
 .slider.is-focused {
-  --thumb: var(--raised-focus);
+  --thumb-tone: var(--raised-focus);
 }
 
 .slider:active,
 .slider.is-pressed {
-  --thumb: var(--tone-1);
+  --thumb-tone: var(--thumb-pressed);
 }
 
 .slider:disabled {
-  --thumb: var(--tone-3);
+  --thumb-tone: var(--tone-3);
   --fill: var(--text-dim);
 }
 
