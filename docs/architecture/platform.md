@@ -24,8 +24,10 @@ Verified on 2026-11-10 unless marked.
 - The Breeze style is about 3,000 lines of Union CSS in files per widget
   family: `variables.css`, `button.css`, `text.css`, `check.css`, `tabs.css`,
   `bars.css`, `delegate.css`, `tables.css`, `popup.css`, `application.css`,
-  `kirigami.css`, `calendar.css`, `widgets.css`, joined by `style.css`. Its
-  licence is BSD-2-Clause.
+  `kirigami.css`, `calendar.css`, `widgets.css`, with `defaults.css` and
+  `global.css`, joined by `style.css`; `check.css` loads three SVG files from
+  `contents/images/`. Its licence is BSD-2-Clause. (file list verified,
+  2026-11-12)
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -109,6 +111,28 @@ Verified on 2026-11-10 unless marked.
   application again. Without `--force` the update is refused unless the
   version in `metadata.json` went up. The cache is rebuilt by itself;
   `UNION_FORCE_RECREATE_STYLE_CACHE` was not needed. (verified, 2026-11-11)
+- **A style is found in `union/styles/<id>/` of every folder of
+  `XDG_DATA_DIRS`**, not only where `union-styletool install` puts it. A
+  symbolic link to the folder works. So a style can be tried without
+  installing anything: put a folder holding `union/styles/amber` → the
+  repository's `parts/union-style/amber/` first in `XDG_DATA_DIRS`, and start
+  the application with `UNION_STYLE_NAME=amber`. `union-styletool list` then
+  lists it too. After an edit of the linked folder, starting the application
+  again is enough: Union rebuilt the style's cache file in `XDG_CACHE_HOME`
+  by itself, with no `update` and no `--force`. Whether `XDG_DATA_HOME` is
+  read as well was not tried. (verified, 2026-11-12, P3.1)
+- **Amber's Union style is tried in P2.3's nested session**
+  (`tmp/check-colour-scheme/`, see [Colour scheme](#colour-scheme)), whose
+  data folder holds that link: `UNION_STYLE_NAME=amber in.sh dolphin`. Its
+  own D-Bus also keeps a single-instance application such as Dolphin from
+  handing its window to a process started without the variable. In P3.1,
+  Dolphin's settings dialog drawn with the unchanged copy matched Breeze to
+  the pixel, and a copy with one added rule, `button { background-color:
+  #ff00ff; }`, made its enabled push buttons magenta; a disabled button kept
+  Breeze's colour, as its `:disabled` rule comes later. (verified,
+  2026-11-12)
+- A style folder may hold files Union does not read: a `LICENSE` beside
+  `metadata.json` is accepted. (verified, 2026-11-12)
 - Environment variables found in the Union libraries: `UNION_STYLE_NAME`,
   `UNION_DISABLE_STYLE_CACHE`, `UNION_FORCE_RECREATE_STYLE_CACHE`,
   `UNION_FORCE_PLATFORM`, `UNION_DISABLE_INPUT_PLUGINS`.

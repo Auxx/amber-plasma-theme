@@ -112,7 +112,7 @@ next starts.
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | todo |
+| P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | done |
 | P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | todo |
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
@@ -131,6 +131,11 @@ cursor that Qt draws inverted, so that on tone 2 it is the cool grey
 rounded corners everywhere (P3.2). Since D-95 a settings dialog's page
 list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar: P3.7
 draws it as a sidebar.
+
+The style lives in `parts/union-style/amber/`, an unchanged copy of the
+Breeze style (D-96). It is not installed: each plan of Step 3 tries it in
+P2.3's nested session, which finds it through `XDG_DATA_DIRS`, as the
+[platform](../architecture/platform.md#tools-and-switches) document says.
 
 ## Step 4 — Terminal colours and editor theme
 
