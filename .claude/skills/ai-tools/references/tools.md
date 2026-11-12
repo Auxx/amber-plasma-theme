@@ -9,6 +9,7 @@ Run every tool from the repository root:
 | [`tokens`](#tokens) | Reading Amber's tokens, checking and trying their contrast pairs   |
 | [`browser`](#browser) | Screenshots of the prototype in a state, the rendered anti-goal check, computed colours |
 | [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme |
+| [`image`](#image) | The colours of a screenshot: cool greys, and colours named as tokens |
 
 ## `colour`
 
@@ -250,3 +251,49 @@ node tools/src/bin/generate.mjs colour-scheme --write
   are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
 - **Exit codes.** 0 success; 1 the table was refused; 2 the command line was
   wrong, including an unknown part.
+
+## `image`
+
+Reads the colours of a PNG picture, such as a screenshot of an application
+with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
+
+| Command | Does |
+| --- | --- |
+| `greys <png> [--region x,y,w,h] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them; exits 1 when there is one |
+| `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
+
+```shell
+# A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
+node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --region 0,30,1280,770 --mark tmp/check-colour-scheme/shots/dolphin-marked.png
+
+# The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
+node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
+```
+
+- **A cool grey** is a colour that is not a hue (OKLCH chroma below 0.05)
+  and is neither warm (hue 30 to 110) nor black: `warmthOffence` and
+  `isHue` of `tools/src/lib/prototype-check.mjs`, the rule the prototype
+  check uses. One difference (my call): a pixel counts as having no hue only
+  below chroma 0.001, where r = g = b, since tone 0 itself has a chroma of
+  only 0.003. Anti-aliased text, a mix of two warm colours, stays warm.
+- **Fully transparent pixels** are skipped; any other pixel is judged by its
+  colour alone.
+- **`--region x,y,width,height`** in whole pixels from the top left corner.
+  Use it to leave out what the check is not about, such as a window
+  decoration or a terminal area. A region outside the picture is an error.
+- **`--mark <out.png>`** writes a copy with every cool grey pixel in magenta
+  `#ff00ff`, to find them by eye. The path must be a `.png` inside the
+  repository, such as under `tmp/`; it is the only file the tool writes, and
+  the output ends with `marked: <path>`.
+- **Token names.** A colour is named after the first opaque colour token, in
+  the order of the tokens file, with exactly its hex. A colour that only
+  comes close is not named.
+- **PNGs read**: 8 bits a channel, RGB or RGBA, not interlaced. Any other
+  type, a bad CRC or a file that is not a PNG is refused with exit 1 and a
+  message saying why.
+- **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], marked }`;
+  `colours` prints `[{ hex, count, token? }]`.
+- **Exit codes.** 0 success; 1 a cool grey was found, or the picture could
+  not be read; 2 the command line was wrong, including a region that is not
+  four whole numbers, an empty region and a `--mark` path outside the
+  repository.
