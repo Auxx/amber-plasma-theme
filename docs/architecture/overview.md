@@ -40,8 +40,10 @@ are used as the [glossary](../product/glossary.md) defines them.
   browser at once.
 - **The parts are generated from the tokens** by a tool, so they cannot fall
   behind. Content of a part that is not a value, such as the Union style's
-  rules, is written by hand and refers to values by name. (my call; the exact
-  split is settled in the plans of each step)
+  rules, is written by hand and refers to values by name. A generated part is
+  committed beside the hand-written files it comes from, and a test fails when
+  it is stale (D-92). (my call; the exact split is settled in the plans of
+  each step)
 - **The Union style takes its colours from the colour scheme** wherever the
   scheme has a matching role, as the Breeze style does. Tones the scheme
   cannot express are defined in the style's own variables, generated from the
@@ -73,7 +75,7 @@ docs/
   superpowers/        dated design records and plans
 prototype/            index.html, gallery.html, samples.html, tokens.css, contrast-pairs.json, stylesheets, gallery.js (D-48)
 parts/
-  colour-scheme/      roles.json: the token or rule of each role (P2.1)
+  colour-scheme/      roles.json: the token or rule of each role (P2.1); Amber.colors, generated (P2.2)
   union-style/
   decoration/
   terminal-colours/

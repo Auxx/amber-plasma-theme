@@ -272,7 +272,7 @@ owner's say. (my call)
 | Question | Tested in |
 |---|---|
 | Can Dolphin, Kate and Konsole each be given a colour scheme of their own from their Settings menu, so that the scheme can be tried without changing the system's? | P2.3 |
-| Is `ContrastEffect=1` a mix of the colour towards the background by `ContrastAmount`, so that the disabled rule of [colour-scheme](colour-scheme.md) gives dim text? | P2.3 |
+| Is `ContrastEffect=1` a mix of the colour towards the background by `ContrastAmount`, so that the disabled rule of [colour-scheme](colour-scheme.md) gives dim text? The generator assumes `KColorUtils::mix`, a channel-wise mix of sRGB values. | P2.3 |
 | What does `contrast=0` change in Qt Widgets applications: are the bevel roles flat? | P2.3 |
 | Is `frameContrast` read from `[KDE]`, and does 0 make the derived frame colour equal the background? | P2.3 |
 | Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? | P2.3 |
