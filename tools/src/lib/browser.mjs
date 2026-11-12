@@ -236,3 +236,51 @@ export function renderedOffences(page) {
     return offences;
   });
 }
+
+/**
+ * One state of a gallery row, as `browser states` gives it. `raw.backgrounds`
+ * are the computed backgrounds of the widget and its ancestors, nearest first;
+ * the first that is not transparent is the widget's background.
+ */
+export function stateRow({ state, backgrounds, colour }, names) {
+  const opaque = backgrounds.map(parseCssColour).find(c => c.alpha > 0);
+  if (!opaque) {
+    throw new Error(`${state}: no background on the widget or any ancestor`);
+  }
+  const named = c => {
+    const hex = hexOf(c);
+    return { hex, tokens: names.get(hex) ?? [] };
+  };
+  return { state, background: named(opaque), text: named(parseCssColour(colour)) };
+}
+
+/**
+ * The raw states of `.state-row[data-widget=<widget>]`: for each `.state`, in
+ * document order, its `data-state`, and the backgrounds and text colour of the
+ * element `selector` finds in it.
+ */
+export async function readStates(page, widget, selector) {
+  const raw = await page.evaluate(({ widget, selector }) => {
+    const row = document.querySelector(`.state-row[data-widget="${widget}"]`);
+    if (!row) {
+      return { error: `no .state-row[data-widget="${widget}"]` };
+    }
+    const states = [];
+    for (const state of row.querySelectorAll('.state')) {
+      const element = state.querySelector(selector);
+      if (!element) {
+        return { error: `${selector} is missing in the state ${state.dataset.state} of ${widget}` };
+      }
+      const backgrounds = [];
+      for (let e = element; e; e = e.parentElement) {
+        backgrounds.push(getComputedStyle(e).backgroundColor);
+      }
+      states.push({ state: state.dataset.state, backgrounds, colour: getComputedStyle(element).color });
+    }
+    return { states };
+  }, { widget, selector });
+  if (raw.error) {
+    throw new Error(raw.error);
+  }
+  return raw.states;
+}

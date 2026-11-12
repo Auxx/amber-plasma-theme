@@ -97,7 +97,7 @@ export function coolGreys(image, { region } = {}) {
 }
 
 /** Hex → the name of the first opaque colour token, in file order, that has it. */
-function tokenNames(tokens) {
+export function tokenNames(tokens) {
   const names = new Map();
   for (const name of tokens.keys()) {
     let colour;
@@ -119,6 +119,55 @@ function tokenNames(tokens) {
 export function colourCounts(image, { region, tokens } = {}) {
   const names = tokens ? tokenNames(tokens) : new Map();
   return tally(image, region).map(({ hex, count }) => (names.has(hex) ? { hex, count, token: names.get(hex) } : { hex, count }));
+}
+
+const channels = h => [ 1, 3, 5 ].map(i => parseInt(h.slice(i, i + 2), 16));
+
+/**
+ * Whether `c` is a blend of `from` and `to`: a point on the line between them,
+ * strictly inside it, within ±2 a channel. Anti-aliased edges are such blends.
+ */
+function isBlend(c, from, to) {
+  const spans = to.map((v, i) => v - from[i]);
+  const k = spans.reduce((best, v, i) => (Math.abs(v) > Math.abs(spans[best]) ? i : best), 0);
+  if (spans[k] === 0) {
+    return false;
+  }
+  const t = (c[k] - from[k]) / spans[k];
+  if (t <= 0 || t >= 1) {
+    return false;
+  }
+  return c.every((v, i) => Math.abs(from[i] + t * spans[i] - v) <= 2);
+}
+
+// Text must cover at least this share of the widget's pixels. (my call)
+const TEXT_SHARE = 0.005;
+
+/**
+ * The fill and the text colour of a widget drawn alone. The fill is the most
+ * common colour; the text is the most common other colour that is not a blend
+ * of the fill and a colour farther from it, and that covers at least 0.5 % of
+ * the pixels, or null. Pixels within ±1 of `surface` are left out of both.
+ */
+export function fill(image, { surface, region } = {}) {
+  const away = surface ? channels(surface) : null;
+  const counted = tally(image, region).filter(e => !away || !near(channels(e.hex), away));
+  if (!counted.length) {
+    return { background: null, text: null };
+  }
+  const total = counted.reduce((sum, e) => sum + e.count, 0);
+  const [ first, ...rest ] = counted;
+  const bg = channels(first.hex);
+  const others = rest.filter(e => !near(channels(e.hex), bg));
+  const distance = c => c.reduce((sum, v, i) => sum + (v - bg[i]) ** 2, 0);
+  const text = others.find(e => {
+    if (e.count / total < TEXT_SHARE) {
+      return false;
+    }
+    const c = channels(e.hex);
+    return !others.some(o => o !== e && distance(channels(o.hex)) > distance(c) && isBlend(c, bg, channels(o.hex)));
+  });
+  return { background: first.hex, text: text ? text.hex : null };
 }
 
 /** A copy of the picture with every pixel of the given colours painted magenta. */

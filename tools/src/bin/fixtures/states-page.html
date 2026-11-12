@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>States fixture</title>
+<style>
+  body { background: #25221f; color: #e8e3da; }
+  .button { background: #312e29; color: #e8e3da; }
+  .button.is-hovered { background: #3c3832; }
+  .strip { background: #151413; }
+  .tool { background: transparent; color: #e8e3da; }
+</style>
+<div class="state-row" data-widget="button">
+  <div class="state" data-state="rest"><span class="state-label">At rest</span><button class="button">Save</button></div>
+  <div class="state" data-state="hovered"><span class="state-label">Hovered</span><button class="button is-hovered">Save</button></div>
+</div>
+<div class="state-row" data-widget="tool">
+  <div class="state" data-state="rest"><div class="strip"><button class="tool">Back</button></div></div>
+</div>
+</html>

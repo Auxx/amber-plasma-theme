@@ -187,4 +187,35 @@ describe('browser tool', () => {
     assert.equal(status, 2);
     assert.ok(stderr.includes('--width'), stderr);
   });
+
+  withChrome('reads the states of a gallery row', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stdout } = browser('states', page, '--widget', 'button', '--selector', '.button', '--json');
+    assert.equal(status, 0, stdout);
+    const rows = JSON.parse(stdout);
+    assert.deepEqual(rows.map(r => r.state), [ 'rest', 'hovered' ]);
+    assert.ok(rows[1].background.tokens.includes('tone-4'), JSON.stringify(rows[1]));
+    assert.ok(rows[0].text.tokens.includes('text'));
+  });
+
+  withChrome('reads a widget with no fill as its strip', () => {
+    const page = 'tools/src/bin/fixtures/states-page.html';
+    const { status, stdout } = browser('states', page, '--widget', 'tool', '--selector', '.tool', '--json');
+    assert.equal(status, 0, stdout);
+    const [ row ] = JSON.parse(stdout);
+    assert.equal(row.background.hex, '#151413');
+    assert.ok(row.background.tokens.includes('tone-0') && row.background.tokens.includes('well'));
+  });
+
+  withChrome('fails on a missing row', () => {
+    const { status, stderr } = browser('states', 'tools/src/bin/fixtures/states-page.html', '--widget', 'nope', '--selector', '.button');
+    assert.equal(status, 1);
+    assert.match(stderr, /nope/);
+  });
+
+  it('wants a widget', () => {
+    const { status, stderr } = browser('states', 'tools/src/bin/fixtures/states-page.html', '--selector', '.button');
+    assert.equal(status, 2);
+    assert.match(stderr, /--widget/);
+  });
 });

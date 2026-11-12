@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { srgb8 } from './colour.mjs';
-import { colourCounts, coolGreys, frame, markPixels } from './image.mjs';
+import { colourCounts, coolGreys, fill, frame, markPixels } from './image.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const tokens = loadTokens();
@@ -260,5 +260,52 @@ describe('frame', () => {
     rounded(c, 70, 10, 40, 20, 5, FILL);
     const result = frame(c.image, { surface: SURFACE, region: { x: 0, y: 0, width: 60, height: 40 } });
     assert.deepEqual(result.corners, all('square'));
+  });
+});
+
+/** A width × height picture of one colour, with rectangles painted over it: [x, y, w, h, '#rrggbb']. */
+function canvas(width, height, colour, rects = []) {
+  const pixels = new Uint8Array(width * height * 4);
+  const paint = (x0, y0, w, h, c) => {
+    for (let y = y0; y < y0 + h; y++) {
+      for (let x = x0; x < x0 + w; x++) {
+        pixels.set(hex(c), (y * width + x) * 4);
+      }
+    }
+  };
+  paint(0, 0, width, height, colour);
+  for (const r of rects) {
+    paint(...r);
+  }
+  return { width, height, pixels };
+}
+
+describe('fill', () => {
+  it('finds the fill and the text of a button whose blended edges outnumber the strokes', () => {
+    // Three strokes 2 px wide and 12 px tall, each edged by 2 px of a half blend on both sides.
+    const rects = [];
+    for (const x of [ 10, 26, 42 ]) {
+      rects.push([ x - 2, 9, 2, 12, '#8d8981' ], [ x, 9, 2, 12, '#e8e3da' ], [ x + 2, 9, 2, 12, '#8d8981' ]);
+    }
+    assert.deepEqual(fill(canvas(60, 30, '#312e29', rects)), { background: '#312e29', text: '#e8e3da' });
+  });
+
+  it('finds no text on a plain fill', () => {
+    assert.deepEqual(fill(canvas(40, 20, '#3c3832')), { background: '#3c3832', text: null });
+  });
+
+  it('leaves the surface out', () => {
+    const image = canvas(60, 40, '#ff00ff', [ [ 10, 10, 40, 20, '#312e29' ] ]);
+    assert.deepEqual(fill(image, { surface: '#ff00ff' }), { background: '#312e29', text: null });
+  });
+
+  it('takes the text, not the fill, when text covers a quarter of the widget', () => {
+    const image = canvas(40, 30, '#695c45', [ [ 0, 0, 40, 7, '#e8e3da' ], [ 0, 10, 10, 2, '#e8e3da' ] ]);
+    assert.deepEqual(fill(image), { background: '#695c45', text: '#e8e3da' });
+  });
+
+  it('counts a colour under 0.5 % of the pixels as no text', () => {
+    const image = canvas(100, 100, '#312e29', [ [ 0, 0, 7, 7, '#e8e3da' ] ]);
+    assert.equal(fill(image).text, null);
   });
 });

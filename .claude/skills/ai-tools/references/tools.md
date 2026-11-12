@@ -168,6 +168,7 @@ path from the repository root, opened as `file://`.
 | `shot <page> [--selector css] [--hover css] [--focus css] [--press css] [--out file.png] [--full] [--scrollbars] [--wait ms]` | Saves a PNG of one element, the viewport, or the whole page with `--full`; `--scrollbars` shows the scrollbars, which headless Chrome hides; `--wait` waits up to 10000 ms after the state, for what shows late, such as a tooltip |
 | `check <page> [--hover css] [--focus css] [--press css]` | Lists load problems and anti-goals as Chrome draws the page, in a state, including a line drawn as a filled box (an element or a pseudo-element) less than 3 px thick; exits 1 if there is any |
 | `colours <page> <selector> [--hover css] [--focus css] [--press css]` | The computed background and text colour of each element matched, named as tokens |
+| `states <page> --widget <name> --selector <css>` | For each `.state` of the gallery row `.state-row[data-widget=<name>]`, in order: the background and text colour of the widget `--selector` finds in it, each with every token of that hex. A transparent widget takes the background of its nearest ancestor that has one, so a tool button with no fill reads as its toolbar. Exits 1 when the row or a widget is missing |
 
 Every command takes `--width` and `--height` (200 to 4000; default
 1300 × 900, device scale 1) and `--json`.
@@ -181,6 +182,9 @@ node tools/src/bin/browser.mjs shot prototype/index.html --selector .scene-front
 
 # A hovered window button: prints a row "span.window-button.is-minimise  #1c1a18 (tone-1)  #e8e3da (text)", exits 0
 node tools/src/bin/browser.mjs colours prototype/index.html '.scene-front .is-minimise' --hover '.scene-front .is-minimise'
+
+# What a widget family must match (P3.3): rows such as "focused  #695c45 raised-focus  #e8e3da text, …", exits 0
+node tools/src/bin/browser.mjs states prototype/gallery.html --widget button --selector .button --json > tmp/expect-button.json
 ```
 
 Look at a screenshot with the Read tool.
@@ -268,6 +272,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | `greys <png> [--region x,y,w,h] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
+| `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--surface <hex>] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote; exits 1 on a mismatch |
 
 ```shell
 # A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
@@ -278,7 +283,12 @@ node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/pus
 
 # The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
 node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
+
+# The probe's push button against the gallery (P3.3): "rest  ok  #312e29 (tone-3) / #e8e3da (text)" per state; exits 1 on a mismatch
+node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.3-amber --case push-button --expect tmp/expect-button.json --alias hovered-focused=focused
 ```
+
+- **`states`: fill and text.** The fill is an image's most common colour. The text is the most common other colour that covers at least 0.5 % of the pixels and is not an anti-aliased blend: a colour on the line from the fill to a colour farther from it, within ±2 a channel. Both are compared by hex within ±1 a channel. A state on one side only is "not compared"; a state the probe could not reach is marked.
 
 - **A cool grey** is a colour that is not a hue (OKLCH chroma below 0.05)
   and is neither warm (hue 30 to 110) nor black: `warmthOffence` and
