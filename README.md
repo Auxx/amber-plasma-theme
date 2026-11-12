@@ -17,7 +17,12 @@ Amber is in early development and nothing can be installed yet.
 
 ## Known gaps
 
-None recorded yet.
+- **Icons are the icon theme's.** Breeze's full-colour file and
+  application icons, such as the text file, PDF and network drive icons,
+  hold cool greys. Amber has no icon theme. (seen in P2.3)
+- **KWin dims the window behind a dialog**, which darkens and desaturates
+  its tones towards a neutral near-black. It is KWin's dialog parent
+  effect, a system setting. (seen in P2.3)
 
 ## Licence
 

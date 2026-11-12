@@ -56,8 +56,9 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
   tone 1.
 - **A well is not the View set.** Breeze draws text fields with the View
   background; Amber's wells are tone 0 and its views tone 2, so the Union
-  style draws wells from a variable of its own. Outside the style a text
-  field shows tone 2, which is a known gap if P2.3 sees it. (my call, D-90)
+  style draws wells from a variable of its own. Until P3.4 draws them, a
+  text field shows tone 2, as P2.3 saw in Dolphin's location bar and the
+  settings dialogs ([platform](platform.md#colour-scheme)). (my call, D-90)
 - **Header][Inactive equals Header.** An inactive window is shown by the
   decoration, with a shadow and a dim title, not by a toolbar tone.
   (my call, D-90)
@@ -73,13 +74,20 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
 ## Roles that are derived
 
 KColorScheme computes some colours from the roles instead of reading them.
-Amber writes none of them, and each is checked by eye in P2.3:
+Amber writes none of them. What P2.3 saw of each, on 2026-11-12
+([platform](platform.md#colour-scheme)):
 
 - the background status colours (`background positive`, `neutral`,
-  `negative`), mixed from a status colour and the background;
-- the frame colour (`decoration frame`), mixed with `frameContrast`;
-- Qt's bevel roles (Light, Mid, Dark, Shadow), from `contrast`;
-- the disabled and inactive states, from the effects.
+  `negative`), tinted from a status colour into the background. The
+  negative one, in Dolphin's message for a missing folder, is `#492829`,
+  OKLCH 32 % 0.050 18: a dark red, its hue moved from the negative colour's
+  33. The positive and neutral ones were not seen;
+- the frame colour (`decoration frame`), mixed with `frameContrast`: at 0 it
+  equals the set's background, so the Breeze style's frames vanish into it;
+- Qt's bevel roles (Light, Midlight, Mid, Dark, Shadow): `contrast=0` does
+  not flatten them, but all are warm tones within two steps of Button;
+- the disabled state, from `ColorEffects:Disabled`: as the generator
+  computes it (below). The inactive effect is off.
 
 ## Generating
 
@@ -103,8 +111,9 @@ The tool is described in the `ai-tools` skill's reference.
   channel in sRGB (`text + (tone-2 − text) × a`, as `KColorUtils::mix`
   does), has the relative luminance of `text-dim`. It is found by bisection.
   With the tokens of 2026-11-12 it is 0.34: faded text then measures 6.17:1
-  on tone 2 against dim text's 6.25:1. The formula is unverified
-  ([platform](platform.md#unverified-2)).
+  on tone 2 against dim text's 6.25:1. The formula was verified in P2.3:
+  the applications draw disabled text in exactly that colour
+  ([platform](platform.md#colour-scheme)).
 
 ## The check
 
