@@ -127,7 +127,7 @@ const WIDGETS = {
   },
   scrollbar: {
     control: '.scroll-thumb',
-    states: { rest: [ 'thumb' ], hovered: [ 'thumb-hover' ], pressed: [ 'thumb-pressed' ] }
+    states: { rest: [ 'thumb' ], hovered: [ 'thumb-hover' ], pressed: [ 'thumb-pressed' ], disabled: [ 'tone-3' ] }
   },
   tab: {
     control: '.tab',
@@ -138,6 +138,14 @@ const WIDGETS = {
       focused: [ 'surface-focus', 'text', 'transparent' ],
       selected: [ 'tone-2', 'text', 'accent' ],
       disabled: [ 'transparent', 'text-dim', 'transparent' ]
+    }
+  },
+  // A tab's close button (P3.6): dim text at rest, danger when hovered.
+  'tab-close': {
+    control: '.tab-close',
+    states: {
+      rest: [ 'transparent', 'text-dim' ],
+      hovered: [ 'danger', 'on-danger' ]
     }
   },
   item: {
@@ -158,6 +166,16 @@ const WIDGETS = {
       hovered: [ 'tone-3', 'text' ],
       pressed: [ 'tone-1', 'text' ],
       sorted: [ 'transparent', 'text' ]
+    }
+  },
+  // A menu title of a tone 0 menu bar (P3.6): open, it joins its menu.
+  'menu-title': {
+    control: '.menu-title',
+    states: {
+      rest: [ 'transparent', 'text' ],
+      hovered: [ 'tone-3', 'text' ],
+      open: [ 'popup', 'text' ],
+      disabled: [ 'transparent', 'text-dim' ]
     }
   },
   'menu-item': {
@@ -181,7 +199,8 @@ const FORCED = {
   pressed: 'is-pressed',
   checked: 'is-checked',
   selected: 'is-selected',
-  sorted: 'is-sorted'
+  sorted: 'is-sorted',
+  open: 'is-open'
 };
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 

@@ -59,6 +59,12 @@
   background: var(--thumb-pressed);
 }
 
+/* A disabled thumb (P3.6, D-108) is tone 3, as a disabled slider's thumb, and
+   does not change. Chrome has no disabled scrollbar, so only the drawn one. */
+.scroll-thumb[aria-disabled="true"] {
+  background: var(--tone-3);
+}
+
 /* On a focused scroll area (surface focus) the thumb at rest would measure
    1.09:1, so it rises to dim text there, which keeps 5.01:1. */
 .scroll-area:focus-visible::-webkit-scrollbar-thumb {
