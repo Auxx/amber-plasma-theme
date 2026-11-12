@@ -227,6 +227,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | Command | Does |
 | --- | --- |
 | `colour-scheme [--write] [--json]` | `parts/colour-scheme/Amber.colors` from `prototype/tokens.css` and `parts/colour-scheme/roles.json` |
+| `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -249,6 +250,11 @@ node tools/src/bin/generate.mjs colour-scheme --write
 - **The same each time.** The file holds no date or path; groups and keys are
   sorted as KConfig sorts them. The format and the computed disabled amount
   are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
+- **The Union style's tokens** are written resolved, `--well: #151413;`,
+  with a reference kept as a comment, `/* var(--tone-0) */`. Which tokens
+  are written is the list `UNION_TOKENS` in `tools/src/lib/union-tokens.mjs`;
+  add a token there when a rule of the style needs it. A missing or
+  part-transparent token is refused with exit 1.
 - **Exit codes.** 0 success; 1 the table was refused; 2 the command line was
   wrong, including an unknown part.
 

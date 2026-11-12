@@ -3,6 +3,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { PARTS } from './generate.mjs';
+import { UNION_TOKENS } from './union-tokens.mjs';
 
 /**
  * The Union style (roadmap P3.1): a copy of KDE's Breeze style in
@@ -73,5 +75,24 @@ describe('the Union style folder', () => {
     const licence = readFileSync(join(STYLE, 'LICENSE'), 'utf8');
     assert.match(licence, /BSD 2-Clause/);
     assert.match(licence, /Arjen Hiemstra/);
+  });
+});
+
+describe('the Union style\'s tokens (P3.2)', () => {
+  it('are generated and not stale (D-92)', () => {
+    assert.equal(read('tokens.css'), PARTS['union-style-tokens'].generate());
+  });
+
+  it('are imported by style.css directly after variables.css', () => {
+    const order = imports(read('style.css'));
+    assert.equal(order[order.indexOf('variables.css') + 1], 'tokens.css');
+  });
+
+  it('use names that no other file of the style declares', () => {
+    for (const file of cssFiles().filter(f => f !== 'tokens.css')) {
+      for (const name of UNION_TOKENS) {
+        assert.doesNotMatch(read(file), new RegExp(`--${name}\\s*:`), `${file} declares --${name}`);
+      }
+    }
   });
 });

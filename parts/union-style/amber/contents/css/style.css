@@ -9,6 +9,7 @@
  */
 
 @import "variables.css";
+@import "tokens.css";
 
 @import "defaults.css";
 

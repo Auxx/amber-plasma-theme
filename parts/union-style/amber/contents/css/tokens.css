@@ -1,0 +1,38 @@
+/*
+ * SPDX-License-Identifier: BSD-2-Clause
+ * SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov
+ *
+ * Generated from prototype/tokens.css by `generate union-style-tokens`.
+ * Do not edit: change the token and generate again.
+ */
+
+:root {
+    --tone-0: #151413;
+    --tone-1: #1c1a18;
+    --tone-2: #25221f;
+    --tone-3: #312e29;
+    --tone-4: #3c3832;
+    --text: #e8e3da;
+    --text-dim: #a9a297;
+    --accent: #d1b072;
+    --on-accent: #1b160b;
+    --danger: #b5442f;
+    --on-danger: #fbf3e6;
+    --well: #151413; /* var(--tone-0) */
+    --raised-focus: #695c45;
+    --well-focus: #1c1a18; /* var(--tone-1) */
+    --surface-focus: #393226;
+    --well-focus-edge: #d1b072; /* var(--accent) */
+    --well-focus-edge-width: 3px;
+    --accent-hover: #debc7d;
+    --accent-pressed: #ba995b;
+    --toggle: #151413; /* var(--tone-0) */
+    --toggle-focus: #524733;
+    --track: #151413; /* var(--tone-0) */
+    --thumb: #3c3832; /* var(--tone-4) */
+    --thumb-hover: #585248;
+    --thumb-pressed: #746e63;
+    --selected: #3c3832; /* var(--tone-4) */
+    --marker-width: 3px;
+    --popup: #312e29; /* var(--tone-3) */
+}
