@@ -285,3 +285,76 @@ describe('the Union style\'s global rules (P3.2)', () => {
     assert.deepEqual(rules.filter(d => d.property === 'background-color' && thin(d.block)).map(d => d.where), []);
   });
 });
+
+describe('the Union style\'s buttons (P3.3)', () => {
+  const all = blocks(read('button.css'));
+  const chain = block => (block ? [ block, ...chain(block.parent) ] : []);
+  const BUTTON = /(^|[\s,>(])(button|toolbutton|combobox|roundbutton|delaybutton)(?![\w-])/;
+  const OTHER = /\.editable|\.changed|popup\.combobox/;
+  const isButton = block => chain(block).some(b => BUTTON.test(b.selector)) && !chain(block).some(b => OTHER.test(b.selector));
+  const top = test => {
+    const found = all.filter(b => !b.parent && test(parts(b.selector)));
+    assert.equal(found.length, 1, `one top-level block expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block.children.find(c => c.selector === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+
+  it('colours a button only with the tokens', () => {
+    const offending = all.filter(isButton).flatMap(b => b.declarations
+      .filter(d => [ 'color', 'background-color', 'icon-color' ].includes(d.property))
+      .filter(d => !tokenVar.test(d.value) && d.value !== 'none' && d.value !== 'transparent')
+      .map(d => `button.css:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a push button the tones of the prototype', () => {
+    const button = top(p => p.includes('button') && p.includes('toolbutton.raised'));
+    assert.equal(value(button, 'background-color'), 'var(--tone-3)');
+    assert.equal(value(button, 'color'), 'var(--text)');
+    assert.equal(value(child(button, '&:hovered'), 'background-color'), 'var(--tone-4)');
+    assert.equal(value(child(button, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(button, '&:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(button, '&:disabled'), 'color'), 'var(--text-dim)');
+    const pressed = top(p => p.includes('button:pressed'));
+    assert.equal(value(pressed, 'background-color'), 'var(--tone-1)');
+  });
+
+  it('gives the primary button the tones of the prototype', () => {
+    const primary = top(p => p.length === 1 && p[0] === 'button:highlighted');
+    assert.equal(value(primary, 'background-color'), 'var(--accent)');
+    assert.equal(value(primary, 'color'), 'var(--on-accent)');
+    assert.equal(value(child(primary, '&:hovered'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(primary, '&:visual-focus'), 'background-color'), 'var(--accent-hover)');
+    assert.equal(value(child(primary, '&:pressed'), 'background-color'), 'var(--accent-pressed)');
+    assert.equal(value(child(primary, '&:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(primary, '&:disabled'), 'color'), 'var(--text-dim)');
+  });
+
+  it('gives a tool button the tones of the prototype', () => {
+    const tool = top(p => p.includes('toolbutton') && p.includes('button.flat'));
+    assert.equal(value(child(tool, '&:hovered'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(tool, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(tool, '&:pressed'), 'background-color'), 'var(--tone-2)');
+    assert.equal(value(child(tool, '&:checked'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(tool, '&:checked'), 'color'), 'var(--accent)');
+    assert.equal(value(child(tool, '&:checked:hovered'), 'background-color'), 'var(--tone-4)');
+    assert.equal(value(child(tool, '&:checked:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(tool, '&:checked:pressed'), 'background-color'), 'var(--tone-2)');
+  });
+
+  it('makes a button 30 px high', () => {
+    const root = all.find(b => b.selector === ':root');
+    assert.equal(value(root, '--button-default-size'), '30px');
+  });
+
+  it('orders the states of each button block so that the later wins: hovered, focused, pressed, disabled', () => {
+    const order = [ '&:hovered', '&:visual-focus', '&:pressed', '&:disabled' ];
+    const offending = all.filter(isButton).flatMap(b => {
+      const seen = b.children.filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
+      return seen.some((v, i) => i && v < seen[i - 1]) ? [ b.selector.replace(/\s+/g, ' ') ] : [];
+    });
+    assert.deepEqual(offending, []);
+  });
+});

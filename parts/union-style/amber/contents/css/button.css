@@ -13,12 +13,6 @@
     --button-active-border-color: custom-color("kcolorscheme", "active", "button", "decoration", "frame");
     --button-active-highlight-color: mix(var(--button-active-background-color), var(--highlight-color), 0.333);
     --button-active-border-highlight-color: var(--highlight-color);
-    --button-active-checked-color: mix(var(--button-active-background-color), var(--button-active-text-color), 0.125);
-    --button-active-focus-color: modify-color(custom-color("kcolorscheme", "active", "button", "decoration", "focus") set-alpha var(--focus-outline-alpha));
-
-    --button-active-header-border-color: custom-color("kcolorscheme", "active", "header", "decoration", "frame");
-    --button-active-header-highlight-color: mix(var(--header-background-color), var(--highlight-color), 0.333);
-    --button-active-header-checked-color: mix(var(--header-background-color), var(--header-text-color), 0.125);
 
     --button-inactive-text-color: custom-color("kcolorscheme", "inactive", "button", "foreground", "text");
     --button-inactive-background-color: custom-color("kcolorscheme", "inactive", "button", "background", "normal");
@@ -31,14 +25,11 @@
     --button-disabled-border-color: custom-color("kcolorscheme", "disabled", "button", "decoration", "frame");
     --button-disabled-highlight-color: mix(var(--button-disabled-background-color), var(--highlight-color), 0.333);
 
-    --button-border: 1px solid var(--button-active-border-color);
-    --button-border-highlight: 1px solid var(--button-active-border-highlight-color);
     --button-shadow: none;
-    --button-focus: 2px solid var(--button-active-focus-color);
 
-    /* Values derived from Breeze QStyle metrics */
-    --button-default-size: 32px; /* 16 + 2 * 6 + 2 * 2  */
-    --button-padding: 8px; /* 6 + 2 */
+    /* Sizes: the prototype's 30 px high buttons, 12 px at the sides (P3.3) */
+    --button-default-size: 30px;
+    --button-padding: 6px 12px;
     --button-spacing: 4px;
     --toolbutton-menu-padding: 2px;
 
@@ -65,33 +56,37 @@ toolbutton.raised
     text-alignment-horizontal: center;
     icon-alignment-horizontal: center;
 
-    color: var(--button-active-text-color);
+    color: var(--text);
     border: none;
-    background-color: var(--button-active-background-color);
+    background-color: var(--tone-3);
 
     &:checked
     {
         border: none;
-        background-color: var(--button-active-checked-color);
+        color: var(--accent);
+        background-color: var(--tone-3);
     }
 
     &:hovered
     {
-        border-color: var(--button-active-border-highlight-color);
+        background-color: var(--tone-4);
     }
 
     &:visual-focus
     {
-        border-color: var(--button-active-border-highlight-color);
+        background-color: var(--raised-focus);
         outline: none;
     }
 
     &:disabled
     {
-        color: var(--button-disabled-text-color);
-        background-color: var(--button-disabled-background-color);
-        border-color: var(--button-disabled-border-color);
+        color: var(--text-dim);
+        background-color: var(--tone-3);
         box-shadow: none;
+
+        & > indicator {
+            icon-color: var(--text-dim);
+        }
     }
 
     &.with-menu > indicator {
@@ -103,7 +98,7 @@ toolbutton.raised
         padding-left: var(--toolbutton-menu-padding);
         padding-right: var(--toolbutton-menu-padding);
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
     }
 
     &.with-inline-arrow > indicator {
@@ -113,7 +108,7 @@ toolbutton.raised
         height: 8px;
         padding: 1px;
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
     }
 
     &.with-menu-button > indicator {
@@ -125,7 +120,7 @@ toolbutton.raised
         padding-right: var(--toolbutton-menu-padding);
         layout-alignment: content end fill 0;
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
         border-left:  none;
     }
 
@@ -133,7 +128,7 @@ toolbutton.raised
         border: none;
         & > indicator {
             border: none;
-            background-color: var(--button-active-highlight-color);
+            background-color: var(--tone-1);
             border-radius: var(--corner-radius);
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
@@ -164,9 +159,32 @@ roundbutton:pressed,
 delaybutton:pressed,
 toolbutton.raised:pressed
 {
-    border-color: var(--button-active-border-highlight-color);
-    background-color: var(--button-active-highlight-color);
+    background-color: var(--tone-1);
     box-shadow: none;
+}
+
+/* The primary button: Union gives a default push button :highlighted (P3.3) */
+button:highlighted
+{
+    color: var(--on-accent);
+    background-color: var(--accent);
+
+    &:hovered {
+        background-color: var(--accent-hover);
+    }
+
+    &:visual-focus {
+        background-color: var(--accent-hover);
+    }
+
+    &:pressed {
+        background-color: var(--accent-pressed);
+    }
+
+    &:disabled {
+        color: var(--text-dim);
+        background-color: var(--tone-3);
+    }
 }
 
 button:checked,
@@ -186,33 +204,40 @@ roundbutton.flat
 
     &:hovered {
         border: none;
+        background-color: var(--tone-3);
     }
 
     &:visual-focus {
         border: none;
+        background-color: var(--raised-focus);
     }
 
     &:pressed {
         border: none;
-        background-color: var(--button-active-highlight-color);
+        background-color: var(--tone-2);
     }
 
-    toolbar.header &:checked,
-    applicationheader &:checked
-    {
-        border-color: var(--button-active-header-border-color);
-        background-color: var(--button-active-header-checked-color);
+    &:checked {
+        color: var(--accent);
+        background-color: var(--tone-3);
     }
 
-    toolbar.header &:pressed,
-    applicationheader &:pressed
-    {
-        background-color: var(--button-active-header-highlight-color);
+    &:checked:hovered {
+        background-color: var(--tone-4);
+    }
+
+    &:checked:visual-focus {
+        background-color: var(--raised-focus);
+    }
+
+    &:checked:pressed {
+        background-color: var(--tone-2);
     }
 
     &:disabled {
         border: none;
         background: none;
+        color: var(--text-dim);
     }
 
     &.with-menu-button > indicator {
@@ -227,53 +252,13 @@ roundbutton.flat
             border-left: none;
         }
     }
-
-    &[colorset="window"],
-    [colorset="window"] &
-    {
-        color: var(--window-text-color);
-
-        &:disabled {
-            color: var(--window-disabled-text-color);
-        }
-    }
-
-    &[colorset="view"],
-    [colorset="view"] &
-    {
-        color: var(--view-text-color);
-
-        &:disabled {
-            color: var(--view-disabled-text-color);
-        }
-    }
-
-    &[colorset="complementary"],
-    [colorset="complementary"] &
-    {
-        color: var(--complementary-text-color);
-
-        &:disabled {
-            color: var(--complementary-disabled-text-color);
-        }
-    }
-
-    &[colorset="header"],
-    [colorset="header"] &
-    {
-        color: var(--header-text-color);
-
-        &:disabled {
-            color: var(--header-disabled-text-color);
-        }
-    }
 }
 
 toolbutton
 {
     /* Ensure default toolbuttons end up with 32px height, not 34px. */
     icon-size: 24px;
-    padding: var(--medium-spacing) var(--small-spacing);
+    padding: var(--medium-spacing) var(--large-spacing);
 }
 
 toolbutton.raised
@@ -301,7 +286,7 @@ combobox
         width: var(--icon-size-small);
         height: var(--icon-size-small);
         icon-name: "arrow-down-symbolic";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
         visibility: visible;
     }
 
@@ -370,7 +355,7 @@ delaybutton {
     & > fill {
         border-radius: var(--corner-radius);
         border: none;
-        background-color: var(--highlight-color);
+        background-color: var(--accent);
     }
 }
 
