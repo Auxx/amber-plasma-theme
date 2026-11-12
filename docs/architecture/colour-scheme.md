@@ -79,9 +79,10 @@ Amber writes none of them. What P2.3 saw of each, on 2026-11-12
 
 - the background status colours (`background positive`, `neutral`,
   `negative`), tinted from a status colour into the background. The
-  negative one, in Dolphin's message for a missing folder, is `#492829`,
-  OKLCH 32 % 0.050 18: a dark red, its hue moved from the negative colour's
-  33. The positive and neutral ones were not seen;
+  negative one, in Dolphin's message, is given in
+  [platform](platform.md#colour-scheme); whether it reads as a grey is the
+  owner's call (it reads as a dark red to me, my call). The positive and
+  neutral ones were not seen;
 - the frame colour (`decoration frame`), mixed with `frameContrast`: at 0 it
   equals the set's background, so the Breeze style's frames vanish into it;
 - Qt's bevel roles (Light, Midlight, Mid, Dark, Shadow): `contrast=0` does
