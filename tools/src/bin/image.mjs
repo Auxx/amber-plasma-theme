@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UsageError, main, print, table } from '../lib/cli.mjs';
-import { colourCounts, coolGreys, frame, markPixels } from '../lib/image.mjs';
+import { colourCounts, coolGreys, fill, frame, markPixels, tokenNames } from '../lib/image.mjs';
 import { decodePng, encodePng } from '../lib/png.mjs';
 import { loadTokens } from '../lib/tokens.mjs';
 
@@ -99,6 +100,91 @@ ${REGION_HELP}
         print(values.json, shown, () =>
           table(shown.map(({ hex, count, token }) => [ hex, `${count} px`, token ?? '' ])));
         return 0;
+      }
+    },
+    states: {
+      usage: '<folder> --case <name> --expect <json> [--alias probe=expected]... [--surface <hex>] [--json]',
+      summary: 'Compares the fill and text of each state of a probe case with the states a gallery row expects; exits 1 on a mismatch',
+      help: `<folder> holds the probe's images and its manifest.json, a list of
+{ file, widget, state, reached }. --case names the widget; --expect is a file
+written by \`browser states --json\`. Each probe state is matched to the
+expected state of the same name, or of the name --alias gives it, such as
+--alias hovered-focused=focused (repeatable).
+
+The fill of an image is its most common colour, and the text the colour
+farthest from it: small text at scale 1 is mostly anti-aliased blends, and
+only a few pixels reach the full text colour. Both are compared by hex,
+within 1 a channel. A state on
+one side only is listed as "not compared". --surface leaves out pixels of that
+colour, the probe's surface, from both.`,
+      options: { case: { type: 'string' }, expect: { type: 'string' }, alias: { type: 'string', multiple: true }, surface: { type: 'string' }, json: { type: 'boolean' } },
+      run(values, positionals) {
+        if (positionals.length !== 1) {
+          throw new UsageError('Give the probe folder.');
+        }
+        if (!values.case) {
+          throw new UsageError('Give --case, the widget name of the probe.');
+        }
+        if (!values.expect) {
+          throw new UsageError('Give --expect, a file written by browser states --json.');
+        }
+        if (values.surface !== undefined && !/^#[0-9a-fA-F]{6}$/.test(values.surface)) {
+          throw new UsageError(`--surface must be a colour as #rrggbb: ${values.surface}`);
+        }
+        const aliases = new Map();
+        for (const text of values.alias ?? []) {
+          const [ from, to, extra ] = text.split('=');
+          if (!from || !to || extra !== undefined) {
+            throw new UsageError(`--alias must be probe-state=expected-state: ${text}`);
+          }
+          aliases.set(from, to);
+        }
+        const folder = positionals[0];
+        const manifest = JSON.parse(readFileSync(join(folder, 'manifest.json'), 'utf8')).filter(m => m.widget === values.case);
+        if (!manifest.length) {
+          throw new Error(`${values.case}: no image in ${join(folder, 'manifest.json')}`);
+        }
+        const expected = JSON.parse(readFileSync(values.expect, 'utf8'));
+        const names = tokenNames(loadTokens());
+        const surface = values.surface?.toLowerCase();
+        const close = (a, b) => a !== null && b !== null && [ 1, 3, 5 ].every(i => Math.abs(parseInt(a.slice(i, i + 2), 16) - parseInt(b.slice(i, i + 2), 16)) <= 1);
+        const used = new Set();
+        const rows = manifest.map(({ file, state, reached }) => {
+          const target = expected.find(e => e.state === (aliases.get(state) ?? state));
+          if (!target) {
+            return { state, reached, compared: false };
+          }
+          used.add(target.state);
+          const found = fill(decodePng(readFileSync(join(folder, file))), { surface });
+          const want = { background: target.background.hex, text: target.text.hex };
+          const match = close(found.background, want.background) && close(found.text, want.text);
+          return { state, reached, compared: true, expected: target.state, found, want, match };
+        });
+        for (const e of expected) {
+          if (!used.has(e.state) && !rows.some(r => r.state === e.state)) {
+            rows.push({ state: e.state, compared: false, expectedOnly: true });
+          }
+        }
+        const failed = rows.some(r => r.compared && !r.match);
+        const named = hex => (hex === null ? 'none' : `${hex}${names.get(hex) ? ` (${names.get(hex)})` : ''}`);
+        print(values.json, rows, () => table(rows.map(r => {
+          const note = r.reached === false ? ' (state not reached)' : '';
+          if (!r.compared) {
+            return [ r.state, `not compared${r.expectedOnly ? ' (no image)' : ' (no expectation)'}` ];
+          }
+          if (r.match) {
+            return [ r.state, `ok  ${named(r.found.background)} / ${named(r.found.text)}${note}` ];
+          }
+          const parts = [];
+          if (!close(r.found.background, r.want.background)) {
+            parts.push(`background ${named(r.found.background)} expected ${named(r.want.background)}`);
+          }
+          if (!close(r.found.text, r.want.text)) {
+            parts.push(`text ${named(r.found.text)} expected ${named(r.want.text)}`);
+          }
+          return [ r.state, parts.join('; ') + note ];
+        })));
+        return failed ? 1 : 0;
       }
     },
     frame: {

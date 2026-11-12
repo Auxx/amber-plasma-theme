@@ -126,4 +126,59 @@ describe('image tool', () => {
     assert.equal(status, 1);
     assert.match(stderr, /not a PNG/);
   });
+
+  describe('states', () => {
+    const cases = join(folder, 'states');
+    mkdirSync(cases, { recursive: true });
+    const button = (fill, text) => row(...Array(8).fill(fill), text, text);
+    writeFileSync(join(cases, 'push-button-rest.png'), button('#312e29', '#e8e3da'));
+    writeFileSync(join(cases, 'push-button-hovered.png'), button('#3c3832', '#e8e3da'));
+    writeFileSync(join(cases, 'push-button-hovered-focused.png'), button('#695c45', '#e8e3da'));
+    writeFileSync(join(cases, 'other-rest.png'), button('#000000', '#ffffff'));
+    writeFileSync(join(cases, 'manifest.json'), JSON.stringify([
+      { file: 'push-button-rest.png', widget: 'push-button', state: 'rest', reached: true },
+      { file: 'push-button-hovered.png', widget: 'push-button', state: 'hovered', reached: true },
+      { file: 'push-button-hovered-focused.png', widget: 'push-button', state: 'hovered-focused', reached: true },
+      { file: 'other-rest.png', widget: 'other', state: 'rest', reached: true }
+    ]));
+    const state = (name, bg, text) => ({ state: name, background: { hex: bg, tokens: [] }, text: { hex: text, tokens: [] } });
+    const good = [ state('rest', '#312e29', '#e8e3da'), state('hovered', '#3c3832', '#e8e3da'), state('focused', '#695c45', '#e8e3da') ];
+    writeFileSync(join(cases, 'good.json'), JSON.stringify(good));
+    writeFileSync(join(cases, 'bad.json'), JSON.stringify([ good[0], state('hovered', '#312e29', '#e8e3da') ]));
+    const dir = relative(root, cases);
+
+    it('passes when every state matches, through an alias', () => {
+      const { status, stdout } = image('states', dir, '--case', 'push-button', '--expect', join(dir, 'good.json'), '--alias', 'hovered-focused=focused');
+      assert.equal(status, 0, stdout);
+      assert.match(stdout, /rest\s+ok/);
+      assert.match(stdout, /hovered-focused\s+ok/);
+      assert.doesNotMatch(stdout, /not compared/);
+    });
+
+    it('fails on a state that does not match, naming both colours', () => {
+      const { status, stdout } = image('states', dir, '--case', 'push-button', '--expect', join(dir, 'bad.json'));
+      assert.equal(status, 1);
+      assert.match(stdout, /hovered\s+background #3c3832.*expected #312e29/);
+      assert.match(stdout, /hovered-focused\s+not compared/);
+    });
+
+    it('lists an expected state the probe did not draw', () => {
+      const { stdout } = image('states', dir, '--case', 'push-button', '--expect', join(dir, 'good.json'));
+      assert.match(stdout, /focused\s+not compared/);
+    });
+
+    it('prints JSON', () => {
+      const { status, stdout } = image('states', dir, '--case', 'push-button', '--expect', join(dir, 'good.json'), '--alias', 'hovered-focused=focused', '--json');
+      assert.equal(status, 0);
+      const rows = JSON.parse(stdout);
+      assert.equal(rows.find(r => r.state === 'rest').match, true);
+      assert.equal(rows.find(r => r.state === 'rest').found.background, '#312e29');
+    });
+
+    it('wants a case', () => {
+      const { status, stderr } = image('states', dir, '--expect', join(dir, 'good.json'));
+      assert.equal(status, 2);
+      assert.match(stderr, /--case/);
+    });
+  });
 });

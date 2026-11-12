@@ -108,7 +108,9 @@ background / text, and the block marker or tick where the widget has one.
   it goes to tone 4, one above its checked tone; focused and pressed, it
   takes the tones of an unchecked tool button. (my call)
 - **The primary button** shows focus with its hovered tone: it is already
-  accent, so it has no focused tone of its own. (decided, D-76)
+  accent, so it has no focused tone of its own. (decided, D-76) The Union style cannot draw it in
+  applications built with Qt Widgets, and the same rule serves Qt Quick, so
+  it is drawn as any other button there too: a known gap. (decided, D-100)
 - **Wells:** a placeholder is dim text; selected text is on-accent on
   accent. A spin box's step buttons take no keyboard focus; the well around
   the field shows it.

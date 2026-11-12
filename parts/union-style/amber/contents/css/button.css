@@ -13,12 +13,6 @@
     --button-active-border-color: custom-color("kcolorscheme", "active", "button", "decoration", "frame");
     --button-active-highlight-color: mix(var(--button-active-background-color), var(--highlight-color), 0.333);
     --button-active-border-highlight-color: var(--highlight-color);
-    --button-active-checked-color: mix(var(--button-active-background-color), var(--button-active-text-color), 0.125);
-    --button-active-focus-color: modify-color(custom-color("kcolorscheme", "active", "button", "decoration", "focus") set-alpha var(--focus-outline-alpha));
-
-    --button-active-header-border-color: custom-color("kcolorscheme", "active", "header", "decoration", "frame");
-    --button-active-header-highlight-color: mix(var(--header-background-color), var(--highlight-color), 0.333);
-    --button-active-header-checked-color: mix(var(--header-background-color), var(--header-text-color), 0.125);
 
     --button-inactive-text-color: custom-color("kcolorscheme", "inactive", "button", "foreground", "text");
     --button-inactive-background-color: custom-color("kcolorscheme", "inactive", "button", "background", "normal");
@@ -31,14 +25,12 @@
     --button-disabled-border-color: custom-color("kcolorscheme", "disabled", "button", "decoration", "frame");
     --button-disabled-highlight-color: mix(var(--button-disabled-background-color), var(--highlight-color), 0.333);
 
-    --button-border: 1px solid var(--button-active-border-color);
-    --button-border-highlight: 1px solid var(--button-active-border-highlight-color);
     --button-shadow: none;
-    --button-focus: 2px solid var(--button-active-focus-color);
 
-    /* Values derived from Breeze QStyle metrics */
-    --button-default-size: 32px; /* 16 + 2 * 6 + 2 * 2  */
-    --button-padding: 8px; /* 6 + 2 */
+    /* Sizes: the prototype's 30 px high buttons, 12 px at the sides (P3.3) */
+    --button-default-size: 30px;
+    --button-padding: 6px;
+    --button-padding-x: 12px;
     --button-spacing: 4px;
     --toolbutton-menu-padding: 2px;
 
@@ -58,40 +50,47 @@ toolbutton.raised
     width: var(--button-default-size);
     height: var(--button-default-size);
     spacing: var(--button-spacing);
-    padding: var(--button-padding);
+    padding-top: var(--button-padding);
+    padding-bottom: var(--button-padding);
+    padding-left: var(--button-padding-x);
+    padding-right: var(--button-padding-x);
     border-radius: var(--corner-radius);
 
     layout-alignment: content fill fill 0;
     text-alignment-horizontal: center;
     icon-alignment-horizontal: center;
 
-    color: var(--button-active-text-color);
+    color: var(--text);
     border: none;
-    background-color: var(--button-active-background-color);
+    background-color: var(--tone-3);
 
     &:checked
     {
         border: none;
-        background-color: var(--button-active-checked-color);
+        color: var(--accent);
+        background-color: var(--tone-3);
     }
 
     &:hovered
     {
-        border-color: var(--button-active-border-highlight-color);
+        background-color: var(--tone-4);
     }
 
     &:visual-focus
     {
-        border-color: var(--button-active-border-highlight-color);
+        background-color: var(--raised-focus);
         outline: none;
     }
 
     &:disabled
     {
-        color: var(--button-disabled-text-color);
-        background-color: var(--button-disabled-background-color);
-        border-color: var(--button-disabled-border-color);
+        color: var(--text-dim);
+        background-color: var(--tone-3);
         box-shadow: none;
+
+        & > indicator {
+            icon-color: var(--text-dim);
+        }
     }
 
     &.with-menu > indicator {
@@ -103,7 +102,7 @@ toolbutton.raised
         padding-left: var(--toolbutton-menu-padding);
         padding-right: var(--toolbutton-menu-padding);
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
     }
 
     &.with-inline-arrow > indicator {
@@ -113,7 +112,7 @@ toolbutton.raised
         height: 8px;
         padding: 1px;
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
     }
 
     &.with-menu-button > indicator {
@@ -125,7 +124,7 @@ toolbutton.raised
         padding-right: var(--toolbutton-menu-padding);
         layout-alignment: content end fill 0;
         icon-name: "arrow-down";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
         border-left:  none;
     }
 
@@ -133,7 +132,7 @@ toolbutton.raised
         border: none;
         & > indicator {
             border: none;
-            background-color: var(--button-active-highlight-color);
+            background-color: var(--tone-1);
             border-radius: var(--corner-radius);
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
@@ -164,10 +163,14 @@ roundbutton:pressed,
 delaybutton:pressed,
 toolbutton.raised:pressed
 {
-    border-color: var(--button-active-border-highlight-color);
-    background-color: var(--button-active-highlight-color);
+    background-color: var(--tone-1);
     box-shadow: none;
 }
+
+/*
+ * No primary button (D-100): Union gives :highlighted to every auto-default
+ * push button, which in a dialog is every button, so it is drawn as any other.
+ */
 
 button:checked,
 roundbutton:checked
@@ -186,33 +189,46 @@ roundbutton.flat
 
     &:hovered {
         border: none;
+        background-color: var(--tone-3);
     }
 
     &:visual-focus {
         border: none;
+        background-color: var(--raised-focus);
     }
 
     &:pressed {
         border: none;
-        background-color: var(--button-active-highlight-color);
+        background-color: var(--tone-2);
     }
 
-    toolbar.header &:checked,
-    applicationheader &:checked
-    {
-        border-color: var(--button-active-header-border-color);
-        background-color: var(--button-active-header-checked-color);
+    &:checked {
+        color: var(--accent);
+        background-color: var(--tone-3);
     }
 
-    toolbar.header &:pressed,
-    applicationheader &:pressed
-    {
-        background-color: var(--button-active-header-highlight-color);
+    &:checked:hovered {
+        background-color: var(--tone-4);
+    }
+
+    &:checked:visual-focus {
+        background-color: var(--raised-focus);
+    }
+
+    &:checked:pressed {
+        background-color: var(--tone-2);
+    }
+
+    /* Two states outrank :disabled alone, so a checked, disabled one is held still here (P3.3) */
+    &:checked:disabled {
+        background: none;
+        color: var(--text-dim);
     }
 
     &:disabled {
         border: none;
         background: none;
+        color: var(--text-dim);
     }
 
     &.with-menu-button > indicator {
@@ -227,59 +243,35 @@ roundbutton.flat
             border-left: none;
         }
     }
-
-    &[colorset="window"],
-    [colorset="window"] &
-    {
-        color: var(--window-text-color);
-
-        &:disabled {
-            color: var(--window-disabled-text-color);
-        }
-    }
-
-    &[colorset="view"],
-    [colorset="view"] &
-    {
-        color: var(--view-text-color);
-
-        &:disabled {
-            color: var(--view-disabled-text-color);
-        }
-    }
-
-    &[colorset="complementary"],
-    [colorset="complementary"] &
-    {
-        color: var(--complementary-text-color);
-
-        &:disabled {
-            color: var(--complementary-disabled-text-color);
-        }
-    }
-
-    &[colorset="header"],
-    [colorset="header"] &
-    {
-        color: var(--header-text-color);
-
-        &:disabled {
-            color: var(--header-disabled-text-color);
-        }
-    }
 }
 
 toolbutton
 {
     /* Ensure default toolbuttons end up with 32px height, not 34px. */
     icon-size: 24px;
-    padding: var(--medium-spacing) var(--small-spacing);
+    /* One value per side: Union reads a two-value padding with its values swapped (P3.3) */
+    padding-top: var(--medium-spacing);
+    padding-bottom: var(--medium-spacing);
+    padding-left: var(--large-spacing);
+    padding-right: var(--large-spacing);
 }
 
 toolbutton.raised
 {
     icon-size: var(--icon-size-small);
-    padding: var(--button-padding);
+    padding-top: var(--button-padding);
+    padding-bottom: var(--button-padding);
+    padding-left: var(--button-padding-x);
+    padding-right: var(--button-padding-x);
+
+    /* As a push button, over the flat tool button's checked states (P3.3, D-99) */
+    &:checked:disabled {
+        background-color: var(--tone-3);
+    }
+
+    &:checked:pressed {
+        background-color: var(--tone-1);
+    }
 }
 
 roundbutton
@@ -289,6 +281,9 @@ roundbutton
 
 combobox
 {
+    /* Its arrow is 4 px taller than a line of text; 30 px high, as in the prototype (P3.3) */
+    padding-top: 4px;
+    padding-bottom: 4px;
     layout-alignment: content fill center 0;
     text-alignment: content fill center 0;
     icon-alignment: content start center 0;
@@ -296,12 +291,17 @@ combobox
     text-wrap-mode: no-wrap;
     text-elide: right;
 
+    /* Union marks a combo box whose popup is open :checked; it keeps its text (P3.3) */
+    &:checked {
+        color: var(--text);
+    }
+
     & > indicator {
         layout-alignment: content end center 0;
         width: var(--icon-size-small);
         height: var(--icon-size-small);
         icon-name: "arrow-down-symbolic";
-        icon-color: var(--button-active-text-color);
+        icon-color: var(--text);
         visibility: visible;
     }
 
@@ -370,7 +370,7 @@ delaybutton {
     & > fill {
         border-radius: var(--corner-radius);
         border: none;
-        background-color: var(--highlight-color);
+        background-color: var(--accent);
     }
 }
 

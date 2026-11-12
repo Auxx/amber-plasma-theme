@@ -97,7 +97,7 @@ export function coolGreys(image, { region } = {}) {
 }
 
 /** Hex → the name of the first opaque colour token, in file order, that has it. */
-function tokenNames(tokens) {
+export function tokenNames(tokens) {
   const names = new Map();
   for (const name of tokens.keys()) {
     let colour;
@@ -119,6 +119,31 @@ function tokenNames(tokens) {
 export function colourCounts(image, { region, tokens } = {}) {
   const names = tokens ? tokenNames(tokens) : new Map();
   return tally(image, region).map(({ hex, count }) => (names.has(hex) ? { hex, count, token: names.get(hex) } : { hex, count }));
+}
+
+const channels = h => [ 1, 3, 5 ].map(i => parseInt(h.slice(i, i + 2), 16));
+
+/**
+ * The fill and the text colour of a widget drawn alone. The fill is the most
+ * common colour. The text is the colour farthest from the fill in RGB, or null
+ * when every other colour is within ±1 a channel of the fill: small text at
+ * scale 1 is mostly anti-aliased blends of the two, and only a few pixels
+ * reach the full text colour (P3.3). Pixels within ±1 of `surface` are left
+ * out of both.
+ */
+export function fill(image, { surface, region } = {}) {
+  const away = surface ? channels(surface) : null;
+  const counted = tally(image, region).filter(e => !away || !near(channels(e.hex), away));
+  if (!counted.length) {
+    return { background: null, text: null };
+  }
+  const [ first, ...rest ] = counted;
+  const bg = channels(first.hex);
+  const distance = e => channels(e.hex).reduce((sum, v, i) => sum + (v - bg[i]) ** 2, 0);
+  const text = rest
+    .filter(e => !near(channels(e.hex), bg))
+    .reduce((best, e) => (!best || distance(e) > distance(best) ? e : best), null);
+  return { background: first.hex, text: text ? text.hex : null };
 }
 
 /** A copy of the picture with every pixel of the given colours painted magenta. */

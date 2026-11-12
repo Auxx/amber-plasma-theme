@@ -3,7 +3,7 @@ import { mkdtempSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
-import { isTokenColour, nameColour, outPath, pageUrl, parseCssColour, tokenNames } from './browser.mjs';
+import { isTokenColour, nameColour, outPath, pageUrl, parseCssColour, stateRow, tokenNames } from './browser.mjs';
 import { UsageError } from './cli.mjs';
 import { loadTokens } from './tokens.mjs';
 
@@ -72,5 +72,26 @@ describe('browser', () => {
     assert.equal(isTokenColour('rgb(232, 227, 218)', 'ansi-white', names), true);
     assert.equal(isTokenColour('rgb(232, 227, 218)', 'text-dim', names), false);
     assert.equal(isTokenColour('rgba(0, 0, 0, 0)', 'transparent', names), true);
+  });
+
+  it('reads a state row, taking the background from the nearest ancestor that has one', () => {
+    const names = tokenNames(loadTokens());
+    const row = stateRow({ state: 'rest', backgrounds: [ 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0)', 'rgb(21, 20, 19)', 'rgb(37, 34, 31)' ], colour: 'rgb(232, 227, 218)' }, names);
+    assert.equal(row.state, 'rest');
+    assert.equal(row.background.hex, '#151413');
+    assert.ok(row.background.tokens.includes('tone-0') && row.background.tokens.includes('well'), row.background.tokens.join(', '));
+    assert.equal(row.text.hex, '#e8e3da');
+    assert.ok(row.text.tokens.includes('text'));
+  });
+
+  it('reads a state row whose own background is set', () => {
+    const names = tokenNames(loadTokens());
+    const row = stateRow({ state: 'focused', backgrounds: [ 'rgb(105, 92, 69)', 'rgb(37, 34, 31)' ], colour: 'rgb(232, 227, 218)' }, names);
+    assert.deepEqual(row.background, { hex: '#695c45', tokens: [ 'raised-focus' ] });
+  });
+
+  it('refuses a state row with no background at all', () => {
+    const names = tokenNames(loadTokens());
+    assert.throws(() => stateRow({ state: 'rest', backgrounds: [ 'rgba(0, 0, 0, 0)' ], colour: 'rgb(1, 2, 3)' }, names), /rest: no background/);
   });
 });

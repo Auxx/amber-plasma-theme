@@ -8,8 +8,10 @@ import {
   openPage,
   outPath,
   pageUrl,
+  readStates,
   REPO_ROOT,
   renderedOffences,
+  stateRow,
   tokenNames
 } from '../lib/browser.mjs';
 import { main, print, table, UsageError } from '../lib/cli.mjs';
@@ -159,6 +161,35 @@ ${SIZE_HELP}`,
           ].join('\n')
         );
         return result.problems.length || result.offences.length ? 1 : 0;
+      }
+    },
+    states: {
+      usage: '<page> --widget <name> --selector <css> [--width n] [--height n] [--json]',
+      summary: 'Prints the background and text colour of each state of a gallery row, named as tokens.',
+      help: `Reads .state-row[data-widget=<name>]: for each .state, in order, the element
+--selector finds in it. Its background is its own, or, when that is
+transparent, that of the nearest ancestor that has one: a tool button with no
+fill reads as its toolbar. Each colour lists every token with exactly its hex.
+Exits 1 when the row or a widget is missing.
+
+${SIZE_HELP}`,
+      options: { widget: { type: 'string' }, selector: { type: 'string' }, ...SIZE_OPTIONS, json: { type: 'boolean' } },
+      async run(options, positionals) {
+        const url = page(positionals);
+        if (!options.widget) {
+          throw new UsageError('Give --widget, the data-widget of a gallery row');
+        }
+        if (!options.selector) {
+          throw new UsageError('Give --selector, the CSS selector of the widget inside each state');
+        }
+        viewport(options);
+        const names = tokenNames(loadTokens());
+        const rows = await withPage(url, options, async opened =>
+          (await readStates(opened, options.widget, options.selector)).map(raw => stateRow(raw, names)));
+        const shown = c => `${c.hex}${c.tokens.length ? ` ${c.tokens.join(', ')}` : ''}`;
+        print(options.json, rows, () =>
+          table([ [ 'state', 'background', 'text' ], ...rows.map(r => [ r.state, shown(r.background), shown(r.text) ]) ])
+        );
       }
     },
     colours: {

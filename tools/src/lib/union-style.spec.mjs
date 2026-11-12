@@ -285,3 +285,104 @@ describe('the Union style\'s global rules (P3.2)', () => {
     assert.deepEqual(rules.filter(d => d.property === 'background-color' && thin(d.block)).map(d => d.where), []);
   });
 });
+
+describe('the Union style\'s buttons (P3.3)', () => {
+  const all = blocks(read('button.css'));
+  const chain = block => (block ? [ block, ...chain(block.parent) ] : []);
+  const BUTTON = /(^|[\s,>(])(button|toolbutton|combobox|roundbutton|delaybutton)(?![\w-])/;
+  const OTHER = /\.editable|\.changed|popup\.combobox/;
+  const isButton = block => chain(block).some(b => BUTTON.test(b.selector)) && !chain(block).some(b => OTHER.test(b.selector));
+  const top = test => {
+    const found = all.filter(b => !b.parent && test(parts(b.selector)));
+    assert.equal(found.length, 1, `one top-level block expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block.children.find(c => c.selector === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+
+  it('colours a button only with the tokens', () => {
+    const offending = all.filter(isButton).flatMap(b => b.declarations
+      .filter(d => [ 'color', 'background-color', 'icon-color' ].includes(d.property))
+      .filter(d => !tokenVar.test(d.value) && d.value !== 'none' && d.value !== 'transparent')
+      .map(d => `button.css:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a push button the tones of the prototype', () => {
+    const button = top(p => p.includes('button') && p.includes('toolbutton.raised'));
+    assert.equal(value(button, 'background-color'), 'var(--tone-3)');
+    assert.equal(value(button, 'color'), 'var(--text)');
+    assert.equal(value(child(button, '&:hovered'), 'background-color'), 'var(--tone-4)');
+    assert.equal(value(child(button, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(button, '&:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(button, '&:disabled'), 'color'), 'var(--text-dim)');
+    const pressed = top(p => p.includes('button:pressed'));
+    assert.equal(value(pressed, 'background-color'), 'var(--tone-1)');
+  });
+
+  it('draws a highlighted button as any other (D-100: Union highlights every auto-default button)', () => {
+    const offending = all.filter(b => chain(b).some(c => /:highlighted/.test(c.selector)) && isButton(b))
+      .filter(b => b.declarations.some(d => [ 'color', 'background-color' ].includes(d.property)))
+      .map(b => b.selector.replace(/\s+/g, ' '));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a tool button the tones of the prototype', () => {
+    const tool = top(p => p.includes('toolbutton') && p.includes('button.flat'));
+    assert.equal(value(child(tool, '&:hovered'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(tool, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(tool, '&:pressed'), 'background-color'), 'var(--tone-2)');
+    assert.equal(value(child(tool, '&:checked'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(tool, '&:checked'), 'color'), 'var(--accent)');
+    assert.equal(value(child(tool, '&:checked:hovered'), 'background-color'), 'var(--tone-4)');
+    assert.equal(value(child(tool, '&:checked:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(tool, '&:checked:pressed'), 'background-color'), 'var(--tone-2)');
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const resolve = v => v.replace(/var\(--([\w-]+)\)/g, (m, name) => value(all.find(b => b.selector === ':root'), `--${name}`) ?? m);
+    const offending = all.filter(isButton).flatMap(b => b.declarations
+      .filter(d => d.property === 'padding' && resolve(d.value).trim().split(/\s+/).length > 1)
+      .map(d => `button.css:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('keeps the text of an open combo box, which Union marks :checked, as at rest', () => {
+    const combo = top(p => p.length === 1 && p[0] === 'combobox');
+    assert.equal(value(child(combo, '&:checked'), 'color'), 'var(--text)');
+    assert.equal(value(child(combo, '&:checked'), 'background-color'), undefined, 'the open combo box keeps the tone of its other states');
+  });
+
+  it('keeps a disabled tool button still, even when checked and hovered, which outranks :disabled', () => {
+    const tool = top(p => p.includes('toolbutton') && p.includes('button.flat'));
+    const names = tool.children.map(c => c.selector);
+    const disabled = child(tool, '&:checked:disabled');
+    assert.ok(disabled, 'a &:checked:disabled block');
+    assert.equal(value(disabled, 'background'), 'none');
+    assert.equal(value(disabled, 'color'), 'var(--text-dim)');
+    for (const compound of [ '&:checked:hovered', '&:checked:visual-focus', '&:checked:pressed' ]) {
+      assert.ok(names.indexOf('&:checked:disabled') > names.indexOf(compound), `&:checked:disabled after ${compound}`);
+    }
+  });
+
+  it('draws a raised tool button that is checked as a push button when pressed or disabled (D-99)', () => {
+    const raised = top(p => p.length === 1 && p[0] === 'toolbutton.raised');
+    assert.equal(value(child(raised, '&:checked:disabled'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(raised, '&:checked:pressed'), 'background-color'), 'var(--tone-1)');
+  });
+
+  it('makes a button 30 px high', () => {
+    const root = all.find(b => b.selector === ':root');
+    assert.equal(value(root, '--button-default-size'), '30px');
+  });
+
+  it('orders the states of each button block so that the later wins: hovered, focused, pressed, disabled', () => {
+    const order = [ '&:hovered', '&:visual-focus', '&:pressed', '&:disabled' ];
+    const offending = all.filter(isButton).flatMap(b => {
+      const seen = b.children.filter(c => order.includes(c.selector) && value(c, 'background-color')).map(c => order.indexOf(c.selector));
+      return seen.some((v, i) => i && v < seen[i - 1]) ? [ b.selector.replace(/\s+/g, ' ') ] : [];
+    });
+    assert.deepEqual(offending, []);
+  });
+});
