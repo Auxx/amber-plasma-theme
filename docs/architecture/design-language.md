@@ -100,7 +100,7 @@ background / text, and the block marker or tick where the widget has one.
 |---|---|---|---|---|---|---|
 | Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | surface focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
 | Tab's close button (my call, D-108) | no fill / dim text | danger / on danger | — | danger / on danger | — | — |
-| Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | as hovered (my call, D-112) | selected: selected / text; marker in a sidebar only (decided, D-111) | no fill / dim text; selected: selected / dim text (my call, D-112) |
+| Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | as hovered (my call, D-112) | selected: selected / text, no marker (decided, D-111) | no fill / dim text; selected: selected / dim text (my call, D-112) |
 | Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | no fill / dim text (my call, D-112) |
 | Menu title, on a tone 0 menu bar (my call, D-108) | no fill / text | tone 3 / text | tone 3 / text | — | open: popup / text | no fill / dim text |
 | Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
@@ -158,20 +158,18 @@ background / text, and the block marker or tick where the widget has one.
   surface by tone alone, as an empty well is. (decided, D-75)
 - **Selection**: a selected item has the selected tone, tone 4 (decided,
   D-72), one tone above a hovered item. Its text keeps its colour in every
-  state, as in Breeze (decided, D-110). An item of a sidebar carries a
-  block marker in accent, `--marker-width` (3 px) wide, on its leading edge
-  (D-21); an item of a view, such as a file, a tree item, a table row or a
-  page of a settings dialog, carries none and is told by its tone alone
-  (decided, D-111). A selected tab carries the marker on its outer
+  state, as in Breeze (decided, D-110). It carries no block marker, in a
+  view or a sidebar, and is told by its tone alone (decided, D-111). A
+  selected tab carries a block marker in accent, `--marker-width` (3 px)
+  wide (D-21), on its outer
   edge, the one away from its page: the top of a tab bar above its pages, the
   bottom of one below them, the left or right of one beside them (my call,
   D-108). It takes tone 2, so that it joins the page. In Qt Widgets
   applications Union draws no tab bar, so a tab at rest paints tone 0
   itself, and past the last tab the bar shows the window's tone (decided,
-  D-109). Where there is a marker, it is part of selection: only the marker
-  reaches 3:1. Hovered, a selected item keeps tone 4 and does not change
-  (my call, D-73); focused, it takes raised focus and keeps its marker, if
-  it has one. A disabled selected item keeps tone 4 with dim text (my call,
+  D-109). A tab's marker is part of its selection: only the marker reaches
+  3:1. Hovered, a selected item keeps tone 4 and does not change (my call,
+  D-73); focused, it takes raised focus. A disabled selected item keeps tone 4 with dim text (my call,
   D-112). A selected tab does
   not change when hovered, and takes surface focus when focused. The focused
   tones follow the rule above: accent over the hovered tone.
@@ -243,7 +241,7 @@ token holds the plain colour (D-47).
 | `--thumb-hover` | `#585248` | a hovered thumb |
 | `--thumb-pressed` | `#746e63` | a pressed thumb |
 | `--selected` | `var(--tone-4)` | a selected item (decided, D-72) |
-| `--marker-width` | `3px` | the block marker (P1.5; D-21) |
+| `--marker-width` | `3px` | the block marker of a selected tab (P1.5; D-21) |
 | `--text-selection` | `#605239`, accent 40 % over tone 0 | selected text in a field, and the colour scheme's Selection, which folder icons take (decided, D-110) |
 | `--rubber-band` | the selected tone at 50 % | the rubber band (decided, D-110) |
 

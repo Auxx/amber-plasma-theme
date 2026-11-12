@@ -148,7 +148,7 @@ const WIDGETS = {
       hovered: [ 'danger', 'on-danger' ]
     }
   },
-  // An item of a view: selection is its tone alone, with no block marker (D-111).
+  // An item: selection is its tone alone, with no block marker (D-111).
   item: {
     control: '.item',
     read: MARKED_ITEM,
@@ -162,7 +162,7 @@ const WIDGETS = {
       'selected-disabled': [ 'selected', 'text-dim', 'transparent' ]
     }
   },
-  // An item of a sidebar carries the block marker when selected (D-111).
+  // An item of a sidebar, on tone 1: no marker either (D-111).
   'sidebar-item': {
     control: '.item',
     read: MARKED_ITEM,
@@ -170,7 +170,7 @@ const WIDGETS = {
       rest: [ 'transparent', 'text', 'transparent' ],
       hovered: [ 'tone-3', 'text', 'transparent' ],
       focused: [ 'raised-focus', 'text', 'transparent' ],
-      selected: [ 'selected', 'text', 'accent' ]
+      selected: [ 'selected', 'text', 'transparent' ]
     }
   },
   header: {
@@ -541,13 +541,13 @@ describe('prototype gallery', () => {
     const [ offBackground, mark ] = await coloursOf(page, off, MARKED);
     assert.ok(isToken(offBackground, 'toggle') && isToken(mark, 'text-dim'), `disabled checked and hovered: ${nameColour(offBackground, names)}`);
 
-    // Selected items and tabs keep their tone, and a sidebar's item and a tab
-    // their marker, when hovered or focused.
+    // Selected items and tabs keep their tone, and a tab its marker, when
+    // hovered or focused.
     const combined = [
       [ 'item', { hover: 'selected' }, [ 'tone-4', 'text', 'transparent' ] ],
       [ 'item', { focus: 'selected' }, [ 'raised-focus', 'text', 'transparent' ] ],
-      [ 'sidebar-item', { hover: 'selected' }, [ 'tone-4', 'text', 'accent' ] ],
-      [ 'sidebar-item', { focus: 'selected' }, [ 'raised-focus', 'text', 'accent' ] ],
+      [ 'sidebar-item', { hover: 'selected' }, [ 'tone-4', 'text', 'transparent' ] ],
+      [ 'sidebar-item', { focus: 'selected' }, [ 'raised-focus', 'text', 'transparent' ] ],
       [ 'tab', { hover: 'selected' }, [ 'tone-2', 'text', 'accent' ] ],
       [ 'tab', { focus: 'selected' }, [ 'surface-focus', 'text', 'accent' ] ],
       [ 'item', { hover: 'disabled' }, [ 'transparent', 'text-dim', 'transparent' ] ],
@@ -785,8 +785,7 @@ describe('prototype gallery', () => {
   });
 
   withChrome('marks the selected item in the window shell', async () => {
-    // A selected place carries the block marker; a selected row of the view is
-    // told by its tone alone (D-111).
+    // A selected place or row is told by its tone alone, with no marker (D-111).
     const { browser, page } = await openPage(pageUrl('prototype/index.html'));
     try {
       const shown = await page.evaluate(() =>
@@ -798,7 +797,7 @@ describe('prototype gallery', () => {
       assert.ok(shown.some(([ place ]) => place) && shown.some(([ place ]) => !place));
       const accent = getComputedAccent();
       const offences = shown
-        .filter(([ place, background, image ]) => !isToken(background, 'selected') || image.includes(accent) !== place)
+        .filter(([ , background, image ]) => !isToken(background, 'selected') || image.includes(accent))
         .map(([ place, background, image ]) => `${place ? 'place' : 'row'}: ${nameColour(background, names)} / ${image}`);
       assert.deepEqual(offences, []);
     } finally {

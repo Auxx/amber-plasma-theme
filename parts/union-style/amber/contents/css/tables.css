@@ -121,7 +121,8 @@ headerviewdelegate
     border-bottom: none;
     border-right: none;
 
-    background-color: transparent;
+    /* A clear section shows the header's Button tone 3: it paints the view's tone 2 itself (P3.7). */
+    background-color: var(--tone-2);
     color: var(--text-dim);
 
     layout-alignment: content fill center 0;
@@ -171,7 +172,7 @@ headerviewdelegate
     {
         border: none;
         color: var(--text-dim);
-        background-color: transparent;
+        background-color: var(--tone-2);
 
         & > indicator {
             color: var(--text-dim);

@@ -117,7 +117,7 @@
     "foreground": "selected",
     "on": ["tone-2", "tone-1"],
     "minimum": 1.1,
-    "why": "A selected item is grouped by tone. Only a selected item of a sidebar carries a block marker, which reaches rule 2's 3:1; in a view selection is tone alone (D-111). 1.1 is a floor that keeps the tone from fading (my call)."
+    "why": "A selected item is told by its tone alone, with no block marker (D-111). 1.1 is a floor that keeps the tone from fading (my call)."
   },
   {
     "foreground": "text-selection",

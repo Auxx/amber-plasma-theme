@@ -517,9 +517,10 @@
 }
 
 /*
- * Navigation (P1.5): tabs and items. A selected one carries the block marker,
- * a gradient in --marker, --marker-width thick: on the leading edge of an
- * item, on the top edge of a tab. It is not a border, so it is no hairline.
+ * Navigation (P1.5): tabs and items. A selected tab carries the block marker,
+ * a gradient in --marker, --marker-width thick, on its top edge. It is not a
+ * border, so it is no hairline. A selected item has none: it is told by its
+ * tone (D-111).
  * Clicking a live copy does not select it: that needs a script that sets a
  * class, which D-48 forbids. Selected copies are forced.
  */
@@ -602,8 +603,8 @@
   color: var(--text);
 }
 
-/* Selected. A selected tab carries the block marker; an item carries it only
-   in a sidebar, and in a view is told by its tone alone (D-111). */
+/* Selected. A selected tab carries the block marker; an item is told by its
+   tone alone (D-111). */
 
 .tab.is-selected {
   --marker: var(--accent);
@@ -616,10 +617,6 @@
 
 .item.is-selected {
   background-color: var(--selected);
-}
-
-.is-sidebar .item.is-selected {
-  --marker: var(--accent);
 }
 
 .item.is-selected:not([aria-disabled="true"]):is(:hover, .is-hovered) {

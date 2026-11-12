@@ -5,8 +5,8 @@
 
 /*
  * View delegates. Items take the design language's tones through tokens.css
- * only (P3.7, D-112). A selected item keeps its text colour (D-110); only an
- * item of a sidebar carries the block marker (D-111). An item shows its
+ * only (P3.7, D-112). A selected item keeps its text colour (D-110) and
+ * carries no block marker (D-111). An item shows its
  * focused tone under keyboard focus alone, since a focused view always has a
  * current item.
  */
@@ -96,11 +96,8 @@ swipedelegate
 }
 
 /* ItemViewItem delegate is often misused by QtWidgets applications, so
- * we do not allow layouting inside it. An item with no view hint is drawn by
- * a list that paints its own items, such as Dolphin's Places or a settings
- * dialog's page list: a sidebar, which carries the block marker. Union draws a
- * border only if it is there at rest, and no fill under it (P3.6), so each
- * state gives the marker's edge its own fill. */
+ * we do not allow layouting inside it. Union draws a Qt Widgets item's text
+ * from the item's edge whatever its padding (P3.7). */
 itemviewitem {
     inset: 0px;
     icon-size: var(--small-element-size);
@@ -108,11 +105,10 @@ itemviewitem {
     text-elide: right;
     padding-top: 4px;
     padding-bottom: 4px;
-    padding-left: 9px; /* 12 px, the marker's 3 px included */
+    padding-left: 12px;
     padding-right: 12px;
     height: 26px;
     border-radius: 0px;
-    border-left: var(--marker-width) solid transparent;
 
     color: var(--text);
     background-color: transparent;
@@ -130,49 +126,31 @@ itemviewitem {
     &:hovered
     {
         background-color: var(--tone-3);
-        border-left-color: var(--tone-3);
     }
 
     &:visual-focus
     {
         background-color: var(--raised-focus);
-        border-left-color: var(--raised-focus);
     }
 
     &:highlighted
     {
         background-color: var(--selected);
-        border-left-color: var(--accent);
     }
 
     &:highlighted:visual-focus
     {
         background-color: var(--raised-focus);
-        border-left-color: var(--accent);
     }
 
     &:disabled {
         color: var(--text-dim);
         background-color: transparent;
-        border-left-color: transparent;
     }
 
     &:highlighted:disabled {
         color: var(--text-dim);
         background-color: var(--selected);
-        border-left-color: var(--accent);
-    }
-
-    /* An item of a list, table or tree view: no marker (D-111). */
-    &.inside-list,
-    &.inside-table,
-    &[position="invalid"],
-    &[position="beginning"],
-    &[position="middle"],
-    &[position="end"]
-    {
-        border-left: none;
-        padding-left: 12px;
     }
 
     &.inside-list {
@@ -182,12 +160,6 @@ itemviewitem {
             text-wrap-mode: wrap;
         }
     }
-}
-
-/* Dolphin's file view: an item of a view, no marker (D-111). */
-graphicsview itemviewitem {
-    border-left: none;
-    padding-left: 12px;
 }
 
 focusframe {

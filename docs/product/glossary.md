@@ -278,9 +278,9 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   plain "outline".
 
 **Block marker**
-: A solid accent rectangle at least three pixels wide on the leading edge of
-  a selected item, or on the top edge of a selected tab. It is not a
-  hairline.
+: A solid accent rectangle at least three pixels wide on the outer edge of a
+  selected tab. It is not a hairline. A selected item has none: it is told
+  by its tone.
 
 ## Widget states
 

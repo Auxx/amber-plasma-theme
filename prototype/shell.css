@@ -189,12 +189,6 @@ body:has(#wp4:checked) {
   background-color: var(--selected);
 }
 
-/* A selected place carries the block marker; a selected row of the view does
-   not (D-111). */
-.place.is-selected {
-  background-image: linear-gradient(to right, var(--accent) var(--marker-width), transparent var(--marker-width));
-}
-
 .status {
   flex: none;
   padding: 4px 12px;

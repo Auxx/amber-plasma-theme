@@ -31,10 +31,10 @@ Disabled controls are exempt in WCAG, and are exempt here.
    (tone 4, 5.63:1), which a hovered selected item keeps, on a focused one
    (raised focus, 3.16:1) and on a focused selected tab (surface focus,
    6.13:1). A menu's tick is accent on the popup tone (6.54:1). It carries a selection's 3:1: the selected tone itself is a
-   tonal step, kept above a floor of 1.1 (my call). **An item of a view
-   carries no marker** (decided, D-111): a selected file or table row is
-   told by its tone alone, 1.36:1 on tone 2, below 3:1. Only a sidebar's
-   selected item keeps the marker.
+   tonal step, kept above a floor of 1.1 (my call). **A selected item
+   carries no marker** (decided, D-111): a selected file, list item or
+   place is told by its tone alone, 1.36:1 on tone 2 and 1.49:1 on tone 1,
+   below 3:1. A selected tab keeps its marker.
 3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
    every background they are read on: the editor, the current line and
    the text selection. The text selection is the hardest of these.

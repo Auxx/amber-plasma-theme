@@ -278,12 +278,8 @@ describe('the Union style\'s global rules (P3.2)', () => {
   const tabMarker = d => d.file === 'tabs.css' && d.value === 'var(--marker-width) solid var(--tone-0)'
     && d.property === `border-${EDGE[d.block.selector.match(/^&\[direction="(\w+)"\]$/)?.[1]]}`;
 
-  // The third: the block marker of a sidebar's item, 3 px on its leading edge, set at rest (P3.7, D-111).
-  const itemMarker = d => d.file === 'delegate.css' && d.property === 'border-left'
-    && d.value === 'var(--marker-width) solid transparent' && d.block.selector.trim() === 'itemviewitem';
-
-  it('draws no border, but the focus bar of a well and the block markers of a tab and a sidebar\'s item', () => {
-    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d) && !tabMarker(d) && !itemMarker(d)), []);
+  it('draws no border, but the focus bar of a well and the block marker of a tab', () => {
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value) && !focusBar(d) && !tabMarker(d)), []);
     assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?-width$/.test(d.property) && !zero(d.value)), []);
   });
 
@@ -836,7 +832,7 @@ describe('the Union style\'s views (P3.7)', () => {
 
   it('finds every view block', () => {
     assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector.replace(/\s+/g, ' ')}`)) ].sort(), [
-      'delegate.css checkdelegate, radiodelegate', 'delegate.css focusframe', 'delegate.css graphicsview itemviewitem',
+      'delegate.css checkdelegate, radiodelegate', 'delegate.css focusframe',
       'delegate.css itemdelegate, checkdelegate, radiodelegate, switchdelegate, swipedelegate', 'delegate.css itemviewitem',
       'tables.css headerviewdelegate', 'tables.css rubberband', 'tables.css selectionrectangle', 'tables.css selectionrectanglehandle',
       'tables.css treeviewdelegate', 'tables.css treeviewdelegate, tableviewdelegate' ]);
@@ -880,31 +876,15 @@ describe('the Union style\'s views (P3.7)', () => {
     tone('&:highlighted:disabled', 'var(--selected)', 'var(--text-dim)');
     assert.equal(value(child(i, '&.alternating-colors'), 'background-color'), 'transparent');
     assert.equal(value(i, 'height'), '26px');
-    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(i, `padding-${e}`)), [ '4px', '4px', '9px', '12px' ]);
+    // Union draws a Qt Widgets item's text from its edge whatever the padding (Task 4); Qt Quick reads it.
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(i, `padding-${e}`)), [ '4px', '4px', '12px', '12px' ]);
   });
 
-  it('puts the block marker only on an item of a sidebar (D-111)', () => {
-    const i = top('delegate.css', 'itemviewitem');
-    // Union draws a border only if it is there at rest, and no fill under it (P3.6), so each state gives the
-    // marker's edge its own fill, and the selected states accent.
-    assert.equal(value(i, 'border-left'), 'var(--marker-width) solid transparent');
-    const edge = (selector, colour) => assert.equal(value(child(i, selector), 'border-left-color'), colour, selector);
-    edge('&:hovered', 'var(--tone-3)');
-    edge('&:visual-focus', 'var(--raised-focus)');
-    edge('&:highlighted', 'var(--accent)');
-    edge('&:highlighted:visual-focus', 'var(--accent)');
-    edge('&:disabled', 'transparent');
-    edge('&:highlighted:disabled', 'var(--accent)');
-    // An item that Union knows is in a list, table or tree, or in Dolphin's view, is an item of a view.
-    const view = child(i, '&.inside-list, &.inside-table, &[position="invalid"], &[position="beginning"], &[position="middle"], &[position="end"]');
-    assert.equal(value(view, 'border-left'), 'none');
-    assert.equal(value(view, 'padding-left'), '12px');
-    const dolphin = top('delegate.css', 'graphicsview itemviewitem');
-    assert.equal(value(dolphin, 'border-left'), 'none');
-    assert.equal(value(dolphin, 'padding-left'), '12px');
-    // The refinement comes after every state that colours the edge, so that it wins.
-    const at = selector => i.children.findIndex(c => parts(c.selector).join(', ') === parts(selector).join(', '));
-    assert.ok(at(view.selector) > at('&:highlighted:disabled'));
+  it('puts no block marker on any item (D-111)', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => /^border/.test(d.property) && !/radius$/.test(d.property) && d.value !== 'none')
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
   });
 
   it('gives a header section the tones of the prototype', () => {
@@ -914,11 +894,13 @@ describe('the Union style\'s views (P3.7)', () => {
       assert.equal(value(b, 'background-color'), background, selector || 'at rest');
       assert.equal(value(b, 'color'), color, selector || 'at rest');
     };
-    tone('', 'transparent', 'var(--text-dim)');
+    // A clear section shows the header's own background, the Button set's tone 3 (Task 4), so a section paints
+    // the view's tone 2 itself.
+    tone('', 'var(--tone-2)', 'var(--text-dim)');
     tone('&:hovered', 'var(--tone-3)', 'var(--text)');
     tone('&:pressed', 'var(--tone-1)', 'var(--text)');
     tone('&.sort-ascending, &.sort-descending', undefined, 'var(--text)');
-    tone('&:disabled', 'transparent', 'var(--text-dim)');
+    tone('&:disabled', 'var(--tone-2)', 'var(--text-dim)');
     assert.equal(value(child(h, '& > indicator'), 'color'), 'var(--text)');
   });
 
