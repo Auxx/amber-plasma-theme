@@ -84,7 +84,7 @@ candidate now.
 |---|---|---|---|
 | P2.1 Role mapping | Table of which token feeds which colour-scheme role | Every role of a `.colors` file has a token or a written rule | done |
 | P2.2 Generator | `Amber.colors` generated from the tokens | Running the generator twice gives the same file; tests pass | done |
-| P2.3 Check in applications | The scheme seen in Dolphin, Kate and Konsole | No cool grey is visible; findings are written down | todo |
+| P2.3 Check in applications | The scheme seen in Dolphin, Kate and Konsole | No cool grey is visible; findings are written down | done |
 
 The table of P2.1 is `parts/colour-scheme/roles.json`; its rules are in
 [colour-scheme](../architecture/colour-scheme.md). Before P2.1 the owner
@@ -94,6 +94,16 @@ also tests the facts P2.1 left unverified in the
 [platform](../architecture/platform.md#colour-scheme) document. The
 generated file of P2.2 is `parts/colour-scheme/Amber.colors`, made by
 `generate colour-scheme`.
+
+P2.3 checked the scheme in a nested KWin, without changing a system
+setting, and read every picture with the `image` tool. Its findings are in
+the [platform](../architecture/platform.md#colour-scheme) document; the
+known gaps it found are in the README. The colour scheme brings no cool
+grey; the owner accepted the derived negative message background as a dark
+red (D-93), and counted the greys of icons, the text cursor and KWin as
+outside Amber (D-94). On seeing Dolphin, the owner had the Window set moved
+to tone 1, so that sidebars, panels and status bars sit a tone below the
+view (D-95).
 
 ## Step 3 — Union style
 
@@ -111,6 +121,16 @@ next starts.
 | P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
 | P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
 | P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
+
+P2.3 found these for Step 3, all drawn by the Breeze style or by Qt, not by
+the colour scheme: the 1 px border under the header toolbar (P3.6); the
+accent frame of a selected or current item and the lines between header
+sections (P3.7); text fields drawn in tone 2 instead of a well, and a text
+cursor that Qt draws inverted, so that on tone 2 it is the cool grey
+`#dadde0` (P3.4, which decides whether the cursor becomes a known gap);
+rounded corners everywhere (P3.2). Since D-95 a settings dialog's page
+list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar: P3.7
+draws it as a sidebar.
 
 ## Step 4 — Terminal colours and editor theme
 

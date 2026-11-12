@@ -28,10 +28,15 @@ const HUE_CHROMA = 0.05;
 /** Whether the colour is a hue and not a grey. */
 export const isHue = text => toOklch(parseColour(text)).c >= HUE_CHROMA;
 
-/** Null when the colour is warm or black; otherwise why it is not. */
-export function warmthOffence(text) {
+/**
+ * Null when the colour is warm or black; otherwise why it is not. Below an
+ * OKLCH chroma of `noHue` a colour counts as a grey with no hue: 0.005 for
+ * colours written in the prototype; the pixel check of `image.mjs` passes
+ * 0.001, so that a dark tone such as tone 0 is judged by its hue. (my call)
+ */
+export function warmthOffence(text, { noHue = 0.005 } = {}) {
   const { l, c, h } = toOklch(parseColour(text));
-  if (c < 0.005) {
+  if (c < noHue) {
     return l < 0.01 ? null : `not warm: ${text} (a grey with no hue, my call: warm is ${WARM[0]} to ${WARM[1]})`;
   }
   return h >= WARM[0] && h <= WARM[1]

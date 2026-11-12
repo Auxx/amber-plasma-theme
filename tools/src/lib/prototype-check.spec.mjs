@@ -209,4 +209,13 @@ window.addEventListener('pageshow', () => document.querySelectorAll('.slider').f
     assert.match(warmthOffence('#888888'), /not warm: #888888 \(a grey with no hue/);
     assert.match(warmthOffence('slategray'), /not warm: slategray \(hue 2\d\d/);
   });
+
+  it('judges the hue of a very dark colour when given a lower cut-off for "no hue"', () => {
+    // Tone 0 is OKLCH chroma 0.003 at hue 68: a grey with no hue to the
+    // prototype's cut-off of 0.005, but warm to the pixel check's of 0.001.
+    assert.match(warmthOffence('#151413'), /a grey with no hue/);
+    assert.equal(warmthOffence('#151413', { noHue: 0.001 }), null);
+    assert.match(warmthOffence('#141415', { noHue: 0.001 }), /hue 286/);
+    assert.match(warmthOffence('#808080', { noHue: 0.001 }), /a grey with no hue/);
+  });
 });

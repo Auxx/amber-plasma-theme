@@ -14,8 +14,8 @@
     "DecorationHover": { "token": "tone-2", "why": "The set's BackgroundNormal, so that a hover frame drawn by an application does not show (D-4, D-88)" }
   },
   "Colors:Window": {
-    "BackgroundNormal": { "token": "tone-2", "why": "The main surface of a window" },
-    "BackgroundAlternate": { "token": "tone-1", "why": "Sidebars and secondary panels" },
+    "BackgroundNormal": { "token": "tone-1", "why": "Sidebars, panels and status bars around a view: the view itself is the View set, tone 2 (D-95)" },
+    "BackgroundAlternate": { "token": "tone-1", "why": "No stripes" },
     "ForegroundNormal": { "token": "text" },
     "ForegroundInactive": { "token": "text-dim" },
     "ForegroundActive": { "token": "accent" },
@@ -25,7 +25,7 @@
     "ForegroundNeutral": { "token": "neutral" },
     "ForegroundPositive": { "token": "positive" },
     "DecorationFocus": { "token": "accent" },
-    "DecorationHover": { "token": "tone-2" }
+    "DecorationHover": { "token": "tone-1" }
   },
   "Colors:Button": {
     "BackgroundNormal": { "token": "tone-3", "why": "A raised widget" },

@@ -267,16 +267,91 @@ owner's say. (my call)
   derives, such as `decoration frame` and `background positive`.
   (verified, 2026-11-12, P2.1)
 
+Verified on 2026-11-12 in P2.3 unless marked, with `Amber.colors` of that
+day, in Dolphin, Kate and Konsole under the Breeze Union style:
+
+- **A colour scheme can be tried without changing a system setting** in a
+  nested KWin (as in [Window decoration](#window-decoration)) whose
+  applications run with their own `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`,
+  `XDG_DATA_HOME` and `XDG_STATE_HOME`, and with a folder holding
+  `color-schemes/Amber.colors` put first in `XDG_DATA_DIRS`. The folder of
+  `XDG_CONFIG_HOME` holds a `kdeglobals` made as applying a scheme makes it:
+  every group of the `.colors` file, plus `widgetStyle=Union` in `[KDE]`.
+  Isolating `XDG_CONFIG_HOME` alone is not enough: Dolphin then still
+  writes `~/.local/state/dolphinstaterc`.
+  - The nested session reads `fontconfig` from that folder too, so text is
+    drawn with Fedora's default subpixel anti-aliasing unless the folder
+    says otherwise. For pixel checks it was set to greyscale (`rgba` none),
+    since subpixel fringes are coloured whatever the scheme.
+  - The applications can be driven through AT-SPI: start
+    `/usr/libexec/at-spi-bus-launcher --launch-immediately` and
+    `/usr/libexec/at-spi2-registryd` inside the session (D-Bus cannot start
+    them there), run the applications with
+    `QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1`, and press menu items and buttons
+    with `pyatspi` (`python3-pyatspi` 2.58.2 is installed). Kate's menus
+    did not open this way; Dolphin's and Konsole's did.
+  - The decoration reads its colours when the nested KWin starts, not
+    while it runs.
+- **Each application can be given a colour scheme of its own.** Dolphin's
+  Settings → Window Color Scheme, and Kate's and Konsole's Settings →
+  Window Colour Scheme, list every scheme in `color-schemes/` of the data
+  folders, Amber among them. Choosing one repaints the open window at once
+  and writes `ColorScheme=<name>` in `[UiSettings]` of the application's own
+  `dolphinrc`, `katerc` or `konsolerc`; `kdeglobals` is not touched. A large
+  icon already drawn, such as Dolphin's information panel, keeps its old
+  colours until it is drawn again.
+- **`ContrastEffect=1` is a channel-wise mix in sRGB** towards the
+  background by `ContrastAmount`: with 0.34, disabled text is `#a6a19a`, in
+  the palette and in pixels, which is `text` mixed towards tone 2 by 0.34
+  to the unit. It measures 6.17:1 on tone 2.
+- **`contrast=0` does not flatten Qt's bevel roles.** Against Button
+  `#312e29` they are Light `#34302c`, Midlight `#2d2a26`, Mid `#221f1c`,
+  Dark `#1a1816` and Shadow `#131110`: all warm. None was seen in the three
+  applications as a grey.
+- **`frameContrast` is read from `[KDE]`.** With 0 the derived frame colour
+  equals the set's background: the Breeze style's 1 px border under the
+  header toolbar is tone 0, the Header background; with 0.2 it is a lighter
+  line (`#353330`).
+- **`AccentColor` in `[General]` of `kdeglobals` is not applied by the
+  applications**: with a blue accent written there, Dolphin's selection stayed
+  `accent`. Plasma's colour settings page applies an accent by rewriting the
+  colour groups of `kdeglobals`, which was not tried, since it changes a
+  system setting. (unverified; P6.2 tells the owner to leave the accent
+  to the colour scheme)
+- **KWin's Breeze decoration does not read `[WM]`**: it takes the Header
+  set's `BackgroundNormal` for the title bar (a magenta `activeBackground`
+  changed nothing; a green Header background turned the title bar green).
+  The installed programs that name the `[WM]` keys are `libkwin.so.6`,
+  `gtkconfig.so` (which exports colours to GTK applications),
+  `plasma_accentcolor_service.so`, `kcm_colors.so` and `breeze6.so`. (by
+  their strings only, not by use)
+- **The derived negative background is a tint that shifts hue.** Dolphin's
+  message for a missing folder is drawn in `#492829`, OKLCH 32 % 0.0496 18
+  (a chroma just under the 0.05 at which a colour counts as a hue):
+  KColorScheme's `background negative`, a tint of ForegroundNegative
+  (`#e89887`, hue 33) into the background. The positive and neutral
+  backgrounds were not seen.
+- **Qt draws the text cursor of a text field inverted** over what is under
+  it, so on tone 2 it is `#dadde0`, a cool grey. The colour scheme cannot
+  change it.
+- **Which colour set paints which surface.** In Dolphin the file view is
+  the View set; the places panel, the information panel and the status bar
+  (small or full width) are the Window set, and the header toolbar is the
+  Header set. Kate's sidebar, tool views and status bar are the Window set.
+  A settings dialog's body is the Window set and its page list, on the
+  left, the View set.
+- **Text fields outside the Union style show tone 2**, the View background:
+  Dolphin's location bar when edited, the search and path fields of the
+  settings dialogs. Breeze's wells are not Amber's (D-90).
+- **KWin dims the window behind a dialog** (the dialog parent effect),
+  darkening and desaturating it: tone 0 became `#0d0c0c` to `#090808`.
+
 ### Unverified
 
 | Question | Tested in |
 |---|---|
-| Can Dolphin, Kate and Konsole each be given a colour scheme of their own from their Settings menu, so that the scheme can be tried without changing the system's? | P2.3 |
-| Is `ContrastEffect=1` a mix of the colour towards the background by `ContrastAmount`, so that the disabled rule of [colour-scheme](colour-scheme.md) gives dim text? The generator assumes `KColorUtils::mix`, a channel-wise mix of sRGB values. | P2.3 |
-| What does `contrast=0` change in Qt Widgets applications: are the bevel roles flat? | P2.3 |
-| Is `frameContrast` read from `[KDE]`, and does 0 make the derived frame colour equal the background? | P2.3 |
-| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? | P2.3 |
-| Which programs read `[WM]` on this system? | P2.3 |
+| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2 |
+| What do the derived positive and neutral backgrounds look like? | P3.8 |
 
 ## Konsole and Kate
 
@@ -285,6 +360,11 @@ owner's say. (my call)
 - Kate 26.08.2 is installed, as is KWrite, which shares its editor component.
   (verified, 2026-11-11)
 - No user editor themes exist yet. (verified, 2026-11-10)
+- With no editor theme chosen, Kate picks Breeze Dark's under a dark colour
+  scheme such as Amber: its editor area and minimap show cool greys
+  (`#232629`, `#31363b`) until the editor theme of P4.2 is chosen.
+  Konsole's default profile, and Kate's terminal panel, show Breeze's
+  terminal colours (`#232627`). (verified, 2026-11-12, P2.3)
 
 ## Spike findings
 

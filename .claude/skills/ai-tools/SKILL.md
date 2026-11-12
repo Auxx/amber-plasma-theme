@@ -5,8 +5,9 @@ description: |
   throwaway script: colour conversion, WCAG contrast, checking Amber's tokens
   and contrast pairs, and opening the prototype in Chrome (screenshots in a
   hovered, focused or pressed state, the rendered anti-goal check, computed
-  colours named as tokens), and generating Amber's parts (the colour
-  scheme now, the others to follow). Use
+  colours named as tokens), generating Amber's parts (the colour
+  scheme now, the others to follow), and reading the colours of a
+  screenshot (cool greys, colours named as tokens). Use
   BEFORE writing any one-off script (node -e, python, a heredoc in the
   scratchpad) to compute, check, look at or generate something in this
   repository, and when a task needs a tool that does not exist yet: this
@@ -47,7 +48,8 @@ Rules that hold for every tool are in
 - **Paths stay inside the repository.** A tool never writes to the home
   folder or the system; installing is the install script's job.
 - **A tool that changes files prints the changes first** and writes only
-  with `--write`. `generate <part> --write` is the one that does so far.
+  with `--write`. `generate <part> --write` does so; `image greys --mark
+  <out.png>` writes only the copy it is given a path for.
 
 ## Add or change a tool
 
