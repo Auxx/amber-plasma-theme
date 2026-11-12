@@ -83,7 +83,7 @@ candidate now.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P2.1 Role mapping | Table of which token feeds which colour-scheme role | Every role of a `.colors` file has a token or a written rule | done |
-| P2.2 Generator | `Amber.colors` generated from the tokens | Running the generator twice gives the same file; tests pass | todo |
+| P2.2 Generator | `Amber.colors` generated from the tokens | Running the generator twice gives the same file; tests pass | done |
 | P2.3 Check in applications | The scheme seen in Dolphin, Kate and Konsole | No cool grey is visible; findings are written down | todo |
 
 The table of P2.1 is `parts/colour-scheme/roles.json`; its rules are in
@@ -91,7 +91,9 @@ The table of P2.1 is `parts/colour-scheme/roles.json`; its rules are in
 chose the selection, the link and status colours and the focus and hover
 lines: D-86 to D-88 in the [decisions](../architecture/decisions.md). P2.3
 also tests the facts P2.1 left unverified in the
-[platform](../architecture/platform.md#colour-scheme) document.
+[platform](../architecture/platform.md#colour-scheme) document. The
+generated file of P2.2 is `parts/colour-scheme/Amber.colors`, made by
+`generate colour-scheme`.
 
 ## Step 3 — Union style
 

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { srgb8 } from './colour.mjs';
+import { relativeLuminance, srgb8 } from './colour.mjs';
 import { resolveToken } from './tokens.mjs';
 
 /**
@@ -243,4 +243,110 @@ export function visibleHoverFrames(roles, tokens) {
     const background = entries?.get('BackgroundNormal')?.token;
     return hover && background && hexOf(tokens, hover) !== hexOf(tokens, background);
   });
+}
+
+/** The 8-bit sRGB channels of an opaque token, or the reason it has none. */
+function channelsOf(tokens, name) {
+  let rgb;
+  try {
+    rgb = srgb8(resolveToken(tokens, name).colour);
+  } catch (error) {
+    return { problem: `${name}: ${error.message}` };
+  }
+  return rgb.alpha === 1 ? { rgb: [ rgb.r, rgb.g, rgb.b ] } : { problem: `${name} is not opaque` };
+}
+
+/** Relative luminance of channels that need not be whole numbers. */
+const luminance = ([ r, g, b ]) => relativeLuminance({ r, g, b });
+
+/**
+ * The disabled `ContrastAmount` (the table's rule): the amount, rounded to two
+ * places, at which `text` faded towards `tone-2` has the relative luminance of
+ * `text-dim`. Fading mixes the sRGB channels, `fg + (bg - fg) * a`, as
+ * KColorUtils::mix does (unverified; checked by eye in P2.3).
+ */
+export function disabledContrastAmount(tokens) {
+  const [ text, background, dim ] = [ 'text', 'tone-2', 'text-dim' ].map(name => {
+    const { rgb, problem } = channelsOf(tokens, name);
+    if (problem) {
+      throw new Error(problem);
+    }
+    return rgb;
+  });
+  const target = luminance(dim);
+  const fade = amount => luminance(text.map((channel, i) => channel + (background[i] - channel) * amount));
+  const darkens = fade(1) < fade(0);
+  let [ low, high ] = [ 0, 1 ];
+  for (let round = 0; round < 50; round++) {
+    const middle = (low + high) / 2;
+    if (fade(middle) > target === darkens) {
+      low = middle;
+    } else {
+      high = middle;
+    }
+  }
+  return Math.round(((low + high) / 2) * 100) / 100;
+}
+
+/** The roles whose `rule` the generator computes, by `group.key`. */
+const RULES = {
+  'ColorEffects:Disabled.ContrastAmount': disabledContrastAmount
+};
+
+/** The header of the generated file. */
+const HEADER = [
+  "# SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov",
+  '# SPDX-License-Identifier: MIT',
+  '# Generated from prototype/tokens.css and parts/colour-scheme/roles.json.',
+  '# Do not edit: run node tools/src/bin/generate.mjs colour-scheme --write'
+];
+
+/** A value as KConfig writes it, or the reason it cannot be written. */
+function formatValue(value) {
+  if (typeof value === 'string' && (value === '' || /[\n\r[\]]/.test(value))) {
+    return { problem: `${JSON.stringify(value)} cannot be written in a .colors file` };
+  }
+  return { text: String(value) };
+}
+
+/**
+ * The colour scheme file, `Amber.colors`, from the table and the tokens:
+ * groups and keys sorted as KConfig sorts them, colours as `r,g,b`. Throws
+ * one error listing every problem, one per line, each starting `group.key:`.
+ */
+export function formatColourScheme(roles, tokens) {
+  const problems = missingRoles(roles).map(role => `${role}: missing`);
+  const sections = [];
+  for (const group of [ ...roles.keys() ].sort()) {
+    const lines = [ `[${group}]` ];
+    const entries = roles.get(group);
+    for (const key of [ ...entries.keys() ].sort()) {
+      const role = `${group}.${key}`;
+      const entry = entries.get(key);
+      let result;
+      if ('token' in entry) {
+        const { rgb, problem } = channelsOf(tokens, entry.token);
+        result = problem ? { problem } : { text: rgb.join(',') };
+      } else if ('rule' in entry) {
+        const rule = RULES[role];
+        try {
+          result = rule ? { text: String(rule(tokens)) } : { problem: 'no generator for this rule' };
+        } catch (error) {
+          result = { problem: error.message };
+        }
+      } else {
+        result = formatValue(entry.value);
+      }
+      if (result.problem) {
+        problems.push(`${role}: ${result.problem}`);
+      } else {
+        lines.push(`${key}=${result.text}`);
+      }
+    }
+    sections.push(lines.join('\n'));
+  }
+  if (problems.length > 0) {
+    throw new Error(`The colour scheme cannot be generated:\n${problems.join('\n')}`);
+  }
+  return `${[ HEADER.join('\n'), ...sections ].join('\n\n')}\n`;
 }

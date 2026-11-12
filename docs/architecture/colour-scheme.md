@@ -12,7 +12,7 @@ the [glossary](../product/glossary.md) defines them, in particular
 [`parts/colour-scheme/roles.json`](../../parts/colour-scheme/roles.json) is
 the table: one entry for every role of a `.colors` file, grouped as the file
 groups them. It is written by hand and refers to tokens by name; the
-generator (P2.2) turns it into `Amber.colors`. This document gives the rules
+generator turns it into `Amber.colors` ([Generating](#generating)). This document gives the rules
 behind the table and does not repeat it.
 
 An entry has exactly one of:
@@ -81,6 +81,31 @@ Amber writes none of them, and each is checked by eye in P2.3:
 - Qt's bevel roles (Light, Mid, Dark, Shadow), from `contrast`;
 - the disabled and inactive states, from the effects.
 
+## Generating
+
+`node tools/src/bin/generate.mjs colour-scheme --write` writes
+[`parts/colour-scheme/Amber.colors`](../../parts/colour-scheme/Amber.colors)
+from the tokens and the table; without `--write` it prints the file. The file
+is committed, and a test fails when it differs from what the generator makes
+now, so a changed token is regenerated in the same change (my call, D-92).
+The tool is described in the `ai-tools` skill's reference.
+
+- **Format** (as `BreezeDark.colors`): `[group]` lines, one `Key=value` per
+  line, a colour as `r,g,b` in decimal, a switch as `true` or `false`. Groups
+  and keys are sorted as KConfig sorts them. A header names the licence and
+  the command; the file holds no date or path, so running the generator twice
+  gives the same file. (my call)
+- **Refusals.** The generator writes nothing when a role is missing, a token
+  is unknown or not opaque, a `rule` has no code, or a value would break the
+  file.
+- **The disabled `ContrastAmount`**, the table's one rule, is the amount `a`,
+  rounded to two places, at which `text` faded towards `tone-2`, channel by
+  channel in sRGB (`text + (tone-2 − text) × a`, as `KColorUtils::mix`
+  does), has the relative luminance of `text-dim`. It is found by bisection.
+  With the tokens of 2026-11-12 it is 0.34: faded text then measures 6.17:1
+  on tone 2 against dim text's 6.25:1. The formula is unverified
+  ([platform](platform.md#unverified-2)).
+
 ## The check
 
 `tools/src/lib/amber-colour-scheme.spec.mjs` runs in the tests and fails when:
@@ -94,4 +119,9 @@ Amber writes none of them, and each is checked by eye in P2.3:
   counts the pairs of tone 3;
 - a set's DecorationHover differs from its BackgroundNormal;
 - the system's `BreezeDark.colors` has a group or role the list does not
-  know (skipped when the file is absent).
+  know (skipped when the file is absent);
+- the committed `Amber.colors` differs from what the generator makes now;
+- `Amber.colors` holds a colour that is not an opaque token's;
+- faded disabled text is more than 2 % from dim text's contrast on tone 2;
+- `Amber.colors` has other groups than `BreezeDark.colors` (skipped when the
+  file is absent).
