@@ -113,7 +113,7 @@ next starts.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P3.1 Skeleton | A copy of the Breeze style installed as `amber` | One application runs with it without changing system settings | done |
-| P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | todo |
+| P3.2 Global rules | Radius zero, borders removed, variables for the tones of each state | No rounded corner or outline on the widgets not yet restyled | done |
 | P3.3 Buttons | Buttons, tool buttons, combo boxes | Matches the prototype in every state | todo |
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | todo |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | todo |
@@ -132,8 +132,17 @@ rounded corners everywhere (P3.2). Since D-95 a settings dialog's page
 list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar: P3.7
 draws it as a sidebar.
 
-The style lives in `parts/union-style/amber/`, an unchanged copy of the
-Breeze style (D-96). It is not installed: each plan of Step 3 tries it in
+P3.2 removed the border under the header toolbar, the accent frame of a
+selected item, the lines between header sections and every rounded corner,
+along with every other border and outline (D-98). Focus, which Breeze drew
+with those borders, and the highlight of a selected tab now wait for their
+family's plan. A line Qt draws itself stays: the grid of a table view
+(P3.7). A menu was checked only as `render()` draws it; P3.8 sees one on
+screen.
+
+The style lives in `parts/union-style/amber/`, which started as an
+unchanged copy of the Breeze style (D-96) and gets its tokens from
+`contents/css/tokens.css` (D-97). It is not installed: each plan of Step 3 tries it in
 P2.3's nested session, which finds it through `XDG_DATA_DIRS`, as the
 [platform](../architecture/platform.md#tools-and-switches) document says.
 
