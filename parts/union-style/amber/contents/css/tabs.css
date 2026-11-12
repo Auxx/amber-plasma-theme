@@ -109,6 +109,14 @@ tabbutton {
         color: var(--text-dim);
     }
 
+    /* A disabled selected tab keeps its tone and marker; only its text dims. */
+    &:checked:disabled,
+    &:highlighted:disabled {
+        background-color: var(--tone-2);
+        border-color: var(--accent);
+        color: var(--text-dim);
+    }
+
     & > closebutton {
         layout-alignment: content end center 0;
         width: var(--icon-size-small);

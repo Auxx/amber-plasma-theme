@@ -47,8 +47,9 @@ Amber is in early development and nothing can be installed yet.
   each tab paints tone 0 itself and past the last tab the bar shows the
   window's tone 1. (seen in P3.6; D-109)
 - **A scrollbar's track shows the window's tone.** Beside a tone 2 view,
-  such as Dolphin's, the clear track is a 12 px strip of tone 1: what lies
-  behind it is out of the style's reach. (seen in P3.6; D-109)
+  such as Dolphin's, the clear track is a 12 px strip of tone 1, and where
+  both scrollbars show, their corner is a tone 1 square: what lies behind
+  them is out of the style's reach. (seen in P3.6; D-109)
 - **The status bar's text is text, not dim text**: Qt draws it from the
   colour scheme. (seen in P3.6; D-109)
 - **A disabled menu title looks enabled**: Union gives it no disabled

@@ -739,6 +739,9 @@ describe('the Union style\'s bars (P3.6)', () => {
     tone('&:checked, &:highlighted', 'var(--tone-2)', 'var(--accent)');
     tone('&:checked:visual-focus, &:highlighted:visual-focus', 'var(--surface-focus)', 'var(--accent)');
     tone('&:disabled', 'var(--tone-0)', 'var(--tone-0)');
+    // A disabled selected tab keeps tone 2 and its marker; only its text dims, as the prototype's.
+    tone('&:checked:disabled, &:highlighted:disabled', 'var(--tone-2)', 'var(--accent)');
+    assert.equal(value(child(t, '&:checked:disabled, &:highlighted:disabled'), 'color'), 'var(--text-dim)');
     assert.equal(value(child(t, '&:disabled'), 'color'), 'var(--text-dim)');
     // Every state that colours the marker's edge comes after the edges are set.
     const at = selector => t.children.findIndex(c => parts(c.selector).join(', ') === selector);
@@ -788,7 +791,8 @@ describe('the Union style\'s bars (P3.6)', () => {
       .findIndex(r => r.test(selector));
     const offending = family.filter(([ , b ]) => !/:/.test(b.selector)).flatMap(([ file, b ]) => {
       const ranks = b.children.filter(c => value(c, 'background-color') || value(c, 'color'))
-        .map(c => (/:(checked|highlighted):visual-focus/.test(c.selector) ? 3.5 : rank(c.selector))).filter(r => r >= 0);
+        .map(c => (/:(checked|highlighted):disabled/.test(c.selector) ? 4.5
+          : /:(checked|highlighted):visual-focus/.test(c.selector) ? 3.5 : rank(c.selector))).filter(r => r >= 0);
       return ranks.some((r, i) => i && r < ranks[i - 1]) ? [ `${file}: ${b.selector}` ] : [];
     });
     assert.deepEqual(offending, []);
