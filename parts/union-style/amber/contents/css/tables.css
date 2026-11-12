@@ -3,6 +3,9 @@
  * SPDX-FileCopyrightText: 2025 Akseli Lahtinen <akselmo@akselmo.dev>
  */
 
+/* Tree and table delegates of Qt Quick, and the tree's chevron in Qt Widgets
+ * applications (treeviewdelegate > indicator, P3.7): the tones of an item
+ * (D-112). A header section is dim text at rest, text when sorted. */
 treeviewdelegate,
 tableviewdelegate {
     width: var(--medium-element-size);
@@ -19,32 +22,32 @@ tableviewdelegate {
     icon-width: var(--icon-size-small);
     icon-height: var(--icon-size-small);
 
-    color: var(--view-text-color);
-    background-color: var(--view-background-color);
+    color: var(--text);
+    background-color: transparent;
 
     &.alternating-colors {
-        background-color: var(--view-background-alternate-color);
+        background-color: transparent;
     }
 
-    &:hovered,
-    &:active-focus {
+    &:hovered {
         border: none;
-        background-color: transparent;
+        background-color: var(--tone-3);
     }
 
     &:visual-focus {
         outline: none;
+        background-color: var(--raised-focus);
     }
 
     &:highlighted,
     &.selected {
-        color: var(--highlight-text-color);
+        color: var(--text);
         border: none;
-        background-color: var(--highlight-color);
+        background-color: var(--selected);
     }
 
     &.selected > label {
-        color: var(--highlight-text-color);
+        color: var(--text);
     }
 
     &.editing {
@@ -52,8 +55,8 @@ tableviewdelegate {
     }
 
     &:disabled {
-        color: var(--view-disabled-text-color);
-        background-color: var(--view-disabled-background-color);
+        color: var(--text-dim);
+        background-color: transparent;
     }
 }
 
@@ -74,9 +77,14 @@ treeviewdelegate {
     & > indicator {
         width: var(--medium-element-size);
         height: var(--icon-size-small);
-        color: var(--view-text-color);
+        color: var(--text-dim);
         icon-name: "arrow-right-symbolic";
         layout-alignment: item start center 1;
+    }
+
+    /* Dim text on raised focus is 2.58:1: a focused folder's chevron is text. */
+    &:visual-focus > indicator {
+        color: var(--text);
     }
 
     & > radiobutton,
@@ -92,11 +100,11 @@ treeviewdelegate {
     }
 
     &:disabled {
-        color: var(--view-disabled-text-color);
-        background-color: var(--view-disabled-background-color);
+        color: var(--text-dim);
+        background-color: transparent;
 
         & > indicator {
-            color: var(--view-disabled-text-color);
+            color: var(--text-dim);
         }
     }
 }
@@ -105,13 +113,16 @@ headerviewdelegate
 {
     width: var(--large-element-size);
     height: var(--large-element-size);
-    padding: var(--small-spacing);
+    padding-top: var(--small-spacing);
+    padding-bottom: var(--small-spacing);
+    padding-left: 12px;
+    padding-right: 12px;
 
     border-bottom: none;
     border-right: none;
 
-    background-color: var(--button-active-background-color);
-    color: var(--button-active-text-color);
+    background-color: transparent;
+    color: var(--text-dim);
 
     layout-alignment: content fill center 0;
     icon-alignment: content center center 0;
@@ -122,10 +133,28 @@ headerviewdelegate
     icon-size: var(--icon-size-small);
 
     & > indicator {
-        color: var(--button-active-text-color);
+        color: var(--text);
         width: var(--icon-size-small);
         height: var(--icon-size-small);
         layout-alignment: content end center 0;
+    }
+
+    &:hovered
+    {
+        background-color: var(--tone-3);
+        color: var(--text);
+    }
+
+    &:pressed
+    {
+        background-color: var(--tone-1);
+        color: var(--text);
+    }
+
+    &.sort-ascending,
+    &.sort-descending
+    {
+        color: var(--text);
     }
 
     &.sort-ascending > indicator
@@ -141,39 +170,52 @@ headerviewdelegate
     &:disabled
     {
         border: none;
-        color: var(--button-disabled-text-color);
-        background-color: var(--button-disabled-background-color);
+        color: var(--text-dim);
+        background-color: transparent;
+
+        & > indicator {
+            color: var(--text-dim);
+        }
     }
 }
 
+/* Qt Quick's table selection and the rubber band of Qt Widgets: the selected
+ * tone at half strength, with no border (D-110). Union's tokens are opaque, so
+ * the half strength is written here. */
 selectionrectangle {
-    color: var(--highlight-color);
+    color: var(--selected);
     border: none;
-    border-radius: var(--corner-radius);
-    background-color: var(--highlight-color);
+    border-radius: 0px;
+    background-color: modify-color(var(--selected) set-alpha 0.5);
 
     &:disabled {
         border: none;
-        color: var(--highlight-disabled-color);
-        background-color: var(--highlight-disabled-color);
+        color: var(--tone-3);
+        background-color: transparent;
     }
+}
+
+rubberband {
+    border: none;
+    border-radius: 0px;
+    background-color: modify-color(var(--selected) set-alpha 0.5);
 }
 
 selectionrectanglehandle {
     width: var(--small-element-size);
     height: var(--small-element-size);
-    background-color: var(--bar-handle-active-background-color);
+    background-color: var(--thumb);
     border: none;
     border-radius: var(--small-element-size); /* round widget */
 
     &:visual-focus {
-        border-color: var(--highlight-color);
+        background-color: var(--raised-focus);
         outline: none;
     }
 
     &:disabled {
-        color: var(--highlight-disabled-color);
-        background-color: var(--bar-handle-disabled-background-color);
+        color: var(--tone-3);
+        background-color: var(--tone-3);
         border: none;
     }
 }

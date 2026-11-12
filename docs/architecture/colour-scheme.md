@@ -33,17 +33,21 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
 
 ## Rules
 
-- **Selection is an accent fill**, with on-accent for every text on it,
-  including the link and status colours, which lose their hue on a selection
-  as Breeze's do. (decided, D-86) The Union style still draws a selected
-  item as tone 4 with a block marker (D-72); Selection is what an
-  application uses when it draws a selection itself, and for text selected
-  in a text field.
+- **Selection is the dark gold text selection**, `text-selection`, with
+  text for every text on it, including dim text, the link and the status
+  colours, which lose their hue on a selection as Breeze's do: only text
+  reaches 4.5:1 there (5.95:1). (decided, D-110, which changes D-86)
+  Selection is what an application uses when it paints a selected item's
+  text itself, as Dolphin and a settings dialog's page list do, and for
+  text selected in a text field; Breeze's folder icons take its
+  background as their colour. The Union style draws a selected item's own
+  tone, tone 4 (D-72), so the text keeps its colour in every state.
 - **Links and status colours have tokens of their own**, `link`, `visited`,
   `positive`, `neutral` and `negative`, that point to approved colours
   ([design language](design-language.md#tokens)). Danger stays a fill: as
   text it does not reach 4.5:1. (decided, D-87)
-- **DecorationFocus is accent**, and on-accent in Selection, so that
+- **DecorationFocus is accent**, in Selection too (3.68:1 on the text
+  selection; D-110), so that
   keyboard focus stays visible where an application draws its own focus
   frame. **DecorationHover equals its set's BackgroundNormal**, so that a
   hover frame never shows (D-4). (decided, D-88) A focus frame seen in an

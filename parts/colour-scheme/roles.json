@@ -42,18 +42,18 @@
     "DecorationHover": { "token": "tone-3" }
   },
   "Colors:Selection": {
-    "BackgroundNormal": { "token": "accent", "why": "Selection is an accent fill (D-86)" },
-    "BackgroundAlternate": { "token": "accent", "why": "A selected alternate row is the same fill (D-86)" },
-    "ForegroundNormal": { "token": "on-accent", "why": "Every text on a selection is on-accent, 8.72:1; status colours lose their hue there, as Breeze's do (D-86)" },
-    "ForegroundInactive": { "token": "on-accent" },
-    "ForegroundActive": { "token": "on-accent" },
-    "ForegroundLink": { "token": "on-accent" },
-    "ForegroundVisited": { "token": "on-accent" },
-    "ForegroundNegative": { "token": "on-accent" },
-    "ForegroundNeutral": { "token": "on-accent" },
-    "ForegroundPositive": { "token": "on-accent" },
-    "DecorationFocus": { "token": "on-accent", "why": "Accent cannot mark focus on accent (D-88)" },
-    "DecorationHover": { "token": "accent" }
+    "BackgroundNormal": { "token": "text-selection", "why": "The dark gold of selected text; folder icons take it too (D-110)" },
+    "BackgroundAlternate": { "token": "text-selection", "why": "A selected alternate row is the same fill (D-110)" },
+    "ForegroundNormal": { "token": "text", "why": "A selected item's text keeps its colour, as in Breeze, 5.95:1 (D-110)" },
+    "ForegroundInactive": { "token": "text", "why": "Dim text reaches only 3.00:1 on the text selection, so secondary text is text (D-110)" },
+    "ForegroundActive": { "token": "text", "why": "Accent reaches only 3.68:1 as text on the text selection (D-110)" },
+    "ForegroundLink": { "token": "text", "why": "Links and status colours reach 3.3:1 to 3.4:1 on the text selection, so they lose their hue there, as on Breeze's selection (D-110)" },
+    "ForegroundVisited": { "token": "text" },
+    "ForegroundNegative": { "token": "text" },
+    "ForegroundNeutral": { "token": "text" },
+    "ForegroundPositive": { "token": "text" },
+    "DecorationFocus": { "token": "accent", "why": "Accent marks focus on the text selection at 3.68:1 (D-88, D-110)" },
+    "DecorationHover": { "token": "text-selection", "why": "The set's BackgroundNormal, so that a hover frame does not show (D-88)" }
   },
   "Colors:Tooltip": {
     "BackgroundNormal": { "token": "popup", "why": "Popups are tone 3" },
