@@ -31,7 +31,7 @@ function groupsOf(source) {
     if (group) {
       current = group[1];
       groups.set(current, []);
-    } else if (current && /^[A-Za-z]+=/.test(line)) {
+    } else if (current && /^[^=[\s]+=/.test(line)) {
       groups.get(current).push(line.slice(0, line.indexOf('=')));
     }
   }

@@ -17,11 +17,12 @@ behind the table and does not repeat it.
 
 An entry has exactly one of:
 
-- **`token`**: the role takes the token's colour. Every role of a colour set
-  is a token, never a literal colour, so that no value can bypass the tokens
-  file and bring back a grey (my call, D-89).
-- **`value`**: a fixed number, word or switch, for the groups that are not
-  colour sets. It carries a `why`.
+- **`token`**: the role takes the token's colour. Every role that holds a
+  colour is a token, never a literal colour, so that no value can bypass the
+  tokens file and bring back a grey (my call, D-89). These are the roles of
+  the colour sets, the `Color` of each effect and the roles of `[WM]`.
+- **`value`**: a fixed number, word or switch, for the other roles. It
+  carries a `why`.
 - **`rule`**: a value the generator computes, described in words.
 
 A `why` may sit on any entry and explains the entries of the same kind that
@@ -46,7 +47,8 @@ and were verified on this machine ([platform](platform.md#colour-scheme)).
   keyboard focus stays visible where an application draws its own focus
   frame. **DecorationHover equals its set's BackgroundNormal**, so that a
   hover frame never shows (D-4). (decided, D-88) A focus frame seen in an
-  application is fixed in the Union style or listed as a known gap.
+  application is fixed in the Union style or listed as a known gap (my
+  call).
 - **The tones of the sets follow the prototype** (my call, D-90): Window is
   tone 2 with tone 1 as its alternate; View is tone 2 with no alternate,
   since views have no stripes; Button is tone 3 and tone 4; Header is
@@ -84,6 +86,7 @@ Amber writes none of them, and each is checked by eye in P2.3:
 `tools/src/lib/amber-colour-scheme.spec.mjs` runs in the tests and fails when:
 
 - a role has no entry, or a token in the table does not exist;
+- a role that holds a colour has a value or a rule instead of a token;
 - a foreground role of a colour set, on the set's BackgroundNormal or
   BackgroundAlternate, is not a declared
   [contrast pair](accessibility.md#how-the-check-works) of at least 4.5, or

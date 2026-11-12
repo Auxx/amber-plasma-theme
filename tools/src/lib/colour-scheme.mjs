@@ -57,10 +57,25 @@ export const OTHER_ROLES = {
   WM: [ 'activeBackground', 'activeBlend', 'activeForeground', 'inactiveBackground', 'inactiveBlend', 'inactiveForeground' ]
 };
 
+/**
+ * The roles outside the colour sets that hold a colour. Like a colour set,
+ * they take tokens only, so that no literal colour can bring back a grey.
+ */
+export const COLOUR_ROLES = [
+  'ColorEffects:Disabled.Color',
+  'ColorEffects:Inactive.Color',
+  ...OTHER_ROLES.WM.map(key => `WM.${key}`)
+];
+
 const KINDS = [ 'token', 'value', 'rule' ];
 
 /** The keys of a group, or undefined for a group a `.colors` file does not have. */
-const rolesOf = group => (COLOUR_SETS.includes(group) ? SET_ROLES : OTHER_ROLES[group]);
+const rolesOf = group => {
+  if (COLOUR_SETS.includes(group)) {
+    return SET_ROLES;
+  }
+  return Object.hasOwn(OTHER_ROLES, group) ? OTHER_ROLES[group] : undefined;
+};
 
 const isText = value => typeof value === 'string' && value.trim() !== '';
 const isPlainObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -68,10 +83,15 @@ const isPlainObject = value => value !== null && typeof value === 'object' && !A
 /**
  * Parses the table: an object of groups, each an object of roles, each an
  * entry with exactly one of `token`, `value` or `rule`, and a `why`. A value
- * needs a `why`; a colour set takes tokens only. Throws on anything else.
+ * needs a `why`; a colour set and a colour role take tokens only. Throws on anything else.
  */
 export function parseRoles(source, file = 'roles.json') {
-  const groups = JSON.parse(source);
+  let groups;
+  try {
+    groups = JSON.parse(source);
+  } catch (error) {
+    throw new Error(`${file}: ${error.message}`);
+  }
   if (!isPlainObject(groups)) {
     throw new Error(`${file}: not an object of groups`);
   }
@@ -102,6 +122,9 @@ export function parseRoles(source, file = 'roles.json') {
       const [ kind ] = kinds;
       if (COLOUR_SETS.includes(group) && kind !== 'token') {
         fail('a colour set takes a token');
+      }
+      if (COLOUR_ROLES.includes(`${group}.${key}`) && kind !== 'token') {
+        fail('a colour role takes a token');
       }
       if ((kind === 'token' || kind === 'rule') && !isText(entry[kind])) {
         fail(`"${kind}" must be a non-empty string`);

@@ -50,6 +50,11 @@ describe('colour-scheme roles', () => {
     assert.throws(() => roles([]), /roles.json: not an object/);
     assert.throws(() => roles({ General: { Name: { value: 'Amber', why: 'x', note: 'y' } } }), /unknown fields: note/);
     assert.throws(() => roles({ General: { Name: { value: null, why: 'x' } } }), /"value" must be/);
+    assert.throws(() => roles({ WM: { activeBlend: { value: '#808080', why: 'x' } } }), /WM.activeBlend: a colour role takes a token/);
+    assert.throws(() => roles({ 'ColorEffects:Disabled': { Color: { rule: 'x' } } }), /a colour role takes a token/);
+    assert.throws(() => parseRoles('{"__proto__": {}}'), /roles.json: __proto__: not a group/);
+    assert.throws(() => roles({ toString: {} }), /roles.json: toString: not a group/);
+    assert.throws(() => parseRoles('{', 'roles.json'), /^Error: roles.json: /);
   });
 
   it('lists missing roles', () => {

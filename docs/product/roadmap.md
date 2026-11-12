@@ -82,7 +82,7 @@ candidate now.
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P2.1 Role mapping | Table of which token feeds which colour-scheme role | Every role of a `.colors` file has a token or a written rule | | done |
+| P2.1 Role mapping | Table of which token feeds which colour-scheme role | Every role of a `.colors` file has a token or a written rule | done |
 | P2.2 Generator | `Amber.colors` generated from the tokens | Running the generator twice gives the same file; tests pass | todo |
 | P2.3 Check in applications | The scheme seen in Dolphin, Kate and Konsole | No cool grey is visible; findings are written down | todo |
 

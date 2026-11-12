@@ -21,7 +21,7 @@ Disabled controls are exempt in WCAG, and are exempt here.
 1. **Text: 4.5:1.** Primary text and dim text reach 4.5:1 on every tone they
    can appear on; on-accent reaches it on accent, and on-danger on danger.
    The link and status colours of the colour scheme reach it on tones 0 to 4
-   (5.10:1 at least, on tone 4; P2.1). The lower 3:1 for large text
+   ([measured](#first-measurements) in P2.1). The lower 3:1 for large text
    is not used. Dim text on raised focus measures 2.58:1 (measured
    2026-11-11, P1.5), so a focused item shows its secondary columns, and a
    focused tree folder its chevron, in text.
