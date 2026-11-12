@@ -21,6 +21,13 @@ export const colourLiterals = value => [ ...value.matchAll(LITERAL) ].map(m => m
 // or black, which shadows use. (my call)
 const WARM = [ 30, 110 ];
 
+// "A hue is not a grey" (design language): at an OKLCH chroma of 0.05 or more a
+// colour is a hue, which the ANSI colours may be whatever its angle.
+const HUE_CHROMA = 0.05;
+
+/** Whether the colour is a hue and not a grey. */
+export const isHue = text => toOklch(parseColour(text)).c >= HUE_CHROMA;
+
 /** Null when the colour is warm or black; otherwise why it is not. */
 export function warmthOffence(text) {
   const { l, c, h } = toOklch(parseColour(text));
@@ -178,7 +185,9 @@ export function pageOffences(file, source) {
           offences.push({ index, text: `colour outside a candidate: ${declaration}` });
         }
         if (isCandidate) {
-          for (const why of literals.map(warmthOffence).filter(Boolean)) {
+          // An ANSI colour may be a hue that is not warm, as long as it is a hue.
+          const judge = declaration.startsWith('--ansi-') ? text => (isHue(text) ? null : warmthOffence(text)) : warmthOffence;
+          for (const why of literals.map(judge).filter(Boolean)) {
             offences.push({ index, text: why });
           }
         }

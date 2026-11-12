@@ -191,6 +191,18 @@ window.addEventListener('pageshow', () => document.querySelectorAll('.slider').f
     assert.deepEqual(page('<div style="--outline: #585248">'), [ 'a.html:1: colour outside a candidate: --outline: #585248' ]);
   });
 
+  it('lets a candidate give an ANSI colour a hue that is not a grey', () => {
+    // "A hue is not a grey" (design language): an ANSI colour may be blue or
+    // cyan when its chroma is at least 0.05. Any other token stays warm.
+    assert.deepEqual(page('<figure class="candidate" style="--ansi-blue: #3b6d89; --ansi-cyan: #397069">'), []);
+    assert.deepEqual(page('<figure class="candidate" style="--ansi-blue: #8a8f99">'), [
+      'a.html:1: not warm: #8a8f99 (hue 264, my call: warm is 30 to 110)'
+    ]);
+    assert.deepEqual(page('<figure class="candidate" style="--outline: #3b6d89">'), [
+      'a.html:1: not warm: #3b6d89 (hue 235, my call: warm is 30 to 110)'
+    ]);
+  });
+
   it('judges warmth', () => {
     assert.equal(warmthOffence('#5c554b'), null);
     assert.equal(warmthOffence('rgb(0 0 0 / 50%)'), null);

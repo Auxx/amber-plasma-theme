@@ -2,8 +2,9 @@
  * The samples page (roadmap P1.6): the terminal colours on a mock Konsole and
  * the editor theme on a mock Kate. The page itself, its families and its
  * candidates take gallery.css. Each coloured run of text is a span whose one
- * class names its token: ansi-<name> reads --ansi-<name>, syn-<kind> reads
- * --syntax-<kind>.
+ * colour class names its token: ansi-<name> reads --ansi-<name>, syn-<kind>
+ * reads --syntax-<kind>. A span may also sit on an ANSI colour: on-<name>
+ * reads --ansi-<name> as its background.
  */
 
 /* A window on the surface, with room on every side for its glow. */
@@ -51,6 +52,19 @@
 .ansi-bright-magenta { color: var(--ansi-bright-magenta); }
 .ansi-bright-cyan { color: var(--ansi-bright-cyan); }
 .ansi-bright-white { color: var(--ansi-bright-white); }
+
+/* An ANSI colour as a background: a status badge, a panel of a file manager. */
+.on-red { background: var(--ansi-red); }
+.on-green { background: var(--ansi-green); }
+.on-yellow { background: var(--ansi-yellow); }
+.on-blue { background: var(--ansi-blue); }
+.on-magenta { background: var(--ansi-magenta); }
+.on-cyan { background: var(--ansi-cyan); }
+
+/* A background fills the whole height of its line, so that rows of it meet. */
+.terminal [class*=" on-"] {
+  display: inline-block;
+}
 
 /*
  * Kate's editor area: the gutter a tone below the code, with no line between

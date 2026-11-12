@@ -131,7 +131,9 @@ node tools/src/bin/tokens.mjs resolve text-dim
   listed in the spec), `<style>`, `<hr>`, SVG `<line>`, `rx`/`ry`, a colour
   in an attribute, a `style` that sets anything but custom properties, and a colour
   set outside a candidate. A colour written outside the tokens must be warm:
-  OKLCH hue 30 to 110, or black (my call). A script (`prototype/*.js`) may
+  OKLCH hue 30 to 110, or black (my call). A candidate's `--ansi-*`
+  override may be any hue with a chroma of at least 0.05: a hue is not a
+  grey. A script (`prototype/*.js`) may
   only copy a value into `--value` (D-48). It is read against an allowlist:
   it may use only the names a slider needs (`document`, `querySelectorAll`,
   `addEventListener`, `setProperty`, `value`, `min`, `max`, `Number` and a few
