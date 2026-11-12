@@ -156,8 +156,8 @@
 .text-field::selection,
 .text-area::selection,
 .spin-field::selection {
-  color: var(--on-accent);
-  background: var(--accent);
+  color: var(--text);
+  background: var(--text-selection);
 }
 
 /* Hovered */
@@ -517,9 +517,10 @@
 }
 
 /*
- * Navigation (P1.5): tabs and items. A selected one carries the block marker,
- * a gradient in --marker, --marker-width thick: on the leading edge of an
- * item, on the top edge of a tab. It is not a border, so it is no hairline.
+ * Navigation (P1.5): tabs and items. A selected tab carries the block marker,
+ * a gradient in --marker, --marker-width thick, on its top edge. It is not a
+ * border, so it is no hairline. A selected item has none: it is told by its
+ * tone (D-111).
  * Clicking a live copy does not select it: that needs a script that sets a
  * class, which D-48 forbids. Selected copies are forced.
  */
@@ -550,6 +551,11 @@
 .item-view {
   align-self: stretch;
   background: var(--tone-2);
+}
+
+/* A sidebar is tone 1, a tone below the view. */
+.item-view.is-sidebar {
+  background: var(--tone-1);
 }
 
 .item {
@@ -597,7 +603,8 @@
   color: var(--text);
 }
 
-/* Selected: the block marker in accent, kept when hovered or focused. */
+/* Selected. A selected tab carries the block marker; an item is told by its
+   tone alone (D-111). */
 
 .tab.is-selected {
   --marker: var(--accent);
@@ -609,7 +616,6 @@
 }
 
 .item.is-selected {
-  --marker: var(--accent);
   background-color: var(--selected);
 }
 
@@ -676,14 +682,45 @@
   color: var(--text);
 }
 
-.header-section:is(:hover, .is-hovered) {
+.header-section:not([aria-disabled="true"]):is(:hover, .is-hovered) {
   color: var(--text);
   background-color: var(--tone-3);
 }
 
-.header-section:is(:active, .is-pressed) {
+.header-section:not([aria-disabled="true"]):is(:active, .is-pressed) {
   color: var(--text);
   background-color: var(--tone-1);
+}
+
+.header-section[aria-disabled="true"] {
+  color: var(--text-dim);
+}
+
+/* A folder icon takes the colour scheme's Selection background, the text
+   selection's colour, as Breeze's folder icons do (D-110). */
+.folder-glyph {
+  flex: none;
+  color: var(--text-selection);
+}
+
+/* The rubber band: a fill with no border, over the items it selects. */
+.rubber-band-view {
+  position: relative;
+}
+
+.rubber-band {
+  position: absolute;
+  left: 40px;
+  top: 8px;
+  width: 150px;
+  height: 46px;
+  background: var(--rubber-band);
+}
+
+/* A run of selected text, shown still in a candidate. */
+.selection-sample {
+  color: var(--text);
+  background: var(--text-selection);
 }
 
 .live.is-wide {

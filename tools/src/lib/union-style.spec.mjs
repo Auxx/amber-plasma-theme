@@ -805,3 +805,143 @@ describe('the Union style\'s bars (P3.6)', () => {
     assert.deepEqual(offending, []);
   });
 });
+
+describe('the Union style\'s views (P3.7)', () => {
+  const files = {
+    'delegate.css': /^(itemdelegate|checkdelegate|radiodelegate|switchdelegate|swipedelegate|itemviewitem|focusframe|graphicsview itemviewitem)$/,
+    'tables.css': /^(treeviewdelegate|tableviewdelegate|headerviewdelegate|selectionrectangle|selectionrectanglehandle|rubberband)$/
+  };
+  const all = Object.fromEntries(Object.keys(files).map(f => [ f, blocks(read(f)) ]));
+  const below = block => [ block, ...block.children.flatMap(below) ];
+  const family = Object.entries(files).flatMap(([ file, test ]) => all[file]
+    .filter(b => !b.parent && parts(b.selector).every(p => test.test(p)))
+    .flatMap(below).map(b => [ file, b ]));
+  const top = (file, selector) => {
+    const found = all[file].filter(b => !b.parent && parts(b.selector).join(', ') === selector);
+    assert.equal(found.length, 1, `${file}: one block ${selector} expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => parts(c.selector).join(', ') === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  // The rubber band, and Qt Quick's table selection, are the selected tone at half strength (D-110); Union's
+  // tokens are opaque, so they are the one colour of the family written with modify-color.
+  const RUBBER_BAND = 'modify-color(var(--selected) set-alpha 0.5)';
+  const colourOf = d => (/^border(-(top|right|bottom|left))?$/.test(d.property) ? d.value.split(/\s+/).slice(2).join(' ') || null
+    : /(^|-)color$/.test(d.property) ? d.value : null);
+
+  it('finds every view block', () => {
+    assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector.replace(/\s+/g, ' ')}`)) ].sort(), [
+      'delegate.css checkdelegate, radiodelegate', 'delegate.css focusframe',
+      'delegate.css itemdelegate, checkdelegate, radiodelegate, switchdelegate, swipedelegate', 'delegate.css itemviewitem',
+      'tables.css headerviewdelegate', 'tables.css rubberband', 'tables.css selectionrectangle', 'tables.css selectionrectanglehandle',
+      'tables.css treeviewdelegate', 'tables.css treeviewdelegate, tableviewdelegate' ]);
+  });
+
+  it('colours a view only with the tokens, and the rubber band with the selected tone at half strength', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => colourOf(d) !== null && d.value !== 'none')
+      .filter(d => !tokenVar.test(colourOf(d)) && colourOf(d) !== 'transparent'
+        && !([ 'rubberband', 'selectionrectangle' ].includes(parts(b.selector).join()) && d.value === RUBBER_BAND))
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+    assert.equal(value(top('tables.css', 'rubberband'), 'background-color'), RUBBER_BAND);
+    assert.equal(value(top('tables.css', 'rubberband'), 'border'), 'none');
+  });
+
+  it('shows an item\'s focus only under the keyboard', () => {
+    assert.deepEqual(family.filter(([ , b ]) => /:active-focus/.test(b.selector)).map(([ f, b ]) => `${f} ${b.selector}`), []);
+  });
+
+  it('draws an item with square corners and no inset that would leave a strip of the view', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => (/radius$/.test(d.property) && d.value !== '0px' && !d.comment.startsWith('round widget'))
+        || (/^inset/.test(d.property) && d.value !== '0px'))
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives an item the tones of the prototype, and keeps its text in every state but disabled', () => {
+    const i = top('delegate.css', 'itemviewitem');
+    const tone = (selector, background, color) => {
+      assert.equal(value(selector ? child(i, selector) : i, 'background-color'), background, selector || 'at rest');
+      assert.equal(value(selector ? child(i, selector) : i, 'color'), color, selector || 'at rest');
+    };
+    tone('', 'transparent', 'var(--text)');
+    tone('&:hovered', 'var(--tone-3)', undefined);
+    tone('&:visual-focus', 'var(--raised-focus)', undefined);
+    tone('&:highlighted', 'var(--selected)', undefined);
+    tone('&:highlighted:visual-focus', 'var(--raised-focus)', undefined);
+    tone('&:disabled', 'transparent', 'var(--text-dim)');
+    tone('&:highlighted:disabled', 'var(--selected)', 'var(--text-dim)');
+    assert.equal(value(child(i, '&.alternating-colors'), 'background-color'), 'transparent');
+    assert.equal(value(i, 'height'), '26px');
+    // Union draws a Qt Widgets item's text from its edge whatever the padding (Task 4); Qt Quick reads it.
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(i, `padding-${e}`)), [ '4px', '4px', '12px', '12px' ]);
+  });
+
+  it('puts no block marker on any item (D-111)', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => /^border/.test(d.property) && !/radius$/.test(d.property) && d.value !== 'none')
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('gives a header section the tones of the prototype', () => {
+    const h = top('tables.css', 'headerviewdelegate');
+    const tone = (selector, background, color) => {
+      const b = selector ? child(h, selector) : h;
+      assert.equal(value(b, 'background-color'), background, selector || 'at rest');
+      assert.equal(value(b, 'color'), color, selector || 'at rest');
+    };
+    // A clear section shows the header's own background, the Button set's tone 3 (Task 4), so a section paints
+    // the view's tone 2 itself.
+    tone('', 'var(--tone-2)', 'var(--text-dim)');
+    tone('&:hovered', 'var(--tone-3)', 'var(--text)');
+    tone('&:pressed', 'var(--tone-1)', 'var(--text)');
+    tone('&.sort-ascending, &.sort-descending', undefined, 'var(--text)');
+    tone('&:disabled', 'var(--tone-2)', 'var(--text-dim)');
+    assert.equal(value(child(h, '& > indicator'), 'color'), 'var(--text)');
+  });
+
+  it('gives a tree its chevron in dim text, and text on a focused item', () => {
+    const t = top('tables.css', 'treeviewdelegate');
+    assert.equal(value(child(t, '& > indicator'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(t, '&:visual-focus > indicator'), 'color'), 'var(--text)');
+    const q = top('tables.css', 'treeviewdelegate, tableviewdelegate');
+    assert.equal(value(q, 'background-color'), 'transparent');
+    assert.equal(value(child(q, '&:hovered'), 'background-color'), 'var(--tone-3)');
+    assert.equal(value(child(q, '&:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(q, '&:highlighted, &.selected'), 'background-color'), 'var(--selected)');
+    // As an item (D-112): selected and focused takes raised focus; selected and disabled keeps the selected tone.
+    assert.equal(value(child(q, '&:highlighted:visual-focus, &.selected:visual-focus'), 'background-color'), 'var(--raised-focus)');
+    assert.equal(value(child(q, '&:highlighted:disabled, &.selected:disabled'), 'background-color'), 'var(--selected)');
+    assert.equal(value(child(q, '&:highlighted:disabled, &.selected:disabled'), 'color'), 'var(--text-dim)');
+  });
+
+  it('fills no part of a view one pixel thick', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => /^(width|height)$/.test(d.property) && d.value === '1px')
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('orders the states of each block so that the later wins: hovered, focused, pressed, selected, disabled', () => {
+    const rank = selector => [ /:hovered/, /:visual-focus/, /:pressed/, /:highlighted|\.selected|\.sort-/, /:disabled/ ]
+      .findIndex(r => r.test(selector));
+    const offending = family.filter(([ , b ]) => !/:/.test(b.selector)).flatMap(([ file, b ]) => {
+      const ranks = b.children.filter(c => value(c, 'background-color') || value(c, 'color'))
+        .map(c => (/:highlighted:disabled/.test(c.selector) ? 4.5
+          : /:highlighted:visual-focus/.test(c.selector) ? 3.5 : rank(c.selector))).filter(r => r >= 0);
+      return ranks.some((r, i) => i && r < ranks[i - 1]) ? [ `${file}: ${b.selector}` ] : [];
+    });
+    assert.deepEqual(offending, []);
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
+      .map(d => `${file}:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+});

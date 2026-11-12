@@ -100,8 +100,8 @@ background / text, and the block marker or tick where the widget has one.
 |---|---|---|---|---|---|---|
 | Tab, on a tone 0 tab bar | no fill / text | tone 1 / text | surface focus / text | — | selected: tone 2 / text, marker | no fill / dim text |
 | Tab's close button (my call, D-108) | no fill / dim text | danger / on danger | — | danger / on danger | — | — |
-| Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | — | selected: selected / text, marker | no fill / dim text |
-| Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | — |
+| Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | as hovered (my call, D-112) | selected: selected / text, no marker (decided, D-111) | no fill / dim text; selected: selected / dim text (my call, D-112) |
+| Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | no fill / dim text (my call, D-112) |
 | Menu title, on a tone 0 menu bar (my call, D-108) | no fill / text | tone 3 / text | tone 3 / text | — | open: popup / text | no fill / dim text |
 | Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
 
@@ -117,8 +117,11 @@ background / text, and the block marker or tick where the widget has one.
   accent, so it has no focused tone of its own. (decided, D-76) The Union style cannot draw it in
   applications built with Qt Widgets, and the same rule serves Qt Quick, so
   it is drawn as any other button there too: a known gap. (decided, D-100)
-- **Wells:** a placeholder is dim text; selected text is on-accent on
-  accent. A spin box's step buttons take no keyboard focus; the well around
+- **Wells:** a placeholder is dim text; selected text is text on the
+  text selection, `--text-selection`, a dark gold (decided, D-110).
+  The colour scheme's Selection is the same colour, so that text an
+  application selects or paints itself keeps its colour; Breeze's folder
+  icons take it too. A spin box's step buttons take no keyboard focus; the well around
   the field shows it.
 - **The focused tone** of a raised widget, a toggle, a tab or a scroll
   area is accent mixed over the tone the widget has when hovered: 30 %
@@ -154,17 +157,20 @@ background / text, and the block marker or tick where the widget has one.
 - **An unchecked toggle** and **an empty track** are told from their
   surface by tone alone, as an empty well is. (decided, D-75)
 - **Selection**: a selected item has the selected tone, tone 4 (decided,
-  D-72), one tone above a hovered item, and carries a block marker in
-  accent, `--marker-width` (3 px) wide, on its leading edge (D-21). A selected tab carries it on its outer
+  D-72), one tone above a hovered item. Its text keeps its colour in every
+  state, as in Breeze (decided, D-110). It carries no block marker, in a
+  view or a sidebar, and is told by its tone alone (decided, D-111). A
+  selected tab carries a block marker in accent, `--marker-width` (3 px)
+  wide (D-21), on its outer
   edge, the one away from its page: the top of a tab bar above its pages, the
   bottom of one below them, the left or right of one beside them (my call,
   D-108). It takes tone 2, so that it joins the page. In Qt Widgets
   applications Union draws no tab bar, so a tab at rest paints tone 0
   itself, and past the last tab the bar shows the window's tone (decided,
-  D-109). The marker is
-  part of selection: only the marker reaches 3:1. Hovered, a selected item
-  keeps tone 4 and does not change (my call, D-73); focused, it takes
-  raised focus and keeps the marker. A selected tab does
+  D-109). A tab's marker is part of its selection: only the marker reaches
+  3:1. Hovered, a selected item keeps tone 4 and does not change (my call,
+  D-73); focused, it takes raised focus. A disabled selected item keeps tone 4 with dim text (my call,
+  D-112). A selected tab does
   not change when hovered, and takes surface focus when focused. The focused
   tones follow the rule above: accent over the hovered tone.
 - **Secondary text on a focused item**, and the chevron of a focused tree
@@ -174,6 +180,19 @@ background / text, and the block marker or tick where the widget has one.
   lines and no alternating rows. A header has no dividers: its sections are
   dim text at rest, text when sorted, and a sorted section carries a sort
   arrow.
+- **Focus in a view** (my call, D-112): an item shows its focused tone only
+  under keyboard focus, as the prototype's `:focus-visible` does: a view
+  that has focus always has a current item, and Dolphin's view nearly
+  always has focus. A view itself takes no focused tint in Qt Widgets
+  applications. A pressed item is drawn as hovered. In Qt Widgets
+  applications a header section paints the view's tone 2 itself (my call,
+  D-112). Known gaps there: an item's text starts at its edge, a table or
+  tree tints one cell rather than the row, a tree's indentation is never
+  filled, and a view's own background, such as a settings page list's,
+  and a header past its last section keep the colour scheme's tones
+  (decided, D-113; see [platform](platform.md#union)).
+- **The rubber band**, dragged over a view to select items, is the selected
+  tone at half strength, `--rubber-band`, with no border (decided, D-110).
 - **Menus** (my call, P1.5): a menu item's keyboard highlight is its hovered
   tone, since Qt does not tell the two apart. A checked item carries a tick
   in accent in a 28 px column on its left, and a shortcut is dim text on the
@@ -228,7 +247,9 @@ token holds the plain colour (D-47).
 | `--thumb-hover` | `#585248` | a hovered thumb |
 | `--thumb-pressed` | `#746e63` | a pressed thumb |
 | `--selected` | `var(--tone-4)` | a selected item (decided, D-72) |
-| `--marker-width` | `3px` | the block marker (P1.5; D-21) |
+| `--marker-width` | `3px` | the block marker of a selected tab (P1.5; D-21) |
+| `--text-selection` | `#605239`, accent 40 % over tone 0 | selected text in a field, and the colour scheme's Selection, which folder icons take (decided, D-110) |
+| `--rubber-band` | the selected tone at 50 % | the rubber band (decided, D-110) |
 
 ## Shadow
 

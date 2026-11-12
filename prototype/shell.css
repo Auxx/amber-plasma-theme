@@ -184,12 +184,9 @@ body:has(#wp4:checked) {
   color: var(--text-dim);
 }
 
-/* Selected: the selected tone and the block marker on the leading edge, as
-   a selected item in widgets.css. */
+/* Selected: the selected tone, as a selected item in widgets.css. */
 .is-selected {
-  --marker: var(--accent);
   background-color: var(--selected);
-  background-image: linear-gradient(to right, var(--marker) var(--marker-width), transparent var(--marker-width));
 }
 
 .status {

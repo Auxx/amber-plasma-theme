@@ -67,6 +67,22 @@ body {
   gap: 6px;
 }
 
+/* A table in a state cell fills the cell, with narrower columns (P3.7). */
+.state .table {
+  width: 100%;
+}
+
+.state .table .header,
+.state .table .item.is-row {
+  grid-template-columns: minmax(0, 1fr) 72px;
+}
+
+.state .table .item.is-row > *,
+.state .table .header-section {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /* A stretch of toolbar, tone 0, for the tool buttons to sit on. */
 .toolbar-strip {
   align-self: stretch;
@@ -75,8 +91,8 @@ body {
 }
 
 /* Candidates: a tone 1 band, each vignette a patch of the tone 2 surface.
-   No page shows any since the owner's review (P1.7); the rules stay for the
-   next time a value is put to the owner. */
+   No page shows any since P3.7; the rules stay for the next time a value is
+   put to the owner. */
 .candidates {
   padding: 8px 24px 32px;
   background: var(--tone-1);
@@ -108,6 +124,17 @@ body {
   gap: 12px;
   padding: 24px 20px;
   background: var(--tone-2);
+}
+
+.candidate-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.candidate-stack .text-field {
+  display: block;
 }
 
 .candidate figcaption {

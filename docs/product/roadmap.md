@@ -118,7 +118,7 @@ next starts.
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | done |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | done |
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | done |
-| P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
+| P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | done |
 | P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
 | P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
 
@@ -129,8 +129,8 @@ sections (P3.7); text fields drawn in tone 2 instead of a well, and a text
 cursor that Qt draws inverted, so that on tone 2 it is the cool grey
 `#dadde0` (P3.4, which decides whether the cursor becomes a known gap);
 rounded corners everywhere (P3.2). Since D-95 a settings dialog's page
-list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar: P3.7
-draws it as a sidebar.
+list, a View, is tone 2 on a tone 1 body, the reverse of a sidebar; P3.7
+found it out of the style's reach, a known gap (D-113).
 
 P3.2 removed the border under the header toolbar, the accent frame of a
 selected item, the lines between header sections and every rounded corner,
@@ -173,6 +173,15 @@ edge, and a scrollbar is a 12 px thumb with no arrows. Union draws no tab
 bar, so each tab paints tone 0; the strip past the last tab, the track
 beside a view, the status bar's text, a disabled menu title and the thumb's
 hover are known gaps (D-109).
+
+P3.7 gave the items of views, trees, tables and headers Amber's tones
+(D-112). In Dolphin the owner saw a selected file's text drawn from the
+colour scheme, and chose that a selected item keeps its text colour: the
+colour scheme's Selection became the dark gold `text-selection`, which
+Breeze's folder icons take too (D-110); and that no selected item carries a
+block marker, since Union cannot tell a sidebar from a list (D-111). A
+table's grid, an item's padding, per-cell hover and focus, a tree's
+indentation and a view's own background are known gaps (D-110, D-113).
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from
