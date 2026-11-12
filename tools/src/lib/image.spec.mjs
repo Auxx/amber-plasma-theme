@@ -304,8 +304,19 @@ describe('fill', () => {
     assert.deepEqual(fill(image), { background: '#695c45', text: '#e8e3da' });
   });
 
-  it('counts a colour under 0.5 % of the pixels as no text', () => {
-    const image = canvas(100, 100, '#312e29', [ [ 0, 0, 7, 7, '#e8e3da' ] ]);
+  it('finds text whose full colour is only a few pixels among many blends, as small text at scale 1 is', () => {
+    const rects = [ [ 0, 0, 3, 1, '#e8e3da' ] ];
+    [ '#b8b3ac', '#817e77', '#514d48', '#9e9a93', '#c4bfb6', '#aaa69e' ].forEach((c, i) => rects.push([ 0, 2 + i, 10, 1, c ]));
+    assert.deepEqual(fill(canvas(100, 40, '#312e29', rects)), { background: '#312e29', text: '#e8e3da' });
+  });
+
+  it('finds the text of a dark label on a light fill', () => {
+    const image = canvas(60, 30, '#d1b072', [ [ 10, 10, 2, 1, '#1b160b' ], [ 12, 10, 10, 1, '#76633f' ] ]);
+    assert.equal(fill(image).text, '#1b160b');
+  });
+
+  it('counts colours within 1 a channel of the fill as no text', () => {
+    const image = canvas(40, 20, '#312e29', [ [ 0, 0, 5, 5, '#322f2a' ] ]);
     assert.equal(fill(image).text, null);
   });
 });

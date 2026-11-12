@@ -29,7 +29,8 @@
 
     /* Sizes: the prototype's 30 px high buttons, 12 px at the sides (P3.3) */
     --button-default-size: 30px;
-    --button-padding: 6px 12px;
+    --button-padding: 6px;
+    --button-padding-x: 12px;
     --button-spacing: 4px;
     --toolbutton-menu-padding: 2px;
 
@@ -49,7 +50,10 @@ toolbutton.raised
     width: var(--button-default-size);
     height: var(--button-default-size);
     spacing: var(--button-spacing);
-    padding: var(--button-padding);
+    padding-top: var(--button-padding);
+    padding-bottom: var(--button-padding);
+    padding-left: var(--button-padding-x);
+    padding-right: var(--button-padding-x);
     border-radius: var(--corner-radius);
 
     layout-alignment: content fill fill 0;
@@ -258,13 +262,20 @@ toolbutton
 {
     /* Ensure default toolbuttons end up with 32px height, not 34px. */
     icon-size: 24px;
-    padding: var(--medium-spacing) var(--large-spacing);
+    /* One value per side: Union reads a two-value padding with its values swapped (P3.3) */
+    padding-top: var(--medium-spacing);
+    padding-bottom: var(--medium-spacing);
+    padding-left: var(--large-spacing);
+    padding-right: var(--large-spacing);
 }
 
 toolbutton.raised
 {
     icon-size: var(--icon-size-small);
-    padding: var(--button-padding);
+    padding-top: var(--button-padding);
+    padding-bottom: var(--button-padding);
+    padding-left: var(--button-padding-x);
+    padding-right: var(--button-padding-x);
 }
 
 roundbutton
@@ -274,6 +285,9 @@ roundbutton
 
 combobox
 {
+    /* Its arrow is 4 px taller than a line of text; 30 px high, as in the prototype (P3.3) */
+    padding-top: 4px;
+    padding-bottom: 4px;
     layout-alignment: content fill center 0;
     text-alignment: content fill center 0;
     icon-alignment: content start center 0;

@@ -288,7 +288,7 @@ node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png -
 node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.3-amber --case push-button --expect tmp/expect-button.json --alias hovered-focused=focused
 ```
 
-- **`states`: fill and text.** The fill is an image's most common colour. The text is the most common other colour that covers at least 0.5 % of the pixels and is not an anti-aliased blend: a colour on the line from the fill to a colour farther from it, within ±2 a channel. Both are compared by hex within ±1 a channel. A state on one side only is "not compared"; a state the probe could not reach is marked.
+- **`states`: fill and text.** The fill is an image's most common colour. The text is the colour farthest from the fill in RGB: small text at scale 1 is mostly anti-aliased blends, and only a few pixels reach the full text colour. An icon in another colour, such as a coloured arrow, would be taken for the text, so the probe draws text-only widgets. Both are compared by hex within ±1 a channel. A state on one side only is "not compared"; a state the probe could not reach is marked.
 
 - **A cool grey** is a colour that is not a hue (OKLCH chroma below 0.05)
   and is neither warm (hue 30 to 110) nor black: `warmthOffence` and

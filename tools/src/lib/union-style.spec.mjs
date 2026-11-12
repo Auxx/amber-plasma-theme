@@ -344,6 +344,14 @@ describe('the Union style\'s buttons (P3.3)', () => {
     assert.equal(value(child(tool, '&:checked:pressed'), 'background-color'), 'var(--tone-2)');
   });
 
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const resolve = v => v.replace(/var\(--([\w-]+)\)/g, (m, name) => value(all.find(b => b.selector === ':root'), `--${name}`) ?? m);
+    const offending = all.filter(isButton).flatMap(b => b.declarations
+      .filter(d => d.property === 'padding' && resolve(d.value).trim().split(/\s+/).length > 1)
+      .map(d => `button.css:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+
   it('makes a button 30 px high', () => {
     const root = all.find(b => b.selector === ':root');
     assert.equal(value(root, '--button-default-size'), '30px');

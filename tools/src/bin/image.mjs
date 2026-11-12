@@ -111,9 +111,10 @@ written by \`browser states --json\`. Each probe state is matched to the
 expected state of the same name, or of the name --alias gives it, such as
 --alias hovered-focused=focused (repeatable).
 
-The fill of an image is its most common colour, and the text the most common
-other colour that is not an anti-aliased blend of the two and covers at least
-0.5 % of the pixels. Both are compared by hex, within 1 a channel. A state on
+The fill of an image is its most common colour, and the text the colour
+farthest from it: small text at scale 1 is mostly anti-aliased blends, and
+only a few pixels reach the full text colour. Both are compared by hex,
+within 1 a channel. A state on
 one side only is listed as "not compared". --surface leaves out pixels of that
 colour, the probe's surface, from both.`,
       options: { case: { type: 'string' }, expect: { type: 'string' }, alias: { type: 'string', multiple: true }, surface: { type: 'string' }, json: { type: 'boolean' } },
