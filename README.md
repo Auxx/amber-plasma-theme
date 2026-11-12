@@ -56,6 +56,23 @@ Amber is in early development and nothing can be installed yet.
   state. (seen in P3.6; D-109)
 - **A scrollbar's thumb lightens whenever the pointer is over its bar**,
   not only over the thumb. (seen in P3.6; D-109)
+- **A table's grid is a faint dark line.** An application that leaves a
+  table view's grid on shows a 1 px line, `#191816`, between its cells: Qt
+  draws it from a colour the colour scheme derives, out of the style's
+  reach. Dolphin's and Kate's main views have none. (seen in P3.7; D-110)
+- **An item's text starts at its edge** in Qt Widgets applications: Union
+  ignores an item's padding, so a list's text has no 12 px margin. Dolphin
+  lays out its own items and is not affected. (seen in P3.7; D-113)
+- **A table or tree tints one cell, not the row.** In a table, hover
+  lightens the cell under the pointer; in a table or tree, keyboard focus
+  tints the current cell. Qt gives Union one cell at a time. (seen in
+  P3.7; D-113)
+- **A tree's indentation is never filled**: a selected or hovered tree row
+  starts at its item, right of its chevron. (seen in P3.7; D-113)
+- **A view's own background is the colour scheme's**, out of the style's
+  reach: a settings dialog's page list is tone 2 on the dialog's tone 1
+  body, and a header past its last section shows tone 1. (seen in P3.7;
+  D-113)
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)

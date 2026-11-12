@@ -39,8 +39,9 @@ Verified on 2026-11-10 unless marked.
   a push button, tool button, combo box, line edit, spin box and check box
   turns accent, 1 px. A radio button changes a few pixels of its ring, and a
   slider practically nothing. A text area and a list view show no focus
-  except the text cursor. A tree or table view marks its current item with
-  accent mixed over the view (`#584c38`). Seen with the Amber colour scheme.
+  except the text cursor. A tree or table view marked its current item with
+  accent mixed over the view (`#584c38`), Breeze's `:active-focus` rule,
+  which P3.7 replaced. Seen with the Amber colour scheme.
   (verified, 2026-11-12, P3.2)
 - **What Union tells a button in a Qt Widgets application** (verified,
   2026-11-12, P3.3, by marker rules read in the probe's pixels):
@@ -175,6 +176,49 @@ Verified on 2026-11-10 unless marked.
     the track shows tone 1 beside a tone 2 view.
   - In the probe, the window (1280 × 772) is smaller than its grid, so rows
     overlap and `render()` cuts a widget where a lower row's widget begins.
+- **What Union reaches on the items of views and on headers in a Qt Widgets
+  application** (verified, 2026-11-12, P3.7, by marker rules read in the
+  probe's pixels, in Dolphin and in Kate):
+  - Every item is `itemviewitem`. A `QListView`'s items, Dolphin's Places
+    and a settings dialog's page list included, are `.inside-list`, with
+    `.hover-enabled` only when the view tracks the mouse; a `QTableView`'s
+    are `.inside-table`; a `QTreeView`'s have neither. Table and tree
+    items are one per cell, with `[position]` `beginning`, `middle` or
+    `end`. Dolphin's files are `graphicsview itemviewitem`. No ancestor
+    selector (`dockwidget`, `listview`, `scrollarea`) and no `:not()`
+    reached an item, so a sidebar cannot be told from any other list.
+  - Selected is `:highlighted` (`.selected` never matched); hovered is
+    `:hovered`; any focus is `:active-focus`, focus from the
+    keyboard alone `:visual-focus`, and a click gives `:active-focus`
+    without it. A table colours only the hovered cell, and a table or tree
+    only the focused cell, not the row. A press selects at once. Qt never
+    draws a disabled item as selected.
+  - `height` reaches an item (26 px); padding does not: Union draws an item's
+    text from its edge, as it did with Breeze. A 3 px border set at rest is
+    drawn on every cell, with no fill under it.
+  - A tree's cells start after its indentation: the indented area and the
+    chevron are never filled. `treeviewdelegate > indicator` colours the
+    chevron; no branch lines are drawn.
+  - A header section is `headerviewdelegate`, with `:hovered`,
+    `.sort-ascending`, `.sort-descending` and `:disabled`; `:pressed` was not
+    reached by `render()`. A clear section shows the header's Button tone 3.
+    Past the last section the header shows the window's tone 1, and no rule
+    (`header`) reached it. No line divides or underlines sections.
+  - A `QTableView`'s grid is drawn by Qt from `SH_Table_GridLineColor`, the
+    palette's Mid, which KDE derives from the Button set: no rule reached it.
+  - No `listview`, `treeview`, `tableview`, `columnview`, `scrollview` or
+    `graphicsview` background reached a view; a view keeps the View set.
+  - `rubberband` takes a background on a `QRubberBand`, including a colour
+    from `modify-color(… set-alpha …)`.
+  - Dolphin and a settings dialog's page list paint a selected item's text
+    from the colour scheme's Selection foreground, whatever Union's `color`
+    says. Breeze's folder icons are drawn in `ColorScheme-Accent`, which
+    is the Selection background: Plasma's `AccentColor` and the Selection
+    set's `BackgroundAlternate` changed nothing.
+  - Union has no selector for a right-to-left layout; Breeze ships a
+    separate `breeze-rtl` style for it, and how an application chooses it
+    is unverified. A single `QListView` turned right-to-left drew no text,
+    with Breeze too.
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;

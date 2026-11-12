@@ -118,7 +118,7 @@ next starts.
 | P3.4 Text inputs | Text fields, spin boxes, text areas | As P3.3 | done |
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | done |
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | done |
-| P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | todo |
+| P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | done |
 | P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
 | P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
 
@@ -173,6 +173,15 @@ edge, and a scrollbar is a 12 px thumb with no arrows. Union draws no tab
 bar, so each tab paints tone 0; the strip past the last tab, the track
 beside a view, the status bar's text, a disabled menu title and the thumb's
 hover are known gaps (D-109).
+
+P3.7 gave the items of views, trees, tables and headers Amber's tones
+(D-112). In Dolphin the owner saw a selected file's text drawn from the
+colour scheme, and chose that a selected item keeps its text colour: the
+colour scheme's Selection became the dark gold `text-selection`, which
+Breeze's folder icons take too (D-110); and that no selected item carries a
+block marker, since Union cannot tell a sidebar from a list (D-111). A
+table's grid, an item's padding, per-cell hover and focus, a tree's
+indentation and a view's own background are known gaps (D-110, D-113).
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from
