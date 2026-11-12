@@ -38,8 +38,8 @@ version.
 | `colour` | `convert`, `contrast <fg> <bg...> [--min]`, `solve` | P0.2 |
 | `tokens` | `list [filter]`, `resolve <token...> [--set]`, `pairs [filter] [--failing] [--close] [--set]`, `try <token=value...>` | P1.1 |
 | `browser` | `shot <page> [--selector] [--hover] [--focus] [--press] [--scrollbars] [--wait]`, `check <page>`, `colours <page> <selector>` | P0.7; `--scrollbars` P1.4; `--wait` P1.5 |
-| `generate` | one command per part, each printing the result and writing with `--write`: `colour-scheme [--write]` | P2.2, then each later step |
-| `image` | `greys <png> [--region] [--mark]`, `colours <png> [--region] [--top]` | P2.3 |
+| `generate` | one command per part, each printing the result and writing with `--write`: `colour-scheme [--write]`, `union-style-tokens [--write]` | P2.2, then each later step; `union-style-tokens` P3.2 |
+| `image` | `greys <png> [--region] [--mark]`, `colours <png> [--region] [--top]`, `frame <png> --surface [--region]` | P2.3; `frame` P3.2 |
 
 The `browser` tool opens the prototype in the installed Google Chrome through
 playwright-core, which downloads no browser of its own (D-45, D-46). It is

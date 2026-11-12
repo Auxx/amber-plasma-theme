@@ -28,18 +28,18 @@ tableviewdelegate {
 
     &:hovered,
     &:active-focus {
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: transparent;
     }
 
     &:visual-focus {
-        outline: 1px solid var(--focus-color);
+        outline: none;
     }
 
     &:highlighted,
     &.selected {
         color: var(--highlight-text-color);
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: var(--highlight-color);
     }
 
@@ -48,7 +48,7 @@ tableviewdelegate {
     }
 
     &.editing {
-        border: 1px solid var(--highlight-color);
+        border: none;
     }
 
     &:disabled {
@@ -107,8 +107,8 @@ headerviewdelegate
     height: var(--large-element-size);
     padding: var(--small-spacing);
 
-    border-bottom: 1px solid var(--button-active-border-color);
-    border-right: 1px solid var(--button-active-border-color);
+    border-bottom: none;
+    border-right: none;
 
     background-color: var(--button-active-background-color);
     color: var(--button-active-text-color);
@@ -140,7 +140,7 @@ headerviewdelegate
 
     &:disabled
     {
-        border: 1px solid var(--button-disabled-border-color);
+        border: none;
         color: var(--button-disabled-text-color);
         background-color: var(--button-disabled-background-color);
     }
@@ -148,12 +148,12 @@ headerviewdelegate
 
 selectionrectangle {
     color: var(--highlight-color);
-    border: 1px solid var(--highlight-color);
+    border: none;
     border-radius: var(--corner-radius);
     background-color: var(--highlight-color);
 
     &:disabled {
-        border: 1px solid var(--highlight-disabled-color);
+        border: none;
         color: var(--highlight-disabled-color);
         background-color: var(--highlight-disabled-color);
     }
@@ -163,17 +163,17 @@ selectionrectanglehandle {
     width: var(--small-element-size);
     height: var(--small-element-size);
     background-color: var(--bar-handle-active-background-color);
-    border: 1px solid var(--bar-active-border-color);
-    border-radius: var(--small-element-size);
+    border: none;
+    border-radius: var(--small-element-size); /* round widget */
 
     &:visual-focus {
         border-color: var(--highlight-color);
-        outline: var(--focus-outline);
+        outline: none;
     }
 
     &:disabled {
         color: var(--highlight-disabled-color);
         background-color: var(--bar-handle-disabled-background-color);
-        border: 1px solid var(--bar-disabled-border-color);
+        border: none;
     }
 }

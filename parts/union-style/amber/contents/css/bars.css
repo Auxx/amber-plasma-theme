@@ -60,7 +60,7 @@ progressbar
     text-alignment: content center center 0;
 
     background-color: var(--bar-active-background-color);
-    border: 1px solid var(--bar-active-border-color);
+    border: none;
     border-radius: var(--corner-radius);
 
     &.horizontal
@@ -79,7 +79,7 @@ progressbar
     & > track,
     & > chunk {
         background-color: var(--bar-track-active-background-color);
-        border: 1px solid var(--bar-track-active-border-color);
+        border: none;
         border-radius: var(--corner-radius);
     }
 
@@ -104,12 +104,12 @@ rangeslider,
 dial
 {
     background-color: var(--bar-active-background-color);
-    border: 1px solid var(--bar-active-border-color);
+    border: none;
     border-radius: var(--corner-radius);
 
     & > fill {
         background-color: var(--bar-track-active-background-color);
-        border: 1px solid var(--bar-track-active-border-color);
+        border: none;
         border-radius: var(--corner-radius);
     }
 
@@ -117,9 +117,9 @@ dial
         width: var(--bar-handle-size);
         height: var(--bar-handle-size);
         background-color: var(--bar-handle-active-background-color);
-        border: 1px solid var(--bar-handle-active-border-color);
-        border-radius: 10px;
-        box-shadow: var(--button-shadow);
+        border: none;
+        border-radius: 0px;
+        box-shadow: none;
 
         &:hovered
         {
@@ -167,7 +167,7 @@ dial
 
     &:disabled {
         background-color: var(--bar-disabled-background-color);
-        border: 1px solid var(--bar-disabled-border-color);
+        border: none;
 
         & > fill {
             background-color: var(--bar-track-disabled-background-color);
@@ -191,7 +191,7 @@ slider:visual-focus > handle,
 rangeslider > handle:active-focus
 {
     border-color: var(--bar-handle-active-highlight-border-color);
-    outline: var(--focus-outline);
+    outline: none;
 }
 
 slider:pressed > handle,
@@ -210,18 +210,18 @@ scrollbar
 
     &.horizontal
     {
-        border-top: 1px solid var(--bar-active-border-color);
+        border-top: none;
     }
 
     &.vertical
     {
-        border-left: 1px solid var(--bar-active-border-color);
+        border-left: none;
     }
 
     & > handle {
         background-color: var(--bar-active-background-color);
-        border: 1px solid var(--bar-active-border-color);
-        border-radius: var(--small-element-size);
+        border: none;
+        border-radius: 0px;
 
         &:hovered,
         &:pressed
@@ -232,7 +232,7 @@ scrollbar
 
         &:disabled {
             background-color: var(--bar-disabled-background-color);
-            border: 1px solid var(--bar-disabled-border-color);
+            border: none;
         }
     }
 
@@ -242,7 +242,7 @@ scrollbar
         padding: var(--small-spacing);
         & > handle {
             background-color: var(--bar-handle-disabled-background-color);
-            border: 1px solid var(--bar-handle-disabled-border-color);
+            border: none;
         }
     }
 }
@@ -250,7 +250,7 @@ scrollbar
 dial {
     width: 128px;
     height: 128px;
-    border-radius: 64px; /* use half of width */
+    border-radius: 64px; /* round widget: half of its width */
     background-color: var(--dial-inactive-background-color);
     border-color: var(--dial-inactive-border-color);
 
@@ -292,7 +292,7 @@ dial {
 slider.changed {
     & > fill {
         background-color: var(--changed-background);
-        border: 1px solid var(--changed-foreground);
+        border: none;
     }
     & > tickmark.active {
         background-color: var(--changed-foreground);

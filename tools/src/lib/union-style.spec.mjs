@@ -3,6 +3,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { PARTS } from './generate.mjs';
+import { UNION_TOKENS } from './union-tokens.mjs';
 
 /**
  * The Union style (roadmap P3.1): a copy of KDE's Breeze style in
@@ -73,5 +75,213 @@ describe('the Union style folder', () => {
     const licence = readFileSync(join(STYLE, 'LICENSE'), 'utf8');
     assert.match(licence, /BSD 2-Clause/);
     assert.match(licence, /Arjen Hiemstra/);
+  });
+});
+
+describe('the Union style\'s tokens (P3.2)', () => {
+  it('are generated and not stale (D-92)', () => {
+    assert.equal(read('tokens.css'), PARTS['union-style-tokens'].generate());
+  });
+
+  it('are imported by style.css directly after variables.css', () => {
+    const order = imports(read('style.css'));
+    assert.equal(order[order.indexOf('variables.css') + 1], 'tokens.css');
+  });
+
+  it('use names that no other file of the style declares', () => {
+    for (const file of cssFiles().filter(f => f !== 'tokens.css')) {
+      for (const name of UNION_TOKENS) {
+        assert.doesNotMatch(read(file), new RegExp(`--${name}\\s*:`), `${file} declares --${name}`);
+      }
+    }
+  });
+});
+
+/**
+ * Every block of a Union CSS text, at every depth of `&` nesting, with the
+ * declarations directly inside it. Each declaration keeps its line and the
+ * text of a comment on that line.
+ */
+function blocks(source) {
+  const comments = new Map();
+  const text = source.replace(/\/\*[\s\S]*?\*\//g, (comment, at) => {
+    if (!comment.includes('\n')) {
+      comments.set(source.slice(0, at).split('\n').length, comment.slice(2, -2).trim());
+    }
+    return comment.replace(/[^\n]/g, ' ');
+  });
+  const found = [];
+  const stack = [];
+  let buffer = '';
+  let line = 1;
+  let start = 1;
+  const declare = () => {
+    const body = buffer.trim();
+    if (body && stack.length) {
+      const colon = body.indexOf(':');
+      stack.at(-1).declarations.push({
+        property: body.slice(0, colon).trim(),
+        value: body.slice(colon + 1).trim(),
+        line: start,
+        comment: comments.get(start) ?? ''
+      });
+    }
+    buffer = '';
+  };
+  for (const char of text) {
+    if (char === '\n') {
+      line++;
+    }
+    if (char === '{') {
+      const parent = stack.at(-1) ?? null;
+      const block = { selector: buffer.trim(), declarations: [], parent, children: [] };
+      parent?.children.push(block);
+      found.push(block);
+      stack.push(block);
+      buffer = '';
+    } else if (char === ';') {
+      declare();
+    } else if (char === '}') {
+      declare();
+      stack.pop();
+    } else {
+      if (!buffer.trim() && char.trim()) {
+        start = line;
+      }
+      buffer += char;
+    }
+  }
+  return found;
+}
+
+describe('the block reader of this spec', () => {
+  it('reads declarations at every depth of nesting, with their comments', () => {
+    const found = blocks('a {\n  x: 1;\n  &:hovered { x: 2; }\n  .inactive & {\n    y: 3; /* round widget */\n  }\n}\n');
+    assert.deepEqual(found.map(b => [ b.selector, b.declarations.map(d => `${d.property}=${d.value}`) ]), [
+      [ 'a', [ 'x=1' ] ],
+      [ '&:hovered', [ 'x=2' ] ],
+      [ '.inactive &', [ 'y=3' ] ]
+    ]);
+    assert.equal(found[2].declarations[0].line, 5);
+    assert.equal(found[2].declarations[0].comment, 'round widget');
+    assert.equal(found[1].parent, found[0]);
+    assert.deepEqual(found[0].children, [ found[1], found[2] ]);
+  });
+});
+
+const parts = selector => selector.split(',').map(p => p.trim()).filter(Boolean);
+/** `&.x`, `&[a]`, `&:state`: the same element, narrowed; not `x &` or `& > y`. */
+const refines = selector => parts(selector).every(p => /^&[.[:][^\s>]*$/.test(p));
+const thinProperties = block => block.declarations
+  .filter(d => /^(width|height)$/.test(d.property) && /^(1|2)px$/.test(d.value)).map(d => d.property);
+const setsThin = block => thinProperties(block).length > 0;
+/** The block and the refinements below it: the same element in narrower states. */
+const sameElement = block => [ block, ...block.children.filter(c => refines(c.selector)).flatMap(sameElement) ];
+
+/**
+ * Whether a block draws on an element one or two pixels thick: the thickness
+ * may be set in the block or a refinement below it, in an enclosing block
+ * (unless the block sets that dimension itself), in a sibling
+ * that names one of its selectors, or, for a block that is not a refinement
+ * such as `toolbar.header &`, in a refinement of its parent such as
+ * `&.horizontal`.
+ */
+function thin(block) {
+  if (sameElement(block).some(setsThin)) {
+    return true;
+  }
+  const own = new Set(block.declarations.map(d => d.property));
+  for (let b = block.parent; b; b = b.parent) {
+    if (thinProperties(b).some(property => !own.has(property))) {
+      return true;
+    }
+  }
+  const siblings = block.parent ? block.parent.children.filter(c => c !== block) : [];
+  const mine = new Set(parts(block.selector));
+  if (siblings.some(s => parts(s.selector).some(p => mine.has(p)) && setsThin(s))) {
+    return true;
+  }
+  return !refines(block.selector) && siblings.some(s => refines(s.selector) && setsThin(s));
+}
+
+describe('the thickness reader of this spec', () => {
+  const sample = blocks(`a {
+    &[shape="line"], &[shape="other"] { background-color: red; }
+    &[shape="line"] { width: 1px; }
+    &[shape="box"] { background-color: blue; }
+  }
+  b {
+    &.horizontal { height: 1px; }
+    toolbar.header & { background-color: red; }
+  }
+  c {
+    background-color: green;
+    & > separator { width: 1px; }
+  }
+  d {
+    height: 1px;
+    &.with-title { height: 24px; background-color: red; }
+  }`);
+  const named = selector => sample.find(b => b.selector === selector);
+
+  it('finds a thickness set in a sibling that names the same selector', () => {
+    assert.equal(thin(named('&[shape="line"], &[shape="other"]')), true);
+  });
+
+  it('finds a thickness set in a refinement of the parent of a context block', () => {
+    assert.equal(thin(named('toolbar.header &')), true);
+  });
+
+  it('does not borrow the thickness of a sibling refinement for another refinement', () => {
+    assert.equal(thin(named('&[shape="box"]')), false);
+  });
+
+  it('does not take a child element\'s thickness for its parent\'s', () => {
+    assert.equal(thin(named('c')), false);
+  });
+
+  it('lets a refinement that sets its own height override its parent\'s', () => {
+    assert.equal(thin(named('&.with-title')), false);
+  });
+});
+
+describe('the Union style\'s global rules (P3.2)', () => {
+  const rules = cssFiles()
+    .filter(f => f !== 'tokens.css')
+    .flatMap(file => blocks(read(file)).flatMap(block =>
+      block.declarations.map(d => ({ ...d, file, block, where: `${file}:${d.line} ${d.property}: ${d.value}` }))));
+  const offending = (test) => rules.filter(test).map(d => d.where);
+  const zero = value => /^(0|0px)$/.test(value);
+
+  it('sets --corner-radius to 0px', () => {
+    assert.deepEqual(rules.filter(d => d.file === 'variables.css' && d.property === '--corner-radius').map(d => d.value), [ '0px' ]);
+  });
+
+  it('gives every corner a radius of zero, except a round widget', () => {
+    assert.deepEqual(offending(d => /^border(-(top|bottom)-(left|right))?-radius$/.test(d.property)
+      && !zero(d.value) && d.value !== 'var(--corner-radius)' && !d.comment.startsWith('round widget')), []);
+  });
+
+  it('marks exactly the five round widgets', () => {
+    assert.deepEqual(rules.filter(d => d.comment.startsWith('round widget')).map(d => d.file).sort(),
+      [ 'application.css', 'bars.css', 'button.css', 'check.css', 'tables.css' ]);
+  });
+
+  it('draws no border', () => {
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none' && !zero(d.value)), []);
+    assert.deepEqual(offending(d => /^border(-(top|right|bottom|left))?-width$/.test(d.property) && !zero(d.value)), []);
+  });
+
+  it('draws no outline', () => {
+    assert.deepEqual(offending(d => d.property === 'outline' && d.value !== 'none'), []);
+  });
+
+  it('casts a shadow only from a popup', () => {
+    assert.deepEqual(offending(d => d.property === 'box-shadow' && d.file !== 'popup.css' && d.value !== 'none'), []);
+    assert.deepEqual(offending(d => d.property === '--button-shadow' && d.value !== 'none'), []);
+  });
+
+  it('fills no separator one or two pixels thick, wherever its thickness is set', () => {
+    assert.deepEqual(rules.filter(d => d.property === 'background-color' && thin(d.block)).map(d => d.where), []);
   });
 });

@@ -132,3 +132,152 @@ export function markPixels(image, hexes) {
   }
   return { width: image.width, height: image.height, pixels };
 }
+
+const SIDES = [ 'top', 'right', 'bottom', 'left' ];
+const CORNERS = { tl: [ 'top', 'left' ], tr: [ 'top', 'right' ], bl: [ 'bottom', 'left' ], br: [ 'bottom', 'right' ] };
+const LINE_DEPTH = 3; // a run of 1 or 2 px at the edge is a line; 3 px or more is a band (P3.2, my call)
+
+const rgbOf = hex => [ 1, 3, 5 ].map(i => parseInt(hex.slice(i, i + 2), 16));
+const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 1);
+const distance = (a, b) => Math.hypot(...a.map((v, i) => v - b[i]));
+
+function mode(colours) {
+  const counts = new Map();
+  for (const c of colours) {
+    counts.set(c, (counts.get(c) ?? 0) + 1);
+  }
+  let best = null;
+  for (const [ c, n ] of counts) {
+    if (best === null || n > counts.get(best)) {
+      best = c;
+    }
+  }
+  return best;
+}
+
+/**
+ * Whether a widget drawn on a known surface has rounded corners or lines one
+ * or two pixels thick at its edges (P3.2). The box is every pixel that is not
+ * the surface (±1 a channel; fully transparent counts as surface). Nothing is
+ * judged unless one colour fills half the box, which text never does. A side is
+ * judged only when its longest run of drawn pixels covers a quarter of it, so
+ * that text alone is not judged; a corner only when both its sides are. A
+ * corner is rounded when its pixel is nearer the surface than the box's most
+ * common colour. A side has a line when its outer colour differs from the
+ * colour 3 px in and runs for 1 or 2 px, or when the whole box is only 1 or
+ * 2 px across it, as a separator drawn alone is.
+ */
+export function frame(image, { surface, region } = {}) {
+  const { x: rx, y: ry, width: rw, height: rh } = bounds(image, region);
+  const base = rgbOf(surface);
+  const at = (x, y) => {
+    const i = (y * image.width + x) * 4;
+    return image.pixels[i + 3] === 0 ? null : [ image.pixels[i], image.pixels[i + 1], image.pixels[i + 2] ];
+  };
+  const drawnAt = (x, y) => {
+    const c = at(x, y);
+    return c !== null && !near(c, base);
+  };
+
+  let x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+  const drawnColours = [];
+  for (let y = ry; y < ry + rh; y++) {
+    for (let x = rx; x < rx + rw; x++) {
+      if (drawnAt(x, y)) {
+        x0 = Math.min(x0, x); x1 = Math.max(x1, x);
+        y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+        drawnColours.push(toHex(...at(x, y)));
+      }
+    }
+  }
+  const unjudged = {
+    corners: Object.fromEntries(Object.keys(CORNERS).map(k => [ k, 'not judged' ])),
+    sides: Object.fromEntries(SIDES.map(s => [ s, 'not judged' ]))
+  };
+  if (x1 < 0) {
+    return { drawn: false, box: null, ...unjudged, lines: {} };
+  }
+  const fillHex = mode(drawnColours);
+  const fill = rgbOf(fillHex);
+  // Text has no colour that fills half of its box; a widget's background does.
+  const solid = drawnColours.filter(c => c === fillHex).length * 2 >= (x1 - x0 + 1) * (y1 - y0 + 1);
+  if (!solid) {
+    return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, ...unjudged, lines: {} };
+  }
+
+  // The pixel of a side at position `i` along it and `d` px in from the edge.
+  const point = {
+    top: (i, d) => [ x0 + i, y0 + d ],
+    bottom: (i, d) => [ x0 + i, y1 - d ],
+    left: (i, d) => [ x0 + d, y0 + i ],
+    right: (i, d) => [ x1 - d, y0 + i ]
+  };
+  const length = side => (side === 'top' || side === 'bottom' ? x1 - x0 + 1 : y1 - y0 + 1);
+  const depthMax = side => (side === 'top' || side === 'bottom' ? y1 - y0 : x1 - x0);
+
+  const sides = {};
+  const lines = {};
+  const runs = {};
+  for (const side of SIDES) {
+    const n = length(side);
+    let best = [ 0, -1 ], start = null;
+    for (let i = 0; i <= n; i++) {
+      const on = i < n && drawnAt(...point[side](i, 0));
+      if (on && start === null) {
+        start = i;
+      } else if (!on && start !== null) {
+        if (i - start > best[1] - best[0] + 1) {
+          best = [ start, i - 1 ];
+        }
+        start = null;
+      }
+    }
+    const run = best[1] - best[0] + 1;
+    if (run < Math.max(3, n / 4)) {
+      sides[side] = 'not judged';
+      continue;
+    }
+    runs[side] = best;
+    if (depthMax(side) < LINE_DEPTH) {
+      // The whole box is 1 or 2 px across this side: a separator drawn alone.
+      sides[side] = 'line';
+      lines[side] = { hex: fillHex, thickness: depthMax(side) + 1 };
+      continue;
+    }
+    const colourAt = d => {
+      const colours = [];
+      for (let i = best[0]; i <= best[1]; i++) {
+        const c = at(...point[side](i, d));
+        colours.push(c === null ? surface : toHex(...c));
+      }
+      return mode(colours);
+    };
+    const outer = colourAt(0);
+    if (near(rgbOf(outer), rgbOf(colourAt(LINE_DEPTH)))) {
+      sides[side] = 'clear';
+      continue;
+    }
+    let thickness = 1;
+    while (thickness < LINE_DEPTH && colourAt(thickness) === outer) {
+      thickness++;
+    }
+    if (thickness < LINE_DEPTH) {
+      sides[side] = 'line';
+      lines[side] = { hex: outer, thickness };
+    } else {
+      sides[side] = 'clear';
+    }
+  }
+
+  const cornerPixel = { tl: [ x0, y0 ], tr: [ x1, y0 ], bl: [ x0, y1 ], br: [ x1, y1 ] };
+  const corners = {};
+  for (const [ name, [ a, b ] ] of Object.entries(CORNERS)) {
+    if (!runs[a] || !runs[b]) {
+      corners[name] = 'not judged';
+      continue;
+    }
+    const c = at(...cornerPixel[name]) ?? base;
+    corners[name] = distance(c, base) < distance(c, fill) ? 'rounded' : 'square';
+  }
+  return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, corners, sides, lines };
+}

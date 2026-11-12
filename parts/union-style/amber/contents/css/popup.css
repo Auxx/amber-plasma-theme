@@ -23,14 +23,14 @@ menu, popup
     border-radius: var(--corner-radius);
 
     background-color: var(--window-background-color);
-    border: 1px solid var(--window-border-color);
+    border: none;
     color: var(--window-text-color);
     box-shadow: 0px 2px var(--popup-shadow-size) 0px rgba(0, 0, 0, 0.2);
 
     &:disabled {
         color: var(--window-disabled-text-color);
         background-color: var(--window-disabled-background-color);
-        border: 1px solid var(--window-disabled-border-color);
+        border: none;
     }
 }
 
@@ -70,13 +70,13 @@ menuitem
     &.with-submenu:highlighted
     {
         background-color: var(--focus-color);
-        border: 1px solid var(--highlight-color);
+        border: none;
     }
 
     &:pressed,
     &.with-submenu:pressed
     {
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: var(--highlight-color);
         color: var(--highlight-text-color);
     }
@@ -127,7 +127,6 @@ popup.combobox menuitem {
 menuseparator {
     layout-alignment-horizontal: fill;
     height: 1px;
-    background-color: var(--window-border-color);
     inset: var(--small-spacing);
 
     &.with-title {
@@ -143,7 +142,7 @@ menuseparator {
         font-weight: bold;
 
         color: mix(var(--window-background-color), var(--window-text-color), 0.5);
-        border-bottom: 1px solid var(--window-border-color);
+        border-bottom: none;
 
         &:disabled {
             color: mix(var(--window-background-color), var(--window-disabled-text-color), 0.5);
@@ -176,7 +175,7 @@ menubaritem
     &:highlighted
     {
         background-color: var(--focus-color);
-        border: 1px solid var(--highlight-color);
+        border: none;
     }
     &:pressed
     {
@@ -195,7 +194,7 @@ dialog
     icon-alignment-horizontal: center;
 
     color: var(--view-text-color);
-    border: 1px solid var(--view-border-color);
+    border: none;
     background-color: var(--view-background-color);
     box-shadow: var(--dialog-shadow);
 
@@ -215,11 +214,11 @@ dialog
         }
 
         &.panel-left {
-            border-right: 1px solid var(--window-border-color);
+            border-right: none;
         }
 
         &.panel-right {
-            border-left: 1px solid var(--window-border-color);
+            border-left: none;
         }
     }
 }
@@ -238,6 +237,6 @@ tooltip
     color: var(--tooltip-text-color);
     background-color: var(--tooltip-background-color);
     border-radius: var(--corner-radius);
-    border: 1px solid var(--tooltip-border-color);
+    border: none;
     box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.2);
 }

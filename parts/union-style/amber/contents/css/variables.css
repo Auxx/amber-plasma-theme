@@ -14,7 +14,7 @@
     --medium-spacing: 6px;
     --large-spacing: 8px;
     --grid-unit: 18px;
-    --corner-radius: 5px;
+    --corner-radius: 0px;
 
     /* Icon sizes */
     --icon-size-small: 16px;

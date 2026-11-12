@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { formatColourScheme, loadRoles } from './colour-scheme.mjs';
 import { loadTokens } from './tokens.mjs';
+import { formatUnionTokens } from './union-tokens.mjs';
 
 /**
  * The parts Amber generates from its tokens, each with the file it is written
@@ -12,6 +13,10 @@ export const PARTS = {
   'colour-scheme': {
     file: fileURLToPath(new URL('../../../parts/colour-scheme/Amber.colors', import.meta.url)),
     generate: () => formatColourScheme(loadRoles(), loadTokens())
+  },
+  'union-style-tokens': {
+    file: fileURLToPath(new URL('../../../parts/union-style/amber/contents/css/tokens.css', import.meta.url)),
+    generate: () => formatUnionTokens(loadTokens())
   }
 };
 

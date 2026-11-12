@@ -74,6 +74,52 @@ describe('image tool', () => {
     assert.deepEqual(counts[0], { hex: '#151413', count: 2, token: 'tone-0' });
   });
 
+  /** A 30×20 picture of surface #25221f holding a 20×10 rectangle, with or without a 1 px border. */
+  function boxed(border) {
+    const pixels = new Uint8Array(30 * 20 * 4);
+    for (let y = 0; y < 20; y++) {
+      for (let x = 0; x < 30; x++) {
+        const inside = x >= 5 && x < 25 && y >= 5 && y < 15;
+        const edge = inside && (x === 5 || x === 24 || y === 5 || y === 14);
+        pixels.set(!inside ? [ 0x25, 0x22, 0x1f, 255 ] : border && edge ? [ 0x3c, 0x38, 0x32, 255 ] : [ 0x31, 0x2e, 0x29, 255 ], (y * 30 + x) * 4);
+      }
+    }
+    return encodePng({ width: 30, height: 20, pixels });
+  }
+  writeFileSync(join(folder, 'plain.png'), boxed(false));
+  writeFileSync(join(folder, 'bordered.png'), boxed(true));
+
+  it('finds no line or rounded corner in a plain rectangle', () => {
+    const { status, stdout } = image('frame', path('plain.png'), '--surface', '#25221f');
+    assert.equal(status, 0);
+    assert.match(stdout, /box 5,5 20×10/);
+  });
+
+  it('names each side with a line, its colour and thickness, and fails', () => {
+    const { status, stdout } = image('frame', path('bordered.png'), '--surface', '#25221f');
+    assert.equal(status, 1);
+    assert.match(stdout, /top: line #3c3832 1 px/);
+    assert.match(stdout, /left: line #3c3832 1 px/);
+  });
+
+  it('prints the whole result as JSON', () => {
+    const { status, stdout } = image('frame', path('bordered.png'), '--surface', '#25221f', '--json');
+    assert.equal(status, 1);
+    const result = JSON.parse(stdout);
+    assert.equal(result.drawn, true);
+    assert.deepEqual(result.box, { x: 5, y: 5, width: 20, height: 10 });
+    assert.equal(result.sides.bottom, 'line');
+    assert.deepEqual(result.lines.bottom, { hex: '#3c3832', thickness: 1 });
+  });
+
+  it('refuses frame without --surface', () => {
+    assert.equal(image('frame', path('plain.png')).status, 2);
+  });
+
+  it('refuses a --surface that is not a hex colour', () => {
+    assert.equal(image('frame', path('plain.png'), '--surface', 'brown').status, 2);
+  });
+
   it('fails on a file that is not a PNG', () => {
     writeFileSync(join(folder, 'not.png'), 'GIF89a');
     const { status, stderr } = image('greys', path('not.png'));

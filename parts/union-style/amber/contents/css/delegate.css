@@ -98,21 +98,21 @@ itemviewitem
 
     &:hovered
     {
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: var(--highlight-hover-color);
     }
 
     &:active-focus
     {
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: var(--highlight-hover-color);
-        outline: 2px solid var(--focus-color);
+        outline: none;
     }
 
     &:pressed,
     &:highlighted
     {
-        border: 1px solid var(--highlight-color);
+        border: none;
         background-color: var(--highlight-color);
         color: var(--highlight-text-color);
     }
@@ -222,11 +222,11 @@ graphicsview itemviewitem {
 
 focusframe {
     background-color: transparent;
-    border: 1.25px solid var(--highlight-color);
+    border: none;
     border-radius: var(--corner-radius);
     inset: 2px;
     &:highlighted {
-        border: 1.75px solid var(--highlight-color);
+        border: none;
     }
 }
 

@@ -44,10 +44,11 @@ are used as the [glossary](../product/glossary.md) defines them.
   committed beside the hand-written files it comes from, and a test fails when
   it is stale (D-92). (my call; the exact split is settled in the plans of
   each step)
-- **The Union style takes its colours from the colour scheme** wherever the
-  scheme has a matching role, as the Breeze style does. Tones the scheme
-  cannot express are defined in the style's own variables, generated from the
-  tokens.
+- **The Union style takes its colours and widget sizes from its own
+  `tokens.css`**, generated from the tokens under the same names, so that its
+  rules name the tones the design language names (D-97). The Breeze rules it
+  started from read the colour scheme, until each family's plan rewrites
+  them.
 - **Contrast is checked from the tokens**, before anything is generated.
 
 ## The parts
@@ -76,7 +77,7 @@ docs/
 prototype/            index.html, gallery.html, samples.html, tokens.css, contrast-pairs.json, stylesheets, gallery.js (D-48)
 parts/
   colour-scheme/      roles.json: the token or rule of each role (P2.1); Amber.colors, generated (P2.2)
-  union-style/        amber/: the Union style, a copy of the Breeze style 6.8.2 (P3.1)
+  union-style/        amber/: the Union style, from the Breeze style 6.8.2 (P3.1); contents/css/tokens.css, generated (P3.2)
   decoration/
   terminal-colours/
   editor-theme/

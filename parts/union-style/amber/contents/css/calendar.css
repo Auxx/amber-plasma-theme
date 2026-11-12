@@ -5,9 +5,9 @@
 
 monthgrid, dayofweekrow, weeknumbercolumn  {
 	background-color: var(--view-background-color);
-	border: 1px solid var(--view-border-color);
+	border: none;
 	& > label {
-		outline: 1px solid var(--view-border-color);
+		outline: none;
 		text-alignment-horizontal: center;
 		text-alignment-vertical: center;
 		color: var(--view-text-color);

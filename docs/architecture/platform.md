@@ -29,6 +29,19 @@ Verified on 2026-11-10 unless marked.
   `contents/images/`. One more file, `global.css`, declares the custom
   properties `--color-group` and `--color-set` but is imported by no file of
   the style. Its licence is BSD-2-Clause. (file list verified, 2026-11-12)
+- **Union reads only the files `style.css` imports.** A rule appended to
+  `global.css` (`button { background-color: #ff00ff; }`) changed nothing;
+  the same rule in `button.css` turned the buttons magenta. (verified,
+  2026-11-12, P3.2)
+- **How the Breeze style shows focus in a Qt Widgets application.** Its
+  `outline` is never drawn (see below), so focus shows only where a
+  `:visual-focus` rule also changes something Union draws: the border of
+  a push button, tool button, combo box, line edit, spin box and check box
+  turns accent, 1 px. A radio button changes a few pixels of its ring, and a
+  slider practically nothing. A text area and a list view show no focus
+  except the text cursor. A tree or table view marks its current item with
+  accent mixed over the view (`#584c38`). Seen with the Amber colour scheme.
+  (verified, 2026-11-12, P3.2)
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -86,7 +99,9 @@ Verified on 2026-11-10 unless marked.
     `border-color` are drawn.
 - `border: none`, `border-radius: 0px` and `outline: none` are accepted and
   give a square widget with no border in both Qt Widgets and Qt Quick.
-  (verified, 2026-11-11)
+  (verified, 2026-11-11) Amber's style uses them on every widget but the
+  round ones, and every widget the P3.2 probe draws comes out square with no
+  line. (verified, 2026-11-12, P3.2)
 - Functions: `custom-color("kcolorscheme", …)` reads a colour of the active
   colour scheme; `mix()` and `modify-color()` derive colours; `var()` reads
   a custom property.
@@ -134,6 +149,25 @@ Verified on 2026-11-10 unless marked.
   2026-11-12)
 - A style folder may hold files Union does not read: a `LICENSE` beside
   `metadata.json` is accepted. (verified, 2026-11-12)
+- **A widget can be checked alone, at scale 1, without a screenshot.** In a
+  PySide6 script run in the nested session, `QWidget.render()` into a
+  `QImage` with `setDevicePixelRatio(1)` is drawn by Union at scale 1,
+  whatever the output's scale. Pre-filled with magenta `#ff00ff`, a colour
+  no widget uses, the picture can be read by `image frame --surface
+  '#ff00ff'` for rounded corners and lines. States reach `render()` this
+  way: hovered with `WA_Hover` and `WA_UnderMouse`, pressed with
+  `setDown(True)`, checked with `setChecked(True)`, disabled with
+  `setEnabled(False)`. Focused needs `setFocus(Qt.TabFocusReason)` **and
+  then** `WA_KeyboardFocusChange` on the window; set only when the window is
+  made, it is cleared and `:visual-focus` never applies. Under Breeze, a
+  focused list view, a pressed slider and a hovered text area drew the same
+  as at rest. The probe is P3.2's `tmp/check-colour-scheme/widgets.py`.
+  (verified, 2026-11-12)
+- **A popup cannot be opened from a script in the nested session.**
+  `QMenu.popup()` without an input event shows nothing on Wayland, and
+  `pyatspi`'s `ShowMenu` on Dolphin's and Konsole's toolbar menu buttons
+  did nothing; their menu bars are hidden in this session. A menu was
+  checked through `render()` only. (verified, 2026-11-12, P3.2)
 - Environment variables found in the Union libraries: `UNION_STYLE_NAME`,
   `UNION_DISABLE_STYLE_CACHE`, `UNION_FORCE_RECREATE_STYLE_CACHE`,
   `UNION_FORCE_PLATFORM`, `UNION_DISABLE_INPUT_PLUGINS`.
@@ -145,8 +179,6 @@ Verified on 2026-11-10 unless marked.
 | Question | Tested in |
 |---|---|
 | Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. The prototype draws one (D-49), and the gallery shows a "No shadow" candidate beside it since P1.5. | P3.8 |
-| How does the Breeze style show focus in a Qt Widgets application, given that its focus `outline` is not drawn? | P3.2 |
-| Does Union read the Breeze style's `global.css`, which `style.css` does not import? A rule put there may never apply. | P3.2 |
 | Which key selects the style for the whole system? | P6.2 |
 
 The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner
