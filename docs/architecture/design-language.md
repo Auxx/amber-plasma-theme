@@ -290,8 +290,12 @@ token holds the plain colour (D-47).
 ## Window decoration
 
 - Title bar in tone 0, `--title-bar-height` high below the window outline;
-  square corners. The title is centred, in text, or in dim text when the
-  window is inactive.
+  square corners. The title is centred between the menu button and the
+  window buttons, as KWin centres it (D-128), in text, or in dim text when
+  the window is inactive.
+- The title bar holds KWin's default buttons (D-128): the menu button, the
+  application's icon, 26 px across in a square button at the left, and
+  minimise, maximise and close at the right.
 - A window has a window outline. (decided, D-25) It runs along every edge,
   square at the corners, the same for active and inactive windows. It is
   one pixel wide and `#585248`, which reaches 2:1 against tones 0 to 2.
@@ -331,7 +335,22 @@ token holds the plain colour (D-47).
   uses no `box-shadow`. Whether Aurorae draws the eased curve and a fade
   that starts inside the window is unverified until P5.3 (see
   [platform](platform.md)).
-- Window buttons are flat and never glow, like every widget. Hovered minimise and maximise move up a tone; hovered close turns danger.
+- Window buttons are flat and never glow, like every widget (D-4). Each is
+  a square `--title-bar-height` across, with a 16 px glyph stroked 1.5 px
+  with square ends, drawn in `prototype/window.css` and the gallery's
+  "Window buttons". Restore, which a maximised window shows in place of
+  maximise, is two squares, the back one showing its top and right edges
+  (D-127). Fill / glyph:
+
+  | State | Minimise, maximise, restore | Close |
+  |---|---|---|
+  | At rest | tone 0 / text | tone 0 / text |
+  | Hovered | tone 1 / text | danger / on-danger |
+  | Pressed | tone 2 / text | danger / on-danger |
+  | At rest, inactive window | tone 0 / dim text | tone 0 / dim text |
+  | Hovered, inactive | tone 1 / dim text | danger / on-danger |
+  | Pressed, inactive | tone 2 / dim text | danger / on-danger |
+
 - An inactive window has dim title text.
 
 ## Terminal colours

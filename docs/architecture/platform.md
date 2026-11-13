@@ -502,7 +502,8 @@ Verified on 2026-11-11 unless marked; see
 - A theme is a folder `<id>/` in `~/.local/share/aurorae/themes/` holding
   `decoration.svg`, `<id>rc`, `metadata.desktop` and one SVG file per window
   button (`close.svg`, `minimize.svg`, `maximize.svg`, `restore.svg` and
-  others). A button with no file is not shown. The format is described at
+  others). A button with no file is not shown, except the menu button, which
+  draws the application's icon (verified, 2026-11-13, P5.2). The format is described at
   <https://develop.kde.org/docs/plasma/aurorae/>.
 - `decoration.svg` holds a frame of nine elements named
   `decoration-<side>` (`topleft`, `top`, `topright`, `left`, `center`,
@@ -519,6 +520,10 @@ Verified on 2026-11-11 unless marked; see
 - Which window buttons show, and on which side, is KWin's setting
   (`ButtonsOnLeft`, `ButtonsOnRight` in the same group of `kwinrc`). The
   theme's empty `LeftButtons` did not remove the menu button on the left.
+  With neither key set, KWin's defaults, which are in its code and not in
+  any file, put the menu button at the left and minimise, maximise and
+  close at the right; help and on-all-desktops, which Amber draws no file
+  for, are not shown. (verified, 2026-11-13, P5.2)
 - A window with an empty title shows its application's name in the title
   bar.
 - KWin selects an Aurorae theme with `library=org.kde.kwin.aurorae` and
@@ -626,6 +631,39 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
   output larger; `kscreen-doctor` sets its scale. A KWin script loaded over
   D-Bus (`gdbus call … org.kde.kwin.Scripting.loadScript`, then `start`)
   can place, restore and size windows.
+
+### Amber's window buttons — P5.2, 2026-11-13
+
+Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
+
+- **A button file of one `<g id="<prefix>-center">` per state fills the
+  button**: KSvg takes the lone centre element as the whole button and does
+  not stretch the glyph, when the group holds a rectangle the button's size.
+  Aurorae read the prefixes `active`, `hover`, `pressed`, `inactive`,
+  `hover-inactive` and `pressed-inactive`. Each of the 21 states of
+  minimise, maximise, close and restore drew the fill and glyph colour of
+  the gallery's "Window buttons", and each glyph landed where the
+  prototype puts it.
+- **The menu button draws the application's icon, 26 px across and 2 px in
+  from each edge** of a button `ButtonWidth` across. Under Xwayland a Qt
+  application's icon is X11's, a cool grey: outside Amber (D-94).
+- **`TitleAlignment=Center` centres the title between the button groups**,
+  not on the title bar: with KWin's default buttons a 522 px window's title
+  sat 31 px left of the window's centre. A long title is elided before the
+  first button.
+- **A maximised window shows `restore.svg` at rest**; being maximised does
+  not show the pressed state. A window of fixed size has no maximise button
+  at all, rather than a disabled one, so no `deactivated` element is
+  needed.
+- Pressing a button of an inactive window shows its `pressed-inactive`
+  state while held. Releasing off the button does nothing.
+- **At 1.49 a window button covers the window outline's inner device
+  pixel**: the outline is 1 device px above and beside the buttons, 2 px
+  elsewhere on the top and right. Part of D-126. A hovered close's danger
+  runs to the outline with no seam.
+- In the nested session, XTest sent from its Xwayland (`xkeys.py`) moves
+  the one pointer, so it hovers and presses the decoration of Wayland and
+  X11 windows alike.
 
 ### Unverified
 

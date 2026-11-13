@@ -54,6 +54,11 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   maximise (restore when the window is maximised) and close. _Avoid_ "title
   bar button" and "caption button".
 
+**Menu button**
+: The button at the left of the title bar that shows the application's
+  icon and opens the window menu. KWin draws it by default; Amber keeps it
+  (D-128). It is not a window button.
+
 **Terminal colours**
 : The Konsole colour scheme file `Amber.colorscheme`: background, foreground
   and the 16 ANSI colours. _Avoid_ plain "colour scheme" for this file.
