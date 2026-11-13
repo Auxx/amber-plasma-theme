@@ -47,15 +47,21 @@ describe('Amber decoration', () => {
 
   it("matches the prototype's window", () => {
     const svg = generate()['decoration.svg'];
-    const fill = id => svg.match(new RegExp(`id="${id}"[^>]*fill="(#[0-9a-f]{6})"`))[1];
+    /** The fills of the rects of one element (a group). */
+    const fills = id => [ ...svg.match(new RegExp(`<g id="${id}">([\\s\\S]*?)</g>`))[1].matchAll(/fill="([^"]+)"/g) ].map(m => m[1]);
     const titleBar = hexOf(windowToken('.title-bar', 'background'));
     const outline = hexOf(windowToken('.window', 'outline'));
     for (const prefix of [ 'decoration', 'decoration-inactive' ]) {
-      assert.equal(fill(`${prefix}-center`), titleBar, `${prefix}-center`);
-      assert.equal(fill(`${prefix}-top`), outline, `${prefix}-top`);
-      assert.equal(fill(`${prefix}-bottomright`), outline, `${prefix}-bottomright`);
+      assert.deepEqual(fills(`${prefix}-center`), [ titleBar ], `${prefix}-center`);
+      assert.ok(fills(`${prefix}-top`).includes(outline), `${prefix}-top`);
+      assert.ok(fills(`${prefix}-bottomright`).includes(outline), `${prefix}-bottomright`);
     }
+    // The light of each state is the prototype's: --light of .window.is-active and of an inactive window (P5.3).
+    const stopColour = id => svg.match(new RegExp(`<linearGradient id="${id}"[^>]*><stop [^>]*stop-color="(#[0-9a-f]{6})"`))[1];
+    assert.equal(stopColour('active-top'), hexOf(windowToken('.window.is-active', '--light')));
+    assert.equal(stopColour('inactive-top'), hexOf(windowToken('.window:not(.is-active),\n.popup', '--light')));
   });
+
 
   it('generates every window button', () => {
     assert.deepEqual(Object.keys(generate()).sort(),

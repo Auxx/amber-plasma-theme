@@ -7,7 +7,7 @@ description: |
   hovered, focused or pressed state, the rendered anti-goal check, computed
   colours named as tokens), generating Amber's parts (the colour
   scheme, the Union style's tokens, the terminal colours, the editor theme and
-  the decoration's frame and window buttons), printing the prototype's terminal and editor
+  the decoration's frame, window glow, shadow and window buttons), printing the prototype's terminal and editor
   samples for a real terminal or editor and comparing the editor sample with
   Kate's highlighting, and
   reading the colours of a

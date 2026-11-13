@@ -5,7 +5,17 @@ import {
 } from './decoration.mjs';
 import { parseTokens } from './tokens.mjs';
 
-const tokensWith = (extra = '') => parseTokens(`:root {
+/** The tokens of the window glow and the shadow, as tokens.css has them (P5.3). */
+const LIGHT = `  --accent: #d1b072;
+  --glow: color-mix(in srgb, var(--accent) 14%, transparent);
+  --glow-size: 48px;
+  --shadow: rgb(0 0 0 / 55%);
+  --shadow-size: 36px;
+  --shadow-inset-top: 27px;
+  --shadow-inset-side: 17px;
+  --shadow-inset-bottom: 4px;`;
+
+const tokensWith = (extra = '', light = LIGHT) => parseTokens(`:root {
   --outline: #585248;
   --tone-0: #151413;
   --text: #e6dfd3;
@@ -16,19 +26,63 @@ const tokensWith = (extra = '') => parseTokens(`:root {
   --tone-2: #25221f;
   --danger: #b5442f;
   --on-danger: #fbf3e6;
+${light}
 ${extra}
 }`);
 
-/** Every `<rect>` of the SVG as { id, x, y, width, height, fill }. */
+const attributesOf = text => Object.fromEntries([ ...text.matchAll(/([a-zA-Z][a-zA-Z0-9-]*)="([^"]*)"/g) ].map(([ , k, v ]) => [ k, v ]));
+
+/** Every `<rect>` of a piece of SVG as { x, y, width, height, fill }, numbers as numbers. */
 function rects(svg) {
-  return [ ...svg.matchAll(/<rect ([^>]*)\/>/g) ].map(([ , attributes ]) => {
-    const value = name => attributes.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
-    return {
-      id: value('id'), fill: value('fill'),
-      x: Number(value('x')), y: Number(value('y')), width: Number(value('width')), height: Number(value('height'))
-    };
+  return [ ...svg.matchAll(/<rect ([^>]*)\/>/g) ].map(([ , text ]) => {
+    const a = attributesOf(text);
+    return { fill: a.fill, x: Number(a.x), y: Number(a.y), width: Number(a.width), height: Number(a.height) };
   });
 }
+
+/** Each `<g id>` of the frame as { id, rects, box }, where box holds every rect. */
+function elements(svg) {
+  return [ ...svg.matchAll(/<g id="([^"]+)">([\s\S]*?)<\/g>/g) ].map(([ , id, body ]) => {
+    const all = rects(body);
+    const left = Math.min(...all.map(r => r.x));
+    const top = Math.min(...all.map(r => r.y));
+    const box = {
+      x: left, y: top,
+      width: Math.max(...all.map(r => r.x + r.width)) - left,
+      height: Math.max(...all.map(r => r.y + r.height)) - top
+    };
+    return { id, rects: all, box };
+  });
+}
+
+/** Each gradient of the SVG by id: { kind, attributes, stops: [{ offset, colour, opacity }] }. */
+function gradients(svg) {
+  return Object.fromEntries([ ...svg.matchAll(/<(linear|radial)Gradient ([^>]*)>([\s\S]*?)<\/\1Gradient>/g) ]
+    .map(([ , kind, head, body ]) => {
+      const attributes = attributesOf(head);
+      const stops = [ ...body.matchAll(/<stop ([^>]*)\/>/g) ].map(([ , text ]) => {
+        const a = attributesOf(text);
+        return { offset: Number(a.offset), colour: a['stop-color'], opacity: Number(a['stop-opacity']) };
+      });
+      return [ attributes.id, { kind, attributes, stops } ];
+    }));
+}
+
+/** The opacity of a gradient at an offset, linear between its stops. */
+function opacityAt({ stops }, offset) {
+  if (offset <= stops[0].offset) {
+    return stops[0].opacity;
+  }
+  for (let k = 1; k < stops.length; k++) {
+    if (offset <= stops[k].offset) {
+      const [ a, b ] = [ stops[k - 1], stops[k] ];
+      return a.opacity + (offset - a.offset) / (b.offset - a.offset) * (b.opacity - a.opacity);
+    }
+  }
+  return stops.at(-1).opacity;
+}
+
+const gradientId = fill => fill?.match(/^url\(#([^)]+)\)$/)?.[1];
 
 /** The keys of one `[group]` of the rc file, in order, as [ key, value ]. */
 function group(rc, name) {
@@ -37,33 +91,101 @@ function group(rc, name) {
 }
 const key = (rc, name, k) => Object.fromEntries(group(rc, name))[k];
 
+const near = (actual, expected, within = 1e-4, message = "") =>
+  assert.ok(Math.abs(actual - expected) <= within, `${message ?? ''} ${actual} is not within ${within} of ${expected}`);
+
 describe('decoration', () => {
-  const svg = formatDecorationSvg(tokensWith());
-  const rc = formatDecorationRc(tokensWith());
-  const all = rects(svg);
-  const byId = id => all.find(r => r.id === id);
+  const tokens = tokensWith();
+  const svg = formatDecorationSvg(tokens);
+  const rc = formatDecorationRc(tokens);
+  const all = elements(svg);
+  const byId = id => all.find(e => e.id === id);
   const ids = SIDES.flatMap(side => [ `decoration-${side}`, `decoration-inactive-${side}` ]);
+  const grads = gradients(svg);
+  const { active, inactive } = lights(tokens);
+  const FRAMES = [ [ 'decoration', active ], [ 'decoration-inactive', inactive ] ];
+  /** The rects of an element, from the outside in, across its thickness. */
+  const across = (id, side) => {
+    const rs = byId(id).rects;
+    const key = { top: r => r.y, bottom: r => -r.y, left: r => r.x, right: r => -r.x }[side];
+    return [ ...rs ].sort((a, b) => key(a) - key(b));
+  };
 
   it('draws both frames, nine elements each', () => {
     assert.equal(SIDES.length, 9);
     assert.equal(all.length, 18);
-    assert.deepEqual(all.map(r => r.id).sort(), ids.sort());
+    assert.deepEqual(all.map(e => e.id).sort(), ids.sort());
   });
 
-  it('draws the window outline on the edges and corners, one outline-width thick', () => {
-    for (const prefix of [ 'decoration', 'decoration-inactive' ]) {
-      for (const side of SIDES.filter(s => s !== 'center')) {
-        const r = byId(`${prefix}-${side}`);
-        assert.equal(r.fill, '#585248', `${r.id} fill`);
-        if ([ 'top', 'bottom' ].includes(side)) {
-          assert.equal(r.height, 1, `${r.id} height`);
-        } else if ([ 'left', 'right' ].includes(side)) {
-          assert.equal(r.width, 1, `${r.id} width`);
-        } else {
-          assert.deepEqual([ r.width, r.height ], [ 1, 1 ], `${r.id} size`);
+  it('pads for the light (P5.3)', () => {
+    for (const side of [ 'Top', 'Bottom', 'Left', 'Right' ]) {
+      assert.equal(key(rc, 'Layout', `Padding${side}`), '48', side);
+    }
+  });
+
+  it('draws the light outside the outline, the outline, then tone 0 as far in as the shadow starts (P5.3)', () => {
+    const reach = { top: 27, bottom: 4, left: 17, right: 17 };
+    for (const [ prefix, light ] of FRAMES) {
+      for (const side of [ 'top', 'bottom', 'left', 'right' ]) {
+        const id = `${prefix}-${side}`;
+        const thick = [ 'top', 'bottom' ].includes(side) ? 'height' : 'width';
+        assert.equal(byId(id).box[thick], 48 + 1 + reach[side], `${id} ${thick}`);
+        const [ glow, outline, inner ] = across(id, side);
+        assert.equal(glow[thick], 48, id);
+        const g = grads[gradientId(glow.fill)];
+        assert.ok(g, `${id}: the light is a gradient`);
+        assert.equal(g.kind, 'linear');
+        assert.equal(g.stops[0].colour, `#${[ light.colour.r, light.colour.g, light.colour.b ].map(v => v.toString(16).padStart(2, '0')).join('')}`);
+        near(g.stops[0].opacity, fade(light, side, 0), 0.0001, id);
+        assert.equal(g.stops.at(-1).opacity, 0, id);
+        assert.deepEqual([ outline.fill, outline[thick] ], [ '#585248', 1 ], id);
+        assert.deepEqual([ inner.fill, inner[thick] ], [ '#151413', reach[side] ], id);
+      }
+    }
+  });
+
+  it('draws the light on the fade, from the outline outwards (P5.3)', () => {
+    const towardOutline = { top: { y1: '1', y2: '0' }, bottom: { y1: '0', y2: '1' }, left: { x1: '1', x2: '0' }, right: { x1: '0', x2: '1' } };
+    for (const [ prefix, light ] of FRAMES) {
+      for (const side of [ 'top', 'bottom', 'left', 'right' ]) {
+        const g = grads[gradientId(across(`${prefix}-${side}`, side)[0].fill)];
+        for (const [ k, v ] of Object.entries(towardOutline[side])) {
+          assert.equal(g.attributes[k], v, `${prefix}-${side} ${k}`);
+        }
+        for (const f of [ 0, 0.25, 0.5, 0.75 ]) {
+          near(opacityAt(g, f), fade(light, side, f * 48), 0.005, `${prefix}-${side} at ${f}`);
         }
       }
     }
+  });
+
+  it('draws the corners on the fade, round the corner of the window shrunk by the light\'s insets (P5.3)', () => {
+    for (const [ prefix, light ] of FRAMES) {
+      for (const corner of [ 'topleft', 'topright', 'bottomleft', 'bottomright' ]) {
+        const e = byId(`${prefix}-${corner}`);
+        const radial = e.rects.map(r => grads[gradientId(r.fill)]).find(g => g?.kind === 'radial');
+        assert.ok(radial, `${e.id}: a radial gradient`);
+        const { cx, cy, r } = Object.fromEntries([ 'cx', 'cy', 'r' ].map(k => [ k, Number(radial.attributes[k]) ]));
+        assert.equal(radial.attributes.gradientUnits, 'userSpaceOnUse');
+        // The window outline's outer corner, in the SVG: the outline rects of the element meet there.
+        const sx = corner.endsWith('left') ? -1 : 1;
+        const sy = corner.startsWith('top') ? -1 : 1;
+        const outline = e.rects.filter(rr => rr.fill === '#585248');
+        const xs = outline.map(rr => (sx < 0 ? rr.x : rr.x + rr.width));
+        const ys = outline.map(rr => (sy < 0 ? rr.y : rr.y + rr.height));
+        const ox = sx < 0 ? Math.min(...xs) : Math.max(...xs);
+        const oy = sy < 0 ? Math.min(...ys) : Math.max(...ys);
+        for (const d of [ 1, 5, 10, 20 ]) {
+          const a = d / Math.SQRT2;
+          const offset = Math.hypot(ox + sx * a - cx, oy + sy * a - cy) / r;
+          near(opacityAt(radial, offset), cornerFade(light, corner, d), 0.005, `${e.id} at ${d}`);
+        }
+      }
+    }
+  });
+
+  it('writes no colour with alpha (P5.3)', () => {
+    assert.doesNotMatch(svg, /rgba|(?:fill|stop-color)="#[0-9a-f]{8}"/);
   });
 
   it('holds no -- inside a comment, which XML forbids and which leaves the frame undrawn (P5.1)', () => {
@@ -75,25 +197,32 @@ describe('decoration', () => {
   });
 
   it('fills the title bar in tone 0, active and inactive', () => {
-    assert.equal(byId('decoration-center').fill, '#151413');
-    assert.equal(byId('decoration-inactive-center').fill, '#151413');
+    for (const id of [ 'decoration-center', 'decoration-inactive-center' ]) {
+      assert.deepEqual(byId(id).rects.map(r => r.fill), [ '#151413' ], id);
+    }
   });
 
   it('lays the elements out without overlap', () => {
     const overlap = (a, b) => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
     for (const [ i, a ] of all.entries()) {
       for (const b of all.slice(i + 1)) {
-        assert.ok(!overlap(a, b), `${a.id} overlaps ${b.id}`);
+        assert.ok(!overlap(a.box, b.box), `${a.id} overlaps ${b.id}`);
       }
     }
   });
 
+  it('fills each element without a gap', () => {
+    for (const { id, rects: rs, box } of all) {
+      assert.equal(rs.reduce((sum, r) => sum + r.width * r.height, 0), box.width * box.height, id);
+    }
+  });
+
   it('follows the outline width', () => {
-    const tokens = tokensWith().set('outline-width', { length: { value: 2, unit: 'px' } });
-    const wide = rects(formatDecorationSvg(tokens));
-    assert.equal(wide.find(r => r.id === 'decoration-top').height, 2);
-    assert.equal(wide.find(r => r.id === 'decoration-inactive-left').width, 2);
-    const wideRc = formatDecorationRc(tokens);
+    const wideTokens = tokensWith().set('outline-width', { length: { value: 2, unit: 'px' } });
+    const wide = elements(formatDecorationSvg(wideTokens));
+    assert.equal(wide.find(e => e.id === 'decoration-top').box.height, 48 + 2 + 27);
+    assert.ok(wide.find(e => e.id === 'decoration-inactive-left').rects.some(r => r.fill === '#585248' && r.width === 2));
+    const wideRc = formatDecorationRc(wideTokens);
     assert.equal(key(wideRc, 'Layout', 'BorderLeft'), '2');
     assert.equal(key(wideRc, 'Layout', 'TitleEdgeTop'), '2');
   });
@@ -104,9 +233,12 @@ describe('decoration', () => {
     assert.equal(key(rc, 'Layout', 'TitleEdgeBottom'), '0');
     assert.equal(key(rc, 'Layout', 'TitleEdgeLeft'), '1');
     assert.equal(key(rc, 'Layout', 'BorderBottom'), '1');
-    assert.equal(key(rc, 'Layout', 'PaddingTop'), '0');
     assert.equal(key(rc, 'Layout', 'ButtonHeight'), '30');
     assert.equal(key(rc, 'General', 'TitleAlignment'), 'Center');
+  });
+
+  it('keeps the shadow key on, which draws nothing on the title (P5.3)', () => {
+    assert.equal(key(rc, 'General', 'Shadow'), 'true');
   });
 
   it('colours the title: text when active, dim text when inactive', () => {
@@ -122,17 +254,17 @@ describe('decoration', () => {
   });
 
   it('refuses a length that is not whole px', () => {
-    const tokens = tokensWith().set('outline-width', { length: { value: 1.5, unit: 'px' } });
-    assert.throws(() => formatDecorationSvg(tokens), /outline-width: .*whole px/);
-    assert.throws(() => formatDecorationRc(tokens), /outline-width: .*whole px/);
+    const half = tokensWith().set('outline-width', { length: { value: 1.5, unit: 'px' } });
+    assert.throws(() => formatDecorationSvg(half), /outline-width: .*whole px/);
+    assert.throws(() => formatDecorationRc(half), /outline-width: .*whole px/);
   });
 
   it('refuses a colour that is not opaque, naming every problem', () => {
-    const tokens = tokensWith('  --half: color-mix(in srgb, var(--tone-0) 50%, transparent);')
+    const half = tokensWith('  --half: color-mix(in srgb, var(--tone-0) 50%, transparent);')
       .set('outline', { ref: 'half' });
-    tokens.delete('text-dim');
-    assert.throws(() => formatDecorationSvg(tokens), /outline: .*not opaque/);
-    assert.throws(() => formatDecorationRc(tokens), error =>
+    half.delete('text-dim');
+    assert.throws(() => formatDecorationSvg(half), /outline: .*not opaque/);
+    assert.throws(() => formatDecorationRc(half), error =>
       /text-dim: /.test(error.message) && error.message.split('\n').length >= 1);
   });
 
@@ -261,19 +393,8 @@ describe('window buttons', () => {
 });
 
 describe('the window glow and the shadow (P5.3)', () => {
-  const LIGHT = `  --accent: #d1b072;
-  --glow: color-mix(in srgb, var(--accent) 14%, transparent);
-  --glow-size: 48px;
-  --shadow: rgb(0 0 0 / 55%);
-  --shadow-size: 36px;
-  --shadow-inset-top: 27px;
-  --shadow-inset-side: 17px;
-  --shadow-inset-bottom: 4px;`;
-  const tokens = tokensWith(LIGHT);
+  const tokens = tokensWith();
   const { active, inactive } = lights(tokens);
-  /** mix at t, from FADE, written out for the spec. */
-  const near = (actual, expected, within = 1e-4) =>
-    assert.ok(Math.abs(actual - expected) <= within, `${actual} is not within ${within} of ${expected}`);
 
   it('fades as the prototype', () => {
     near(fade(active, 'top', 0), 0.14);
@@ -309,9 +430,9 @@ describe('the window glow and the shadow (P5.3)', () => {
 
   it('pads for the longer light', () => {
     assert.deepEqual(padding(tokens), { top: 48, left: 48, right: 48, bottom: 48 });
-    assert.deepEqual(padding(tokensWith(LIGHT.replace('--glow-size: 48px', '--glow-size: 8px'))),
+    assert.deepEqual(padding(tokensWith('', LIGHT.replace('--glow-size: 48px', '--glow-size: 8px'))),
       { top: 9, left: 19, right: 19, bottom: 32 });
-    assert.throws(() => padding(tokensWith(LIGHT.replace('--glow-size: 48px', '--glow-size: 47.5px'))), /glow-size: .*whole px/);
+    assert.throws(() => padding(tokensWith('', LIGHT.replace('--glow-size: 48px', '--glow-size: 47.5px'))), /glow-size: .*whole px/);
   });
 
   it('holds the stops of the fade in order, ending at nothing', () => {
