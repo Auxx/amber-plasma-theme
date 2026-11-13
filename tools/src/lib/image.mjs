@@ -328,3 +328,60 @@ export function frame(image, { surface, region } = {}) {
   }
   return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, corners, sides, lines };
 }
+
+/** Whether `c` lies between `a` and `b` on every channel, give or take 1: a blend at an edge. */
+const between = (c, a, b) => c.every((v, i) => v >= Math.min(a[i], b[i]) - 1 && v <= Math.max(a[i], b[i]) + 1);
+
+/**
+ * Every straight line 1 or 2 px thick and at least `minLength` px long (P3.9):
+ * a run of one colour whose pixels on both sides differ from it, which is not
+ * a blend of its two sides, as the row where two tones meet at a fractional
+ * scale is. A band 3 px or more thick is not a line; nor is a short stroke of
+ * text. `region` limits the search, and `leaveOut` skips rectangles in it.
+ */
+export function lines(image, { region, leaveOut = [], minLength = 32 } = {}) {
+  const { x: rx, y: ry, width: rw, height: rh } = bounds(image, region);
+  const rgb = (x, y) => {
+    const i = (y * image.width + x) * 4;
+    return [ image.pixels[i], image.pixels[i + 1], image.pixels[i + 2] ];
+  };
+  const skipped = (x, y) => leaveOut.length && inside(leaveOut, x, y);
+  const found = [];
+  // `along` walks the line's length, `across` its thickness; `pixel(a, c)` maps them to the picture.
+  const scan = (orientation, alongFrom, alongTo, acrossFrom, acrossTo, pixel) => {
+    for (const thickness of [ 1, 2 ]) {
+      for (let c = acrossFrom + 1; c + thickness < acrossTo; c++) {
+        let start = null, colour = null;
+        const close = end => {
+          if (start !== null && end - start >= minLength) {
+            const [ x, y ] = pixel(start, c);
+            found.push({ orientation, x, y, length: end - start, thickness, hex: toHex(...colour) });
+          }
+          start = null; colour = null;
+        };
+        for (let a = alongFrom; a <= alongTo; a++) {
+          let on = false, here = null;
+          if (a < alongTo && !skipped(...pixel(a, c))) {
+            here = rgb(...pixel(a, c));
+            const second = thickness === 2 ? rgb(...pixel(a, c + 1)) : here;
+            const before = rgb(...pixel(a, c - 1));
+            const after = rgb(...pixel(a, c + thickness));
+            on = near(here, second) && !near(here, before) && !near(here, after) && !between(here, before, after)
+              && (thickness === 1 || !near(second, after));
+          }
+          if (on && start !== null && !near(here, colour)) {
+            close(a);
+          }
+          if (on && start === null) {
+            start = a; colour = here;
+          } else if (!on) {
+            close(a);
+          }
+        }
+      }
+    }
+  };
+  scan('horizontal', rx, rx + rw, ry, ry + rh, (a, c) => [ a, c ]);
+  scan('vertical', ry, ry + rh, rx, rx + rw, (a, c) => [ c, a ]);
+  return found;
+}
