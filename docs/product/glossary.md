@@ -49,6 +49,11 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   draws around a window. Called the "decoration" for short. Built as an
   Aurorae theme.
 
+**Window button**
+: One of the buttons a window decoration draws in the title bar: minimise,
+  maximise (restore when the window is maximised) and close. _Avoid_ "title
+  bar button" and "caption button".
+
 **Terminal colours**
 : The Konsole colour scheme file `Amber.colorscheme`: background, foreground
   and the 16 ANSI colours. _Avoid_ plain "colour scheme" for this file.
