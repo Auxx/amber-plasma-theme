@@ -25,6 +25,7 @@
   /* The window decoration (D-59, D-60, D-62) */
   --outline: #585248;             /* the window outline, on every edge of a window: 2:1 on tones 0 to 2 */
   --outline-width: 1px;           /* the window outline's width */
+  --title-bar-height: 30px;       /* the title bar's height, below the window outline */
   --glow: color-mix(in srgb, var(--accent) 14%, transparent); /* the window glow of the active window, at the outline */
   --glow-size: 48px;              /* how far the window glow fades to nothing */
   --shadow: rgb(0 0 0 / 55%);     /* the shadow of an inactive window and of a popup, where its fade starts */

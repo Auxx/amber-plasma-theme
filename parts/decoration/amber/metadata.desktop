@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov
+# SPDX-License-Identifier: MIT
+# Amber's window decoration, an Aurorae theme. Written by hand; decoration.svg
+# and amberrc beside it are generated: node tools/src/bin/generate.mjs decoration --write
+
+[Desktop Entry]
+Name=Amber
+Comment=Amber's window decoration: dark, warm and flat.
+X-KDE-PluginInfo-Author=Aleksandr 'Aux' Ivanov
+X-KDE-PluginInfo-Name=amber
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=https://github.com/Auxx/amber-plasma-theme
+X-KDE-PluginInfo-License=MIT

@@ -314,6 +314,7 @@ token holds the plain colour (D-47).
   |---|---|---|
   | `--outline` | `#585248` | the window outline |
   | `--outline-width` | `1px` | its width |
+  | `--title-bar-height` | `30px` | the title bar's height, below the window outline (my call, P5.1) |
   | `--glow` | accent at 14 % | the window glow, at the window outline |
   | `--glow-size` | `48px` | how far the window glow fades to nothing |
   | `--shadow` | black at 55 % | the shadow of an inactive window and of a popup, where its fade starts |

@@ -245,6 +245,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
 | `terminal-colours [--write] [--json]` | `parts/terminal-colours/Amber.colorscheme`, Konsole's file, from `prototype/tokens.css` and `parts/terminal-colours/keys.json`, which gives each of the 30 colour keys a token (P4.1) |
 | `editor-theme [--write] [--json]` | `parts/editor-theme/Amber.theme`, the KSyntaxHighlighting theme Kate reads, from `prototype/tokens.css` and `parts/editor-theme/styles.json`, which gives each of the 31 text styles and 28 editor colours a token (P4.2) |
+| `decoration [--write] [--json]` | `decoration.svg` and `amberrc` of the Aurorae theme in `parts/decoration/amber/`, from `prototype/tokens.css`: the frame of each window state, its edges one `outline-width` thick in `outline` and its centre, the title bar, in `tone-0`; the title's colours and the layout. `metadata.desktop` beside them is written by hand (P5.1) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -256,8 +257,11 @@ node tools/src/bin/generate.mjs colour-scheme --write
 
 - **Output.** Without `--write`, the file's text exactly, so it can be piped
   or compared with `cmp`. With `--write`, one line: `written`, or `unchanged`
-  when the file already holds that text, which is then left alone.
-- **`--json`** prints `{ part, file, changed, written, content }`. Without
+  when the file already holds that text, which is then left alone. A part of
+  several files, such as `decoration`, prints each file after a heading
+  `==> <path> <==`, and with `--write` one line for each file.
+- **`--json`** prints `{ part, file, changed, written, content }`; for a part of
+  several files, `{ part, files: [{ file, changed, written, content }] }`. Without
   `--write`, `changed` says whether the file on disk differs and `written` is
   false.
 - **Refusals.** The generator writes nothing and exits 1 when the table has a

@@ -6,8 +6,8 @@ description: |
   and contrast pairs, and opening the prototype in Chrome (screenshots in a
   hovered, focused or pressed state, the rendered anti-goal check, computed
   colours named as tokens), generating Amber's parts (the colour
-  scheme, the Union style's tokens, the terminal colours and the editor theme
-  now, the decoration to follow), printing the prototype's terminal and editor
+  scheme, the Union style's tokens, the terminal colours, the editor theme and
+  the decoration's frame; the window buttons to follow), printing the prototype's terminal and editor
   samples for a real terminal or editor and comparing the editor sample with
   Kate's highlighting, and
   reading the colours of a
