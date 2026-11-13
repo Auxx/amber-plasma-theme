@@ -33,11 +33,6 @@
     --button-padding-x: 12px;
     --button-spacing: 4px;
     --toolbutton-menu-padding: 2px;
-
-    /* Match Breeze QStyle color */
-    --combobox-popup-background-color: mix(var(--window-background-color), var(--view-background-color), 0.3);
-    --combobox-popup-highlight-color: mix(var(--combobox-popup-background-color), var(--highlight-color), 0.333);
-    --combobox-popup-text-color: var(--window-text-color);
 }
 
 button,
@@ -342,17 +337,18 @@ combobox
     }
 }
 
+/* A combo box's list is a menu (P3.8, D-114): the popup tone, its current
+ * item the hovered tone. Qt Widgets draws no background here (P3.8, Task 1). */
 popup.combobox
 {
     padding: 0px;
-    background-color: var(--combobox-popup-background-color);
-    border-radius: var(--corner-radius);
+    background-color: var(--popup);
+    border-radius: 0px;
 
     itemviewitem:highlight,
     itemdelegate:highlight {
-        background-color: var(--combobox-popup-highlight-color);
-        border-color: var(--highlight-color);
-        color: var(--combobox-popup-text-color);
+        background-color: var(--tone-4);
+        color: var(--text);
     }
 }
 

@@ -949,7 +949,8 @@ describe('the Union style\'s views (P3.7)', () => {
 describe('the Union style\'s popups (P3.8)', () => {
   const files = {
     'popup.css': /^(menu|popup|overlay(\.modal)?|menuitem|menuseparator|dialog|dialogbuttonbox|tooltip|popup\.combobox (itemviewitem|menuitem))$/,
-    'check.css': /^(menuitem(\.exclusive)?|menu (checkbox|radiobutton))$/
+    'check.css': /^(menuitem(\.exclusive)?|menu (checkbox|radiobutton))$/,
+    'button.css': /^popup\.combobox$/
   };
   const all = Object.fromEntries(Object.keys(files).map(f => [ f, blocks(read(f)) ]));
   const below = block => [ block, ...block.children.flatMap(below) ];
@@ -978,7 +979,7 @@ describe('the Union style\'s popups (P3.8)', () => {
 
   it('finds every popup block', () => {
     assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector.replace(/\s+/g, ' ')}`)) ].sort(), [
-      'check.css menu checkbox', 'check.css menu checkbox, menu radiobutton', 'check.css menu radiobutton',
+      'button.css popup.combobox', 'check.css menu checkbox', 'check.css menu checkbox, menu radiobutton', 'check.css menu radiobutton',
       'check.css menuitem', 'check.css menuitem.exclusive',
       'popup.css dialog', 'popup.css dialogbuttonbox', 'popup.css menu', 'popup.css menu, popup', 'popup.css menuitem',
       'popup.css menuseparator', 'popup.css overlay', 'popup.css overlay.modal',
@@ -1082,9 +1083,14 @@ describe('the Union style\'s popups (P3.8)', () => {
     assert.equal(value(c, 'background-color'), 'var(--popup)');
     assert.equal(value(c, 'color'), 'var(--text)');
     assert.equal(value(c, 'height'), '26px');
-    for (const side of [ 'top', 'right', 'bottom', 'left' ]) {
-      assert.equal(value(c, `inset-${side}`), '0px', side);
-    }
+    // Union draws an item's text from its edge whatever the padding, and an inset would clear the fill: the
+    // spacing before the text is what moves it, and 8 px puts it where the combo box's own text starts (owner,
+    // after Task 4).
+    assert.equal(value(c, 'spacing'), '8px');
+    // At a fractional scale an item's edge falls mid-pixel and the clear list showed through it as a seam
+    // (after Task 4): the fill reaches 1 px past the top, the foot and the right. The left stays 0, since an
+    // inset there moves the text.
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(side => value(c, `inset-${side}`)), [ '-1px', '-1px', '-1px', '0px' ]);
     // The current value is :highlighted when the list opens; Union draws it no tick, so it shows as hovered.
     assert.equal(value(child(c, '&:hovered, &:highlighted, &:visual-focus, &:highlighted:visual-focus'), 'background-color'), 'var(--tone-4)');
     assert.equal(value(child(c, '&:disabled'), 'color'), 'var(--text-dim)');

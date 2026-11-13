@@ -143,11 +143,14 @@ popup.combobox menuitem {
     height: 26px;
     padding-top: 0px;
     padding-bottom: 0px;
-    padding-left: 28px;
+    padding-left: 12px;
     padding-right: 12px;
-    inset-top: 0px;
-    inset-right: 0px;
-    inset-bottom: 0px;
+    spacing: 8px; /* Union ignores the side padding; this puts the text where the combo box's starts */
+    /* At a fractional scale an item's edge falls mid-pixel and the clear list
+     * shows through it as a seam: the fill reaches 1 px past it. */
+    inset-top: -1px;
+    inset-right: -1px;
+    inset-bottom: -1px;
     inset-left: 0px;
     border-radius: 0px;
     background-color: var(--popup);
