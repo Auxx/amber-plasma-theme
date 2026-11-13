@@ -717,6 +717,11 @@ in the nested KWin, at scale 1 and on a virtual output at 1.49.
   its light on the inner sides. Two windows side by side show their two
   outlines next to each other, the inactive one tinted by the active
   one's glow (`#695f4e`). No other line.
+- **A window as short as KWin allows draws whole.** Asked for a window
+  10 px tall, KWin kept 1 px of application below the title bar, so the
+  inside of the window outline is 31 px: as much as the top and bottom
+  corner elements reach in together (27 and 4). The outline, the title
+  bar and the light were whole, and `image lines` found no line.
 - **At a fractional scale the device pixel beside the outline on a
   straight edge is weaker than the fade**: at 1.49 by 0.021 (glow) to
   0.028 (shadow) alpha, so that `image lines` reports a 1 px line beside
@@ -732,6 +737,7 @@ in the nested KWin, at scale 1 and on a virtual output at 1.49.
 
 | Question | Tested in |
 |---|---|
+| Does a shaded window draw whole? Its inside, the title bar alone, is 30 px, less than the 31 px the top and bottom corner elements reach in together. Neither a script's `shade` nor KWin's shade action shaded a window in the nested session (P5.3). | P6.3 |
 | Does KWin draw a disabled minimise or close (a window that cannot be minimised or closed, as through a window rule), and with which element? Amber's button files have no `deactivated` element. Only maximise on a window of fixed size was seen: KWin left it out. | P6.3 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the

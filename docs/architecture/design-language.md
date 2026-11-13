@@ -299,8 +299,8 @@ token holds the plain colour (D-47).
 - A window has a window outline. (decided, D-25) It runs along every edge,
   square at the corners, the same for active and inactive windows. It is
   one pixel wide and `#585248`, which reaches 2:1 against tones 0 to 2.
-  (decided, D-62) A maximised window has none (my call, seen right by the
-  owner in P5.3, D-132).
+  (decided, D-62) A maximised window has none (my call, D-131; the owner
+  found it right live in P5.3).
 - No other line: none between the title bar and the content.
 - The active window has a window glow: a soft light in accent on every
   side, outside the window outline. An inactive window has a dark shadow

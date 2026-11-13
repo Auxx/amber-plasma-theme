@@ -5,7 +5,7 @@ import {
 } from './decoration.mjs';
 import { parseTokens } from './tokens.mjs';
 
-/** The tokens of the window glow and the shadow, as tokens.css has them (P5.3). */
+/** The tokens of the window glow and the shadow, with the glow even on every side (D-60 before D-132). */
 const LIGHT = `  --accent: #d1b072;
   --glow: color-mix(in srgb, var(--accent) 14%, transparent);
   --glow-size: 48px;
@@ -94,8 +94,8 @@ function group(rc, name) {
 }
 const key = (rc, name, k) => Object.fromEntries(group(rc, name))[k];
 
-const near = (actual, expected, within = 1e-4, message = "") =>
-  assert.ok(Math.abs(actual - expected) <= within, `${message ?? ''} ${actual} is not within ${within} of ${expected}`);
+const near = (actual, expected, within = 1e-4, message = '') =>
+  assert.ok(Math.abs(actual - expected) <= within, `${message} ${actual} is not within ${within} of ${expected}`);
 
 describe('decoration', () => {
   const tokens = tokensWith();
@@ -278,6 +278,101 @@ describe('decoration', () => {
     }
   });
 });
+
+/** The glow as tokens.css has it since D-132: 12 %, its fade starting 12 px in at the top and 6 at the sides. */
+const SHIPPED = LIGHT.replace('14%', '12%').replace('--glow-inset-top: 0px', '--glow-inset-top: 12px')
+  .replace('--glow-inset-side: 0px', '--glow-inset-side: 6px');
+/** A glow whose fade starts further in than the shadow's at the top, and less far at the sides. */
+const UNEVEN = LIGHT.replace('--glow-inset-top: 0px', '--glow-inset-top: 30px').replace('--glow-inset-side: 0px', '--glow-inset-side: 3px')
+  .replace('--glow-inset-bottom: 0px', '--glow-inset-bottom: 8px');
+
+for (const [ name, light ] of [ [ 'even glow', LIGHT ], [ 'shipped glow', SHIPPED ], [ 'uneven glow', UNEVEN ] ]) {
+  describe(`the frame's light, ${name} (P5.3)`, () => {
+    const tokens = tokensWith('', light);
+    const svg = formatDecorationSvg(tokens);
+    const all = elements(svg);
+    const byId = id => all.find(e => e.id === id);
+    const grads = gradients(svg);
+    const states = lights(tokens);
+    const pad = padding(tokens);
+    const reach = Object.fromEntries([ 'top', 'bottom', 'left', 'right' ].map(side =>
+      [ side, Math.max(states.active.inset[side], states.inactive.inset[side]) ]));
+    const FRAMES = [ [ 'decoration', states.active ], [ 'decoration-inactive', states.inactive ] ];
+    const across = (id, side) => {
+      const order = { top: r => r.y, bottom: r => -r.y, left: r => r.x, right: r => -r.x }[side];
+      return [ ...byId(id).rects ].sort((a, b) => order(a) - order(b));
+    };
+
+    it('pads the rc file as padding() says', () => {
+      const rc = formatDecorationRc(tokens);
+      assert.deepEqual([ 'Top', 'Left', 'Right', 'Bottom' ].map(side => Number(key(rc, 'Layout', `Padding${side}`))),
+        [ pad.top, pad.left, pad.right, pad.bottom ]);
+    });
+
+    it('draws each edge as light, outline, then tone 0 as far in as either fade starts', () => {
+      for (const [ prefix, state ] of FRAMES) {
+        for (const side of [ 'top', 'bottom', 'left', 'right' ]) {
+          const id = `${prefix}-${side}`;
+          const thick = [ 'top', 'bottom' ].includes(side) ? 'height' : 'width';
+          const [ glow, outline, inner ] = across(id, side);
+          assert.equal(glow[thick], pad[side], id);
+          assert.deepEqual([ outline.fill, outline[thick] ], [ '#585248', 1 ], id);
+          assert.deepEqual([ inner.fill, inner[thick] ], [ '#151413', reach[side] ], id);
+          const g = grads[gradientId(glow.fill)];
+          for (const f of [ 0, 0.25, 0.5, 0.75 ]) {
+            near(opacityAt(g, f), fade(state, side, f * pad[side]), 0.005, `${id} at ${f}`);
+          }
+        }
+      }
+    });
+
+    it('fades each corner as cornerFade() says, beyond the outline', () => {
+      for (const [ prefix, state ] of FRAMES) {
+        for (const corner of [ 'topleft', 'topright', 'bottomleft', 'bottomright' ]) {
+          const e = byId(`${prefix}-${corner}`);
+          const sx = corner.endsWith('left') ? -1 : 1;
+          const sy = corner.startsWith('top') ? -1 : 1;
+          const outline = e.rects.filter(r => r.fill === '#585248');
+          const xs = outline.map(r => (sx < 0 ? r.x : r.x + r.width));
+          const ys = outline.map(r => (sy < 0 ? r.y : r.y + r.height));
+          const ox = sx < 0 ? Math.min(...xs) : Math.max(...xs);
+          const oy = sy < 0 ? Math.min(...ys) : Math.max(...ys);
+          for (const d of [ 1, 5, 10, 20 ]) {
+            // The pixel d px out along the diagonal, and the rect of the element that paints it.
+            const a = d / Math.SQRT2;
+            const [ px, py ] = [ ox + sx * a, oy + sy * a ];
+            const r = e.rects.find(rr => px >= rr.x && px < rr.x + rr.width && py >= rr.y && py < rr.y + rr.height);
+            if (!r) {
+              continue; // beyond the element: the light has run out there
+            }
+            const g = grads[gradientId(r.fill)];
+            let opacity;
+            if (g.kind === 'radial') {
+              const { cx, cy, r: radius } = Object.fromEntries([ 'cx', 'cy', 'r' ].map(k => [ k, Number(g.attributes[k]) ]));
+              opacity = opacityAt(g, Math.hypot(px - cx, py - cy) / radius);
+            } else {
+              const vertical = g.attributes.y1 !== g.attributes.y2;
+              const offset = vertical ? (sy < 0 ? r.y + r.height - py : py - r.y) / r.height
+                : (sx < 0 ? r.x + r.width - px : px - r.x) / r.width;
+              opacity = opacityAt(g, offset);
+            }
+            near(opacity, cornerFade(state, corner, d), 0.005, `${e.id} at ${d}`);
+          }
+        }
+      }
+    });
+
+    it('fills each element without a gap or an overlap', () => {
+      const overlap = (a, b) => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
+      for (const [ i, a ] of all.entries()) {
+        assert.equal(a.rects.reduce((sum, r) => sum + r.width * r.height, 0), a.box.width * a.box.height, a.id);
+        for (const b of all.slice(i + 1)) {
+          assert.ok(!overlap(a.box, b.box), `${a.id} overlaps ${b.id}`);
+        }
+      }
+    });
+  });
+}
 
 const BUTTONS = [ 'minimize', 'maximize', 'restore', 'close' ];
 const PREFIXES = [ 'active', 'hover', 'pressed', 'inactive', 'hover-inactive', 'pressed-inactive' ];
