@@ -8,7 +8,8 @@ Run every tool from the repository root:
 | [`colour`](#colour) | Converting colours, WCAG contrast, finding a lightness that passes |
 | [`tokens`](#tokens) | Reading Amber's tokens, checking and trying their contrast pairs   |
 | [`browser`](#browser) | Screenshots of the prototype in a state, the rendered anti-goal check, computed colours |
-| [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme |
+| [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme, the Union style's tokens, the terminal colours |
+| [`sample`](#sample) | The prototype's terminal sample, with ANSI escapes, for a real terminal |
 | [`image`](#image) | The colours of a screenshot: cool greys, and colours named as tokens |
 
 ## `colour`
@@ -242,6 +243,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | --- | --- |
 | `colour-scheme [--write] [--json]` | `parts/colour-scheme/Amber.colors` from `prototype/tokens.css` and `parts/colour-scheme/roles.json` |
 | `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
+| `terminal-colours [--write] [--json]` | `parts/terminal-colours/Amber.colorscheme`, Konsole's file, from `prototype/tokens.css` and `parts/terminal-colours/keys.json`, which gives each of the 30 colour keys a token (P4.1) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -264,6 +266,19 @@ node tools/src/bin/generate.mjs colour-scheme --write
 - **The same each time.** The file holds no date or path; groups and keys are
   sorted as KConfig sorts them. The format and the computed disabled amount
   are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
+- **`--set token=value`** (P4.1), once for each token, prints the part with
+  trial values, as `tokens try` does, so that a candidate can be tried in a
+  real application before it becomes a token. It cannot be combined with
+  `--write` (exit 2): a trial never reaches a committed part.
+
+  ```shell
+  # A trial of a lighter ANSI white, into the nested session's data folder
+  node tools/src/bin/generate.mjs terminal-colours --set ansi-white=#c2bdb5 > tmp/check-colour-scheme/data/konsole/Amber-A.colorscheme
+  ```
+- **The terminal colours** refuse a missing or unknown key, an unknown token
+  and a token that is not opaque, each problem on its own line starting with
+  the key. A spec checks that every key's token has a contrast pair on the
+  terminal, compared by resolved colour.
 - **The Union style's tokens** are written resolved, `--well: #151413;`,
   with a reference kept as a comment, `/* var(--tone-0) */`. Which tokens
   are written is the list `UNION_TOKENS` in `tools/src/lib/union-tokens.mjs`;
@@ -272,6 +287,29 @@ node tools/src/bin/generate.mjs colour-scheme --write
 - **Exit codes.** 0 success; 1 the table was refused; 2 the command line was
   wrong, including an unknown part.
 
+## `sample`
+
+Prints the prototype's samples for a real program, so that it draws the same
+content in Amber's part as the browser draws in the prototype.
+
+| Command | Does |
+| --- | --- |
+| `terminal [--file <html>]` | The first `<pre class="terminal">` of `prototype/samples.html` (or `--file`), each `<span>` of class `ansi-<colour>`, `ansi-bright-<colour>` or `on-<colour>` turned into its SGR sequence (30–37, 90–97, 40–47) and closed with a reset |
+
+```shell
+# Show the sample in the terminal you are in, in its own terminal colours
+node tools/src/bin/sample.mjs terminal
+
+# In Konsole with Amber's terminal colours, in the nested session (P4.1)
+tmp/check-colour-scheme/in.sh konsole --separate -p ColorScheme=Amber --hold -e sh -c 'node tools/src/bin/sample.mjs terminal'
+```
+
+- **Refusals.** A class, tag or entity it does not know, `on-white`, or a
+  nested span exits 1 with the message naming it, rather than printing text
+  in the default colour.
+- **Exit codes.** 0 success; 1 the sample was refused or the file was not
+  found; 2 the command line was wrong.
+
 ## `image`
 
 Reads the colours of a PNG picture, such as a screenshot of an application
@@ -279,7 +317,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 
 | Command | Does |
 | --- | --- |
-| `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); exits 1 when there is one |
+| `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--token-blends] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); `--token-blends` excuses blends of two tokens, such as anti-aliased ANSI blue text; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `lines <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]` | Lists the straight lines 1 or 2 px thick and at least 32 px long in a whole picture, such as a window, needing no surface; the blended row where two tones meet at a fractional scale is not a line, and so a seam whose colour lies between its sides (tone 1 between tones 0 and 2) is missed unless `--blends` is given; exits 1 when there is one |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
@@ -291,6 +329,9 @@ node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --r
 
 # Konsole without its terminal area, which the terminal colours (P4.1) own (P3.9): "no cool grey" and "left out: 1 region", exits 0
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/p3.9-T-main.png --leave-out 0,90,1909,1000
+
+# Konsole's terminal area with Amber's terminal colours (P4.1): "#365363  111 px …" (the scrolled-lines bar) and "blends of tokens: 1168 colours, 9400 px", exits 1
+node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/T-amber-sample-2.png --region 278,268,1350,756 --token-blends
 
 # A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
 node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'
@@ -332,6 +373,16 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --c
   `#161515`. A grey with r = g = b is still reported: no rounding explains it.
   Text should be drawn with greyscale anti-aliasing: subpixel fringes are
   coloured and are reported.
+- **`--token-blends`** (P4.1). Text in a hue that leans cool, such as ANSI
+  blue or cyan, anti-aliased over a dark tone, passes through colours of low
+  chroma that are cool greys by the rule. With `--token-blends` a grey within
+  2 a channel of the straight sRGB line between two opaque colour tokens is
+  excused and only counted, **unless it fills an area**: a colour with any
+  pixel whose eight neighbours all share it is never excused. Anti-aliasing
+  edges strokes; a grey surface fills. Without that rule almost every dark
+  cool grey lies near a line from a dark tone to ANSI blue or cyan: Breeze's
+  `#1f2121` and `#232627` did. A grey drawn only in strokes 1–2 px thin on
+  such a line is still excused, so look at the shot as well.
 - **Fully transparent pixels** are skipped; any other pixel is judged by its
   colour alone.
 - **`--region x,y,width,height`** in whole pixels from the top left corner.
@@ -369,7 +420,7 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --c
     a band, such as a focus bar or a block marker, and is not a line.
   - Colours are read without their alpha: a part-transparent pixel counts as
     its own colour. Draw on an opaque surface, as the probe does.
-- **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], marked }`;
+- **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], blends, marked }`, `blends` only with `--token-blends`;
   `colours` prints `[{ hex, count, token? }]`.
   `frame` prints `{ drawn, box, corners, sides, lines }`, each corner
   `square`, `rounded` or `not judged`, each side `clear`, `line` or

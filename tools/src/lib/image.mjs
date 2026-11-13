@@ -84,24 +84,97 @@ function tally(image, region, leaveOut = []) {
 
 const box = ({ left, right, top, bottom }) => ({ x: left, y: top, width: right - left + 1, height: bottom - top + 1 });
 
+// How far, on any channel, a colour may lie from the straight sRGB line
+// between two colours and still count as their blend: anti-aliasing at a
+// fractional scale rounds each channel. (my call, P4.1)
+const BLEND_TOLERANCE = 2;
+
+/**
+ * Whether `rgb` lies within BLEND_TOLERANCE on every channel of a mix of two
+ * of `colours` (each `[r, g, b]`), as anti-aliased text of one colour over
+ * another is drawn.
+ */
+export function isBlendOf([ r, g, b ], colours) {
+  const c = [ r, g, b ];
+  for (let i = 0; i < colours.length; i++) {
+    for (let j = i + 1; j < colours.length; j++) {
+      const a = colours[i];
+      const d = [ 0, 1, 2 ].map(k => colours[j][k] - a[k]);
+      const length = d[0] ** 2 + d[1] ** 2 + d[2] ** 2;
+      if (length === 0) {
+        continue;
+      }
+      const t = Math.min(1, Math.max(0, d.reduce((sum, dk, k) => sum + dk * (c[k] - a[k]), 0) / length));
+      if ([ 0, 1, 2 ].every(k => Math.abs(a[k] + t * d[k] - c[k]) <= BLEND_TOLERANCE)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/**
+ * The colours (as 0xrrggbb) that have at least one pixel inside the region
+ * whose eight neighbours all share its colour: colours that fill an area,
+ * as a surface does, rather than only edging a stroke, as anti-aliasing does.
+ */
+function areaColours(image, region) {
+  const { x: x0, y: y0, width, height } = bounds(image, region);
+  const { pixels } = image;
+  const keyAt = (x, y) => {
+    const at = (y * image.width + x) * 4;
+    return (pixels[at] << 16) | (pixels[at + 1] << 8) | pixels[at + 2];
+  };
+  const found = new Set();
+  for (let y = Math.max(y0, 1); y < Math.min(y0 + height, image.height - 1); y++) {
+    for (let x = Math.max(x0, 1); x < Math.min(x0 + width, image.width - 1); x++) {
+      const key = keyAt(x, y);
+      if (found.has(key) || pixels[(y * image.width + x) * 4 + 3] === 0) {
+        continue;
+      }
+      let same = true;
+      for (let dy = -1; dy <= 1 && same; dy++) {
+        for (let dx = -1; dx <= 1 && same; dx++) {
+          same = keyAt(x + dx, y + dy) === key;
+        }
+      }
+      if (same) {
+        found.add(key);
+      }
+    }
+  }
+  return found;
+}
+
 /**
  * The colours of the picture that are cool greys: not a hue (OKLCH chroma
  * below 0.05) and not warm or black, by `warmthOffence`. Most pixels first.
  * `leaveOut` lists rectangles whose pixels are not read, such as the parts
- * of a window that belong to another part of Amber (P3.9).
+ * of a window that belong to another part of Amber (P3.9). `blendsOf`, a
+ * list of `[r, g, b]`, excuses a grey that is a blend of two of them, such
+ * as ANSI blue text anti-aliased over the terminal (P4.1), unless the
+ * colour fills an area somewhere (a 3×3 block of it): anti-aliasing edges
+ * strokes, while a grey surface, such as Breeze's #1f2121, fills. The
+ * excused colours are returned as `blends`, a property of the result.
  */
-export function coolGreys(image, { region, leaveOut } = {}) {
+export function coolGreys(image, { region, leaveOut, blendsOf = [] } = {}) {
   const found = [];
+  const blends = [];
+  const areas = blendsOf.length ? areaColours(image, region) : new Set();
   for (const entry of tally(image, region, leaveOut)) {
     if (isHue(entry.hex)) {
       continue;
     }
     const why = warmthOffence(entry.hex, { noHue: NO_HUE });
-    if (why && !roundsToWarm(entry.hex)) {
-      found.push({ hex: entry.hex, count: entry.count, box: box(entry), why });
+    if (!why || roundsToWarm(entry.hex)) {
+      continue;
     }
+    const rgb = [ 1, 3, 5 ].map(i => parseInt(entry.hex.slice(i, i + 2), 16));
+    const grey = { hex: entry.hex, count: entry.count, box: box(entry), why };
+    const fillsArea = areas.has((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]);
+    (blendsOf.length && !fillsArea && isBlendOf(rgb, blendsOf) ? blends : found).push(grey);
   }
-  return found;
+  return Object.defineProperty(found, 'blends', { value: blends });
 }
 
 /** Hex → the name of the first opaque colour token, in file order, that has it. */

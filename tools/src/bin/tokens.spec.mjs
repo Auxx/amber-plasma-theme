@@ -124,7 +124,7 @@ describe('tokens tool', () => {
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
     assert.equal(result.failing, 4);
-    assert.equal(result.changed.length, 18);
+    assert.equal(result.changed.length, 17); // ansi-bright-black no longer follows text-dim (D-119)
   });
 
   it('shows no change', () => {

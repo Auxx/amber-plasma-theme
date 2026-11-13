@@ -38,6 +38,30 @@ describe('generate tool', () => {
     assert.equal(report.content, generate('colour-scheme').stdout);
   });
 
+  it('prints the terminal colours', () => {
+    const { status, stdout } = generate('terminal-colours');
+    assert.equal(status, 0);
+    assert.ok(stdout.includes('[Color0Intense]'));
+    assert.ok(stdout.includes('Description=Amber'));
+  });
+
+  it('prints a part with trial token values from --set, as tokens try does (P4.1)', () => {
+    const { status, stdout } = generate('terminal-colours', '--set', 'ansi-white=#c2bdb5', '--set', 'ansi-bright-black=#78746d');
+    assert.equal(status, 0);
+    assert.match(stdout, /\[Color7\]\nColor=194,189,181\n/);
+    assert.match(stdout, /\[Color0Intense\]\nColor=120,116,109\n/);
+  });
+
+  it('refuses --set of a token that does not exist, so a typo is not judged as a candidate', () => {
+    const { status, stderr } = generate('terminal-colours', '--set', 'ansi-whte=#c2bdb5');
+    assert.equal(status, 2);
+    assert.match(stderr, /ansi-whte/);
+  });
+
+  it('refuses --set with --write, so that a trial never reaches a part', () => {
+    assert.equal(generate('terminal-colours', '--set', 'ansi-white=#c2bdb5', '--write').status, 2);
+  });
+
   it('rejects an unknown part', () => {
     assert.equal(generate('wallpaper').status, 2);
   });

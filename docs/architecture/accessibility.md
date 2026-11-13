@@ -42,16 +42,25 @@ Disabled controls are exempt in WCAG, and are exempt here.
    (4.60:1 to 5.08:1). **A comment inside a text selection does not:** it
    measures 4.15:1, and the owner accepts that, since a comment is
    low-priority text. Its pair there has a floor of 4 (my call, D-84).
-   The terminal's foreground, white, bright black and the bright colours
-   reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to
-   match a dark background. **The six normal colours reach 3.5:1 as text,
+   The terminal's foreground, white and the bright colours other than
+   bright black reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to match a dark
+   background. **The greys are four steps** (decided, D-119): black, dark
+   grey (bright black), light grey (white) and white (bright white), as a
+   DOS terminal had them. Bright black, the dark grey of dim output and
+   shell suggestions, measures 3.14:1 on the terminal; the owner reads
+   fish's suggestions easily at that, and its pair has a minimum of 3.
+   **White on a normal colour measures 2.33:1 to 2.35:1**, below the 3.5:1
+   of the normal colours' other pairs: Midnight Commander's default skin
+   draws its panels in it. The owner chose the four clear greys over a
+   lighter white that would reach 3:1 at 85 %, and that pairing has no
+   contrast pair (decided, D-119). **The six normal colours reach 3.5:1 as text,
    not 4.5:1**, because programs also draw them as backgrounds under light
    text: Midnight Commander's panels, status badges, powerline prompts.
    No colour does both at 4.5:1 on tone 1: the two meet near 3:1 as text
    and 4.4:1 under text. The owner chose the set that does each at about
-   3.7:1 (decided, D-80): 3.68:1 to 3.73:1 as text, the terminal's
-   foreground on them at 3.64:1 to 3.69:1, and bright white at 4.13:1 to
-   4.19:1 (measured 2026-11-12). A darker set at 3:1 as text was harder to
+   3.7:1 (decided, D-80): 3.69:1 to 3.73:1 as text, the terminal's
+   foreground on them at 3.64:1 to 3.68:1, and bright white at 4.13:1 to
+   4.18:1 (measured 2026-11-13, after cyan gained chroma in D-119). A darker set at 3:1 as text was harder to
    read on the dark terminal. Both directions have pairs with a minimum
    of 3.5 (my call, D-81). Amber accepts that these do not reach 4.5:1.
 4. **Focused widgets.** A focused raised widget, toggle, tab or scroll
@@ -121,7 +130,8 @@ that they do not reach 3:1.
 
 ## First measurements
 
-Measured on 2026-11-11 on the tokens of plans P1.1 to P1.6. `node tools/src/bin/tokens.mjs
+Measured on 2026-11-11 on the tokens of plans P1.1 to P1.6; the rows of the
+terminal colours again on 2026-11-13, after D-119. `node tools/src/bin/tokens.mjs
 pairs` gives the current ratios of every pair, and the tests fail when one
 falls below its minimum.
 
@@ -201,21 +211,21 @@ falls below its minimum.
 | terminal text | ansi yellow | 3.66:1 | 3.5 | pass |
 | terminal text | ansi blue | 3.65:1 | 3.5 | pass |
 | terminal text | ansi magenta | 3.64:1 | 3.5 | pass |
-| terminal text | ansi cyan | 3.69:1 | 3.5 | pass |
+| terminal text | ansi cyan | 3.64:1 | 3.5 | pass |
 | ansi red | terminal | 3.69:1 | 3.5 | pass |
 | ansi green | terminal | 3.69:1 | 3.5 | pass |
 | ansi yellow | terminal | 3.71:1 | 3.5 | pass |
 | ansi blue | terminal | 3.72:1 | 3.5 | pass |
 | ansi magenta | terminal | 3.73:1 | 3.5 | pass |
-| ansi cyan | terminal | 3.68:1 | 3.5 | pass |
-| ansi white | terminal | 13.58:1 | 4.5 | pass |
-| ansi bright black | terminal | 6.86:1 | 4.5 | pass |
-| ansi bright red | terminal | 9.64:1 | 4.5 | pass |
-| ansi bright green | terminal | 10.19:1 | 4.5 | pass |
-| ansi bright yellow | terminal | 10.92:1 | 4.5 | pass |
-| ansi bright blue | terminal | 10.05:1 | 4.5 | pass |
-| ansi bright magenta | terminal | 9.63:1 | 4.5 | pass |
-| ansi bright cyan | terminal | 10.44:1 | 4.5 | pass |
+| ansi cyan | terminal | 3.73:1 | 3.5 | pass |
+| ansi white | terminal | 8.68:1 | 4.5 | pass |
+| ansi bright black | terminal | 3.14:1 | 3 | pass |
+| ansi bright red | terminal | 11.44:1 | 4.5 | pass |
+| ansi bright green | terminal | 11.96:1 | 4.5 | pass |
+| ansi bright yellow | terminal | 12.89:1 | 4.5 | pass |
+| ansi bright blue | terminal | 11.81:1 | 4.5 | pass |
+| ansi bright magenta | terminal | 11.38:1 | 4.5 | pass |
+| ansi bright cyan | terminal | 12.49:1 | 4.5 | pass |
 | ansi bright white | terminal | 15.41:1 | 4.5 | pass |
 | syntax keyword | editor | 6.98:1 | 4.5 | pass |
 | syntax keyword | editor current line | 5.96:1 | 4.5 | pass |

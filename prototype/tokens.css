@@ -66,7 +66,8 @@
 
   /* Terminal colours: Konsole's background, foreground and 16 ANSI colours.
      Hues are OKLCH: normal at lightness 55-57 %, so that they also carry light
-     text as backgrounds (D-80); bright at 82-85 %. */
+     text as backgrounds (D-80); bright at 87-90 %. The greys are four steps:
+     black, dark grey (bright black), light grey (white), white (D-119). */
   --terminal: var(--tone-1);              /* the terminal background: a tone below the window's main surface (D-78) */
   --terminal-text: var(--text);           /* Konsole's foreground */
   --ansi-black: var(--tone-0);            /* colour 0; exempt from contrast (D-53) */
@@ -75,15 +76,15 @@
   --ansi-yellow: #8d7030;                 /* oklch(56% 0.09 85), a darker gold than the accent */
   --ansi-blue: #487a97;                   /* oklch(56% 0.07 235) */
   --ansi-magenta: #9b647e;                /* oklch(57% 0.08 350) */
-  --ansi-cyan: #467d76;                   /* oklch(55% 0.06 185) */
-  --ansi-white: var(--text);              /* colour 7 */
-  --ansi-bright-black: var(--text-dim);   /* colour 8: dim output and suggestions */
-  --ansi-bright-red: #f9afa0;             /* oklch(82% 0.09 32) */
-  --ansi-bright-green: #b7cf8e;           /* oklch(82% 0.09 125) */
-  --ansi-bright-yellow: #e6ca91;          /* oklch(85% 0.08 85) */
-  --ansi-bright-blue: #9fcbe6;            /* oklch(82% 0.06 235) */
-  --ansi-bright-magenta: #e8b2ca;         /* oklch(82% 0.07 350) */
-  --ansi-bright-cyan: #a3d2cb;            /* oklch(83% 0.05 185) */
+  --ansi-cyan: #1b8278;                   /* oklch(55% 0.09 185): more chroma, to stand apart from blue (D-119) */
+  --ansi-white: #bbb7af;                  /* colour 7, light grey: oklch(78% 0.012 80) (D-119) */
+  --ansi-bright-black: #6d6861;           /* colour 8, dark grey: dim output and suggestions; oklch(52% 0.012 80) (D-119) */
+  --ansi-bright-red: #ffc4b8;             /* oklch(87% 0.07 32): less chroma, to stay in sRGB */
+  --ansi-bright-green: #c7df9e;           /* oklch(87% 0.09 125) */
+  --ansi-bright-yellow: #f7dba1;          /* oklch(90% 0.08 85) */
+  --ansi-bright-blue: #afdbf7;            /* oklch(87% 0.06 235) */
+  --ansi-bright-magenta: #f9c2db;         /* oklch(87% 0.07 350) */
+  --ansi-bright-cyan: #8febdf;            /* oklch(88% 0.09 185) (D-119) */
   --ansi-bright-white: #f5f1ea;           /* oklch(96% 0.01 82) */
 
   /* Editor theme: Kate's editor area. The syntax colours are ANSI colours (D-57). */

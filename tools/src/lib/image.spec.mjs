@@ -90,6 +90,32 @@ describe('coolGreys', () => {
   it('skips a fully transparent pixel', () => {
     assert.deepEqual(coolGreys(picture([ hex('#80808000') ])), []);
   });
+
+  it('skips a blend of two of the given colours, as anti-aliased blue text is (P4.1)', () => {
+    // ANSI blue over the terminal at 40 %: a hue mixed down to a cool grey.
+    const [ fr, fg, fb ] = rgba('ansi-blue');
+    const [ br, bg, bb ] = rgba('terminal');
+    const blend = [ fr * 0.4 + br * 0.6, fg * 0.4 + bg * 0.6, fb * 0.4 + bb * 0.6, 255 ].map(Math.round);
+    const image = picture([ rgba('terminal'), blend ]);
+    assert.equal(coolGreys(image).length, 1);
+    assert.deepEqual(coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal') ] }), []);
+  });
+
+  it('still reports a grey that fills an area, though it lies on a blend line (P4.1 review)', () => {
+    // Breeze's #1f2121 lies within 2 of the line from the terminal to ANSI blue,
+    // but a pane header filled with it is an area, not the edge of a stroke.
+    const ends = [ rgba('ansi-blue'), rgba('terminal') ];
+    const grey = hex('#1f2121');
+    const row = [ rgba('terminal'), grey, grey, grey, rgba('ansi-blue') ];
+    const image = picture(row, [ 1, 2, 3 ].flatMap(x => [ 1, 2 ].map(y => ({ x, y, colour: grey }))));
+    assert.deepEqual(coolGreys(image, { blendsOf: ends }).map(f => f.hex), [ '#1f2121' ]);
+  });
+
+  it('still reports a grey that is no blend of the given colours (P4.1)', () => {
+    const image = picture([ hex('#808080'), hex('#2b2d31') ]);
+    const found = coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal'), rgba('text') ] });
+    assert.deepEqual(found.map(f => f.hex), [ '#2b2d31', '#808080' ]);
+  });
 });
 
 describe('colourCounts', () => {

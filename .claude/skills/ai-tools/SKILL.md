@@ -6,7 +6,9 @@ description: |
   and contrast pairs, and opening the prototype in Chrome (screenshots in a
   hovered, focused or pressed state, the rendered anti-goal check, computed
   colours named as tokens), generating Amber's parts (the colour
-  scheme and the Union style's tokens now, the others to follow), and reading the colours of a
+  scheme, the Union style's tokens and the terminal colours now, the others to
+  follow), printing the prototype's terminal sample for a real terminal, and
+  reading the colours of a
   screenshot (cool greys, colours named as tokens) or of one widget
   (rounded corners and lines). Use
   BEFORE writing any one-off script (node -e, python, a heredoc in the

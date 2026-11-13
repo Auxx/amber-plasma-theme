@@ -69,7 +69,7 @@ describe('browser', () => {
   it('names a colour as any of its tokens', () => {
     const names = tokenNames(loadTokens());
     assert.equal(isTokenColour('rgb(232, 227, 218)', 'text', names), true);
-    assert.equal(isTokenColour('rgb(232, 227, 218)', 'ansi-white', names), true);
+    assert.equal(isTokenColour('rgb(232, 227, 218)', 'terminal-text', names), true);
     assert.equal(isTokenColour('rgb(232, 227, 218)', 'text-dim', names), false);
     assert.equal(isTokenColour('rgba(0, 0, 0, 0)', 'transparent', names), true);
   });
