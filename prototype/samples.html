@@ -93,65 +93,26 @@
 <div class="code">
 <span class="line"><span class="syn-comment">// Counts the files in a folder, skipping hidden ones.</span></span>
 <span class="line"><span class="syn-preprocessor">#include</span> <span class="syn-preprocessor">&lt;QDir&gt;</span></span>
-<span class="line"><span class="syn-preprocessor">#include</span> <span class="syn-string">&quot;amber.h&quot;</span></span>
+<span class="line"><span class="syn-preprocessor">#include</span> <span class="syn-preprocessor">&quot;amber.h&quot;</span></span>
 <span class="line"></span>
-<span class="line"><span class="syn-keyword">static</span> <span class="syn-keyword">constexpr</span> <span class="syn-keyword">int</span> <span class="syn-number">kLimit</span> = <span class="syn-number">4096</span>;</span>
+<span class="line"><span class="syn-keyword">static</span> <span class="syn-keyword">constexpr</span> <span class="syn-keyword">int</span> kLimit = <span class="syn-number">4096</span>;</span>
 <span class="line"></span>
-<span class="line"><span class="syn-keyword">int</span> <span class="syn-function">countFiles</span>(<span class="syn-keyword">const</span> <span class="syn-type">QString</span> &amp;path)</span>
+<span class="line"><span class="syn-keyword">int</span> countFiles(<span class="syn-keyword">const</span> <span class="syn-type">QString</span> &amp;path)</span>
 <span class="line">{</span>
 <span class="line">    <span class="syn-type">QDir</span> dir(path);</span>
 <span class="line">    <span class="syn-keyword">int</span> <span class="search-highlight">count</span> = <span class="syn-number">0</span>;</span>
-<span class="line">    <span class="syn-keyword">for</span> (<span class="syn-keyword">const</span> <span class="syn-type">QFileInfo</span> &amp;info : dir.<span class="syn-function">entryInfoList</span>()) {</span>
-<span class="line">        <span class="syn-keyword">if</span> (<span class="text-selection">info.<span class="syn-function">fileName</span>()</span>.<span class="syn-function">startsWith</span>(<span class="syn-string">u&#x27;.&#x27;</span>))</span>
+<span class="line">    <span class="syn-keyword">for</span> (<span class="syn-keyword">const</span> <span class="syn-type">QFileInfo</span> &amp;info : dir.entryInfoList()) {</span>
+<span class="line">        <span class="syn-keyword">if</span> (<span class="text-selection">info.fileName()</span>.startsWith(<span class="syn-string">u&#x27;.&#x27;</span>))</span>
 <span class="line">            <span class="syn-keyword">continue</span>;</span>
 <span class="line current-line">        count += <span class="syn-number">1</span>;</span>
 <span class="line">    }</span>
-<span class="line">    <span class="syn-keyword">return</span> count &gt; <span class="syn-number">kLimit</span> ? <span class="syn-number">kLimit</span> : count;</span>
+<span class="line">    <span class="syn-keyword">return</span> <span class="syn-function">std::min</span>(count, kLimit);</span>
 <span class="line">}</span>
 </div>
 </div>
     </div>
   </div>
 
-  <div class="candidates">
-  <h2>Search highlight</h2>
-  <p class="dim">Candidates for the search highlight, each as dark as it can be while it stands apart from the current line and the text selection.</p>
-  <div class="candidate-row">
-  <figure class="candidate">
-    <div class="vignette editor-vignette" inert><div class="code"><span class="line"><span class="syn-comment">// <span class="search-highlight">count</span> the files</span></span><span class="line current-line">    <span class="search-highlight">count</span> += <span class="syn-number">1</span>;</span><span class="line"><span class="text-selection">info.<span class="syn-function">fileName</span>()</span>.<span class="search-highlight"><span class="syn-function">count</span></span>()</span></div></div>
-    <figcaption>
-      Start, olive
-      <span class="dim">oklch(33.5% 0.05 125), #313b1e</span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-current-line" value="1.14">1.14:1 on editor current line</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-selection" value="1.13">1.13:1 on editor selection</data></span>
-      <span class="ratio-line">function <data class="ratio" data-pair="syntax-function on editor-search" value="5.18">5.18:1 on editor search</data></span>
-      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-search" value="4.68">4.68:1 on editor search</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--editor-search: #443416">
-    <div class="vignette editor-vignette" inert><div class="code"><span class="line"><span class="syn-comment">// <span class="search-highlight">count</span> the files</span></span><span class="line current-line">    <span class="search-highlight">count</span> += <span class="syn-number">1</span>;</span><span class="line"><span class="text-selection">info.<span class="syn-function">fileName</span>()</span>.<span class="search-highlight"><span class="syn-function">count</span></span>()</span></div></div>
-    <figcaption>
-      Gold
-      <span class="dim">oklch(33.5% 0.05 80), #443416</span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-current-line" value="1.13">1.13:1 on editor current line</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-selection" value="1.14">1.14:1 on editor selection</data></span>
-      <span class="ratio-line">function <data class="ratio" data-pair="syntax-function on editor-search" value="5.26">5.26:1 on editor search</data></span>
-      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-search" value="4.75">4.75:1 on editor search</data></span>
-    </figcaption>
-  </figure>
-  <figure class="candidate" style="--editor-search: var(--tone-4)">
-    <div class="vignette editor-vignette" inert><div class="code"><span class="line"><span class="syn-comment">// <span class="search-highlight">count</span> the files</span></span><span class="line current-line">    <span class="search-highlight">count</span> += <span class="syn-number">1</span>;</span><span class="line"><span class="text-selection">info.<span class="syn-function">fileName</span>()</span>.<span class="search-highlight"><span class="syn-function">count</span></span>()</span></div></div>
-    <figcaption>
-      Tone 4
-      <span class="dim">no hue, #3c3832</span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-current-line" value="1.16">1.16:1 on editor current line</data></span>
-      <span class="ratio-line"><data class="ratio" data-pair="editor-search on editor-selection" value="1.11">1.11:1 on editor selection</data></span>
-      <span class="ratio-line">function <data class="ratio" data-pair="syntax-function on editor-search" value="5.10">5.10:1 on editor search</data></span>
-      <span class="ratio-line">comment <data class="ratio" data-pair="syntax-comment on editor-search" value="4.60">4.60:1 on editor search</data></span>
-    </figcaption>
-  </figure>
-  </div>
-  </div>
 </section>
 
 </body>

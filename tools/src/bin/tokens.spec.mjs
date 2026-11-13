@@ -123,8 +123,8 @@ describe('tokens tool', () => {
     const { status, stdout } = tokens('try', 'text-dim=#9c958a', '--json');
     assert.equal(status, 1);
     const result = JSON.parse(stdout);
-    assert.equal(result.failing, 5);
-    assert.equal(result.changed.length, 18); // ansi-bright-black no longer follows text-dim (D-119); a comment on the search highlight (P4.2)
+    assert.equal(result.failing, 4);
+    assert.equal(result.changed.length, 18); // ansi-bright-black no longer follows text-dim (D-119); a comment on the search highlight changes but passes (P4.2)
   });
 
   it('shows no change', () => {

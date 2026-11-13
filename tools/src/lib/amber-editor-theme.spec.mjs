@@ -1,9 +1,19 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { loadStyles } from './editor-theme.mjs';
 import { PARTS } from './generate.mjs';
+import { SAMPLES_FILE, compareEditorSample, editorSampleRuns, highlightedRuns, loadEditorSample } from './sample.mjs';
+import { loadTokens } from './tokens.mjs';
+
+/** Why the highlighter specs are skipped, or null when ksyntaxhighlighter6 runs. */
+const HIGHLIGHTER = spawnSync('ksyntaxhighlighter6', [ '--version' ], { encoding: 'utf8' }).status === 0
+  ? null
+  : 'ksyntaxhighlighter6 is not installed';
 
 const SAMPLES_CSS = fileURLToPath(new URL('../../../prototype/samples.css', import.meta.url));
 
@@ -40,5 +50,31 @@ describe('Amber.theme', () => {
     };
     assert.deepEqual(Object.fromEntries(Object.keys(expected).map(key => [ key, colours[key] ])), expected);
     assert.equal(loadStyles()['text-styles'].Normal, sampleToken(css, '.code', 'color'));
+  });
+});
+
+describe('the editor sample in Kate', () => {
+  it("matches Kate's highlighting of the sample", t => {
+    if (HIGHLIGHTER) {
+      return t.skip(HIGHLIGHTER);
+    }
+    // The theme is found through XDG_DATA_DIRS, which must be absolute (P4.2).
+    const folder = mkdtempSync(join(tmpdir(), 'amber-editor-'));
+    try {
+      const themes = join(folder, 'data', 'org.kde.syntax-highlighting', 'themes');
+      mkdirSync(themes, { recursive: true });
+      symlinkSync(PARTS['editor-theme'].file, join(themes, 'Amber.theme'));
+      writeFileSync(join(folder, 'counter.cpp'), loadEditorSample());
+      const { status, stdout, stderr } = spawnSync('ksyntaxhighlighter6', [ '-t', 'Amber', join(folder, 'counter.cpp') ], {
+        encoding: 'utf8',
+        env: { ...process.env, XDG_DATA_DIRS: `${join(folder, 'data')}:/usr/share` }
+      });
+      assert.equal(status, 0, stderr);
+      assert.match(stdout, /Theme \(Amber\)/, 'ksyntaxhighlighter6 did not find the Amber theme');
+      const runs = compareEditorSample(editorSampleRuns(readFileSync(SAMPLES_FILE, 'utf8')), highlightedRuns(stdout), loadTokens());
+      assert.deepEqual(runs, []);
+    } finally {
+      rmSync(folder, { recursive: true, force: true });
+    }
   });
 });
