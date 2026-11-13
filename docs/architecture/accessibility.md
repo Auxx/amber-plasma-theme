@@ -42,8 +42,8 @@ Disabled controls are exempt in WCAG, and are exempt here.
    (4.60:1 to 5.08:1). **A comment inside a text selection does not:** it
    measures 4.15:1, and the owner accepts that, since a comment is
    low-priority text. Its pair there has a floor of 4 (my call, D-84).
-   The terminal's foreground, white and the bright colours reach 4.5:1 on
-   the terminal. ANSI black is exempt, since it is meant to match a dark
+   The terminal's foreground, white and the bright colours other than
+   bright black reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to match a dark
    background. **The greys are four steps** (decided, D-119): black, dark
    grey (bright black), light grey (white) and white (bright white), as a
    DOS terminal had them. Bright black, the dark grey of dim output and

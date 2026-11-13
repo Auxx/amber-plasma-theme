@@ -52,6 +52,12 @@ describe('generate tool', () => {
     assert.match(stdout, /\[Color0Intense\]\nColor=120,116,109\n/);
   });
 
+  it('refuses --set of a token that does not exist, so a typo is not judged as a candidate', () => {
+    const { status, stderr } = generate('terminal-colours', '--set', 'ansi-whte=#c2bdb5');
+    assert.equal(status, 2);
+    assert.match(stderr, /ansi-whte/);
+  });
+
   it('refuses --set with --write, so that a trial never reaches a part', () => {
     assert.equal(generate('terminal-colours', '--set', 'ansi-white=#c2bdb5', '--write').status, 2);
   });

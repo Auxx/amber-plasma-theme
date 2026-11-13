@@ -208,7 +208,7 @@ P2.3's nested session, which finds it through `XDG_DATA_DIRS`, as the
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | | done |
+| P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | done |
 | P4.2 Editor theme | Kate theme generated from the tokens | Kate shows it; it matches the prototype's sample | todo |
 
 P4.1 generated `parts/terminal-colours/Amber.colorscheme` from the tokens

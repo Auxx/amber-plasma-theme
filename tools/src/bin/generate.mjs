@@ -17,8 +17,8 @@ function partCommand(name, summary) {
     help: `Prints ${path} as it would be generated now. Nothing is written
 without --write; with it, the file is written only when it differs, and the
 output says "written" or "unchanged". --set token=value, given once for each
-token, prints the part with those trial values, as tokens try does; it cannot
-be combined with --write. --json prints { part, file, changed, written,
+token, prints the part with those trial values, as tokens try does; the token
+must exist, and --set cannot be combined with --write. --json prints { part, file, changed, written,
 content }.`,
     options: { write: { type: 'boolean' }, set: { type: 'string', multiple: true }, json: { type: 'boolean' } },
     run(values) {
@@ -30,6 +30,11 @@ content }.`,
         overrides = parseOverrides(values.set ?? []);
       } catch (error) {
         throw new UsageError(error.message);
+      }
+      const known = loadTokens();
+      const unknown = overrides.filter(({ name }) => !known.has(name)).map(({ name }) => name);
+      if (unknown.length > 0) {
+        throw new UsageError(`--set names a token that does not exist: ${unknown.join(', ')}`);
       }
       const content = generate(loadTokens({ overrides }));
       const { changed } = values.write ? writePart(file, content) : { changed: differs(file, content) };

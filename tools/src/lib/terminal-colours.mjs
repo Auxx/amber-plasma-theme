@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { srgb8 } from './colour.mjs';
+import { describeColour, srgb8 } from './colour.mjs';
 import { resolveToken } from './tokens.mjs';
 
 /**
@@ -84,4 +84,31 @@ export function formatTerminalColours(keys, tokens) {
     throw new Error(`The terminal colours cannot be generated:\n${problems.join('\n')}`);
   }
   return `${[ HEADER.join('\n'), ...sections, [ '[General]', ...GENERAL ].join('\n') ].join('\n\n')}\n`;
+}
+
+/** Keys that need no pair: the backgrounds, and ANSI black and its faint variant, which are exempt (D-53). */
+const UNPAIRED = /^(Background|Background(Faint|Intense)|Color0|Color0Faint)$/;
+
+/**
+ * Each `key: token` of the table, other than those in UNPAIRED, whose token
+ * has no contrast pair on the terminal background. Pairs are matched by
+ * resolved colour, as the colour scheme's check does, so a pair declared on
+ * an alias of the terminal counts.
+ */
+export function unpairedKeys(keys, tokens, pairs, terminal = 'terminal') {
+  const hex = name => {
+    try {
+      return describeColour(resolveToken(tokens, name).colour).hex;
+    } catch {
+      return null;
+    }
+  };
+  const background = hex(terminal);
+  const paired = new Set(
+    pairs.filter(pair => pair.background.length === 1 && hex(pair.background[0]) === background).map(pair => hex(pair.foreground))
+  );
+  return Object.entries(keys)
+    .filter(([ key ]) => !UNPAIRED.test(key))
+    .filter(([ , token ]) => !paired.has(hex(token)))
+    .map(([ key, token ]) => `${key}: ${token}`);
 }

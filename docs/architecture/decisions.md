@@ -135,7 +135,7 @@ text in other documents.
 | D-50 | WCAG 2.2 level AA is the measure | Designer | The current version; AA is the usual target |
 | D-51 | All text reaches 4.5:1; the 3:1 for large text is not used | Designer | Simpler, and stricter |
 | D-52 | Accent reaches 3:1 against every tone it marks | Designer | WCAG 1.4.11 |
-| D-53 | Terminal and syntax colours reach 4.5:1; ANSI black is exempt. The normal colours (D-80, D-81) and bright black (D-119) are set lower by the owner | Designer | They are text |
+| D-53 | Terminal and syntax colours reach 4.5:1; ANSI black is exempt. The owner set the normal colours lower (D-80, with the designer's floor of 3.5 in D-81) and bright black lower (D-119) | Designer | They are text |
 | D-54 | Withdrawn on 2026-11-11 with the glow: it set a 3:1 target for the focused glow. What the focused tone must reach is open question O-3 | Designer | |
 | D-55 | Tonal separation between surfaces is exempt from 3:1 | Designer | It is the purpose of Amber, and WCAG does not ask for it |
 

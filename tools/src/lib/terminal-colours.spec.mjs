@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { COLOUR_KEYS, formatTerminalColours, loadKeys } from './terminal-colours.mjs';
-import { describeColour } from './colour.mjs';
-import { loadPairs, loadTokens, parseTokens, resolveToken } from './tokens.mjs';
+import { COLOUR_KEYS, formatTerminalColours, loadKeys, unpairedKeys } from './terminal-colours.mjs';
+import { loadPairs, loadTokens, parsePairs, parseTokens, resolveToken } from './tokens.mjs';
 
 const TOKENS = parseTokens(`:root {
   --red: #aa5f51;
@@ -93,21 +92,29 @@ describe('formatTerminalColours', () => {
   });
 });
 
+describe('unpairedKeys', () => {
+  const tokens = parseTokens(':root {\n  --bg: #1c1a18;\n  --alias: var(--bg);\n  --fg: #e8e3da;\n  --odd: #808080;\n}');
+  const pairs = parsePairs(JSON.stringify([ { foreground: 'fg', on: [ 'alias' ], minimum: 4.5, why: 'test' } ]));
+  const keys = changes => ({ ...table(), Background: 'bg', ...changes });
+
+  it('counts a pair by resolved colour, so an alias of the terminal counts', () => {
+    assert.deepEqual(unpairedKeys(keys({ Foreground: 'fg' }), tokens, pairs, 'bg').filter(k => k.startsWith('Foreground:')), []);
+  });
+
+  it('names a key whose token has no pair, bright black among them', () => {
+    const found = unpairedKeys(keys({ Color0Intense: 'odd', Color1: 'odd' }), tokens, pairs, 'bg');
+    assert.ok(found.includes('Color0Intense: odd'), found.join(', '));
+    assert.ok(found.includes('Color1: odd'), found.join(', '));
+  });
+
+  it('exempts ANSI black, its faint variant and the backgrounds', () => {
+    const found = unpairedKeys(keys({ Color0: 'odd', Color0Faint: 'odd', BackgroundFaint: 'odd' }), tokens, pairs, 'bg');
+    assert.ok(!found.some(k => /^(Color0|Color0Faint|BackgroundFaint):/.test(k)), found.join(', '));
+  });
+});
+
 describe('keys.json', () => {
   it('every key has a pair on the terminal', () => {
-    // A pair counts when its colours resolve to the same colours, as in the colour scheme's check.
-    const tokens = loadTokens();
-    const hex = name => describeColour(resolveToken(tokens, name).colour).hex;
-    const terminal = hex('terminal');
-    const paired = new Set(
-      loadPairs()
-        .filter(pair => pair.background.length === 1 && hex(pair.background[0]) === terminal)
-        .map(pair => hex(pair.foreground))
-    );
-    const unpaired = Object.entries(loadKeys())
-      .filter(([ key ]) => !key.startsWith('Background') && !key.startsWith('Color0'))
-      .filter(([ , token ]) => !paired.has(hex(token)))
-      .map(([ key, token ]) => `${key}: ${token}`);
-    assert.deepEqual(unpaired, []);
+    assert.deepEqual(unpairedKeys(loadKeys(), loadTokens(), loadPairs()), []);
   });
 });
