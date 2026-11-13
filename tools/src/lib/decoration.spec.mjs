@@ -9,6 +9,9 @@ import { parseTokens } from './tokens.mjs';
 const LIGHT = `  --accent: #d1b072;
   --glow: color-mix(in srgb, var(--accent) 14%, transparent);
   --glow-size: 48px;
+  --glow-inset-top: 0px;
+  --glow-inset-side: 0px;
+  --glow-inset-bottom: 0px;
   --shadow: rgb(0 0 0 / 55%);
   --shadow-size: 36px;
   --shadow-inset-top: 27px;
@@ -426,6 +429,15 @@ describe('the window glow and the shadow (P5.3)', () => {
     assert.equal(inactive.size, 36);
     assert.deepEqual(active.colour, { r: 0xd1, g: 0xb0, b: 0x72, a: 0.14 });
     assert.deepEqual(inactive.colour, { r: 0, g: 0, b: 0, a: 0.55 });
+  });
+
+  it('shifts the glow by its own insets, as the shadow (P5.3)', () => {
+    const shifted = tokensWith('', LIGHT.replace('--glow-inset-top: 0px', '--glow-inset-top: 12px')
+      .replace('--glow-inset-side: 0px', '--glow-inset-side: 6px'));
+    assert.deepEqual(lights(shifted).active.inset, { top: 12, left: 6, right: 6, bottom: 0 });
+    assert.deepEqual(padding(shifted), { top: 36, left: 42, right: 42, bottom: 48 });
+    assert.throws(() => lights(tokensWith('', LIGHT.replace('--glow-inset-top: 0px', '--glow-inset-top: 1.5px'))),
+      /glow-inset-top: .*whole px/);
   });
 
   it('pads for the longer light', () => {

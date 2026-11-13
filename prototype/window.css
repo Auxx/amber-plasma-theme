@@ -40,9 +40,9 @@
 .window.is-active {
   --light: var(--glow);
   --light-size: var(--glow-size);
-  --light-inset-top: 0px;
-  --light-inset-side: 0px;
-  --light-inset-bottom: 0px;
+  --light-inset-top: var(--glow-inset-top);
+  --light-inset-side: var(--glow-inset-side);
+  --light-inset-bottom: var(--glow-inset-bottom);
 }
 
 .window:not(.is-active),

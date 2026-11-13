@@ -124,4 +124,11 @@ describe('Amber decoration', () => {
     });
     assert.deepEqual(FADE, stops);
   });
+
+  it('shifts the glow by the tokens the prototype reads (P5.3)', () => {
+    for (const side of [ 'top', 'side', 'bottom' ]) {
+      assert.equal(windowToken('.window.is-active', `--light-inset-${side}`), `glow-inset-${side}`);
+      assert.equal(windowToken('.window:not(.is-active),\n.popup', `--light-inset-${side}`), `shadow-inset-${side}`);
+    }
+  });
 });

@@ -43,7 +43,7 @@ describe('tokens tool', () => {
     assert.equal(status, 0);
     const values = Object.fromEntries(JSON.parse(stdout).map(row => [ row.name, row.value ]));
     assert.equal(values['outline-width'], '1px');
-    assert.equal(values.glow, 'color-mix(in srgb, var(--accent) 14%, transparent)');
+    assert.equal(values.glow, 'color-mix(in srgb, var(--accent) 12%, transparent)');
     assert.equal(values.shadow, '#000000 / 55%');
   });
 

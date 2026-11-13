@@ -42,7 +42,7 @@ function reader(tokens) {
       return undefined;
     }
   };
-  const length = name => {
+  const length = (name, min = 1) => {
     let value = tokens.get(name);
     const seen = [ name ];
     while (value?.ref && !seen.includes(value.ref)) {
@@ -53,8 +53,8 @@ function reader(tokens) {
       problems.push(`${name}: unknown token`);
     } else if (!value.length) {
       problems.push(`${name}: is not a length`);
-    } else if (value.length.unit !== 'px' || !Number.isInteger(value.length.value) || value.length.value < 1) {
-      problems.push(`${name}: must be a whole px of at least 1, not ${value.length.value}${value.length.unit}`);
+    } else if (value.length.unit !== 'px' || !Number.isInteger(value.length.value) || value.length.value < min) {
+      problems.push(`${name}: must be a whole px of at least ${min}, not ${value.length.value}${value.length.unit}`);
     } else {
       return value.length.value;
     }
@@ -105,9 +105,8 @@ function lightColour(tokens, name) {
 
 /**
  * The light of each window state, as the prototype draws it: the window
- * glow of the active window, starting at the window outline, and the shadow
- * of an inactive one, whose fade starts inside the window on each side
- * (D-59, D-60). `{ active, inactive }`, each `{ colour: { r, g, b, a },
+ * glow of the active window and the shadow of an inactive one, each of whose
+ * fade may start inside the window on each side, by its insets (D-59, D-60). `{ active, inactive }`, each `{ colour: { r, g, b, a },
  * size, inset: { top, left, right, bottom } }`, lengths in px.
  */
 export function lights(tokens) {
@@ -117,9 +116,15 @@ export function lights(tokens) {
   const top = read.length('shadow-inset-top');
   const side = read.length('shadow-inset-side');
   const bottom = read.length('shadow-inset-bottom');
+  const glowTop = read.length('glow-inset-top', 0);
+  const glowSide = read.length('glow-inset-side', 0);
+  const glowBottom = read.length('glow-inset-bottom', 0);
   read.check();
   return {
-    active: { colour: lightColour(tokens, 'glow'), size: glowSize, inset: { top: 0, left: 0, right: 0, bottom: 0 } },
+    active: {
+      colour: lightColour(tokens, 'glow'), size: glowSize,
+      inset: { top: glowTop, left: glowSide, right: glowSide, bottom: glowBottom }
+    },
     inactive: { colour: lightColour(tokens, 'shadow'), size: shadowSize, inset: { top, left: side, right: side, bottom } }
   };
 }

@@ -26,8 +26,11 @@
   --outline: #585248;             /* the window outline, on every edge of a window: 2:1 on tones 0 to 2 */
   --outline-width: 1px;           /* the window outline's width */
   --title-bar-height: 30px;       /* the title bar's height, below the window outline */
-  --glow: color-mix(in srgb, var(--accent) 14%, transparent); /* the window glow of the active window, at the outline */
+  --glow: color-mix(in srgb, var(--accent) 12%, transparent); /* the window glow of the active window, where its fade starts */
   --glow-size: 48px;              /* how far the window glow fades to nothing */
+  --glow-inset-top: 12px;         /* how far inside the window the glow's fade starts at the top (P5.3) */
+  --glow-inset-side: 6px;         /* the same at the sides */
+  --glow-inset-bottom: 0px;       /* the same at the foot */
   --shadow: rgb(0 0 0 / 55%);     /* the shadow of an inactive window and of a popup, where its fade starts */
   --shadow-size: 36px;            /* how long the shadow's fade is */
   --shadow-inset-top: 27px;       /* how far inside the window the shadow's fade starts at the top: 9 px show */
