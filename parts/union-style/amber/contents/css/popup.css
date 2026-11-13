@@ -9,27 +9,28 @@
  * All forms of popups: Menus, Dialogs, plain Popup
  */
 
-:root
-{
-    --tooltip-text-color: custom-color("kcolorscheme", "active", "tooltip", "foreground", "text");
-    --tooltip-background-color: custom-color("kcolorscheme", "active", "tooltip", "background", "normal");
-    --tooltip-border-color: custom-color("kcolorscheme", "active", "tooltip", "decoration", "frame");
-
-    --popup-shadow-size: 20px;
-}
+/*
+ * Popups (P3.8, D-114): a menu, a combo box's list and a tooltip are the
+ * popup tone, square, with no line. A menu item takes the hovered tone 4
+ * hovered, under the keyboard (Union's :highlighted), pressed, and while its
+ * submenu is open; a menu is divided by an 8 px gap. Union draws no
+ * box-shadow in Qt Widgets, so a popup has a shadow in Qt Quick only (D-74);
+ * Union's tokens are opaque, so the shadow is written with --shadow's value,
+ * black at 55 %.
+ */
 
 menu, popup
 {
-    border-radius: var(--corner-radius);
+    border-radius: 0px;
 
-    background-color: var(--window-background-color);
+    background-color: var(--popup);
     border: none;
-    color: var(--window-text-color);
-    box-shadow: 0px 2px var(--popup-shadow-size) 0px rgba(0, 0, 0, 0.2);
+    color: var(--text);
+    box-shadow: 0px 12px 20px 0px rgba(0, 0, 0, 0.55);
 
     &:disabled {
-        color: var(--window-disabled-text-color);
-        background-color: var(--window-disabled-background-color);
+        color: var(--text-dim);
+        background-color: var(--popup);
         border: none;
     }
 }
@@ -41,50 +42,56 @@ overlay.modal
 
 menu
 {
-    padding: var(--small-spacing);
-    margin: var(--popup-shadow-size);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 20px; /* room for the shadow in Qt Quick; Qt Widgets ignores it */
 }
 
 menuitem
 {
-    height: var(--large-element-size);
+    height: 26px;
     width: var(--menu-item-width);
-    padding: var(--medium-spacing);
-    spacing: var(--small-spacing);
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 6px;
+    padding-right: 12px;
+    spacing: 6px;
+    inset: 0px;
 
-    border-radius: var(--corner-radius);
+    border-radius: 0px;
 
-    color: var(--window-text-color);
+    background-color: transparent;
+    color: var(--text);
 
     icon-alignment: content start center 0;
     text-alignment: content start center 1;
 
     /*
-    highlight is "sticky", that is, when hovering outside of the menu or
-    over a disabled item, the last hovered item will be considered highlighted.
-    We generally only want to show hover, *except* when a menu item shows a
-    submenu, as we want to keep highlighting the menu item the submenu comes
-    from.
+    A keyboard highlight is :highlighted alone, and an item whose submenu is
+    open stays :highlighted, so both take the hovered tone. Pressed is drawn
+    as hovered: a click shows no accent.
     */
     &:hovered,
-    &.with-submenu:highlighted
+    &:highlighted
     {
-        background-color: var(--focus-color);
+        background-color: var(--tone-4);
+        color: var(--text);
         border: none;
     }
 
-    &:pressed,
-    &.with-submenu:pressed
+    &:pressed
     {
         border: none;
-        background-color: var(--highlight-color);
-        color: var(--highlight-text-color);
+        background-color: var(--tone-4);
+        color: var(--text);
     }
 
     &:disabled {
         border: none;
-        background: none;
-        color: var(--window-disabled-text-color);
+        background-color: transparent;
+        color: var(--text-dim);
     }
 
     arrow {
@@ -92,6 +99,13 @@ menuitem
         height: var(--icon-size-small);
         layout-alignment: content end center 1;
         icon-name: "arrow-right-symbolic";
+        color: var(--text-dim);
+        &:hovered, &:highlighted {
+            color: var(--text);
+        }
+        &:disabled {
+            color: var(--text-dim);
+        }
     }
 
     indicator
@@ -102,50 +116,79 @@ menuitem
     }
 
     shortcuttext {
-        spacing: 40px;
-        color: mix(var(--window-background-color), var(--window-text-color), 0.5);
+        spacing: 24px;
+        color: var(--text-dim);
         text-alignment: content end center 0;
+        &:hovered, &:highlighted {
+            color: var(--text);
+        }
         &:disabled {
-            color: mix(var(--window-background-color), var(--window-disabled-text-color), 0.5);
+            color: var(--text-dim);
         }
     }
 
 }
 
 overlay {
-    background-color: rgba(0.0, 0.0, 0.0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Menuitems are sometimes used in comboboxes instead of itemdelegates, adjust their padding to
- * same as itemdelegate in those cases */
+/* A combo box's list is a menu. Its own window is clear and no rule fills it
+ * (P3.8, Task 1): an inset would show the window behind between its items.
+ * The current value is :highlighted when the list opens, and shows as
+ * hovered; Union draws it no tick. */
 popup.combobox itemviewitem,
 popup.combobox menuitem {
-    padding: var(--large-spacing);
-    inset: var(--small-spacing);
+    height: 26px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 28px;
+    padding-right: 12px;
+    inset-top: 0px;
+    inset-right: 0px;
+    inset-bottom: 0px;
+    inset-left: 0px;
+    border-radius: 0px;
+    background-color: transparent;
+    color: var(--text);
+
+    &:hovered, &:highlighted, &:visual-focus, &:highlighted:visual-focus {
+        background-color: var(--tone-4);
+        color: var(--text);
+    }
+    &:disabled {
+        background-color: transparent;
+        color: var(--text-dim);
+    }
 }
 
+/* An 8 px gap: Union sizes a separator as its height and its top and bottom
+ * insets (P3.8, Task 1). A section's title is dim, with no line. */
 menuseparator {
     layout-alignment-horizontal: fill;
-    height: 1px;
-    inset: var(--small-spacing);
+    height: 0px;
+    inset-top: 4px;
+    inset-bottom: 4px;
+    background-color: transparent;
 
     &.with-title {
-        height: var(--large-element-size);
+        height: 26px;
         text-alignment: content start center 0;
-        layout-alignment-horizontal: end;
+        layout-alignment-horizontal: fill;
         background-color: transparent;
-        padding: var(--small-spacing);
-        /* Make the separator bit wider than rest of the content */
-        inset-left: -2px;
-        inset-right: -2px;
-        /* TODO: italic, underline, or separator next to the text */
-        font-weight: bold;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-left: 28px;
+        padding-right: 12px;
+        inset-top: 0px;
+        inset-bottom: 0px;
+        font-weight: normal;
 
-        color: mix(var(--window-background-color), var(--window-text-color), 0.5);
+        color: var(--text-dim);
         border-bottom: none;
 
         &:disabled {
-            color: mix(var(--window-background-color), var(--window-disabled-text-color), 0.5);
+            color: var(--text-dim);
         }
     }
 }
@@ -199,15 +242,16 @@ dialog
 {
     spacing: var(--small-spacing);
     padding: var(--large-spacing);
-    border-radius: var(--corner-radius);
+    border-radius: 0px;
 
     text-alignment-horizontal: center;
     icon-alignment-horizontal: center;
 
-    color: var(--view-text-color);
+    /* A Qt Quick dialog has the body of a dialog window (P3.8, D-114). */
+    color: var(--text);
     border: none;
-    background-color: var(--view-background-color);
-    box-shadow: var(--dialog-shadow);
+    background-color: var(--tone-1);
+    box-shadow: 0px 12px 20px 0px rgba(0, 0, 0, 0.55);
 
     .header {
         font-size: 20px;
@@ -221,7 +265,7 @@ dialog
         &.panel-right {
             border: none;
             border-radius: 0px;
-            background-color: var(--view-background-color);
+            background-color: transparent;
         }
 
         &.panel-left {
@@ -240,14 +284,19 @@ dialogbuttonbox
     padding: var(--large-spacing);
 }
 
+/* Qt sizes a tooltip itself in Qt Widgets and draws its text from the colour
+ * scheme's Tooltip set; the padding reaches Qt Quick (P3.8, Task 1). */
 tooltip
 {
     width: var(--medium-element-size);
     height: var(--medium-element-size);
-    padding: var(--large-spacing);
-    color: var(--tooltip-text-color);
-    background-color: var(--tooltip-background-color);
-    border-radius: var(--corner-radius);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: var(--text);
+    background-color: var(--popup);
+    border-radius: 0px;
     border: none;
-    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.55);
 }
