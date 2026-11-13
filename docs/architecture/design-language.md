@@ -65,6 +65,9 @@ accent; the owner approved them, and the whole prototype, on 2026-11-12
   line. (my call, D-108)
 - Two surfaces that touch differ by at least one tone, unless they are meant
   to read as one area, as the header is.
+- A splitter between two panes is a clear gap that shows the window's tone,
+  wide enough not to be a line. A line frame between groups of a dialog is a
+  gap, and a group box has no frame and no fill of its own. (my call, D-116)
 - Menus, popups and tooltips are one tone away from what they cover and carry
   a shadow. They have no outline. A popup is `--popup`, tone 3, one above the
   tone 2 surface (my call, P1.5).

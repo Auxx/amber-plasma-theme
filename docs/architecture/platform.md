@@ -271,6 +271,34 @@ Verified on 2026-11-10 unless marked.
   - A message (`KMessageWidget`, Dolphin's "does not exist") draws itself:
     square, the negative background `#422223`, and a 1 px line of
     `#b83d48` at its foot that no Union rule reaches (a known gap, D-115).
+- **What the sweep of Dolphin, Kate and Konsole found** (verified,
+  2026-11-13, P3.9, by `image greys` and `image lines` over every window and
+  by marker rules, under Xwayland at the scale 1.4916667):
+  - **A main window's dock separator is `splitter`**, as a `QSplitter`'s
+    handle is. At 1 px, clear, it showed the window's tone 1 as a line
+    beside a dock and between two views. At 0 px Dolphin's split view still
+    drags but a dock separator does not; at 4 px both do.
+  - **At a fractional scale an edge that falls mid-pixel shows what lies
+    behind it as a 1 px seam**: under the header toolbar, between menu
+    titles (`menubaritem` was clear), under and between header sections,
+    and between an item and a scrollbar. A fill 1 px past the edge
+    (`inset-*: -1px`) closes each. On a tab it also moves a west tab's
+    block marker 1 px outward and lays a selected tab over its neighbour,
+    so a tab's own edge is left (a known gap, D-109).
+  - Union's line frames (`QFrame::HLine`, `KSeparator`) draw nothing: the
+    Properties dialog and the settings pages showed gaps, no lines.
+  - **`KMessageWidget` does not read the colour scheme's status colours.**
+    Konsole's warning ("output suspended") is Breeze's orange `#f67400`
+    (246, 116, 0) as a frame 2 px wide on every side, over `#4d351f`, where
+    the colour scheme's neutral is `#d1b072`. Kate's information message
+    ("modified on disk") is blue, `#223741`, with a 1 px `#3794c5` line at
+    its foot. No rule reaches either (a known gap, D-117). No application
+    showed a positive message.
+  - `KColorButton` draws a sunken frame 1–2 px around its swatch itself,
+    and `KExtendableItemDelegate` (the shortcuts editor) draws its own
+    extender arrow in each cell, as under Breeze.
+  - Under Xwayland a submenu met its menu with a 1 px seam (two windows
+    placed at whole pixels); the owner saw nothing amiss under Wayland.
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -635,8 +663,9 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   message for a missing folder is drawn in `#492829`, OKLCH 32 % 0.0496 18
   (a chroma just under the 0.05 at which a colour counts as a hue):
   KColorScheme's `background negative`, a tint of ForegroundNegative
-  (`#e89887`, hue 33) into the background. The positive and neutral
-  backgrounds were not seen.
+  (`#e89887`, hue 33) into the background. A warning message does not
+  follow the colour scheme at all: it is Breeze's orange (verified,
+  2026-11-13, P3.9; see [Union](#union)).
 - **Qt draws the text cursor of a text field inverted** over what is under
   it, so on tone 2 it is `#dadde0`, a cool grey; on a well, tone 0, it is
   `#eaebec`, and on a focused well, tone 1, `#e3e5e7` (verified, 2026-11-12,
@@ -661,7 +690,7 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 | Question | Tested in |
 |---|---|
 | Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2 |
-| What do the derived positive and neutral backgrounds look like? P3.8 saw only the negative one (`#422223`, see [Union](#union)): no application showed a positive or neutral message. | P3.9 |
+| Is a positive message Breeze's green, as a warning is Breeze's orange (P3.9)? No application showed one. Is the negative message's red the colour scheme's tint or Breeze's fixed red? | P6.3 |
 
 ## Konsole and Kate
 
@@ -675,6 +704,10 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   (`#232629`, `#31363b`) until the editor theme of P4.2 is chosen.
   Konsole's default profile, and Kate's terminal panel, show Breeze's
   terminal colours (`#232627`). (verified, 2026-11-12, P2.3)
+- In a split view Konsole draws a title header above each pane in
+  `#1f2121`, a cool dark near Breeze's terminal background; no rule of the
+  style reaches it (seen, 2026-11-13, P3.9). That it comes from the
+  terminal colours is unverified, and checked in P4.1.
 
 ## Spike findings
 

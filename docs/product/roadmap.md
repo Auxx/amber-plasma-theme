@@ -120,7 +120,7 @@ next starts.
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | done |
 | P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | done |
 | P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | done |
-| P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
+| P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | done |
 
 P2.3 found these for Step 3, all drawn by the Breeze style or by Qt, not by
 the colour scheme: the 1 px border under the header toolbar (P3.6); the
@@ -189,6 +189,14 @@ list, its text lined up with the combo box's at the owner's request.
 Qt Widgets draws no popup shadow (D-74); a label's start, a message's line
 and a tooltip's padding are known gaps, and a menu that shifts under
 Xwayland is an X11 fault (D-115).
+
+P3.9 swept about a hundred windows and states of Dolphin, Kate and Konsole
+with `image greys` and the new `image lines`. The splitter, a 1 px line
+between panes, is now a clear gap 4 px wide, and four seams that a
+fractional scale showed are closed by a fill 1 px past the edge (D-116).
+Messages in Breeze's colours, tone 1 around tabs, a colour button's frame
+and Kate's stacked buttons are known gaps (D-117); Konsole's pane header,
+a cool dark, is left to P4.1.
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from
