@@ -4,10 +4,12 @@ import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { srgb8 } from './colour.mjs';
+import { BUTTON_STATES, GLYPHS } from './decoration.mjs';
 import { PARTS } from './generate.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const WINDOW_CSS = fileURLToPath(new URL('../../../prototype/window.css', import.meta.url));
+const GALLERY = fileURLToPath(new URL('../../../prototype/gallery.html', import.meta.url));
 
 /** The token that the first rule `selector { … }` of window.css reads in `property: … var(--token)`. */
 function windowToken(selector, property) {
@@ -52,6 +54,49 @@ describe('Amber decoration', () => {
       assert.equal(fill(`${prefix}-center`), titleBar, `${prefix}-center`);
       assert.equal(fill(`${prefix}-top`), outline, `${prefix}-top`);
       assert.equal(fill(`${prefix}-bottomright`), outline, `${prefix}-bottomright`);
+    }
+  });
+
+  it('generates every window button', () => {
+    assert.deepEqual(Object.keys(generate()).sort(),
+      [ 'amberrc', 'close.svg', 'decoration.svg', 'maximize.svg', 'minimize.svg', 'restore.svg' ]);
+  });
+
+  it("matches the prototype's window buttons", () => {
+    // The tokens window.css gives each state; at rest a button shows the title bar.
+    const titleBar = windowToken('.title-bar', 'background');
+    const text = windowToken('.window-button', 'color');
+    const dim = windowToken('.window-button.is-inactive', 'color');
+    const hovered = windowToken('.window-button:not(.is-close).is-hovered', 'background');
+    const pressed = windowToken('.window-button:not(.is-close).is-pressed', 'background');
+    const danger = windowToken('.window-button.is-close.is-pressed', 'background');
+    const onDanger = windowToken('.window-button.is-close.is-pressed', 'color');
+    const expected = {
+      active: [ titleBar, text, titleBar, text ],
+      hover: [ hovered, text, danger, onDanger ],
+      pressed: [ pressed, text, danger, onDanger ],
+      inactive: [ titleBar, dim, titleBar, dim ],
+      'hover-inactive': [ hovered, dim, danger, onDanger ],
+      'pressed-inactive': [ pressed, dim, danger, onDanger ]
+    };
+    for (const { prefix, fill, glyph } of BUTTON_STATES) {
+      assert.deepEqual([ fill.plain, glyph.plain, fill.close, glyph.close ], expected[prefix], prefix);
+    }
+  });
+
+  it("draws the prototype's glyphs at its size", () => {
+    const css = readFileSync(WINDOW_CSS, 'utf8');
+    const svgRule = css.match(/\n\.window-button svg \{([^}]*)\}/)[1];
+    assert.match(svgRule, /width: 16px;/);
+    assert.match(svgRule, /stroke-width: 1\.5;/);
+    const svg = generate()['close.svg'];
+    assert.match(svg, /stroke-width="1\.5"/);
+    assert.match(svg, /translate\(7 7\)/);
+    const gallery = Object.fromEntries([ ...readFileSync(GALLERY, 'utf8')
+      .matchAll(/class="window-button is-(\w+)[^"]*"[^>]*><svg[^>]*><path d="([^"]+)"/g) ].map(([ , name, d ]) => [ name, d ]));
+    const names = { minimize: 'minimise', maximize: 'maximise', restore: 'restore', close: 'close' };
+    for (const [ button, name ] of Object.entries(names)) {
+      assert.equal(GLYPHS[button], gallery[name], button);
     }
   });
 });

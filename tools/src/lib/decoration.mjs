@@ -8,7 +8,8 @@ import { resolveToken } from './tokens.mjs';
  * `metadata.desktop` is written by hand. The frame is the nine plain
  * rectangles of spike P0.4 for each window state: the edges and corners one
  * `outline-width` thick in `outline`, the centre, which is the title bar, in
- * `tone-0` (P5.1).
+ * `tone-0` (P5.1). The window buttons are one file each, with one element per
+ * state, drawn as the prototype's gallery draws them (P5.2).
  */
 
 /** The nine elements of a frame, as Aurorae names them. */
@@ -124,7 +125,7 @@ export function formatDecorationRc(tokens) {
     [ 'BorderLeft', w ], [ 'BorderRight', w ], [ 'BorderBottom', w ],
     [ 'TitleEdgeTop', w ], [ 'TitleEdgeBottom', 0 ], [ 'TitleEdgeLeft', w ], [ 'TitleEdgeRight', w ],
     [ 'TitleBorderLeft', 0 ], [ 'TitleBorderRight', 0 ], [ 'TitleHeight', title ],
-    [ 'ButtonWidth', title ], [ 'ButtonHeight', title ], [ 'ButtonSpacing', 0 ],
+    [ 'ButtonWidth', title ], [ 'ButtonHeight', title ], [ 'ButtonSpacing', 0 ], [ 'ButtonMarginTop', 0 ],
     [ 'PaddingTop', 0 ], [ 'PaddingBottom', 0 ], [ 'PaddingLeft', 0 ], [ 'PaddingRight', 0 ]
   ]);
   return [
@@ -135,6 +136,74 @@ export function formatDecorationRc(tokens) {
     '',
     '[Layout]',
     ...layout,
+    ''
+  ].join('\n');
+}
+
+/**
+ * The states of a window button, as Aurorae's prefixes, each with the tokens
+ * of its fill and glyph for minimise, maximise and restore (`plain`) and for
+ * close (P5.2; prototype/window.css).
+ */
+export const BUTTON_STATES = [
+  { prefix: 'active', fill: { plain: 'tone-0', close: 'tone-0' }, glyph: { plain: 'text', close: 'text' } },
+  { prefix: 'hover', fill: { plain: 'tone-1', close: 'danger' }, glyph: { plain: 'text', close: 'on-danger' } },
+  { prefix: 'pressed', fill: { plain: 'tone-2', close: 'danger' }, glyph: { plain: 'text', close: 'on-danger' } },
+  { prefix: 'inactive', fill: { plain: 'tone-0', close: 'tone-0' }, glyph: { plain: 'text-dim', close: 'text-dim' } },
+  { prefix: 'hover-inactive', fill: { plain: 'tone-1', close: 'danger' }, glyph: { plain: 'text-dim', close: 'on-danger' } },
+  { prefix: 'pressed-inactive', fill: { plain: 'tone-2', close: 'danger' }, glyph: { plain: 'text-dim', close: 'on-danger' } }
+];
+
+/** The glyphs of the window buttons, in a box of GLYPH units, as the prototype draws them. */
+export const GLYPHS = {
+  minimize: 'M3 8.5h10',
+  maximize: 'M3.5 3.5h9v9h-9z',
+  restore: 'M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10',
+  close: 'M4 4l8 8M12 4l-8 8'
+};
+
+/** The glyph's box and stroke, as window.css draws them. */
+const GLYPH = 16;
+const STROKE = 1.5;
+
+/**
+ * The file `<button>.svg`: one `<prefix>-center` element per state, side by
+ * side. A transparent rectangle the button's size sets the element's box,
+ * which KSvg stretches to the button; the state's fill inside it keeps one
+ * `outline-width` off the top, and off the right for close, the last button
+ * by KWin's default, so that at a fractional scale the button does not
+ * cover the window outline's inner device pixel (D-130).
+ */
+export function formatButtonSvg(tokens, button) {
+  if (!Object.hasOwn(GLYPHS, button)) {
+    throw new Error(`${button}: not a window button (${Object.keys(GLYPHS).join(', ')})`);
+  }
+  const read = reader(tokens);
+  const size = read.length('title-bar-height');
+  const w = read.length('outline-width');
+  const kind = button === 'close' ? 'close' : 'plain';
+  const colours = BUTTON_STATES.map(({ fill, glyph }) => [ read.colour(fill[kind]), read.colour(glyph[kind]) ]);
+  read.check();
+  const inset = (size - GLYPH) / 2;
+  const groups = BUTTON_STATES.map(({ prefix }, i) => {
+    const x = i * (size + GAP);
+    const [ fill, glyph ] = colours[i];
+    return [
+      `  <g id="${prefix}-center">`,
+      `    <rect x="${x}" y="0" width="${size}" height="${size}" fill="#000000" fill-opacity="0"/>`,
+      `    <rect x="${x}" y="${w}" width="${size - (button === 'close' ? w : 0)}" height="${size - w}" fill="${hexOf(fill)}"/>`,
+      `    <path transform="translate(${x + inset} ${inset})" d="${GLYPHS[button]}" fill="none" stroke="${hexOf(glyph)}" ` +
+        `stroke-width="${STROKE}" stroke-linecap="square"/>`,
+      '  </g>'
+    ].join('\n');
+  });
+  const width = BUTTON_STATES.length * (size + GAP) - GAP;
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    ...[ ...SPDX, GENERATED, DO_NOT_EDIT_SVG ].map(line => `<!-- ${line} -->`),
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${size}" viewBox="0 0 ${width} ${size}">`,
+    ...groups,
+    '</svg>',
     ''
   ].join('\n');
 }

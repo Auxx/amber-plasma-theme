@@ -502,7 +502,8 @@ Verified on 2026-11-11 unless marked; see
 - A theme is a folder `<id>/` in `~/.local/share/aurorae/themes/` holding
   `decoration.svg`, `<id>rc`, `metadata.desktop` and one SVG file per window
   button (`close.svg`, `minimize.svg`, `maximize.svg`, `restore.svg` and
-  others). A button with no file is not shown. The format is described at
+  others). A button with no file is not shown, except the menu button, which
+  draws the application's icon (verified, 2026-11-13, P5.2). The format is described at
   <https://develop.kde.org/docs/plasma/aurorae/>.
 - `decoration.svg` holds a frame of nine elements named
   `decoration-<side>` (`topleft`, `top`, `topright`, `left`, `center`,
@@ -519,6 +520,10 @@ Verified on 2026-11-11 unless marked; see
 - Which window buttons show, and on which side, is KWin's setting
   (`ButtonsOnLeft`, `ButtonsOnRight` in the same group of `kwinrc`). The
   theme's empty `LeftButtons` did not remove the menu button on the left.
+  With neither key set, KWin's defaults, which are in its code and not in
+  any file, put the menu button at the left and minimise, maximise and
+  close at the right; help and on-all-desktops, which Amber draws no file
+  for, are not shown. (verified, 2026-11-13, P5.2)
 - A window with an empty title shows its application's name in the title
   bar.
 - KWin selects an Aurorae theme with `library=org.kde.kwin.aurorae` and
@@ -627,6 +632,48 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
   D-Bus (`gdbus call … org.kde.kwin.Scripting.loadScript`, then `start`)
   can place, restore and size windows.
 
+### Amber's window buttons — P5.2, 2026-11-13
+
+Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
+
+- **A button file of one `<g id="<prefix>-center">` per state fills the
+  button**: KSvg takes the lone centre element as the whole button and does
+  not stretch the glyph, when the group holds a rectangle the button's size.
+  Aurorae read the prefixes `active`, `hover`, `pressed`, `inactive`,
+  `hover-inactive` and `pressed-inactive`. The six states of minimise,
+  maximise and close, and restore at rest, hovered and pressed on the
+  active window, drew the fill and glyph colour of the gallery's "Window
+  buttons", and each glyph landed where the prototype puts it. Restore on
+  an inactive window was not shot.
+- **The menu button draws the application's icon, 26 px across and 2 px in
+  from each edge** of a button `ButtonWidth` across. Under Xwayland a Qt
+  application's icon is X11's, a cool grey: outside Amber (D-94).
+- **`TitleAlignment=Center` centres the title between the button groups**,
+  not on the title bar: with KWin's default buttons a 522 px window's title
+  sat 31 px left of the window's centre. A long title is elided before the
+  first button.
+- **A maximised window shows `restore.svg` at rest**; being maximised does
+  not show the pressed state. A window of fixed size has no maximise button
+  at all, rather than a disabled one. Other disabled buttons were not
+  seen (see "Unverified").
+- Pressing a button of an inactive window shows its `pressed-inactive`
+  state while held. Releasing off the button does nothing.
+- **At 1.49 a button whose fill fills it covers the window outline's inner
+  device pixel**: the outline was 1 device px above and beside the buttons,
+  2 px elsewhere on the top and right, though a hovered close's danger ran
+  to the outline with no seam.
+- **The element's box, not its fill, sets what KSvg stretches**: a fill
+  rectangle smaller than the button is stretched back to fill it. A
+  transparent rectangle the button's size (`fill-opacity="0"`) holds the
+  box, and a fill inset 1 px inside it then keeps off the outline, which
+  stays 2 device px at 1.49. A hovered or pressed fill then stops short of
+  the outline: 1 px of tone 0 at scale 1, and at 1.49 a blended row such
+  as `#642c20`, which `image lines --blends` reports as lines. Amber draws
+  it so (D-130).
+- In the nested session, XTest sent from its Xwayland (`xkeys.py`) moves
+  the one pointer, so it hovers and presses the decoration of Wayland and
+  X11 windows alike.
+
 ### Unverified
 
 | Question | Tested in |
@@ -634,6 +681,7 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
 | What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
 | Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype draws the window glow and the shadow this way since P1.7 (D-59 to D-61). | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
+| Does KWin draw a disabled minimise or close (a window that cannot be minimised or closed, as through a window rule), and with which element? Amber's button files have no `deactivated` element. Only maximise on a window of fixed size was seen: KWin left it out. | P6.3 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the
 owner's say. (my call)

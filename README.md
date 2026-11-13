@@ -114,6 +114,11 @@ Amber is in early development and nothing can be installed yet.
 - **GTK applications that draw their own title bar**, such as zenity, keep
   their own rounded frame: Amber's window decoration does not reach them.
   (seen in P5.1; D-127)
+- **A hovered or pressed window button shows a seam at the window
+  outline.** Its fill stops one pixel short of the outline, so that the
+  outline stays whole at a fractional scale: at scale 1 a 1 px strip of
+  the title bar's tone shows between the two, and at 1.49 a dark blended
+  row. (seen in P5.2; D-130)
 - **Kate's caret is a cool grey.** Kate draws the text caret by inverting
   the pixels under it, so on the editor's warm tone it is `#dadde0`. The
   editor theme has no caret colour. (seen in P4.2; D-124)

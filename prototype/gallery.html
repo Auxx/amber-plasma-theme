@@ -317,13 +317,54 @@ Warm, never cool.</textarea></div>
   <div class="text-colours is-raised"><span class="text-colour is-link">Link</span><span class="text-colour is-visited">Visited link</span><span class="text-colour is-positive">Positive</span><span class="text-colour is-neutral">Neutral</span><span class="text-colour is-negative">Negative</span></div>
 </section>
 
+<section class="family" aria-label="Window buttons">
+  <h2>Window buttons</h2>
+  <p class="dim">Minimise, maximise, restore and close, as the window decoration draws them on the title bar (P5.2). Flat, and never a glow: hovered minimise, maximise and restore move up a tone and pressed one more; close turns danger, hovered or pressed. An inactive window dims the glyph.</p>
+
+  <div class="state-row" data-widget="window-minimise">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="title-bar-strip"><span class="window-button is-minimise"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="title-bar-strip"><span class="window-button is-minimise is-hovered"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="title-bar-strip"><span class="window-button is-minimise is-pressed"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+    <div class="state" data-state="inactive"><span class="state-label dim">Inactive window</span><div class="title-bar-strip"><span class="window-button is-minimise is-inactive"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+    <div class="state" data-state="inactive-hovered"><span class="state-label dim">Inactive, hovered</span><div class="title-bar-strip"><span class="window-button is-minimise is-inactive is-hovered"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+    <div class="state" data-state="inactive-pressed"><span class="state-label dim">Inactive, pressed</span><div class="title-bar-strip"><span class="window-button is-minimise is-inactive is-pressed"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span></div></div>
+  </div>
+
+  <div class="state-row" data-widget="window-maximise">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="title-bar-strip"><span class="window-button is-maximise"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="title-bar-strip"><span class="window-button is-maximise is-hovered"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="title-bar-strip"><span class="window-button is-maximise is-pressed"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+    <div class="state" data-state="inactive"><span class="state-label dim">Inactive window</span><div class="title-bar-strip"><span class="window-button is-maximise is-inactive"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+    <div class="state" data-state="inactive-hovered"><span class="state-label dim">Inactive, hovered</span><div class="title-bar-strip"><span class="window-button is-maximise is-inactive is-hovered"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+    <div class="state" data-state="inactive-pressed"><span class="state-label dim">Inactive, pressed</span><div class="title-bar-strip"><span class="window-button is-maximise is-inactive is-pressed"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span></div></div>
+  </div>
+
+  <div class="state-row" data-widget="window-restore">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="title-bar-strip"><span class="window-button is-restore"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="title-bar-strip"><span class="window-button is-restore is-hovered"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="title-bar-strip"><span class="window-button is-restore is-pressed"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+    <div class="state" data-state="inactive"><span class="state-label dim">Inactive window</span><div class="title-bar-strip"><span class="window-button is-restore is-inactive"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+    <div class="state" data-state="inactive-hovered"><span class="state-label dim">Inactive, hovered</span><div class="title-bar-strip"><span class="window-button is-restore is-inactive is-hovered"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+    <div class="state" data-state="inactive-pressed"><span class="state-label dim">Inactive, pressed</span><div class="title-bar-strip"><span class="window-button is-restore is-inactive is-pressed"><svg viewBox="0 0 16 16"><path d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10"/></svg></span></div></div>
+  </div>
+
+  <div class="state-row" data-widget="window-close">
+    <div class="state" data-state="rest"><span class="state-label dim">At rest</span><div class="title-bar-strip"><span class="window-button is-close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+    <div class="state" data-state="hovered"><span class="state-label dim">Hovered</span><div class="title-bar-strip"><span class="window-button is-close is-hovered"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+    <div class="state" data-state="pressed"><span class="state-label dim">Pressed</span><div class="title-bar-strip"><span class="window-button is-close is-pressed"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+    <div class="state" data-state="inactive"><span class="state-label dim">Inactive window</span><div class="title-bar-strip"><span class="window-button is-close is-inactive"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+    <div class="state" data-state="inactive-hovered"><span class="state-label dim">Inactive, hovered</span><div class="title-bar-strip"><span class="window-button is-close is-inactive is-hovered"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+    <div class="state" data-state="inactive-pressed"><span class="state-label dim">Inactive, pressed</span><div class="title-bar-strip"><span class="window-button is-close is-inactive is-pressed"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></div></div>
+  </div>
+</section>
+
 <section class="family" aria-label="Dialog">
   <h2>Dialog</h2>
   <p class="dim">A dialog is a window: a title bar in tone 0, the window outline and the window glow. No line sits above its buttons.</p>
 
   <div class="dialog-scene">
     <div class="window is-active dialog" role="dialog" aria-label="Rename">
-      <div class="title-bar"><span class="title">Rename</span></div>
+      <div class="title-bar"><span class="menu-button" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M1 3h5l1.5 1.5H15V13H1z"/></svg></span><span class="title">Rename</span><span class="window-buttons"><span class="window-button is-minimise"><svg viewBox="0 0 16 16"><path d="M3 8.5h10"/></svg></span><span class="window-button is-maximise"><svg viewBox="0 0 16 16"><path d="M3.5 3.5h9v9h-9z"/></svg></span><span class="window-button is-close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></span></div>
       <div class="dialog-body">
         <p class="dialog-text">Rename "amber-notes.md" to:</p>
         <input class="text-field" type="text" value="amber-notes.md" autocomplete="off" aria-label="New name">

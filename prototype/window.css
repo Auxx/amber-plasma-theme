@@ -128,9 +128,12 @@
 }
 
 /* The window decoration draws the same: the title bar below the window outline (P5.1). */
+/* KWin's default buttons: the menu button, the application's icon, at the
+   left, and the title centred between it and the window buttons, as KWin
+   centres it (P5.2, decided by the owner). */
 .title-bar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   height: var(--title-bar-height);
   flex: none;
@@ -139,7 +142,27 @@
 
 .title {
   grid-column: 2;
+  justify-self: center;
+  max-width: 100%;
+  overflow: hidden;
   white-space: nowrap;
+}
+
+/* The application's icon as KWin draws it: 26 px, 2 px in from each edge of
+   a square button. A stand-in folder in the tone Breeze's folder icons take
+   under Amber's colour scheme (D-110; my call, P5.2). */
+.menu-button {
+  grid-column: 1;
+  display: grid;
+  place-items: center;
+  width: var(--title-bar-height);
+  height: var(--title-bar-height);
+}
+
+.menu-button svg {
+  width: calc(var(--title-bar-height) - 4px);
+  height: calc(var(--title-bar-height) - 4px);
+  fill: var(--text-selection);
 }
 
 .window:not(.is-active) .title {
@@ -152,16 +175,20 @@
   display: flex;
 }
 
-/* Flat, and never a glow: hovered minimise and maximise move up a tone, close turns danger. */
+/* Flat, and never a glow (D-4). The states are those of P5.2: hovered
+   minimise, maximise and restore move up a tone, pressed one more; close
+   turns danger, hovered or pressed; an inactive window dims the glyph. The
+   decoration's button files are generated to match (decoration.mjs). */
 .window-button {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: var(--title-bar-height);
+  height: var(--title-bar-height);
   color: var(--text);
 }
 
-.window:not(.is-active) .window-button {
+.window:not(.is-active) .window-button,
+.window-button.is-inactive {
   color: var(--text-dim);
 }
 
@@ -174,12 +201,20 @@
   stroke-linecap: square;
 }
 
-.window-button.is-minimise:hover,
-.window-button.is-maximise:hover {
+.window-button:not(.is-close):hover,
+.window-button:not(.is-close).is-hovered {
   background: var(--tone-1);
 }
 
-.window-button.is-close:hover {
+.window-button:not(.is-close):active,
+.window-button:not(.is-close).is-pressed {
+  background: var(--tone-2);
+}
+
+.window-button.is-close:hover,
+.window-button.is-close.is-hovered,
+.window-button.is-close:active,
+.window-button.is-close.is-pressed {
   background: var(--danger);
   color: var(--on-danger);
 }
