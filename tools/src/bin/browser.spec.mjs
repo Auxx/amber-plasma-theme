@@ -68,7 +68,7 @@ describe('browser tool', () => {
     assert.equal(status, 0);
     const [ row ] = JSON.parse(stdout);
     assert.equal(row.background, 'transparent');
-    assert.equal(row.colour, '#e8e3da (text, terminal-text, ansi-white)');
+    assert.equal(row.colour, '#e8e3da (text, terminal-text)');
   });
 
   withChrome('saves an element', () => {

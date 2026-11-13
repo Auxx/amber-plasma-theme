@@ -347,10 +347,10 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
 | `--ansi-yellow` | `#8d7030` | OKLCH 56 % 0.09 85: a darker gold than the accent |
 | `--ansi-blue` | `#487a97` | OKLCH 56 % 0.07 235 |
 | `--ansi-magenta` | `#9b647e` | OKLCH 57 % 0.08 350 |
-| `--ansi-cyan` | `#467d76` | OKLCH 55 % 0.06 185 |
-| `--ansi-white` | `var(--text)` | |
-| `--ansi-bright-black` | `var(--text-dim)` | dim output and suggestions; it carries text, so it is not exempt |
-| `--ansi-bright-red` … `--ansi-bright-cyan` | `#f9afa0`, `#b7cf8e`, `#e6ca91`, `#9fcbe6`, `#e8b2ca`, `#a3d2cb` | the same hues at OKLCH 82–85 %, chroma 0.05–0.09 |
+| `--ansi-cyan` | `#1b8278` | OKLCH 55 % 0.09 185: more chroma than the others, so that it stands apart from blue (decided, D-119) |
+| `--ansi-white` | `#bbb7af` | light grey, OKLCH 78 % 0.012 80 (decided, D-119) |
+| `--ansi-bright-black` | `#6d6861` | dark grey, OKLCH 52 % 0.012 80: dim output and suggestions; it carries text, so it is not exempt (decided, D-119) |
+| `--ansi-bright-red` … `--ansi-bright-cyan` | `#ffc4b8`, `#c7df9e`, `#f7dba1`, `#afdbf7`, `#f9c2db`, `#8febdf` | the same hues at OKLCH 87–90 %, chroma 0.06–0.09; red at 0.07 to stay in sRGB (decided, D-119) |
 | `--ansi-bright-white` | `#f5f1ea` | OKLCH 96 % 0.01 82 |
 
 - **A hue is not a grey.** "No cool grey" is about neutrals. Blue and cyan
@@ -358,12 +358,20 @@ colours. They are muted, warm-shifted hues that sit with the Sand palette
   a warm tone or text token.
 - **A normal colour has two jobs:** text on the terminal, and a background
   under light text, as in Midnight Commander's panels and in status
-  badges. So the normal colours sit at lightness 55–57 %, well apart from
-  the bright ones at 82–85 %. (decided, D-80) No colour does both jobs at
-  4.5:1 on tone 1; these do each at about 3.7:1. See rule 3 of
-  [accessibility](accessibility.md).
-- Konsole's intense and faint variants of the foreground and background,
-  and the cursor (a profile setting), are settled in P4.1.
+  badges. So the normal colours sit at lightness 55–57 % (decided, D-80),
+  well apart from the bright ones at 87–90 % (decided, D-119). No colour
+  does both jobs at 4.5:1 on tone 1; these do each at about 3.7:1. See
+  rule 3 of [accessibility](accessibility.md).
+- **The greys are four steps** (decided, D-119): black (tone 0), dark grey
+  (bright black, 52 %), light grey (white, 78 %) and white (bright white,
+  96 %). The terminal's foreground stays `text`, lighter than ANSI white.
+- **Konsole's faint and intense variants** take tokens too (my call,
+  D-118): a faint colour is its normal colour, and faint white and the faint
+  foreground are `text-dim`; an intense colour is its bright colour, and the
+  intense foreground, which Konsole uses for bold text, is bright white. The
+  background keeps `terminal` in all three. The table is
+  `parts/terminal-colours/keys.json`. The cursor is a profile setting,
+  outside the terminal colours: Konsole draws it in the foreground.
 - The prototype shows the terminal on `prototype/samples.html`, with
   status badges and a Midnight Commander panel on coloured backgrounds.
 

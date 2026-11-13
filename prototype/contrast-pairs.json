@@ -182,8 +182,8 @@
   {
     "foreground": "ansi-bright-black",
     "on": ["terminal"],
-    "minimum": 4.5,
-    "why": "Accessibility rule 3: terminal colours are text; only ANSI black is exempt (D-53)"
+    "minimum": 3,
+    "why": "Accessibility rule 3: bright black is the dark grey of four greys, for dim output and suggestions, which the owner reads easily at 3.1:1 (D-119)"
   },
   {
     "foreground": "ansi-bright-red",
