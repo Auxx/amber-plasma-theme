@@ -62,7 +62,8 @@ part of the picture that is not to be judged, such as a terminal area. It
 may reach past the picture's edge.
 --token-blends excuses a grey that lies within 2 a channel of a blend of two
 opaque colour tokens, as text in a cool hue (ANSI blue, ANSI cyan) is
-anti-aliased over a tone; the excused colours are counted, not listed.
+anti-aliased over a tone, unless the colour fills a 3×3 block anywhere; the
+excused colours are counted, not listed.
 --mark <out.png> writes a copy of the picture with those pixels in magenta.
 It must be inside the repository, such as tmp/; it is the only thing written.`,
       options: {

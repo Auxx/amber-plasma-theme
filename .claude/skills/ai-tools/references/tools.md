@@ -330,8 +330,8 @@ node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --r
 # Konsole without its terminal area, which the terminal colours (P4.1) own (P3.9): "no cool grey" and "left out: 1 region", exits 0
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/p3.9-T-main.png --leave-out 0,90,1909,1000
 
-# Konsole's terminal area with Amber's terminal colours (P4.1): "no cool grey" and "blends of tokens: 1338 colours, 10606 px", exits 0
-node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/T-amber-sample.png --region 278,268,1350,756 --token-blends
+# Konsole's terminal area with Amber's terminal colours (P4.1): "#365363  111 px …" (the scrolled-lines bar) and "blends of tokens: 1168 colours, 9400 px", exits 1
+node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/T-amber-sample-2.png --region 278,268,1350,756 --token-blends
 
 # A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
 node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'
@@ -377,9 +377,12 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --c
   blue or cyan, anti-aliased over a dark tone, passes through colours of low
   chroma that are cool greys by the rule. With `--token-blends` a grey within
   2 a channel of the straight sRGB line between two opaque colour tokens is
-  excused and only counted. Use it where text of token colours is drawn, such
-  as a terminal or an editor; a real grey that happens to lie on such a line
-  is excused too, so look at the shot as well.
+  excused and only counted, **unless it fills an area**: a colour with any
+  pixel whose eight neighbours all share it is never excused. Anti-aliasing
+  edges strokes; a grey surface fills. Without that rule almost every dark
+  cool grey lies near a line from a dark tone to ANSI blue or cyan: Breeze's
+  `#1f2121` and `#232627` did. A grey drawn only in strokes 1–2 px thin on
+  such a line is still excused, so look at the shot as well.
 - **Fully transparent pixels** are skipped; any other pixel is judged by its
   colour alone.
 - **`--region x,y,width,height`** in whole pixels from the top left corner.

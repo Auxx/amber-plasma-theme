@@ -101,6 +101,16 @@ describe('coolGreys', () => {
     assert.deepEqual(coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal') ] }), []);
   });
 
+  it('still reports a grey that fills an area, though it lies on a blend line (P4.1 review)', () => {
+    // Breeze's #1f2121 lies within 2 of the line from the terminal to ANSI blue,
+    // but a pane header filled with it is an area, not the edge of a stroke.
+    const ends = [ rgba('ansi-blue'), rgba('terminal') ];
+    const grey = hex('#1f2121');
+    const row = [ rgba('terminal'), grey, grey, grey, rgba('ansi-blue') ];
+    const image = picture(row, [ 1, 2, 3 ].flatMap(x => [ 1, 2 ].map(y => ({ x, y, colour: grey }))));
+    assert.deepEqual(coolGreys(image, { blendsOf: ends }).map(f => f.hex), [ '#1f2121' ]);
+  });
+
   it('still reports a grey that is no blend of the given colours (P4.1)', () => {
     const image = picture([ hex('#808080'), hex('#2b2d31') ]);
     const found = coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal'), rgba('text') ] });

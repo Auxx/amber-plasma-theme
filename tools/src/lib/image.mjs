@@ -114,17 +114,53 @@ export function isBlendOf([ r, g, b ], colours) {
 }
 
 /**
+ * The colours (as 0xrrggbb) that have at least one pixel inside the region
+ * whose eight neighbours all share its colour: colours that fill an area,
+ * as a surface does, rather than only edging a stroke, as anti-aliasing does.
+ */
+function areaColours(image, region) {
+  const { x: x0, y: y0, width, height } = bounds(image, region);
+  const { pixels } = image;
+  const keyAt = (x, y) => {
+    const at = (y * image.width + x) * 4;
+    return (pixels[at] << 16) | (pixels[at + 1] << 8) | pixels[at + 2];
+  };
+  const found = new Set();
+  for (let y = Math.max(y0, 1); y < Math.min(y0 + height, image.height - 1); y++) {
+    for (let x = Math.max(x0, 1); x < Math.min(x0 + width, image.width - 1); x++) {
+      const key = keyAt(x, y);
+      if (found.has(key) || pixels[(y * image.width + x) * 4 + 3] === 0) {
+        continue;
+      }
+      let same = true;
+      for (let dy = -1; dy <= 1 && same; dy++) {
+        for (let dx = -1; dx <= 1 && same; dx++) {
+          same = keyAt(x + dx, y + dy) === key;
+        }
+      }
+      if (same) {
+        found.add(key);
+      }
+    }
+  }
+  return found;
+}
+
+/**
  * The colours of the picture that are cool greys: not a hue (OKLCH chroma
  * below 0.05) and not warm or black, by `warmthOffence`. Most pixels first.
  * `leaveOut` lists rectangles whose pixels are not read, such as the parts
  * of a window that belong to another part of Amber (P3.9). `blendsOf`, a
  * list of `[r, g, b]`, excuses a grey that is a blend of two of them, such
- * as ANSI blue text anti-aliased over the terminal (P4.1); the excused
- * colours are returned as `blends`, a property of the result.
+ * as ANSI blue text anti-aliased over the terminal (P4.1), unless the
+ * colour fills an area somewhere (a 3×3 block of it): anti-aliasing edges
+ * strokes, while a grey surface, such as Breeze's #1f2121, fills. The
+ * excused colours are returned as `blends`, a property of the result.
  */
 export function coolGreys(image, { region, leaveOut, blendsOf = [] } = {}) {
   const found = [];
   const blends = [];
+  const areas = blendsOf.length ? areaColours(image, region) : new Set();
   for (const entry of tally(image, region, leaveOut)) {
     if (isHue(entry.hex)) {
       continue;
@@ -135,7 +171,8 @@ export function coolGreys(image, { region, leaveOut, blendsOf = [] } = {}) {
     }
     const rgb = [ 1, 3, 5 ].map(i => parseInt(entry.hex.slice(i, i + 2), 16));
     const grey = { hex: entry.hex, count: entry.count, box: box(entry), why };
-    (blendsOf.length && isBlendOf(rgb, blendsOf) ? blends : found).push(grey);
+    const fillsArea = areas.has((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]);
+    (blendsOf.length && !fillsArea && isBlendOf(rgb, blendsOf) ? blends : found).push(grey);
   }
   return Object.defineProperty(found, 'blends', { value: blends });
 }
