@@ -286,6 +286,17 @@ are in the README.
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | in progress |
+| P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | done |
 | P6.2 README | How to install, select (with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
 | P6.3 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
+
+P6.1 added `scripts/install.sh` and `scripts/uninstall.sh`, which copy the
+parts under the data home and remove them by the install record (D-134,
+D-135); a spec runs both in a throwaway home and compares the whole tree.
+In the nested session every application found its installed part with no
+link to the repository, and a part changed and installed again showed on
+restart. The owner's round trip on the real home folder left no
+difference. For P6.2: the two commands; that `XDG_DATA_HOME` is honoured;
+that install refuses a file Amber did not write; that uninstall names a
+setting still selecting Amber and changes none (D-136); and that a part
+changed and installed again shows when an application starts again.

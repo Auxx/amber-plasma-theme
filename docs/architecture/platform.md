@@ -310,6 +310,17 @@ Verified on 2026-11-10 unless marked.
 - Union keeps one compiled cache file per style in `~/.cache/union/`, named
   by a hash. Uninstalling a style does not remove its cache file.
   (verified, 2026-11-11)
+- **The cache file's name is the unpadded base64url SHA-256 of the style's
+  folder path**, as Union found it (a link's own path, not its target),
+  with no slash at the end; the file also holds that path. Four files
+  matched, Breeze's among them: `/usr/share/union/styles/breeze` gives
+  `57vfQhk0…`. An application writes it when it exits, and KWin writes
+  Breeze's at start, so `union/` in the cache home can exist without
+  Amber. (verified, 2026-11-13, P6.1)
+- **Union finds a style copied into `union/styles/<id>/` of
+  `XDG_DATA_HOME`**, with no link in `XDG_DATA_DIRS`. A copy changed in
+  place, with the same `version`, shows when the application starts again,
+  with the old cache file still there. (verified, 2026-11-13, P6.1)
 - Dolphin, Kate and Konsole are Qt Widgets applications and are drawn through
   `UnionWidgetsStyle.so`. Qt Quick applications use the same style through
   `org.kde.union`.
@@ -584,6 +595,9 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
   can be tried without installing it. The `[Desktop Entry]` of
   `metadata.desktop` with `Name`, `Comment` and the `X-KDE-PluginInfo-`
   keys `Author`, `Name`, `Version`, `Website` and `License` is enough.
+  It also finds a theme copied into `aurorae/themes/` of
+  `XDG_DATA_HOME`, as are the colour scheme, the terminal colours and the
+  editor theme (verified, 2026-11-13, P6.1).
 - **A `decoration.svg` that is not valid XML draws no frame**, while the
   title text, from the `rc` file, is still drawn, and nothing is logged.
   An XML comment holding `--` was enough to cause it.
