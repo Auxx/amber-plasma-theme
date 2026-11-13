@@ -342,8 +342,10 @@ const between = (c, a, b) => c.every((v, i) => v >= Math.min(a[i], b[i]) - 1 && 
  * a blend of its two sides, as the row where two tones meet at a fractional
  * scale is. A band 3 px or more thick is not a line; nor is a short stroke of
  * text. `region` limits the search, and `leaveOut` skips rectangles in it.
+ * One row cannot tell a seam whose colour lies between its sides (tone 1
+ * between tone 0 and tone 2) from such a blend: `blends` reports those too.
  */
-export function lines(image, { region, leaveOut = [], minLength = 32 } = {}) {
+export function lines(image, { region, leaveOut = [], minLength = 32, blends = false } = {}) {
   const { x: rx, y: ry, width: rw, height: rh } = bounds(image, region);
   const rgb = (x, y) => {
     const i = (y * image.width + x) * 4;
@@ -370,7 +372,7 @@ export function lines(image, { region, leaveOut = [], minLength = 32 } = {}) {
             const second = thickness === 2 ? rgb(...pixel(a, c + 1)) : here;
             const before = rgb(...pixel(a, c - 1));
             const after = rgb(...pixel(a, c + thickness));
-            on = near(here, second) && !faint(here, before) && !faint(here, after) && !between(here, before, after)
+            on = near(here, second) && !faint(here, before) && !faint(here, after) && (blends || !between(here, before, after))
               && (thickness === 1 || !near(second, after));
           }
           if (on && start !== null && !near(here, colour)) {

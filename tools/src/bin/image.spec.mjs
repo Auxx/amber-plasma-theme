@@ -134,6 +134,8 @@ describe('image tool', () => {
     assert.equal(status, 1);
     assert.match(stdout, /horizontal +#1c1a18 +1 px +at 0,4 +60 long/);
     assert.equal(image('lines', path('warm.png')).status, 0);
+    writeFileSync(join(folder, 'seam.png'), row('#151413', '#1c1a18', '#25221f'));
+    assert.equal(image('lines', path('seam.png'), '--min-length', '2').status, 0);
     assert.match(image('lines', path('warm.png')).stdout, /no line/);
   });
 

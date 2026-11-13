@@ -89,17 +89,20 @@ It must be inside the repository, such as tmp/; it is the only thing written.`,
       }
     },
     lines: {
-      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--json]',
+      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]',
       summary: 'Lists the straight lines 1 or 2 px thick in a picture, such as a window; exits 1 when there is one',
       help: `A line is a run of one colour, 1 or 2 px thick and at least
 --min-length px long (32 by default, longer than a stroke of text), whose
 pixels on both sides differ from it by more than 3 a channel. The row where two tones meet, blended
 at a fractional scale, is not a line, nor is a band 3 px or more thick, such
 as a focus bar. Unlike frame, it needs no surface and judges a whole window.
+One row cannot tell a seam whose colour lies between its two sides, such as
+tone 1 between tone 0 and tone 2, from that blend: it is not reported unless
+--blends is given, which also reports every blended edge.
 ${REGION_HELP}
 --leave-out x,y,width,height skips that rectangle; give it once for each
 part not to be judged. It may reach past the picture's edge.`,
-      options: { region: { type: 'string' }, 'leave-out': { type: 'string', multiple: true }, 'min-length': { type: 'string' }, json: { type: 'boolean' } },
+      options: { region: { type: 'string' }, 'leave-out': { type: 'string', multiple: true }, 'min-length': { type: 'string' }, blends: { type: 'boolean' }, json: { type: 'boolean' } },
       run(values, positionals) {
         const region = parseRegion(values.region);
         const leaveOut = (values['leave-out'] ?? []).map(text => parseRegion(text, '--leave-out'));
@@ -107,7 +110,7 @@ part not to be judged. It may reach past the picture's edge.`,
         if (!Number.isInteger(minLength) || minLength < 2) {
           throw new UsageError(`--min-length must be a whole number of at least 2: ${values['min-length']}`);
         }
-        const found = lines(readPicture(positionals), { region, leaveOut, minLength });
+        const found = lines(readPicture(positionals), { region, leaveOut, minLength, blends: values.blends === true });
         print(values.json, { lines: found }, () => (found.length
           ? table(found.map(l => [ l.orientation, l.hex, `${l.thickness} px`, `at ${l.x},${l.y}`, `${l.length} long` ]))
           : 'no line'));

@@ -413,6 +413,13 @@ describe('lines (P3.9)', () => {
     assert.equal(lines(image, { minLength: 16 }).length, 1);
   });
 
+  it('reports a line whose colour lies between its sides only with blends, since one row cannot tell it from an edge', () => {
+    // Tone 1 between tone 0 and tone 2: a seam of the window's tone, or the row where tone 0 and tone 2 meet.
+    const image = board(80, 20, TONE_2, [ [ 0, 0, 80, 10, TONE_0 ], [ 0, 10, 80, 1, TONE_1 ] ]);
+    assert.deepEqual(lines(image), []);
+    assert.deepEqual(lines(image, { blends: true }), [ { orientation: 'horizontal', x: 0, y: 10, length: 80, thickness: 1, hex: TONE_1 } ]);
+  });
+
   it('finds no line within 3 a channel of both its sides, too faint to see', () => {
     assert.deepEqual(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#23211d' ] ])), []);
     assert.equal(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#211e1b' ] ])).length, 1);

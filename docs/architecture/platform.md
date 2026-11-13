@@ -275,7 +275,7 @@ Verified on 2026-11-10 unless marked.
   2026-11-13, P3.9, by `image greys` and `image lines` over every window and
   by marker rules, under Xwayland at the scale 1.4916667):
   - **A main window's dock separator is `splitter`**, as a `QSplitter`'s
-    handle is. At 1 px, clear, it showed the window's tone 1 as a line
+    `QSplitterHandle` is. At 1 px, clear, it showed the window's tone 1 as a line
     beside a dock and between two views. At 0 px Dolphin's split view still
     drags but a dock separator does not; at 4 px both do.
   - **At a fractional scale an edge that falls mid-pixel shows what lies
@@ -284,7 +284,7 @@ Verified on 2026-11-10 unless marked.
     and between an item and a scrollbar. A fill 1 px past the edge
     (`inset-*: -1px`) closes each. On a tab it also moves a west tab's
     block marker 1 px outward and lays a selected tab over its neighbour,
-    so a tab's own edge is left (a known gap, D-109).
+    so a tab's own edge is left (a known gap, D-117).
   - Union's line frames (`QFrame::HLine`, `KSeparator`) draw nothing: the
     Properties dialog and the settings pages showed gaps, no lines.
   - **`KMessageWidget` does not read the colour scheme's status colours.**
@@ -659,13 +659,14 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   `gtkconfig.so` (which exports colours to GTK applications),
   `plasma_accentcolor_service.so`, `kcm_colors.so` and `breeze6.so`. (by
   their strings only, not by use)
-- **The derived negative background is a tint that shifts hue.** Dolphin's
-  message for a missing folder is drawn in `#492829`, OKLCH 32 % 0.0496 18
-  (a chroma just under the 0.05 at which a colour counts as a hue):
+- **The negative message's background shifts hue.** Dolphin's message for
+  a missing folder is drawn in `#492829`, OKLCH 32 % 0.0496 18 (a chroma
+  just under the 0.05 at which a colour counts as a hue). That it is
   KColorScheme's `background negative`, a tint of ForegroundNegative
-  (`#e89887`, hue 33) into the background. A warning message does not
-  follow the colour scheme at all: it is Breeze's orange (verified,
-  2026-11-13, P3.9; see [Union](#union)).
+  (`#e89887`, hue 33), is unverified: a warning message does not follow
+  the colour scheme at all but is Breeze's orange (verified, 2026-11-13,
+  P3.9; see [Union](#union)), so the red may be Breeze's fixed red too
+  (see [Unverified](#unverified-2)).
 - **Qt draws the text cursor of a text field inverted** over what is under
   it, so on tone 2 it is `#dadde0`, a cool grey; on a well, tone 0, it is
   `#eaebec`, and on a focused well, tone 1, `#e3e5e7` (verified, 2026-11-12,
