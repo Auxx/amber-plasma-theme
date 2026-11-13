@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { srgb8 } from './colour.mjs';
-import { colourCounts, coolGreys, fill, frame, lines, markPixels, profile, tokenNames } from './image.mjs';
+import { colourCounts, coolGreys, fill, frame, lightAlphas, lines, markPixels, profile, tokenNames } from './image.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const tokens = loadTokens();
@@ -484,5 +484,30 @@ describe('lines (P3.9)', () => {
     const image = board(80, 40, TONE_2, [ [ 0, 10, 80, 1, TONE_1 ], [ 0, 30, 80, 1, TONE_1 ] ]);
     assert.deepEqual(lines(image, { region: { x: 0, y: 0, width: 80, height: 20 } }).map(l => l.y), [ 10 ]);
     assert.deepEqual(lines(image, { leaveOut: [ { x: 0, y: 25, width: 80, height: 10 } ] }).map(l => l.y), [ 10 ]);
+  });
+});
+
+describe('lightAlphas (P5.3)', () => {
+  const over = { r: 0x15, g: 0x14, b: 0x13 };
+  const light = { r: 0xd1, g: 0xb0, b: 0x72 };
+  const composite = a => [ over.r + a * (light.r - over.r), over.g + a * (light.g - over.g), over.b + a * (light.b - over.b) ]
+    .map(Math.round).concat(255);
+  const alphas = [ 0, 0.1, 0.14, 0.5 ];
+
+  it('recovers the alpha of a light', () => {
+    const strip = picture(alphas.map(composite));
+    const found = lightAlphas(strip, { x: 0, y: 0 }, { x: 3, y: 0 }, over, light);
+    found.forEach((a, i) => assert.ok(Math.abs(a - alphas[i]) <= 0.005, `${a} for ${alphas[i]}`));
+  });
+
+  it('reads a diagonal, and refuses any other slope', () => {
+    const square = { width: 4, height: 4, pixels: new Uint8Array(64).fill(255) };
+    for (let i = 0; i < 4; i++) {
+      square.pixels.set(composite(alphas[i]), (i * 4 + i) * 4);
+    }
+    const found = lightAlphas(square, { x: 0, y: 0 }, { x: 3, y: 3 }, over, light);
+    assert.equal(found.length, 4);
+    assert.ok(Math.abs(found[3] - 0.5) <= 0.005);
+    assert.throws(() => lightAlphas(square, { x: 0, y: 0 }, { x: 3, y: 2 }, over, light), /row, column or diagonal/);
   });
 });

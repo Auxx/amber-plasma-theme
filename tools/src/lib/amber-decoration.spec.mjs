@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { srgb8 } from './colour.mjs';
-import { BUTTON_STATES, GLYPHS } from './decoration.mjs';
+import { BUTTON_STATES, FADE, GLYPHS } from './decoration.mjs';
 import { PARTS } from './generate.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
@@ -98,5 +98,24 @@ describe('Amber decoration', () => {
     for (const [ button, name ] of Object.entries(names)) {
       assert.equal(GLYPHS[button], gallery[name], button);
     }
+  });
+
+  it("fades on the prototype's curve (P5.3)", () => {
+    const css = readFileSync(WINDOW_CSS, 'utf8');
+    const body = css.match(/--light-fade:([^;]*);/)[1];
+    const share = percent => Math.round(Number(percent) * 10) / 1000;
+    const stops = body.split(/,\s*\n/).map(s => s.trim()).filter(Boolean).map(stop => {
+      if (stop === 'transparent') {
+        return [ 1, 0 ];
+      }
+      const full = stop.match(/^var\(--light\) ([\d.]+)%$/);
+      if (full) {
+        return [ share(full[1]), 1 ];
+      }
+      const mixed = stop.match(/^color-mix\(in srgb, var\(--light\) ([\d.]+)%, transparent\) ([\d.]+)%$/);
+      assert.ok(mixed, `window.css: a stop of --light-fade not understood: ${stop}`);
+      return [ share(mixed[2]), share(mixed[1]) ];
+    });
+    assert.deepEqual(FADE, stops);
   });
 });

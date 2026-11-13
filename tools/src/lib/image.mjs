@@ -499,3 +499,34 @@ export function profile(image, from, to, names = new Map()) {
   }
   return runs;
 }
+
+/**
+ * The alpha of a light, such as the window glow, at each pixel from `from` to
+ * `to` inclusive, which share a row or a column or lie on a 45° diagonal:
+ * the `a` that best gives `over + a × (light − over)` over the three
+ * channels, clamped to 0 to 1. `over` and `light` are `{ r, g, b }` (P5.3).
+ */
+export function lightAlphas(image, from, to, over, light) {
+  const w = Math.abs(to.x - from.x);
+  const h = Math.abs(to.y - from.y);
+  if (w !== 0 && h !== 0 && w !== h) {
+    throw new Error(`the two points must share a row, column or diagonal: ${from.x},${from.y} and ${to.x},${to.y}`);
+  }
+  for (const { x, y } of [ from, to ]) {
+    if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0 || x >= image.width || y >= image.height) {
+      throw new Error(`${x},${y} lies outside the picture (${image.width}×${image.height})`);
+    }
+  }
+  const dx = Math.sign(to.x - from.x);
+  const dy = Math.sign(to.y - from.y);
+  const span = [ 'r', 'g', 'b' ].map(c => light[c] - over[c]);
+  const norm = span.reduce((sum, v) => sum + v * v, 0);
+  const alphas = [];
+  for (let i = 0; i <= Math.max(w, h); i++) {
+    const o = ((from.y + i * dy) * image.width + from.x + i * dx) * 4;
+    const seen = [ 'r', 'g', 'b' ].map((c, k) => image.pixels[o + k] - over[c]);
+    const a = norm === 0 ? 0 : seen.reduce((sum, v, k) => sum + v * span[k], 0) / norm;
+    alphas.push(Math.min(1, Math.max(0, a)));
+  }
+  return alphas;
+}

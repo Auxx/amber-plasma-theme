@@ -350,6 +350,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `lines <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]` | Lists the straight lines 1 or 2 px thick and at least 32 px long in a whole picture, such as a window, needing no surface; the blended row where two tones meet at a fractional scale is not a line, and so a seam whose colour lies between its sides (tone 1 between tones 0 and 2) is missed unless `--blends` is given; exits 1 when there is one |
 | `profile <png> --from x,y --to x,y [--json]` | Reads one row or column, from `--from` to `--to`, as runs of one colour, each with its token (or `-`), length and first pixel; used to read across the edge of a window, such as outside → window outline → title bar (P5.1); points that share no row or column, or lie outside the picture, are a usage error |
+| `light <png> --from x,y --to x,y --over <hex\|token> --state active\|inactive (--side <side> \| --corner <corner>) [--scale 1] [--tolerance 0.02] [--json]` | Reads the window glow (`--state active`) or the shadow (`inactive`) of a window from the first device pixel outside its window outline outwards, along a row or column (`--side`) or a 45° diagonal (`--corner`), recovers each pixel's alpha against `--over`, the colour behind the window, and compares it with the light the tokens give at that distance (`decoration.mjs`, `fade` and `cornerFade`); prints each pixel and the largest difference; exits 1 beyond the tolerance (P5.3) |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
 | `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
 
@@ -365,6 +366,9 @@ node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/T-amber-sample-
 
 # A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
 node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'
+
+# The window glow above the prototype's active window, on tone 0 (P5.3): one line a pixel, then "max 0.004 (tolerance 0.02)", exits 0
+node tools/src/bin/image.mjs light tmp/p5.3-gallery-windows.png --from 200,167 --to 200,120 --over tone-0 --state active --side top
 
 # The hairlines in a shot of Dolphin (P3.9): rows such as "vertical  #1c1a18  1 px  at 209,66  1080 long", exits 1
 node tools/src/bin/image.mjs lines tmp/check-colour-scheme/shots/p3.9-D-main-icons.png

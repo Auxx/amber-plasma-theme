@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { BUTTON_STATES, GLYPHS, SIDES, formatButtonSvg, formatDecorationRc, formatDecorationSvg } from './decoration.mjs';
+import {
+  BUTTON_STATES, FADE, GLYPHS, SIDES, cornerFade, fade, formatButtonSvg, formatDecorationRc, formatDecorationSvg, lights, padding
+} from './decoration.mjs';
 import { parseTokens } from './tokens.mjs';
 
 const tokensWith = (extra = '') => parseTokens(`:root {
@@ -255,5 +257,66 @@ describe('window buttons', () => {
       assert.equal(text, formatButtonSvg(tokensWith(), button));
       assert.ok(text.endsWith('\n') && !text.endsWith('\n\n'));
     }
+  });
+});
+
+describe('the window glow and the shadow (P5.3)', () => {
+  const LIGHT = `  --accent: #d1b072;
+  --glow: color-mix(in srgb, var(--accent) 14%, transparent);
+  --glow-size: 48px;
+  --shadow: rgb(0 0 0 / 55%);
+  --shadow-size: 36px;
+  --shadow-inset-top: 27px;
+  --shadow-inset-side: 17px;
+  --shadow-inset-bottom: 4px;`;
+  const tokens = tokensWith(LIGHT);
+  const { active, inactive } = lights(tokens);
+  /** mix at t, from FADE, written out for the spec. */
+  const near = (actual, expected, within = 1e-4) =>
+    assert.ok(Math.abs(actual - expected) <= within, `${actual} is not within ${within} of ${expected}`);
+
+  it('fades as the prototype', () => {
+    near(fade(active, 'top', 0), 0.14);
+    near(fade(active, 'top', 24), 0.14 * 0.2553);
+    assert.equal(fade(active, 'left', 48), 0);
+  });
+
+  it('starts the shadow inside the window', () => {
+    // 27 / 36 = 0.75 lies between the stops 0.69 (0.071) and 0.831 (0.029).
+    near(fade(inactive, 'top', 0), 0.55 * (0.071 + (0.75 - 0.69) / (0.831 - 0.69) * (0.029 - 0.071)));
+    assert.equal(fade(inactive, 'top', 9), 0);
+    assert.ok(fade(inactive, 'bottom', 31) > 0);
+    assert.equal(fade(inactive, 'left', 1), fade(inactive, 'right', 1));
+  });
+
+  it('fades along a corner\'s diagonal from the inset rectangle\'s corner', () => {
+    near(cornerFade(active, 'topleft', 0), 0.14);
+    near(cornerFade(active, 'bottomright', 24), fade(active, 'top', 24));
+    // The shadow's corner is centred 17 px in and 27 px down: 1 px out along the diagonal lies √((17 + a)² + (27 + a)²) from it, a = 1 / √2.
+    const a = Math.SQRT1_2;
+    near(cornerFade(inactive, 'topleft', 1), fade(inactive, 'top', Math.hypot(17 + a, 27 + a) - 27));
+    near(cornerFade(inactive, 'bottomleft', 1), fade(inactive, 'bottom', Math.hypot(17 + a, 4 + a) - 4));
+  });
+
+  it('reads the lights from the tokens', () => {
+    assert.deepEqual(active.inset, { top: 0, left: 0, right: 0, bottom: 0 });
+    assert.deepEqual(inactive.inset, { top: 27, left: 17, right: 17, bottom: 4 });
+    assert.equal(active.size, 48);
+    assert.equal(inactive.size, 36);
+    assert.deepEqual(active.colour, { r: 0xd1, g: 0xb0, b: 0x72, a: 0.14 });
+    assert.deepEqual(inactive.colour, { r: 0, g: 0, b: 0, a: 0.55 });
+  });
+
+  it('pads for the longer light', () => {
+    assert.deepEqual(padding(tokens), { top: 48, left: 48, right: 48, bottom: 48 });
+    assert.deepEqual(padding(tokensWith(LIGHT.replace('--glow-size: 48px', '--glow-size: 8px'))),
+      { top: 9, left: 19, right: 19, bottom: 32 });
+    assert.throws(() => padding(tokensWith(LIGHT.replace('--glow-size: 48px', '--glow-size: 47.5px'))), /glow-size: .*whole px/);
+  });
+
+  it('holds the stops of the fade in order, ending at nothing', () => {
+    assert.equal(FADE.length, 12);
+    assert.deepEqual(FADE.at(-1), [ 1, 0 ]);
+    assert.ok(FADE.every(([ o ], i) => i === 0 || o > FADE[i - 1][0]));
   });
 });
