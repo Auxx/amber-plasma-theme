@@ -8,7 +8,8 @@ Run every tool from the repository root:
 | [`colour`](#colour) | Converting colours, WCAG contrast, finding a lightness that passes |
 | [`tokens`](#tokens) | Reading Amber's tokens, checking and trying their contrast pairs   |
 | [`browser`](#browser) | Screenshots of the prototype in a state, the rendered anti-goal check, computed colours |
-| [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme |
+| [`generate`](#generate) | Generating Amber's parts from the tokens: the colour scheme, the Union style's tokens, the terminal colours |
+| [`sample`](#sample) | The prototype's terminal sample, with ANSI escapes, for a real terminal |
 | [`image`](#image) | The colours of a screenshot: cool greys, and colours named as tokens |
 
 ## `colour`
@@ -242,6 +243,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | --- | --- |
 | `colour-scheme [--write] [--json]` | `parts/colour-scheme/Amber.colors` from `prototype/tokens.css` and `parts/colour-scheme/roles.json` |
 | `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
+| `terminal-colours [--write] [--json]` | `parts/terminal-colours/Amber.colorscheme`, Konsole's file, from `prototype/tokens.css` and `parts/terminal-colours/keys.json`, which gives each of the 30 colour keys a token (P4.1) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -264,6 +266,10 @@ node tools/src/bin/generate.mjs colour-scheme --write
 - **The same each time.** The file holds no date or path; groups and keys are
   sorted as KConfig sorts them. The format and the computed disabled amount
   are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
+- **The terminal colours** refuse a missing or unknown key, an unknown token
+  and a token that is not opaque, each problem on its own line starting with
+  the key. A spec checks that every key's token has a contrast pair on the
+  terminal, compared by resolved colour.
 - **The Union style's tokens** are written resolved, `--well: #151413;`,
   with a reference kept as a comment, `/* var(--tone-0) */`. Which tokens
   are written is the list `UNION_TOKENS` in `tools/src/lib/union-tokens.mjs`;
@@ -271,6 +277,29 @@ node tools/src/bin/generate.mjs colour-scheme --write
   part-transparent token is refused with exit 1.
 - **Exit codes.** 0 success; 1 the table was refused; 2 the command line was
   wrong, including an unknown part.
+
+## `sample`
+
+Prints the prototype's samples for a real program, so that it draws the same
+content in Amber's part as the browser draws in the prototype.
+
+| Command | Does |
+| --- | --- |
+| `terminal [--file <html>]` | The first `<pre class="terminal">` of `prototype/samples.html` (or `--file`), each `<span>` of class `ansi-<colour>`, `ansi-bright-<colour>` or `on-<colour>` turned into its SGR sequence (30–37, 90–97, 40–47) and closed with a reset |
+
+```shell
+# Show the sample in the terminal you are in, in its own terminal colours
+node tools/src/bin/sample.mjs terminal
+
+# In Konsole with Amber's terminal colours, in the nested session (P4.1)
+tmp/check-colour-scheme/in.sh konsole --separate -p ColorScheme=Amber --hold -e sh -c 'node tools/src/bin/sample.mjs terminal'
+```
+
+- **Refusals.** A class, tag or entity it does not know, `on-white`, or a
+  nested span exits 1 with the message naming it, rather than printing text
+  in the default colour.
+- **Exit codes.** 0 success; 1 the sample was refused or the file was not
+  found; 2 the command line was wrong.
 
 ## `image`
 

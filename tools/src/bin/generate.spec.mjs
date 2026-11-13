@@ -38,6 +38,13 @@ describe('generate tool', () => {
     assert.equal(report.content, generate('colour-scheme').stdout);
   });
 
+  it('prints the terminal colours', () => {
+    const { status, stdout } = generate('terminal-colours');
+    assert.equal(status, 0);
+    assert.ok(stdout.includes('[Color0Intense]'));
+    assert.ok(stdout.includes('Description=Amber'));
+  });
+
   it('rejects an unknown part', () => {
     assert.equal(generate('wallpaper').status, 2);
   });

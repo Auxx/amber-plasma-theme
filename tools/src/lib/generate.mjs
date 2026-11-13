@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { formatColourScheme, loadRoles } from './colour-scheme.mjs';
+import { formatTerminalColours, loadKeys } from './terminal-colours.mjs';
 import { loadTokens } from './tokens.mjs';
 import { formatUnionTokens } from './union-tokens.mjs';
 
@@ -17,6 +18,10 @@ export const PARTS = {
   'union-style-tokens': {
     file: fileURLToPath(new URL('../../../parts/union-style/amber/contents/css/tokens.css', import.meta.url)),
     generate: () => formatUnionTokens(loadTokens())
+  },
+  'terminal-colours': {
+    file: fileURLToPath(new URL('../../../parts/terminal-colours/Amber.colorscheme', import.meta.url)),
+    generate: () => formatTerminalColours(loadKeys(), loadTokens())
   }
 };
 
