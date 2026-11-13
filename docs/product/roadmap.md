@@ -242,7 +242,7 @@ current line and its inverted caret are known gaps (D-124).
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | todo |
+| P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | in progress |
 | P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
 | P5.3 Glow, shadow and window states | Window glow for the active window, shadow for an inactive one; maximised and tiled windows | Matches the prototype; no line but the window outline appears at any window edge in any state; a maximised window shows no outline, glow or shadow | todo |
 
