@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov -->
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Generated from prototype/tokens.css by tools/src/lib/decoration.mjs. -->
-<!-- Do not edit: run node tools/src/bin/generate.mjs decoration --write -->
+<!-- Do not edit: run node tools/src/bin/generate.mjs decoration with the write option -->
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="72" viewBox="0 0 32 72">
   <rect id="decoration-topleft" x="0" y="0" width="1" height="1" fill="#585248"/>
   <rect id="decoration-top" x="1" y="0" width="30" height="1" fill="#585248"/>

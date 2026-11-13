@@ -22,6 +22,8 @@ const GAP = 8;
 const SPDX = [ "SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov", 'SPDX-License-Identifier: MIT' ];
 const GENERATED = 'Generated from prototype/tokens.css by tools/src/lib/decoration.mjs.';
 const DO_NOT_EDIT = 'Do not edit: run node tools/src/bin/generate.mjs decoration --write';
+/** The same in the SVG, where an XML comment may not hold a double hyphen: one made the file unreadable to Aurorae (P5.1). */
+const DO_NOT_EDIT_SVG = 'Do not edit: run node tools/src/bin/generate.mjs decoration with the write option';
 
 /** Reads tokens, collecting problems rather than throwing at the first. */
 function reader(tokens) {
@@ -91,10 +93,7 @@ export function formatDecorationSvg(tokens) {
   const height = 2 * frameHeight + GAP;
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    `<!-- ${SPDX[0]} -->`,
-    `<!-- ${SPDX[1]} -->`,
-    `<!-- ${GENERATED} -->`,
-    `<!-- ${DO_NOT_EDIT} -->`,
+    ...[ ...SPDX, GENERATED, DO_NOT_EDIT_SVG ].map(line => `<!-- ${line} -->`),
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
     ...rects,
     '</svg>',

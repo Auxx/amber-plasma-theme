@@ -60,6 +60,14 @@ describe('decoration', () => {
     }
   });
 
+  it('holds no -- inside a comment, which XML forbids and which leaves the frame undrawn (P5.1)', () => {
+    const comments = [ ...svg.matchAll(/<!--([\s\S]*?)-->/g) ].map(m => m[1]);
+    assert.ok(comments.length > 0);
+    for (const comment of comments) {
+      assert.ok(!comment.includes('--'), comment);
+    }
+  });
+
   it('fills the title bar in tone 0, active and inactive', () => {
     assert.equal(byId('decoration-center').fill, '#151413');
     assert.equal(byId('decoration-inactive-center').fill, '#151413');
