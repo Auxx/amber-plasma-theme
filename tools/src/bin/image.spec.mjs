@@ -44,6 +44,17 @@ describe('image tool', () => {
     assert.match(stdout, /#808080 {2}1 px {2}at 4,0 1×1/);
   });
 
+  it('leaves out each --leave-out region, and passes when the greys lie only there (P3.9)', () => {
+    const { status, stdout } = image('greys', path('grey.png'), '--leave-out', '4,0,1,1', '--leave-out', '0,0,1,1');
+    assert.equal(status, 0);
+    assert.match(stdout, /no cool grey/);
+    assert.match(stdout, /left out: 2 regions/);
+  });
+
+  it('refuses a --leave-out that is not four numbers (P3.9)', () => {
+    assert.equal(image('greys', path('grey.png'), '--leave-out', '4,0,1').status, 2);
+  });
+
   it('refuses an empty region', () => {
     assert.equal(image('greys', path('grey.png'), '--region', '0,0,0,1').status, 2);
   });

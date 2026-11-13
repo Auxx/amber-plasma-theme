@@ -75,6 +75,18 @@ describe('coolGreys', () => {
     assert.deepEqual(coolGreys(image, { region: { x: 0, y: 0, width: 2, height: 1 } }), []);
   });
 
+  it('skips the regions it is told to leave out, inside the region (P3.9)', () => {
+    const image = picture([ hex('#808080'), rgba('tone-2'), hex('#5d5d5d') ], [ { x: 2, y: 1, colour: hex('#2b2d31') } ]);
+    const leaveOut = [ { x: 0, y: 0, width: 1, height: 2 }, { x: 2, y: 1, width: 1, height: 1 } ];
+    assert.deepEqual(coolGreys(image, { leaveOut }).map(f => f.hex), [ '#5d5d5d' ]);
+    assert.deepEqual(coolGreys(image, { region: { x: 0, y: 0, width: 2, height: 2 }, leaveOut }), []);
+  });
+
+  it('leaves out a region that reaches past the picture, up to its edge (P3.9)', () => {
+    const image = picture([ rgba('tone-2'), hex('#808080') ]);
+    assert.deepEqual(coolGreys(image, { leaveOut: [ { x: 1, y: 0, width: 50, height: 50 } ] }), []);
+  });
+
   it('skips a fully transparent pixel', () => {
     assert.deepEqual(coolGreys(picture([ hex('#80808000') ])), []);
   });

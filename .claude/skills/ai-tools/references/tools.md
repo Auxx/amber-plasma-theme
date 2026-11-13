@@ -279,7 +279,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 
 | Command | Does |
 | --- | --- |
-| `greys <png> [--region x,y,w,h] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them; exits 1 when there is one |
+| `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
 | `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
@@ -287,6 +287,9 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 ```shell
 # A screenshot of Dolphin without its title bar: lists e.g. "#808080  312 px  at 40,96 18×18", exits 1
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --region 0,30,1280,770 --mark tmp/check-colour-scheme/shots/dolphin-marked.png
+
+# Konsole without its terminal area, which the terminal colours (P4.1) own (P3.9): "no cool grey" and "left out: 1 region", exits 0
+node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/p3.9-T-main.png --leave-out 0,90,1909,1000
 
 # A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
 node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'

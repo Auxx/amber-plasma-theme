@@ -50,15 +50,21 @@ function roundsToWarm(hex) {
   return false;
 }
 
-/** Every opaque colour with its count and bounding box, skipping fully transparent pixels. */
-function tally(image, region) {
+/** Whether a pixel lies in one of the rectangles. A rectangle may reach past the picture. */
+const inside = (rects, x, y) => rects.some(r => x >= r.x && x < r.x + r.width && y >= r.y && y < r.y + r.height);
+
+/**
+ * Every opaque colour with its count and bounding box, skipping fully
+ * transparent pixels and the pixels of `leaveOut`.
+ */
+function tally(image, region, leaveOut = []) {
   const { x: x0, y: y0, width, height } = bounds(image, region);
   const seen = new Map();
   const { pixels } = image;
   for (let y = y0; y < y0 + height; y++) {
     for (let x = x0; x < x0 + width; x++) {
       const at = (y * image.width + x) * 4;
-      if (pixels[at + 3] === 0) {
+      if (pixels[at + 3] === 0 || (leaveOut.length && inside(leaveOut, x, y))) {
         continue;
       }
       const key = (pixels[at] << 16) | (pixels[at + 1] << 8) | pixels[at + 2];
@@ -81,10 +87,12 @@ const box = ({ left, right, top, bottom }) => ({ x: left, y: top, width: right -
 /**
  * The colours of the picture that are cool greys: not a hue (OKLCH chroma
  * below 0.05) and not warm or black, by `warmthOffence`. Most pixels first.
+ * `leaveOut` lists rectangles whose pixels are not read, such as the parts
+ * of a window that belong to another part of Amber (P3.9).
  */
-export function coolGreys(image, { region } = {}) {
+export function coolGreys(image, { region, leaveOut } = {}) {
   const found = [];
-  for (const entry of tally(image, region)) {
+  for (const entry of tally(image, region, leaveOut)) {
     if (isHue(entry.hex)) {
       continue;
     }
