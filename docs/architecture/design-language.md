@@ -385,6 +385,7 @@ Kate's editor area, reviewed by the owner in P1.7 (D-82):
 | `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
 | `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
 | `--editor-selection` | `#473e30` | the text selection: accent 20 % over tone 2 (decided, D-82) |
+| `--editor-search` | `#313b1e` | the search highlight: OKLCH 33.5 % 0.05 125, a dark olive between the current line and the text selection (my call, P4.2) |
 | `--syntax-keyword` | `#d79bb7` | keywords; OKLCH 75.5 % 0.08 350 |
 | `--syntax-function` | `#7fb2d1` | function names; OKLCH 74 % 0.07 235 |
 | `--syntax-type` | `#82bbb3` | type names; OKLCH 75 % 0.06 185 |

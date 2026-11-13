@@ -118,6 +118,19 @@
   background: var(--editor-selection);
 }
 
+.search-highlight {
+  background: var(--editor-search);
+}
+
+/* A candidate's three lines of code, on the editor's tone. */
+.editor-vignette {
+  padding: 0;
+}
+
+.editor-vignette .code {
+  width: 100%;
+}
+
 .syn-keyword { color: var(--syntax-keyword); }
 .syn-function { color: var(--syntax-function); }
 .syn-type { color: var(--syntax-type); }

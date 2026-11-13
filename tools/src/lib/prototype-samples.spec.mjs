@@ -141,7 +141,8 @@ describe('prototype samples', () => {
       ...(await expectTokens(page, '.kate .gutter', [ 'editor-gutter', 'text-dim' ])),
       ...(await expectTokens(page, '.kate .current-line', [ 'editor-current-line' ], [ 'background-color' ])),
       ...(await expectTokens(page, '.kate .current-line-number', [ 'text' ], [ 'color' ])),
-      ...(await expectTokens(page, '.kate .text-selection', [ 'editor-selection' ], [ 'background-color' ]))
+      ...(await expectTokens(page, '.kate .text-selection', [ 'editor-selection' ], [ 'background-color' ])),
+      ...(await expectTokens(page, '.kate .search-highlight', [ 'editor-search' ], [ 'background-color' ]))
     ];
     assert.deepEqual(offences, []);
   });
@@ -182,7 +183,7 @@ describe('prototype samples', () => {
     const classes = await page
       .locator('.sample .terminal *, .kate .code *, .ansi-palette *, .vignette .terminal *, .vignette .code *')
       .evaluateAll(elements => elements.map(element => ({ text: element.textContent.slice(0, 20), classes: [ ...element.classList ] })));
-    const ALLOWED = new Set([ 'line', 'current-line', 'text-selection' ]);
+    const ALLOWED = new Set([ 'line', 'current-line', 'text-selection', 'search-highlight' ]);
     const offences = classes.flatMap(({ text, classes }) => {
       const colour = classes.filter(name => /^(ansi|syn)-/.test(name));
       // An ANSI colour as a background, under a span that has a colour class too.

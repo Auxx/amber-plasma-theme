@@ -35,13 +35,19 @@ Disabled controls are exempt in WCAG, and are exempt here.
    a tonal step kept above a floor of 1.1 (my call): 1.36:1 on tone 2 and
    1.49:1 on tone 1, below 3:1.
 3. **Syntax and terminal colours.** The syntax colours reach 4.5:1 on
-   every background they are read on: the editor, the current line and
-   the text selection. The text selection is the hardest of these.
+   every background they are read on: the editor, the current line, the
+   text selection and the search highlight. The text selection and the
+   search highlight are the hardest of these.
    It is accent 20 % over tone 2, so that it stands apart from the current
    line (1.29:1; decided, D-82). Six syntax colours keep 4.5:1 on it
    (4.60:1 to 5.08:1). **A comment inside a text selection does not:** it
    measures 4.15:1, and the owner accepts that, since a comment is
    low-priority text. Its pair there has a floor of 4 (my call, D-84).
+   The search highlight is as dark as it can be while it stands 1.1 apart
+   from both the current line and the text selection (my call, P4.2); every
+   syntax colour keeps 4.5:1 on it, and a comment, with the same floor of
+   4, measures 4.68:1. The gutter's marks (breakpoints, bookmarks,
+   modified and saved lines) are syntax colours at 3:1 on the gutter.
    The terminal's foreground, white and the bright colours other than
    bright black reach 4.5:1 on the terminal. ANSI black is exempt, since it is meant to match a dark
    background. **The greys are four steps** (decided, D-119): black, dark
@@ -251,6 +257,22 @@ falls below its minimum.
 | editor selection | editor | 1.51:1 | 1.1 (floor) | pass |
 | editor selection | editor current line | 1.29:1 | 1.1 (floor) | pass |
 | editor current line | editor | 1.17:1 | 1.1 (floor) | pass |
+| text | editor search | 9.26:1 | 4.5 | pass |
+| syntax keyword | editor search | 5.22:1 | 4.5 | pass |
+| syntax function | editor search | 5.18:1 | 4.5 | pass |
+| syntax type | editor search | 5.47:1 | 4.5 | pass |
+| syntax string | editor search | 5.25:1 | 4.5 | pass |
+| syntax number | editor search | 5.22:1 | 4.5 | pass |
+| syntax preprocessor | editor search | 5.73:1 | 4.5 | pass |
+| syntax comment | editor search | 4.68:1 | 4 (floor) | pass |
+| editor search | editor | 1.34:1 | 1.1 (floor) | pass |
+| editor search | editor current line | 1.14:1 | 1.1 (floor) | pass |
+| editor search | editor selection | 1.13:1 | 1.1 (floor) | pass |
+| syntax number | editor gutter | 7.66:1 | 3 | pass |
+| syntax preprocessor | editor gutter | 8.40:1 | 3 | pass |
+| syntax string | editor gutter | 7.70:1 | 3 | pass |
+| syntax function | editor gutter | 7.59:1 | 3 | pass |
+| syntax type | editor gutter | 8.02:1 | 3 | pass |
 | link | tone 4 | 5.10:1 | 4.5 | pass |
 | visited | tone 4 | 5.13:1 | 4.5 | pass |
 | positive | tone 4 | 5.17:1 | 4.5 | pass |

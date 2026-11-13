@@ -267,6 +267,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The run of text chosen in an editor or a text field. _Avoid_ "selected" for
   it: that is the state of an item or a tab.
 
+**Search highlight**
+: The tone Kate puts behind every match of a search. _Avoid_ "find
+  highlight".
+
 **Accent**
 : The one strong colour, a muted gold. It marks selection, checked state,
   progress and the primary button, and it tints the tone of a focused widget.
