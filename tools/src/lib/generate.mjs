@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { formatColourScheme, loadRoles } from './colour-scheme.mjs';
+import { formatEditorTheme, loadStyles } from './editor-theme.mjs';
 import { formatTerminalColours, loadKeys } from './terminal-colours.mjs';
 import { loadTokens } from './tokens.mjs';
 import { formatUnionTokens } from './union-tokens.mjs';
@@ -23,6 +24,10 @@ export const PARTS = {
   'terminal-colours': {
     file: fileURLToPath(new URL('../../../parts/terminal-colours/Amber.colorscheme', import.meta.url)),
     generate: (tokens = loadTokens()) => formatTerminalColours(loadKeys(), tokens)
+  },
+  'editor-theme': {
+    file: fileURLToPath(new URL('../../../parts/editor-theme/Amber.theme', import.meta.url)),
+    generate: (tokens = loadTokens()) => formatEditorTheme(loadStyles(), tokens)
   }
 };
 

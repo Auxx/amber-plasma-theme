@@ -244,6 +244,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | `colour-scheme [--write] [--json]` | `parts/colour-scheme/Amber.colors` from `prototype/tokens.css` and `parts/colour-scheme/roles.json` |
 | `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
 | `terminal-colours [--write] [--json]` | `parts/terminal-colours/Amber.colorscheme`, Konsole's file, from `prototype/tokens.css` and `parts/terminal-colours/keys.json`, which gives each of the 30 colour keys a token (P4.1) |
+| `editor-theme [--write] [--json]` | `parts/editor-theme/Amber.theme`, the KSyntaxHighlighting theme Kate reads, from `prototype/tokens.css` and `parts/editor-theme/styles.json`, which gives each of the 31 text styles and 28 editor colours a token (P4.2) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -279,6 +280,14 @@ node tools/src/bin/generate.mjs colour-scheme --write
   and a token that is not opaque, each problem on its own line starting with
   the key. A spec checks that every key's token has a contrast pair on the
   terminal, compared by resolved colour.
+- **The editor theme** refuses a missing or unknown key or group, an unknown
+  token and a token that is not opaque, each problem on its own line starting
+  `text-styles.<key>:` or `editor-colors.<key>:`. It is JSON, so it carries no
+  "do not edit" line; the up-to-date spec catches a hand edit. A spec checks
+  that every text style's token has a pair on the editor, the current line,
+  the text selection and the search highlight, every gutter key's token a
+  pair on the gutter, and that the lines Kate can draw take their surface's
+  colour.
 - **The Union style's tokens** are written resolved, `--well: #151413;`,
   with a reference kept as a comment, `/* var(--tone-0) */`. Which tokens
   are written is the list `UNION_TOKENS` in `tools/src/lib/union-tokens.mjs`;
@@ -295,6 +304,8 @@ content in Amber's part as the browser draws in the prototype.
 | Command | Does |
 | --- | --- |
 | `terminal [--file <html>]` | The first `<pre class="terminal">` of `prototype/samples.html` (or `--file`), each `<span>` of class `ansi-<colour>`, `ansi-bright-<colour>` or `on-<colour>` turned into its SGR sequence (30–37, 90–97, 40–47) and closed with a reset |
+| `editor [--file <html>]` | The code of the Kate sample's `<div class="code">` as plain text, one line per `<span class="line">` (P4.2) |
+| `compare-editor <highlighted.html> [--file <html>] [--json]` | Reads the HTML `ksyntaxhighlighter6` wrote for that text and prints each run whose colour is not the hex of the prototype's token for it, whitespace left out, with the colour found named as tokens; exits 1 when any differs (P4.2) |
 
 ```shell
 # Show the sample in the terminal you are in, in its own terminal colours
@@ -304,11 +315,25 @@ node tools/src/bin/sample.mjs terminal
 tmp/check-colour-scheme/in.sh konsole --separate -p ColorScheme=Amber --hold -e sh -c 'node tools/src/bin/sample.mjs terminal'
 ```
 
+```shell
+# Colour the editor sample with Amber's editor theme, through the library Kate
+# uses, and compare it with the prototype (P4.2). XDG_DATA_DIRS must be absolute.
+T=$PWD/tmp/check-colour-scheme
+node tools/src/bin/sample.mjs editor > $T/counter.cpp
+XDG_DATA_DIRS=$T/data:/usr/share ksyntaxhighlighter6 -t Amber $T/counter.cpp -o $T/counter.html
+node tools/src/bin/sample.mjs compare-editor $T/counter.html
+```
+
 - **Refusals.** A class, tag or entity it does not know, `on-white`, or a
   nested span exits 1 with the message naming it, rather than printing text
   in the default colour.
-- **Exit codes.** 0 success; 1 the sample was refused or the file was not
-  found; 2 the command line was wrong.
+- **`compare-editor` refuses** a highlighted page whose text differs from
+  the sample (naming the line), a style other than one `color`, such as
+  `font-weight`, a nested span or a span across a newline, rather than
+  counting a run as matching.
+- **Exit codes.** 0 success; 1 the sample was refused, the file was not
+  found, or `compare-editor` found a differing run; 2 the command line was
+  wrong.
 
 ## `image`
 

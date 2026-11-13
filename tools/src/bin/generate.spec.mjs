@@ -45,6 +45,12 @@ describe('generate tool', () => {
     assert.ok(stdout.includes('Description=Amber'));
   });
 
+  it('prints the editor theme', () => {
+    const { status, stdout } = generate('editor-theme');
+    assert.equal(status, 0);
+    assert.equal(JSON.parse(stdout).metadata.name, 'Amber');
+  });
+
   it('prints a part with trial token values from --set, as tokens try does (P4.1)', () => {
     const { status, stdout } = generate('terminal-colours', '--set', 'ansi-white=#c2bdb5', '--set', 'ansi-bright-black=#78746d');
     assert.equal(status, 0);
