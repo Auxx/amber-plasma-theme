@@ -588,6 +588,12 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
 - The title is drawn in KWin's window title font. With no font set, it is
   Noto Sans 10 pt regular, as in the prototype: same height and place;
   Qt's hinting makes it about 3 % narrower than Chrome draws it.
+- **An application whose top is tone 0 continues the title bar with no
+  seam.** In Dolphin, restored, tone 0 runs unbroken from below the window
+  outline into the header toolbar: 76 px at scale 1, and 51 px (title bar
+  45) at 1.49, where `image lines --blends` finds no line in the title
+  bar's rows. The row of tone 1 below is the top edge of Dolphin's
+  location bar, drawn by the Union style.
 - A title longer than the title bar is elided in the middle. With
   `TitleBorderLeft` and `TitleBorderRight` at 0 it runs to within 1 or
   2 px of the window outline, never over it.
