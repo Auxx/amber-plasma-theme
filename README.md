@@ -73,6 +73,15 @@ Amber is in early development and nothing can be installed yet.
   reach: a settings dialog's page list is tone 2 on the dialog's tone 1
   body, and a header past its last section shows tone 1. (seen in P3.7;
   D-113)
+- **No shadow under a popup** in Qt Widgets applications: Union draws no
+  `box-shadow` there. Qt Quick applications show it. (seen in P3.8; D-74)
+- **Menu labels need not line up.** A menu item's label starts after its
+  icon, or at its padding when it has none. (seen in P3.8; D-115)
+- **A message has a line at its foot.** A message such as Dolphin's "does
+  not exist" draws itself, with a 1 px line of a darker red along its
+  foot. (seen in P3.8; D-115)
+- **A tooltip's padding is Qt's**: Qt sizes a tooltip in Qt Widgets
+  applications. (seen in P3.8; D-115)
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)

@@ -200,7 +200,9 @@ background / text, and the block marker or tick where the widget has one.
   A menu section's title is dim text at the item's weight, where an item's
   label starts, with no line; an item whose submenu is open keeps its
   hovered tone; a combo box's list is a menu, its items menu items and its
-  current value ticked. (my call, D-114)
+  current value ticked. (my call, D-114) In Qt Widgets Union draws that
+  value no tick, so it shows in the hovered tone; a list's text lines up
+  with its combo box's, as Breeze's does (decided, D-115).
 - **Tooltips** (my call, P1.5) are popups: they show 400 ms after their
   anchor is hovered or takes keyboard focus, and hide at once.
 - **A dialog** is a window, with a title bar, window outline and window
@@ -265,15 +267,16 @@ token holds the plain colour (D-47).
 - A shadow under a popup, menu or inactive window is dark, soft and offset
   downwards. The active window has a window glow in its place; see "Window
   decoration".
-  Whether Union draws one under menus and popups is unverified; see
-  [platform](platform.md).
+  Union draws none under a popup in a Qt Widgets application, only in
+  Qt Quick (see [platform](platform.md#union)).
 - A popup has the shadow of an inactive window: the same tokens, fade
   and insets. (decided, D-67) The popup's own rectangle and everything
   above its top edge are cut out of it, so it never darkens the popup or
   what it opens from. A tooltip is small, so its shadow is a third of the
-  size (my call). A combo box's list meets its combo box with no gap. If Union
-  cannot draw it, a popup has no shadow: the owner accepts that. (decided,
-  D-74)
+  size (my call). A combo box's list meets its combo box with no gap. Union
+  cannot draw it in Qt Widgets, so a popup has no shadow there: the owner
+  accepts that. (decided, D-74) In Qt Quick the Union style draws it as one
+  shadow, `0px 12px 20px 0px` in `--shadow` (my call, D-114).
 
   | Token | Value | Used for |
   |---|---|---|

@@ -119,7 +119,7 @@ next starts.
 | P3.5 Toggles and ranges | Check boxes, radio buttons, sliders, progress bars | As P3.3 | done |
 | P3.6 Bars | Toolbars, menu bar, status bar, tab bars, scrollbars | As P3.3 | done |
 | P3.7 Lists and tables | List items, tree and table views, headers | As P3.3 | done |
-| P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | todo |
+| P3.8 Popups | Menus, popups, tooltips, dialogs | As P3.3 | done |
 | P3.9 Application sweep | Dolphin, Kate and Konsole checked window by window | Every breach of an anti-goal is fixed or listed as a known gap | todo |
 
 P2.3 found these for Step 3, all drawn by the Breeze style or by Qt, not by
@@ -137,8 +137,7 @@ selected item, the lines between header sections and every rounded corner,
 along with every other border and outline (D-98). Focus, which Breeze drew
 with those borders, and the highlight of a selected tab now wait for their
 family's plan. A line Qt draws itself stays: the grid of a table view
-(P3.7). A menu was checked only as `render()` draws it; P3.8 sees one on
-screen.
+(P3.7).
 
 P3.3 restyled push buttons, tool buttons and read-only combo boxes; the
 probe's pictures match the gallery in every state they reach, and the owner
@@ -146,8 +145,7 @@ tried them in Dolphin. Union cannot tell the default button of a dialog from
 the others, so the primary button is drawn as any other, in Qt Quick too,
 and is a known gap (D-100). For the plans after it: `browser states` and `image states`
 compare a family's states with the gallery, as P3.3 did; P3.4 takes the
-editable combo box, which is a well; P3.8 finds out why a combo box's popup
-list is transparent (seen before P3.3 too).
+editable combo box, which is a well.
 
 P3.4 made text fields, spin boxes and editable combo boxes wells, with the
 focus bar drawn as a 3 px border at the foot. On seeing them in Dolphin the
@@ -182,6 +180,15 @@ Breeze's folder icons take too (D-110); and that no selected item carries a
 block marker, since Union cannot tell a sidebar from a list (D-111). A
 table's grid, an item's padding, per-cell hover and focus, a tree's
 indentation and a view's own background are known gaps (D-110, D-113).
+
+P3.8 gave menus, combo box lists, tooltips and Qt Quick dialogs Amber's
+tones (D-114), checked on screen: under Xwayland a script opens a popup,
+and under Wayland the owner did. A combo box's list was transparent because
+its window is clear and Breeze inset its items; each item now fills the
+list, its text lined up with the combo box's at the owner's request.
+Qt Widgets draws no popup shadow (D-74); a label's start, a message's line
+and a tooltip's padding are known gaps, and a menu that shifts under
+Xwayland is an X11 fault (D-115).
 
 The style lives in `parts/union-style/amber/`, which started as an
 unchanged copy of the Breeze style (D-96) and gets its tokens from

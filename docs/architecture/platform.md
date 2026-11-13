@@ -220,6 +220,51 @@ Verified on 2026-11-10 unless marked.
     separate `breeze-rtl` style for it, and how an application chooses it
     is unverified. A single `QListView` turned right-to-left drew no text,
     with Breeze too.
+- **What Union reaches on menus, combo box lists, tooltips and dialogs in a
+  Qt Widgets application** (verified, 2026-11-13, P3.8, by marker rules read
+  on screen in the probe `popups.py`, in Dolphin and in Kate):
+  - `menu` takes a background, opaque, and `padding-*`; `margin` changes
+    nothing. Breeze's menu was the Window set, tone 1, the tone of a
+    dialog's body, so a menu over a dialog looked see-through: it was not.
+  - A `menuitem` is `:hovered` under the pointer and `:highlighted` under
+    the pointer or the keyboard; a keyboard highlight is never
+    `:visual-focus`. An item whose submenu is open stays `:highlighted`.
+    `:pressed`, `:checked`, `:disabled`, `.with-submenu`, `height`,
+    `padding-*` and `inset` reach it, and `shortcuttext` and `arrow` are
+    drawn by Union.
+  - A checkable item's mark is `menuitem > indicator`, but an item with an
+    icon, and a disabled one, draw it as a `checkbox` or `radiobutton`
+    inside `menu`: only `menu checkbox …` and `menu radiobutton …` reach
+    it, and the toggles' box shows there unless they clear it.
+  - A label starts after the item's icon when it has one, and at the
+    item's padding when it has none, so labels of one menu need not line
+    up (a known gap, D-115).
+  - A `menuseparator` is as high as its `height` and its `inset`, and only
+    the shorthand `inset` counts: `height: 0px; inset: 4px` is an 8 px gap
+    that draws nothing; with `inset-top` and `inset-bottom` it was 0 px.
+    Breeze's drew a 1 px line. `.with-title` (`QMenu::addSection`) takes
+    background, `color`, `height`, `padding-*` and `font-weight`.
+  - **No `box-shadow` is drawn under a popup**: not on `menu`, `popup` or
+    `tooltip`, under Wayland or X11, and KWin draws none of its own.
+  - **A combo box's list is a clear window that no rule fills** (`popup`,
+    `popup.combobox`, `menu`, `listview`, `panel`, `scrollarea`, `frame`
+    tried). Its items are `popup.combobox itemviewitem`, the current value
+    `:highlighted`. The Breeze style's item inset, and a clear item, showed
+    the window behind: the list looked transparent. Each item must paint
+    its own fill. Side padding does not move an item's text and an inset
+    clears its fill; `spacing` moves the text, and 8 px puts it where the
+    combo box's own text starts. At a fractional scale an item's edge
+    falls mid-pixel and showed the window behind as a seam; a fill 1 px
+    past the edge (`inset: -1px`) closes it. `height` reaches the item.
+  - `tooltip` takes `background-color` and `border-radius`. Its text is the
+    colour scheme's Tooltip foreground, and Qt sizes it itself: `padding`
+    and `width` do not reach it (a known gap, D-115).
+  - `dialog`, `dialogbuttonbox` and `overlay` reach nothing in a `QDialog`,
+    `QMessageBox` or a settings dialog: their body is the Window set, tone
+    1, and nothing draws a line above their buttons.
+  - A message (`KMessageWidget`, Dolphin's "does not exist") draws itself:
+    square, the negative background `#422223`, and a 1 px line of
+    `#b83d48` at its foot that no Union rule reaches (a known gap, D-115).
 - The only input format is CSS (`union-input-css`).
 - `union-styletool install <folder>` copies the folder to
   `~/.local/share/union/styles/<id>/`. The identifier is the folder's name;
@@ -349,7 +394,23 @@ Verified on 2026-11-10 unless marked.
   in Dolphin's settings dialog opened its popup once, right after the owner
   had clicked in the session, and never again from a script; nor did
   `QComboBox.showPopup()` in the probe. A pressed combo box is not reached
-  in `render()` either. (verified, 2026-11-12, P3.3)
+  in `render()` either. (verified, 2026-11-12, P3.3) A tooltip does open on
+  Wayland (`QToolTip.showText`), and a click by hand opens any popup.
+  (verified, 2026-11-13, P3.8)
+- **Popups open from a script under Xwayland.** Started with
+  `KWIN_EXTRA=--xwayland run.sh`, the nested session runs an Xwayland, and
+  an application run there with `in-x11.sh` (`QT_QPA_PLATFORM=xcb`) opens
+  menus and combo box lists from `QMenu.popup()` and from QTest key and
+  mouse clicks, since X11 needs no input serial; `pyatspi`'s `ShowMenu`
+  then opens Dolphin's and Kate's menus too. `pop-shot.sh` shoots one popup
+  of the probe `popups.py`. X11 coordinates are logical; the shot is at the
+  Xwayland scale, 1.4916667. Pointer input sent through XTest asks the
+  session's Remote Control portal first. (verified, 2026-11-13, P3.8)
+- **Under Xwayland at a fractional scale an open menu shifts** a little
+  down and to the left as the pointer moves over it, as the owner saw in
+  Kate's Help menu; under Wayland it stays put. It is an X11 fault, and
+  irrelevant to Amber: KDE no longer supports X11 (decided, D-115). Popups
+  are judged by eye under Wayland. (verified, 2026-11-13, P3.8)
 - Environment variables found in the Union libraries: `UNION_STYLE_NAME`,
   `UNION_DISABLE_STYLE_CACHE`, `UNION_FORCE_RECREATE_STYLE_CACHE`,
   `UNION_FORCE_PLATFORM`, `UNION_DISABLE_INPUT_PLUGINS`.
@@ -360,9 +421,7 @@ Verified on 2026-11-10 unless marked.
 
 | Question | Tested in |
 |---|---|
-| Is a shadow drawn under menus and popups in a Qt Widgets application? They are windows of their own, and the Breeze style gives them a `box-shadow`. The prototype draws one (D-49), and the gallery shows a "No shadow" candidate beside it since P1.5. | P3.8 |
 | Which key selects the style for the whole system? | P6.2 |
-| Why is a combo box's popup list transparent? In Dolphin's settings dialog the owner saw the dialog through it, with P3.3's style and with P3.2's alike (2026-11-12); the popup's rules (`popup.combobox`) were not touched. | P3.8 |
 
 The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner
 decided on 2026-11-11 that Amber has none: D-4 in the
@@ -596,7 +655,7 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 | Question | Tested in |
 |---|---|
 | Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2 |
-| What do the derived positive and neutral backgrounds look like? | P3.8 |
+| What do the derived positive and neutral backgrounds look like? P3.8 saw only the negative one (`#422223`, see [Union](#union)): no application showed a positive or neutral message. | P3.9 |
 
 ## Konsole and Kate
 
