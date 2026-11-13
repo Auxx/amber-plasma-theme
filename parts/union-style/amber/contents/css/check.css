@@ -199,6 +199,58 @@ menuitem.exclusive
     }
 }
 
+/* The mark of an item with an icon, and of a disabled item, is drawn as a
+ * check box or a radio button inside the menu (P3.8, Task 4). It is a menu
+ * item's mark: no box in any state, the tick or dot in accent, dim text when
+ * disabled. */
+menu checkbox,
+menu radiobutton
+{
+    & > indicator,
+    &:hovered > indicator,
+    &:visual-focus > indicator,
+    &:checked > indicator,
+    &:checked:hovered > indicator,
+    &:checked:visual-focus > indicator,
+    &.indeterminate > indicator,
+    &.indeterminate:hovered > indicator,
+    &.indeterminate:visual-focus > indicator,
+    &:disabled > indicator,
+    &:checked:disabled > indicator,
+    &.indeterminate:disabled > indicator
+    {
+        background-color: transparent;
+        border: none;
+    }
+
+    &:checked:disabled > indicator,
+    &.indeterminate:disabled > indicator
+    {
+        background-image-mask-color: var(--text-dim);
+    }
+}
+
+menu checkbox
+{
+    &:checked > indicator
+    {
+        background-image: url("../images/checkmark.svg") mask var(--accent);
+    }
+
+    &.indeterminate > indicator
+    {
+        background-image: url("../images/indeterminate.svg") mask var(--accent);
+    }
+}
+
+menu radiobutton
+{
+    &:checked > indicator
+    {
+        background-image: url("../images/radio.svg") mask var(--accent);
+    }
+}
+
 /*
  * A switch (Qt Quick) takes a toggle's tones: its indicator is a toggle, its
  * handle a thumb, on-accent when checked (D-105).

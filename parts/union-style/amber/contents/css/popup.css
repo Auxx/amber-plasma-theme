@@ -134,9 +134,10 @@ overlay {
 }
 
 /* A combo box's list is a menu. Its own window is clear and no rule fills it
- * (P3.8, Task 1): an inset would show the window behind between its items.
- * The current value is :highlighted when the list opens, and shows as
- * hovered; Union draws it no tick. */
+ * (P3.8, Task 1), so each item paints the popup tone itself, with no inset:
+ * a clear item, or a gap between items, shows the window behind. The
+ * current value is :highlighted when the list opens, and shows as hovered;
+ * Union draws it no tick. */
 popup.combobox itemviewitem,
 popup.combobox menuitem {
     height: 26px;
@@ -149,7 +150,7 @@ popup.combobox menuitem {
     inset-bottom: 0px;
     inset-left: 0px;
     border-radius: 0px;
-    background-color: transparent;
+    background-color: var(--popup);
     color: var(--text);
 
     &:hovered, &:highlighted, &:visual-focus, &:highlighted:visual-focus {
@@ -157,18 +158,18 @@ popup.combobox menuitem {
         color: var(--text);
     }
     &:disabled {
-        background-color: transparent;
+        background-color: var(--popup);
         color: var(--text-dim);
     }
 }
 
-/* An 8 px gap: Union sizes a separator as its height and its top and bottom
- * insets (P3.8, Task 1). A section's title is dim, with no line. */
+/* An 8 px gap: Union sizes a separator as its height and its insets, and
+ * counts only the shorthand `inset` (P3.8, Tasks 1 and 4). A section's
+ * title is dim, with no line. */
 menuseparator {
     layout-alignment-horizontal: fill;
     height: 0px;
-    inset-top: 4px;
-    inset-bottom: 4px;
+    inset: 4px;
     background-color: transparent;
 
     &.with-title {

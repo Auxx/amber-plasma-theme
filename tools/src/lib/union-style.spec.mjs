@@ -552,7 +552,7 @@ describe('the Union style\'s toggles and ranges (P3.5)', () => {
     assert.equal(value(child(child(t, '&:disabled'), '& > indicator'), 'background-color'), 'var(--toggle)');
     assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-color'), 'var(--toggle)');
     assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
-    const marks = check.filter(b => !b.parent && !/menuitem/.test(b.selector) && /checkbox|radiobutton/.test(b.selector))
+    const marks = check.filter(b => !b.parent && !/menuitem|^menu /.test(b.selector) && /checkbox|radiobutton/.test(b.selector))
       .flatMap(b => b.children.filter(c => /:checked > indicator$|indeterminate > indicator$/.test(c.selector)))
       .map(c => value(c, 'background-image')).filter(Boolean);
     assert.deepEqual([ ...new Set(marks.map(m => m.replace(/^url\("\.\.\/images\/[a-z]+\.svg"\) mask /, ''))) ], [ 'var(--on-accent)' ]);
@@ -949,7 +949,7 @@ describe('the Union style\'s views (P3.7)', () => {
 describe('the Union style\'s popups (P3.8)', () => {
   const files = {
     'popup.css': /^(menu|popup|overlay(\.modal)?|menuitem|menuseparator|dialog|dialogbuttonbox|tooltip|popup\.combobox (itemviewitem|menuitem))$/,
-    'check.css': /^menuitem(\.exclusive)?$/
+    'check.css': /^(menuitem(\.exclusive)?|menu (checkbox|radiobutton))$/
   };
   const all = Object.fromEntries(Object.keys(files).map(f => [ f, blocks(read(f)) ]));
   const below = block => [ block, ...block.children.flatMap(below) ];
@@ -978,6 +978,7 @@ describe('the Union style\'s popups (P3.8)', () => {
 
   it('finds every popup block', () => {
     assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector.replace(/\s+/g, ' ')}`)) ].sort(), [
+      'check.css menu checkbox', 'check.css menu checkbox, menu radiobutton', 'check.css menu radiobutton',
       'check.css menuitem', 'check.css menuitem.exclusive',
       'popup.css dialog', 'popup.css dialogbuttonbox', 'popup.css menu', 'popup.css menu, popup', 'popup.css menuitem',
       'popup.css menuseparator', 'popup.css overlay', 'popup.css overlay.modal',
@@ -1045,13 +1046,27 @@ describe('the Union style\'s popups (P3.8)', () => {
     assert.equal(value(child(i, '&:checked:disabled > indicator'), 'background-color'), 'transparent');
     assert.equal(value(child(top('check.css', 'menuitem.exclusive'), '&:checked > indicator'), 'background-image'),
       'url("../images/radio.svg") mask var(--accent)');
+    // The mark of an item with an icon, and of a disabled item, is drawn as a check box or radio button inside
+    // the menu (Task 4): the toggles' box, tone 0 or accent, is cleared in each state they set.
+    const d = top('check.css', 'menu checkbox, menu radiobutton');
+    const STATES = [ '', ':hovered', ':visual-focus', ':checked', ':checked:hovered', ':checked:visual-focus', '.indeterminate',
+      '.indeterminate:hovered', '.indeterminate:visual-focus', ':disabled', ':checked:disabled', '.indeterminate:disabled' ];
+    const clear = child(d, STATES.map(state => `&${state} > indicator`).join(', '));
+    assert.equal(value(clear, 'background-color'), 'transparent');
+    assert.equal(value(clear, 'border'), 'none');
+    assert.equal(value(child(d, '&:checked:disabled > indicator, &.indeterminate:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
+    assert.equal(value(child(top('check.css', 'menu checkbox'), '&:checked > indicator'), 'background-image'), 'url("../images/checkmark.svg") mask var(--accent)');
+    assert.equal(value(child(top('check.css', 'menu checkbox'), '&.indeterminate > indicator'), 'background-image'), 'url("../images/indeterminate.svg") mask var(--accent)');
+    assert.equal(value(child(top('check.css', 'menu radiobutton'), '&:checked > indicator'), 'background-image'), 'url("../images/radio.svg") mask var(--accent)');
   });
 
   it('divides a menu with an 8 px gap and no line, and gives a section a dim title with no line', () => {
     const s = top('popup.css', 'menuseparator');
-    // Union sizes a separator as its height and its top and bottom insets (Task 1): 0 + 4 + 4.
+    // Union sizes a separator as its height and its insets (Task 1): 0 + 4 + 4. It counts the shorthand
+    // `inset` only: with inset-top and inset-bottom the separator was 0 px high (Task 4).
     assert.equal(value(s, 'background-color'), 'transparent');
-    assert.deepEqual([ 'height', 'inset-top', 'inset-bottom' ].map(p => value(s, p)), [ '0px', '4px', '4px' ]);
+    assert.deepEqual([ 'height', 'inset' ].map(p => value(s, p)), [ '0px', '4px' ]);
+    assert.deepEqual([ 'inset-top', 'inset-bottom' ].map(p => value(s, p)), [ undefined, undefined ]);
     const t = child(s, '&.with-title');
     assert.equal(value(t, 'background-color'), 'transparent');
     assert.equal(value(t, 'color'), 'var(--text-dim)');
@@ -1063,7 +1078,8 @@ describe('the Union style\'s popups (P3.8)', () => {
 
   it('draws a combo box list as a menu, its items with no inset that would show the window through it', () => {
     const c = top('popup.css', 'popup.combobox itemviewitem, popup.combobox menuitem');
-    assert.equal(value(c, 'background-color'), 'transparent');
+    // The list's own window is clear and no rule fills it (Task 1): a clear item shows the window behind (Task 4).
+    assert.equal(value(c, 'background-color'), 'var(--popup)');
     assert.equal(value(c, 'color'), 'var(--text)');
     assert.equal(value(c, 'height'), '26px');
     for (const side of [ 'top', 'right', 'bottom', 'left' ]) {
@@ -1072,6 +1088,7 @@ describe('the Union style\'s popups (P3.8)', () => {
     // The current value is :highlighted when the list opens; Union draws it no tick, so it shows as hovered.
     assert.equal(value(child(c, '&:hovered, &:highlighted, &:visual-focus, &:highlighted:visual-focus'), 'background-color'), 'var(--tone-4)');
     assert.equal(value(child(c, '&:disabled'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(c, '&:disabled'), 'background-color'), 'var(--popup)');
   });
 
   it('gives a tooltip the popup tone, square', () => {
