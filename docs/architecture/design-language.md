@@ -418,7 +418,7 @@ Kate's editor area, reviewed by the owner in P1.7 (D-82):
 - The editor stays on tone 2 while the terminal is tone 1: the step to
   the gutter tells the code from it. (decided, D-82)
 - The prototype shows the editor on `prototype/samples.html`, as Kate's C++
-  highlighting draws it (decided, D-123).
+  highlighting draws it (decided, D-123; its `std::min` line is my call).
 
 ## What must not appear
 
