@@ -258,14 +258,16 @@ KWin, and with no button the title runs to within 2 px of the outline. For
 P5.3: the frame has no padding, and maximised windows were not looked at.
 
 P5.2 generated the window buttons, one file each with an element per
-state, and added their every state to the gallery (D-127). In the nested
+state, and added their every state to the gallery (D-128). In the nested
 KWin, with KWin's default buttons, every state matched the gallery, and
 the owner found them right live. KWin keeps its menu button, the
 application's icon, and centres the title between the buttons; the owner
-kept both, and the prototype now draws them (D-128). For P5.3: a maximised
-window shows restore at rest and no window outline, and at 1.49 a button
-covers the outline's inner device pixel (D-126). For P6.2: the README need
-not change KWin's button settings.
+kept both, and the prototype now draws them (D-129). After the final
+review the owner tried two drawings live and chose that a button's fill
+keep off the window outline, so that the outline stays whole at 1.49; a
+hovered or pressed button then shows a seam at the outline, a known gap
+(D-130). For P5.3: a maximised window shows restore at rest and no window
+outline. For P6.2: the README need not change KWin's button settings.
 
 ## Step 6 — Packaging
 

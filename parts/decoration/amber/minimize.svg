@@ -5,27 +5,33 @@
 <!-- Do not edit: run node tools/src/bin/generate.mjs decoration with the write option -->
 <svg xmlns="http://www.w3.org/2000/svg" width="220" height="30" viewBox="0 0 220 30">
   <g id="active-center">
-    <rect x="0" y="0" width="30" height="30" fill="#151413"/>
+    <rect x="0" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="0" y="1" width="30" height="29" fill="#151413"/>
     <path transform="translate(7 7)" d="M3 8.5h10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
   </g>
   <g id="hover-center">
-    <rect x="38" y="0" width="30" height="30" fill="#1c1a18"/>
+    <rect x="38" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="38" y="1" width="30" height="29" fill="#1c1a18"/>
     <path transform="translate(45 7)" d="M3 8.5h10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
   </g>
   <g id="pressed-center">
-    <rect x="76" y="0" width="30" height="30" fill="#25221f"/>
+    <rect x="76" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="76" y="1" width="30" height="29" fill="#25221f"/>
     <path transform="translate(83 7)" d="M3 8.5h10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
   </g>
   <g id="inactive-center">
-    <rect x="114" y="0" width="30" height="30" fill="#151413"/>
+    <rect x="114" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="114" y="1" width="30" height="29" fill="#151413"/>
     <path transform="translate(121 7)" d="M3 8.5h10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
   </g>
   <g id="hover-inactive-center">
-    <rect x="152" y="0" width="30" height="30" fill="#1c1a18"/>
+    <rect x="152" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="152" y="1" width="30" height="29" fill="#1c1a18"/>
     <path transform="translate(159 7)" d="M3 8.5h10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
   </g>
   <g id="pressed-inactive-center">
-    <rect x="190" y="0" width="30" height="30" fill="#25221f"/>
+    <rect x="190" y="0" width="30" height="30" fill="#000000" fill-opacity="0"/>
+    <rect x="190" y="1" width="30" height="29" fill="#25221f"/>
     <path transform="translate(197 7)" d="M3 8.5h10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
   </g>
 </svg>

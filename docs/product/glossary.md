@@ -57,7 +57,7 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 **Menu button**
 : The button at the left of the title bar that shows the application's
   icon and opens the window menu. KWin draws it by default; Amber keeps it
-  (D-128). It is not a window button.
+  (D-129). It is not a window button.
 
 **Terminal colours**
 : The Konsole colour scheme file `Amber.colorscheme`: background, foreground

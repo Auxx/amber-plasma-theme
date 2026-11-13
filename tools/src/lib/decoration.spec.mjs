@@ -145,12 +145,15 @@ describe('decoration', () => {
 const BUTTONS = [ 'minimize', 'maximize', 'restore', 'close' ];
 const PREFIXES = [ 'active', 'hover', 'pressed', 'inactive', 'hover-inactive', 'pressed-inactive' ];
 
-/** Each `<g id="…-center">` of a button file as { id, rect: {…}, path: {…} }, in order. */
+/**
+ * Each `<g id="…-center">` of a button file as { id, box, rect, path }, in
+ * order: `box` is the transparent rectangle that sets the button's size,
+ * `rect` the state's fill, `path` the glyph.
+ */
 function states(svg) {
   const attributes = text => Object.fromEntries([ ...text.matchAll(/([a-z-]+)="([^"]*)"/g) ].map(([ , k, v ]) => [ k, v ]));
-  return [ ...svg.matchAll(/<g id="([^"]+)">\s*<rect ([^>]*)\/>\s*<path ([^>]*)\/>\s*<\/g>/g) ].map(([ , id, rect, path ]) => ({
-    id, rect: attributes(rect), path: attributes(path)
-  }));
+  return [ ...svg.matchAll(/<g id="([^"]+)">\s*<rect ([^>]*)\/>\s*<rect ([^>]*)\/>\s*<path ([^>]*)\/>\s*<\/g>/g) ]
+    .map(([ , id, box, rect, path ]) => ({ id, box: attributes(box), rect: attributes(rect), path: attributes(path) }));
 }
 
 describe('window buttons', () => {
@@ -185,18 +188,37 @@ describe('window buttons', () => {
 
   it('sizes the button by the title bar', () => {
     const tall = formatButtonSvg(tokensWith().set('title-bar-height', { length: { value: 36, unit: 'px' } }), 'close');
-    for (const { rect, path } of states(tall)) {
-      assert.deepEqual([ rect.width, rect.height ], [ '36', '36' ]);
+    for (const { box, path } of states(tall)) {
+      assert.deepEqual([ box.width, box.height ], [ '36', '36' ]);
       const [ , dx, dy ] = path.transform.match(/translate\(([\d.]+) ([\d.]+)\)/);
-      assert.equal(Number(dx) - Number(rect.x), 10);
-      assert.equal(Number(dy) - Number(rect.y), 10);
+      assert.equal(Number(dx) - Number(box.x), 10);
+      assert.equal(Number(dy) - Number(box.y), 10);
     }
   });
 
   it('lays the states side by side without overlap', () => {
     for (const button of BUTTONS) {
-      const xs = states(files[button]).map(s => Number(s.rect.x));
+      const xs = states(files[button]).map(s => Number(s.box.x));
       xs.slice(1).forEach((x, i) => assert.equal(x - xs[i], 30 + 8, button));
+    }
+  });
+
+  it('keeps the fill off the window outline (D-130)', () => {
+    for (const button of BUTTONS) {
+      for (const { id, box, rect } of states(files[button])) {
+        assert.equal(box['fill-opacity'], '0', `${button} ${id} box`);
+        assert.deepEqual([ box.y, box.width, box.height ], [ '0', '30', '30' ], `${button} ${id} box`);
+        assert.equal(rect.x, box.x, `${button} ${id}`);
+        assert.deepEqual([ rect.y, rect.height ], [ '1', '29' ], `${button} ${id} top`);
+        assert.equal(rect.width, button === 'close' ? '29' : '30', `${button} ${id} right`);
+      }
+    }
+  });
+
+  it('insets the fill by the outline width', () => {
+    const tokens = tokensWith().set('outline-width', { length: { value: 2, unit: 'px' } });
+    for (const { rect } of states(formatButtonSvg(tokens, 'close'))) {
+      assert.deepEqual([ rect.y, rect.width, rect.height ], [ '2', '28', '28' ]);
     }
   });
 

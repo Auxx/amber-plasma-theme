@@ -166,13 +166,21 @@ export const GLYPHS = {
 const GLYPH = 16;
 const STROKE = 1.5;
 
-/** The file `<button>.svg`: one `<prefix>-center` element per state, side by side. */
+/**
+ * The file `<button>.svg`: one `<prefix>-center` element per state, side by
+ * side. A transparent rectangle the button's size sets the element's box,
+ * which KSvg stretches to the button; the state's fill inside it keeps one
+ * `outline-width` off the top, and off the right for close, the last button
+ * by KWin's default, so that at a fractional scale the button does not
+ * cover the window outline's inner device pixel (D-130).
+ */
 export function formatButtonSvg(tokens, button) {
   if (!Object.hasOwn(GLYPHS, button)) {
     throw new Error(`${button}: not a window button (${Object.keys(GLYPHS).join(', ')})`);
   }
   const read = reader(tokens);
   const size = read.length('title-bar-height');
+  const w = read.length('outline-width');
   const kind = button === 'close' ? 'close' : 'plain';
   const colours = BUTTON_STATES.map(({ fill, glyph }) => [ read.colour(fill[kind]), read.colour(glyph[kind]) ]);
   read.check();
@@ -182,7 +190,8 @@ export function formatButtonSvg(tokens, button) {
     const [ fill, glyph ] = colours[i];
     return [
       `  <g id="${prefix}-center">`,
-      `    <rect x="${x}" y="0" width="${size}" height="${size}" fill="${hexOf(fill)}"/>`,
+      `    <rect x="${x}" y="0" width="${size}" height="${size}" fill="#000000" fill-opacity="0"/>`,
+      `    <rect x="${x}" y="${w}" width="${size - (button === 'close' ? w : 0)}" height="${size - w}" fill="${hexOf(fill)}"/>`,
       `    <path transform="translate(${x + inset} ${inset})" d="${GLYPHS[button]}" fill="none" stroke="${hexOf(glyph)}" ` +
         `stroke-width="${STROKE}" stroke-linecap="square"/>`,
       '  </g>'

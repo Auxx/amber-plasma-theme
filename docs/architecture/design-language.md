@@ -291,9 +291,9 @@ token holds the plain colour (D-47).
 
 - Title bar in tone 0, `--title-bar-height` high below the window outline;
   square corners. The title is centred between the menu button and the
-  window buttons, as KWin centres it (D-128), in text, or in dim text when
+  window buttons, as KWin centres it (D-129), in text, or in dim text when
   the window is inactive.
-- The title bar holds KWin's default buttons (D-128): the menu button, the
+- The title bar holds KWin's default buttons (D-129): the menu button, the
   application's icon, 26 px across in a square button at the left, and
   minimise, maximise and close at the right.
 - A window has a window outline. (decided, D-25) It runs along every edge,
@@ -340,7 +340,9 @@ token holds the plain colour (D-47).
   with square ends, drawn in `prototype/window.css` and the gallery's
   "Window buttons". Restore, which a maximised window shows in place of
   maximise, is two squares, the back one showing its top and right edges
-  (D-127). Fill / glyph:
+  (D-128). The fill keeps one `--outline-width` off the window outline
+  at the top, and close's at the right too, so that the outline stays whole
+  at a fractional scale (D-130). Fill / glyph:
 
   | State | Minimise, maximise, restore | Close |
   |---|---|---|
