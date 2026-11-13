@@ -220,7 +220,9 @@ had the greys made four steps, the bright colours lighter and cyan more
 saturated, choosing among candidates tried in Konsole through `generate
 --set` (D-119). White on a normal colour is 2.3:1, which the owner accepted.
 Konsole's pane header, the cool dark P3.9 left here, follows the terminal
-colours and is warm now. `image greys --token-blends` excuses anti-aliased
+colours and is warm now. Konsole's scrolled-lines bar, ANSI blue mixed
+over the background, falls just short of a hue and is a known gap (D-120).
+`image greys --token-blends` excuses anti-aliased
 text of token colours, such as ANSI blue and cyan, which P4.2's editor
 will need too.
 

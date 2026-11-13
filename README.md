@@ -95,6 +95,12 @@ Amber is in early development and nothing can be installed yet.
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)
+- **Konsole's scrolled-lines bar is a cool grey.** Beside lines that have
+  just scrolled into view Konsole draws a bar about 3 px wide, ANSI blue at
+  about 59 % over the terminal background: `#365363`, chroma 0.044, just
+  short of a hue. Konsole mixes it itself. It can be turned off in the
+  Konsole profile: Scrolling → Highlight scrolled lines. (seen in P4.1;
+  D-120)
 
 ## Licence
 

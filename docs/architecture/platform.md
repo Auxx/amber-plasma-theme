@@ -724,6 +724,12 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   in `XDG_DATA_DIRS`, and `konsole --separate -p ColorScheme=<name>`
   starts one window with it. In the nested session neither `konsolerc`
   nor a profile changed. (verified, 2026-11-13, P4.1)
+- **Konsole's scrolled-lines bar** ("Highlight scrolled lines", on by
+  default) is a bar about 3 px wide in the left margin, ANSI blue
+  (`Color4`) at about 59 % over `Background`: under Amber `#365363`,
+  the same mix on every channel. Konsole's margin around the text is
+  `Background`. (seen, 2026-11-13, P4.1; that the bar takes `Color4` is
+  inferred from the measured mix, not read in Konsole's code)
 - **Konsole draws bold text in the intense colours** (bold plain text in
   `ForegroundIntense`, bold red in `Color1Intense`) and faint text (SGR 2)
   in the faint ones. (verified, 2026-11-13, P4.1)
