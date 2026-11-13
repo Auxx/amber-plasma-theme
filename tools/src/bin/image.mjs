@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UsageError, main, print, table } from '../lib/cli.mjs';
-import { colourCounts, coolGreys, fill, frame, markPixels, tokenNames } from '../lib/image.mjs';
+import { colourCounts, coolGreys, fill, frame, lines, markPixels, tokenNames } from '../lib/image.mjs';
 import { decodePng, encodePng } from '../lib/png.mjs';
 import { loadTokens } from '../lib/tokens.mjs';
 
@@ -18,17 +18,17 @@ function readPicture(positionals) {
 }
 
 /** `x,y,width,height` → a region; absent → the whole picture. */
-function parseRegion(text) {
+function parseRegion(text, option = '--region') {
   if (text === undefined) {
     return undefined;
   }
   const parts = text.split(',');
   if (parts.length !== 4 || !parts.every(p => /^\d+$/.test(p))) {
-    throw new UsageError(`--region must be x,y,width,height in whole pixels: ${text}`);
+    throw new UsageError(`${option} must be x,y,width,height in whole pixels: ${text}`);
   }
   const [ x, y, width, height ] = parts.map(Number);
   if (width < 1 || height < 1) {
-    throw new UsageError(`--region must be at least 1 pixel wide and high: ${text}`);
+    throw new UsageError(`${option} must be at least 1 pixel wide and high: ${text}`);
   }
   return { x, y, width, height };
 }
@@ -50,34 +50,70 @@ main({
   summary: 'Reads the colours of a PNG picture: cool greys, colours named as tokens, rounded corners and lines.',
   commands: {
     greys: {
-      usage: '<png> [--region x,y,w,h] [--mark <out.png>] [--json]',
+      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--mark <out.png>] [--json]',
       summary: 'Lists the cool greys of the picture; exits 1 when there is one',
       help: `A cool grey is a colour that is not a hue (OKLCH chroma below
 0.05) and is neither warm (hue 30 to 110) nor black: the rule of the
 prototype check, with "no hue" only below chroma 0.001, as r = g = b is.
 Each colour is listed with its pixel count and the box that holds them.
 ${REGION_HELP}
+--leave-out x,y,width,height skips that rectangle; give it once for each
+part of the picture that is not to be judged, such as a terminal area. It
+may reach past the picture's edge.
 --mark <out.png> writes a copy of the picture with those pixels in magenta.
 It must be inside the repository, such as tmp/; it is the only thing written.`,
-      options: { region: { type: 'string' }, mark: { type: 'string' }, json: { type: 'boolean' } },
+      options: { region: { type: 'string' }, 'leave-out': { type: 'string', multiple: true }, mark: { type: 'string' }, json: { type: 'boolean' } },
       run(values, positionals) {
         const region = parseRegion(values.region);
+        const leaveOut = (values['leave-out'] ?? []).map(text => parseRegion(text, '--leave-out'));
         const out = values.mark === undefined ? undefined : markPath(values.mark);
         const picture = readPicture(positionals);
-        const found = coolGreys(picture, { region });
+        const found = coolGreys(picture, { region, leaveOut });
         if (out) {
           writeFileSync(out, encodePng(markPixels(picture, found.map(f => f.hex))));
         }
         const marked = out ? relative(root, out) : undefined;
-        print(values.json, { greys: found, marked }, () => {
+        print(values.json, { greys: found, marked, leftOut: leaveOut }, () => {
           const lines = found.length
             ? [ table(found.map(({ hex, count, box: b }) => [ hex, `${count} px`, `at ${b.x},${b.y} ${b.width}×${b.height}` ])) ]
             : [ 'no cool grey' ];
+          if (leaveOut.length) {
+            lines.push(`left out: ${leaveOut.length} region${leaveOut.length === 1 ? '' : 's'}`);
+          }
           if (marked) {
             lines.push(`marked: ${marked}`);
           }
           return lines.join('\n');
         });
+        return found.length ? 1 : 0;
+      }
+    },
+    lines: {
+      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]',
+      summary: 'Lists the straight lines 1 or 2 px thick in a picture, such as a window; exits 1 when there is one',
+      help: `A line is a run of one colour, 1 or 2 px thick and at least
+--min-length px long (32 by default, longer than a stroke of text), whose
+pixels on both sides differ from it by more than 3 a channel. The row where two tones meet, blended
+at a fractional scale, is not a line, nor is a band 3 px or more thick, such
+as a focus bar. Unlike frame, it needs no surface and judges a whole window.
+One row cannot tell a seam whose colour lies between its two sides, such as
+tone 1 between tone 0 and tone 2, from that blend: it is not reported unless
+--blends is given, which also reports every blended edge.
+${REGION_HELP}
+--leave-out x,y,width,height skips that rectangle; give it once for each
+part not to be judged. It may reach past the picture's edge.`,
+      options: { region: { type: 'string' }, 'leave-out': { type: 'string', multiple: true }, 'min-length': { type: 'string' }, blends: { type: 'boolean' }, json: { type: 'boolean' } },
+      run(values, positionals) {
+        const region = parseRegion(values.region);
+        const leaveOut = (values['leave-out'] ?? []).map(text => parseRegion(text, '--leave-out'));
+        const minLength = values['min-length'] === undefined ? 32 : Number(values['min-length']);
+        if (!Number.isInteger(minLength) || minLength < 2) {
+          throw new UsageError(`--min-length must be a whole number of at least 2: ${values['min-length']}`);
+        }
+        const found = lines(readPicture(positionals), { region, leaveOut, minLength, blends: values.blends === true });
+        print(values.json, { lines: found }, () => (found.length
+          ? table(found.map(l => [ l.orientation, l.hex, `${l.thickness} px`, `at ${l.x},${l.y}`, `${l.length} long` ]))
+          : 'no line'));
         return found.length ? 1 : 0;
       }
     },

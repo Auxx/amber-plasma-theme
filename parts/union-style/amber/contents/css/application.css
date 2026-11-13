@@ -74,6 +74,9 @@ toolbar
     [colorset="header"] &
     {
         background-color: var(--tone-0);
+        /* At a fractional scale the foot falls mid-pixel and the window's tone 1
+         * showed under it as a seam: the fill reaches 1 px past it (P3.9). */
+        inset-bottom: -1px;
     }
 
     &[colorset="complementary"],
@@ -185,13 +188,14 @@ framewindow
     padding: var(--large-spacing);
     border: none;
     border-radius: var(--corner-radius);
-    .inactive & {
-        border-color: var(--window-inactive-border-color);
-    }
 }
 
+/* A splitter, and a main window's dock separator, is a clear gap: 1 px of the
+ * window's tone was a line between two views, and at 0 px a dock separator
+ * cannot be dragged (P3.9, D-116). */
 splitter {
-    width: 1px;
+    width: 4px;
+    background-color: transparent;
 }
 
 /* Text fields and text areas are wells, drawn in text.css (P3.4) */
@@ -257,15 +261,16 @@ scrollview {
     }
 }
 
+/* A group box has no frame and no fill of its own: it takes its surface (P3.9, D-116). */
 groupbox {
     padding: var(--small-spacing);
     border: none;
     border-radius: var(--corner-radius);
-    color: var(--window-text-color);
-    background-color: var(--window-background-color);
+    color: var(--text);
+    background-color: transparent;
 
     & > header {
-        color: var(--window-text-color);
+        color: var(--text);
     }
     icon-alignment: content start start 0;
     text-alignment: content center start 0;

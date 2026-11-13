@@ -701,7 +701,8 @@ describe('the Union style\'s bars (P3.6)', () => {
   it('gives the menu bar and its titles the tones of the prototype', () => {
     assert.equal(value(top('popup.css', 'menubar'), 'background-color'), 'var(--tone-0)');
     const m = top('popup.css', 'menubaritem');
-    assert.equal(value(m, 'background-color'), 'transparent');
+    // A clear title let the window's tone 1 show between titles at a fractional scale (P3.9, B-8).
+    assert.equal(value(m, 'background-color'), 'var(--tone-0)');
     assert.equal(value(m, 'color'), 'var(--text)');
     assert.equal(value(m, 'border-radius'), '0px');
     assert.equal(value(child(m, '&:hovered, &:highlighted'), 'background-color'), 'var(--tone-3)');
@@ -758,7 +759,8 @@ describe('the Union style\'s bars (P3.6)', () => {
   it('draws a tab with square corners, and a page with no inset that would leave a line', () => {
     assert.deepEqual(all['tabs.css'].filter(b => /\.(first|last)\b/.test(b.selector)).map(b => b.selector), []);
     const offending = family.flatMap(([ file, b ]) => b.declarations
-      .filter(d => (/radius$/.test(d.property) && d.value !== '0px') || (/^inset/.test(d.property) && d.value !== '0px'))
+      // A fill 1 px past an edge closes a seam at a fractional scale (P3.9, B-3, B-8); a positive inset leaves a line.
+      .filter(d => (/radius$/.test(d.property) && d.value !== '0px') || (/^inset/.test(d.property) && ![ '0px', '-1px' ].includes(d.value)))
       .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
     assert.deepEqual(offending, []);
   });
@@ -856,7 +858,8 @@ describe('the Union style\'s views (P3.7)', () => {
   it('draws an item with square corners and no inset that would leave a strip of the view', () => {
     const offending = family.flatMap(([ file, b ]) => b.declarations
       .filter(d => (/radius$/.test(d.property) && d.value !== '0px' && !d.comment.startsWith('round widget'))
-        || (/^inset/.test(d.property) && d.value !== '0px'))
+        // A fill 1 px past an edge closes a seam at a fractional scale (P3.9, B-4); a positive inset leaves a strip.
+        || (/^inset/.test(d.property) && ![ '0px', '-1px' ].includes(d.value)))
       .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
     assert.deepEqual(offending, []);
   });
@@ -1152,5 +1155,78 @@ describe('the Union style\'s popups (P3.8)', () => {
       .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
       .map(d => `${file}:${d.line} padding: ${d.value}`));
     assert.deepEqual(offending, []);
+  });
+});
+
+describe('the Union style after the application sweep (P3.9)', () => {
+  const app = blocks(read('application.css'));
+  const top = (all, selector) => {
+    const found = all.filter(b => !b.parent && parts(b.selector).join(', ') === selector);
+    assert.equal(found.length, 1, `one block ${selector} expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => parts(c.selector).join(', ') === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const below = block => [ block, ...block.children.flatMap(below) ];
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  const colours = block => below(block).flatMap(b => b.declarations
+    .filter(d => /(^|-)color$/.test(d.property) && d.value !== 'transparent' && !tokenVar.test(d.value))
+    .map(d => `${b.selector} { ${d.property}: ${d.value} }`));
+  const borders = block => below(block).flatMap(b => b.declarations
+    .filter(d => /^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none')
+    .map(d => `${b.selector} { ${d.property}: ${d.value} }`));
+
+  it('B-1, B-2, B-7: draws a splitter as a clear gap 4 px wide, never a line, and wide enough to drag', () => {
+    const s = top(app, 'splitter');
+    assert.equal(value(s, 'width'), '4px');
+    assert.equal(value(s, 'background-color'), 'transparent');
+    assert.deepEqual(borders(s), []);
+  });
+
+  it('draws nothing for a line frame (QFrame::HLine, KSeparator): its space stays as a gap', () => {
+    const views = top(app, 'frame, listview, treeview, tableview, columnview, scrollview');
+    const line = child(views, '&[shape="vertical-line"], &[shape="horizontal-line"]');
+    assert.ok(line, 'the line shapes\' block');
+    assert.deepEqual([ ...colours(line), ...borders(line) ], []);
+    assert.equal(value(line, 'background-color'), undefined);
+  });
+
+  it('draws a group box with no frame and no fill of its own, its title in text', () => {
+    const offending = app.filter(b => !b.parent && parts(b.selector).includes('groupbox')).flatMap(b => [ ...colours(b), ...borders(b) ]
+      .map(o => `${b.selector}: ${o}`));
+    assert.deepEqual(offending, []);
+    const g = top(app, 'groupbox');
+    assert.equal(value(g, 'background-color'), 'transparent');
+    assert.equal(value(g, 'color'), 'var(--text)');
+    assert.equal(value(child(g, '& > header'), 'color'), 'var(--text)');
+  });
+
+  it('changes no splitter, frame or group box in the inactive window', () => {
+    const offending = app.filter(b => !b.parent && parts(b.selector).some(p => /^(splitter|frame|groupbox|framemenu|framewindow)$/.test(p)))
+      .flatMap(below).filter(b => /\.inactive/.test(b.selector) && !/\[shape="(panel|box)"\]/.test(b.parent?.selector ?? ''))
+      .map(b => `${b.parent.selector} > ${b.selector}`);
+    assert.deepEqual(offending, []);
+  });
+
+  it('B-3: fills a header toolbar 1 px past its foot, so that no seam of the window shows under it', () => {
+    const t = top(app, 'toolbar');
+    assert.equal(value(child(t, '&.header, &[colorset="header"], [colorset="header"] &'), 'inset-bottom'), '-1px');
+  });
+
+  it('B-4: fills an item 1 px past its trailing edge, so that none stops short of a scrollbar', () => {
+    const i = top(blocks(read('delegate.css')), 'itemviewitem');
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(e => value(i, `inset-${e}`)), [ '0px', '-1px', '0px', '0px' ]);
+    assert.equal(value(i, 'inset'), undefined);
+  });
+
+  it('B-5: fills a header section 1 px past its sides and foot, so that no line shows under or between them', () => {
+    const h = top(blocks(read('tables.css')), 'headerviewdelegate');
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(e => value(h, `inset-${e}`)), [ undefined, '-1px', '-1px', '-1px' ]);
+  });
+
+  it('B-8: fills a menu title with tone 0, 1 px past its trailing edge, so that no seam shows between titles', () => {
+    const m = top(blocks(read('popup.css')), 'menubaritem');
+    assert.equal(value(m, 'background-color'), 'var(--tone-0)');
+    assert.equal(value(m, 'inset-right'), '-1px');
   });
 });

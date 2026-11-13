@@ -44,6 +44,17 @@ describe('image tool', () => {
     assert.match(stdout, /#808080 {2}1 px {2}at 4,0 1×1/);
   });
 
+  it('leaves out each --leave-out region, and passes when the greys lie only there (P3.9)', () => {
+    const { status, stdout } = image('greys', path('grey.png'), '--leave-out', '4,0,1,1', '--leave-out', '0,0,1,1');
+    assert.equal(status, 0);
+    assert.match(stdout, /no cool grey/);
+    assert.match(stdout, /left out: 2 regions/);
+  });
+
+  it('refuses a --leave-out that is not four numbers (P3.9)', () => {
+    assert.equal(image('greys', path('grey.png'), '--leave-out', '4,0,1').status, 2);
+  });
+
   it('refuses an empty region', () => {
     assert.equal(image('greys', path('grey.png'), '--region', '0,0,0,1').status, 2);
   });
@@ -110,6 +121,22 @@ describe('image tool', () => {
     assert.deepEqual(result.box, { x: 5, y: 5, width: 20, height: 10 });
     assert.equal(result.sides.bottom, 'line');
     assert.deepEqual(result.lines.bottom, { hex: '#3c3832', thickness: 1 });
+  });
+
+  it('lists a line 1 px thick with where it lies, and fails (P3.9)', () => {
+    const width = 60, height = 9;
+    const pixels = new Uint8Array(width * height * 4);
+    for (let i = 0; i < width * height; i++) {
+      pixels.set(Math.floor(i / width) === 4 ? [ 0x1c, 0x1a, 0x18, 255 ] : [ 0x25, 0x22, 0x1f, 255 ], i * 4);
+    }
+    writeFileSync(join(folder, 'lined.png'), encodePng({ width, height, pixels }));
+    const { status, stdout } = image('lines', path('lined.png'));
+    assert.equal(status, 1);
+    assert.match(stdout, /horizontal +#1c1a18 +1 px +at 0,4 +60 long/);
+    assert.equal(image('lines', path('warm.png')).status, 0);
+    writeFileSync(join(folder, 'seam.png'), row('#151413', '#1c1a18', '#25221f'));
+    assert.equal(image('lines', path('seam.png'), '--min-length', '2').status, 0);
+    assert.match(image('lines', path('warm.png')).stdout, /no line/);
   });
 
   it('refuses frame without --surface', () => {

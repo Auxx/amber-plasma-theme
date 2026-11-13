@@ -183,6 +183,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : The bar beside a view whose thumb moves the view. Amber's has no track
   fill and no arrow buttons. _Avoid_ "scroll bar".
 
+**Splitter**
+: The bar between two panes that the pointer drags to change their sizes.
+  It shows no line. _Avoid_ "handle" and "divider".
+
 **Item**
 : One entry of a list, tree or table view, or of a sidebar. In a table view
   an item is a whole row.
@@ -226,6 +230,10 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A strip inside a window that tells the result of something: positive,
   neutral or negative. _Avoid_ "message widget", `KMessageWidget`, except
   when naming the class.
+
+**Group box**
+: A titled group of widgets in a dialog. It has no frame. _Avoid_ "frame"
+  for it, except when naming Union's `groupbox`.
 
 **Sample**
 : A mock terminal or editor in the prototype, filled with realistic content,
@@ -345,6 +353,10 @@ The names follow Union CSS.
 **Close**
 : A contrast pair that passes by less than 2 %. It is treated as a warning.
 
+**Breach**
+: A place where a window shows a rounded corner, a hairline other than the
+  window outline, or a cool grey. Each is fixed or listed as a known gap.
+
 ## Working on Amber
 
 **Step**
@@ -357,6 +369,9 @@ The names follow Union CSS.
 **Spike**
 : A quick, throwaway experiment that answers one question about the platform.
   Its code is not kept; its finding is written down.
+
+**Sweep**
+: Checking applications window by window for breaches.
 
 **Tool**
 : A small command-line program in `tools/` written for the agent or the owner

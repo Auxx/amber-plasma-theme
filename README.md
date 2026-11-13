@@ -80,6 +80,18 @@ Amber is in early development and nothing can be installed yet.
   foot. (seen in P3.8; D-115)
 - **A tooltip's padding is Qt's**: Qt sizes a tooltip in Qt Widgets
   applications. (seen in P3.8; D-115)
+- **Messages draw Breeze's colours.** A message is drawn in Breeze's
+  fixed colours, not Amber's: a warning, such as Konsole's "output
+  suspended", is orange with a frame 2 px wide, and an information message,
+  such as Kate's "modified on disk", is blue with a 1 px line at its foot.
+  (seen in P3.9; D-117)
+- **The window's tone shows around tabs.** Kate leaves a 2 px strip of tone
+  1 above its tabs, and at a fractional scale a faint 1 px seam shows
+  beside a dialog's first tab. (seen in P3.9; D-117)
+- **A colour button's swatch has a sunken frame** 1 to 2 px wide, which
+  the button draws itself. (seen in P3.9; D-117)
+- **Kate's Manage Sessions buttons show a 1 px seam between them** at a
+  fractional scale: Kate stacks them with no space. (seen in P3.9; D-117)
 - **KWin dims the window behind a dialog**, which darkens and desaturates
   its tones towards a neutral near-black. It is KWin's dialog parent
   effect, a system setting. (seen in P2.3)

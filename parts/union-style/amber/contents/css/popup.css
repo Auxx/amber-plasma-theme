@@ -219,7 +219,10 @@ menubaritem
     border-radius: 0px;
 
     color: var(--text);
-    background-color: transparent;
+    /* A clear title let the window's tone 1 show between titles at a fractional
+     * scale: each title fills tone 0, 1 px past its trailing edge (P3.9). */
+    inset-right: -1px;
+    background-color: var(--tone-0);
 
     text-alignment-horizontal: center;
     text-alignment-vertical: center;

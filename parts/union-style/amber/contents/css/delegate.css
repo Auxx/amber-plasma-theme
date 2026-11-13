@@ -99,7 +99,12 @@ swipedelegate
  * we do not allow layouting inside it. Union draws a Qt Widgets item's text
  * from the item's edge whatever its padding (P3.7). */
 itemviewitem {
-    inset: 0px;
+    /* At a fractional scale an item's trailing edge falls mid-pixel and stopped
+     * 1 px short of a scrollbar: the fill reaches 1 px past it (P3.9). */
+    inset-top: 0px;
+    inset-right: -1px;
+    inset-bottom: 0px;
+    inset-left: 0px;
     icon-size: var(--small-element-size);
     text-wrap-mode: no-wrap;
     text-elide: right;

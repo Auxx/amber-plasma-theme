@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { srgb8 } from './colour.mjs';
-import { colourCounts, coolGreys, fill, frame, markPixels } from './image.mjs';
+import { colourCounts, coolGreys, fill, frame, lines, markPixels } from './image.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const tokens = loadTokens();
@@ -73,6 +73,18 @@ describe('coolGreys', () => {
     const image = picture([ rgba('tone-2'), rgba('tone-2') ], [ { x: 1, y: 1, colour: hex('#808080') } ]);
     assert.equal(coolGreys(image).length, 1);
     assert.deepEqual(coolGreys(image, { region: { x: 0, y: 0, width: 2, height: 1 } }), []);
+  });
+
+  it('skips the regions it is told to leave out, inside the region (P3.9)', () => {
+    const image = picture([ hex('#808080'), rgba('tone-2'), hex('#5d5d5d') ], [ { x: 2, y: 1, colour: hex('#2b2d31') } ]);
+    const leaveOut = [ { x: 0, y: 0, width: 1, height: 2 }, { x: 2, y: 1, width: 1, height: 1 } ];
+    assert.deepEqual(coolGreys(image, { leaveOut }).map(f => f.hex), [ '#5d5d5d' ]);
+    assert.deepEqual(coolGreys(image, { region: { x: 0, y: 0, width: 2, height: 2 }, leaveOut }), []);
+  });
+
+  it('leaves out a region that reaches past the picture, up to its edge (P3.9)', () => {
+    const image = picture([ rgba('tone-2'), hex('#808080') ]);
+    assert.deepEqual(coolGreys(image, { leaveOut: [ { x: 1, y: 0, width: 50, height: 50 } ] }), []);
   });
 
   it('skips a fully transparent pixel', () => {
@@ -356,5 +368,66 @@ describe('fill', () => {
   it('counts colours within 1 a channel of the fill as no text', () => {
     const image = canvas(40, 20, '#312e29', [ [ 0, 0, 5, 5, '#322f2a' ] ]);
     assert.equal(fill(image).text, null);
+  });
+});
+
+describe('lines (P3.9)', () => {
+  /** A canvas of `fill` with rectangles painted on it: [x, y, w, h, hex]. */
+  function board(width, height, fill, rects = []) {
+    const pixels = new Uint8Array(width * height * 4);
+    const paint = (x0, y0, w, h, colour) => {
+      for (let y = y0; y < y0 + h; y++) {
+        for (let x = x0; x < x0 + w; x++) {
+          pixels.set(hex(colour), (y * width + x) * 4);
+        }
+      }
+    };
+    paint(0, 0, width, height, fill);
+    rects.forEach(r => paint(...r));
+    return { width, height, pixels };
+  }
+  const TONE_1 = '#1c1a18', TONE_2 = '#25221f', TONE_0 = '#151413';
+
+  it('finds a 1 px horizontal line between two areas of one tone', () => {
+    const found = lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, TONE_1 ] ]));
+    assert.deepEqual(found, [ { orientation: 'horizontal', x: 0, y: 10, length: 80, thickness: 1, hex: TONE_1 } ]);
+  });
+
+  it('finds a 2 px vertical line, once, as a splitter between two views is', () => {
+    const found = lines(board(60, 50, TONE_2, [ [ 30, 0, 2, 50, TONE_1 ] ]));
+    assert.deepEqual(found, [ { orientation: 'vertical', x: 30, y: 0, length: 50, thickness: 2, hex: TONE_1 } ]);
+  });
+
+  it('finds no line in a band 3 px thick, such as a focus bar', () => {
+    assert.deepEqual(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 3, '#d1b072' ] ])), []);
+  });
+
+  it('finds no line at an edge between two tones, nor in its blended row at a fractional scale', () => {
+    // Tone 2 above, tone 0 below, and one row mixed of the two where they meet.
+    assert.deepEqual(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 10, TONE_0 ], [ 0, 10, 80, 1, '#1d1b19' ] ])), []);
+  });
+
+  it('finds no line shorter than the minimum length, as a stroke of text is', () => {
+    const image = board(80, 20, TONE_2, [ [ 4, 10, 20, 1, '#e8e3da' ] ]);
+    assert.deepEqual(lines(image), []);
+    assert.equal(lines(image, { minLength: 16 }).length, 1);
+  });
+
+  it('reports a line whose colour lies between its sides only with blends, since one row cannot tell it from an edge', () => {
+    // Tone 1 between tone 0 and tone 2: a seam of the window's tone, or the row where tone 0 and tone 2 meet.
+    const image = board(80, 20, TONE_2, [ [ 0, 0, 80, 10, TONE_0 ], [ 0, 10, 80, 1, TONE_1 ] ]);
+    assert.deepEqual(lines(image), []);
+    assert.deepEqual(lines(image, { blends: true }), [ { orientation: 'horizontal', x: 0, y: 10, length: 80, thickness: 1, hex: TONE_1 } ]);
+  });
+
+  it('finds no line within 3 a channel of both its sides, too faint to see', () => {
+    assert.deepEqual(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#23211d' ] ])), []);
+    assert.equal(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#211e1b' ] ])).length, 1);
+  });
+
+  it('looks only inside the region, and skips each region left out', () => {
+    const image = board(80, 40, TONE_2, [ [ 0, 10, 80, 1, TONE_1 ], [ 0, 30, 80, 1, TONE_1 ] ]);
+    assert.deepEqual(lines(image, { region: { x: 0, y: 0, width: 80, height: 20 } }).map(l => l.y), [ 10 ]);
+    assert.deepEqual(lines(image, { leaveOut: [ { x: 0, y: 25, width: 80, height: 10 } ] }).map(l => l.y), [ 10 ]);
   });
 });

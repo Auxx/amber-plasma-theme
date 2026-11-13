@@ -50,15 +50,21 @@ function roundsToWarm(hex) {
   return false;
 }
 
-/** Every opaque colour with its count and bounding box, skipping fully transparent pixels. */
-function tally(image, region) {
+/** Whether a pixel lies in one of the rectangles. A rectangle may reach past the picture. */
+const inside = (rects, x, y) => rects.some(r => x >= r.x && x < r.x + r.width && y >= r.y && y < r.y + r.height);
+
+/**
+ * Every opaque colour with its count and bounding box, skipping fully
+ * transparent pixels and the pixels of `leaveOut`.
+ */
+function tally(image, region, leaveOut = []) {
   const { x: x0, y: y0, width, height } = bounds(image, region);
   const seen = new Map();
   const { pixels } = image;
   for (let y = y0; y < y0 + height; y++) {
     for (let x = x0; x < x0 + width; x++) {
       const at = (y * image.width + x) * 4;
-      if (pixels[at + 3] === 0) {
+      if (pixels[at + 3] === 0 || (leaveOut.length && inside(leaveOut, x, y))) {
         continue;
       }
       const key = (pixels[at] << 16) | (pixels[at + 1] << 8) | pixels[at + 2];
@@ -81,10 +87,12 @@ const box = ({ left, right, top, bottom }) => ({ x: left, y: top, width: right -
 /**
  * The colours of the picture that are cool greys: not a hue (OKLCH chroma
  * below 0.05) and not warm or black, by `warmthOffence`. Most pixels first.
+ * `leaveOut` lists rectangles whose pixels are not read, such as the parts
+ * of a window that belong to another part of Amber (P3.9).
  */
-export function coolGreys(image, { region } = {}) {
+export function coolGreys(image, { region, leaveOut } = {}) {
   const found = [];
-  for (const entry of tally(image, region)) {
+  for (const entry of tally(image, region, leaveOut)) {
     if (isHue(entry.hex)) {
       continue;
     }
@@ -319,4 +327,67 @@ export function frame(image, { surface, region } = {}) {
     corners[name] = distance(c, base) < drawnNearest ? 'rounded' : 'square';
   }
   return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, corners, sides, lines };
+}
+
+/** Whether two colours are within 3 a channel: a line that close to both its sides cannot be seen. (my call) */
+const faint = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3);
+
+/** Whether `c` lies between `a` and `b` on every channel, give or take 1: a blend at an edge. */
+const between = (c, a, b) => c.every((v, i) => v >= Math.min(a[i], b[i]) - 1 && v <= Math.max(a[i], b[i]) + 1);
+
+/**
+ * Every straight line 1 or 2 px thick and at least `minLength` px long (P3.9):
+ * a run of one colour whose pixels on both sides differ from it by more than
+ * 3 a channel, which is not
+ * a blend of its two sides, as the row where two tones meet at a fractional
+ * scale is. A band 3 px or more thick is not a line; nor is a short stroke of
+ * text. `region` limits the search, and `leaveOut` skips rectangles in it.
+ * One row cannot tell a seam whose colour lies between its sides (tone 1
+ * between tone 0 and tone 2) from such a blend: `blends` reports those too.
+ */
+export function lines(image, { region, leaveOut = [], minLength = 32, blends = false } = {}) {
+  const { x: rx, y: ry, width: rw, height: rh } = bounds(image, region);
+  const rgb = (x, y) => {
+    const i = (y * image.width + x) * 4;
+    return [ image.pixels[i], image.pixels[i + 1], image.pixels[i + 2] ];
+  };
+  const skipped = (x, y) => leaveOut.length && inside(leaveOut, x, y);
+  const found = [];
+  // `along` walks the line's length, `across` its thickness; `pixel(a, c)` maps them to the picture.
+  const scan = (orientation, alongFrom, alongTo, acrossFrom, acrossTo, pixel) => {
+    for (const thickness of [ 1, 2 ]) {
+      for (let c = acrossFrom + 1; c + thickness < acrossTo; c++) {
+        let start = null, colour = null;
+        const close = end => {
+          if (start !== null && end - start >= minLength) {
+            const [ x, y ] = pixel(start, c);
+            found.push({ orientation, x, y, length: end - start, thickness, hex: toHex(...colour) });
+          }
+          start = null; colour = null;
+        };
+        for (let a = alongFrom; a <= alongTo; a++) {
+          let on = false, here = null;
+          if (a < alongTo && !skipped(...pixel(a, c))) {
+            here = rgb(...pixel(a, c));
+            const second = thickness === 2 ? rgb(...pixel(a, c + 1)) : here;
+            const before = rgb(...pixel(a, c - 1));
+            const after = rgb(...pixel(a, c + thickness));
+            on = near(here, second) && !faint(here, before) && !faint(here, after) && (blends || !between(here, before, after))
+              && (thickness === 1 || !near(second, after));
+          }
+          if (on && start !== null && !near(here, colour)) {
+            close(a);
+          }
+          if (on && start === null) {
+            start = a; colour = here;
+          } else if (!on) {
+            close(a);
+          }
+        }
+      }
+    }
+  };
+  scan('horizontal', rx, rx + rw, ry, ry + rh, (a, c) => [ a, c ]);
+  scan('vertical', ry, ry + rh, rx, rx + rw, (a, c) => [ c, a ]);
+  return found;
 }
