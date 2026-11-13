@@ -45,7 +45,7 @@ Disabled controls are exempt in WCAG, and are exempt here.
    low-priority text. Its pair there has a floor of 4 (my call, D-84).
    The search highlight is as dark as it can be while it stands 1.1 apart
    from both the current line and the text selection, with a chroma of 0.06
-   so that it is a hue and not a grey (my call, P4.2); every
+   so that it is a hue and not a grey (decided, D-122); every
    syntax colour keeps 4.5:1 on it, and a comment, with the same floor of
    4, measures 4.73:1. The gutter's marks (breakpoints, bookmarks,
    modified and saved lines) are syntax colours at 3:1 on the gutter.

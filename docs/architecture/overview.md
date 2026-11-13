@@ -80,7 +80,7 @@ parts/
   union-style/        amber/: the Union style, from the Breeze style 6.8.2 (P3.1); contents/css/tokens.css, generated (P3.2)
   decoration/
   terminal-colours/   keys.json: the token of each key (P4.1); Amber.colorscheme, generated (P4.1)
-  editor-theme/
+  editor-theme/       styles.json: the token of each key (P4.2); Amber.theme, generated (P4.2)
 tools/                command-line tools and their tests
 scripts/              install and uninstall
 .claude/skills/       skills for the agent, such as ai-tools

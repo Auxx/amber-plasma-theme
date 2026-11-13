@@ -273,7 +273,7 @@
     "foreground": "syntax-comment",
     "on": ["editor-selection", "editor-search"],
     "minimum": 4,
-    "why": "Accessibility rule 3: a comment inside a text selection or a search highlight is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84); the search highlight is as dark as the selection (P4.2, my call)."
+    "why": "Accessibility rule 3: a comment inside a text selection or a search highlight is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84); the search highlight is as dark as the selection (D-122)."
   },
   {
     "foreground": "editor-selection",

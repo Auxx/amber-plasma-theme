@@ -92,7 +92,7 @@
   --editor-gutter: var(--tone-1);         /* the gutter, a tone below the editor */
   --editor-current-line: var(--tone-3);   /* the current line, a tone above the editor */
   --editor-selection: #473e30;            /* the text selection: accent 20 % over tone 2 (D-82) */
-  --editor-search: #2e3b16;               /* the search highlight: oklch(33% 0.06 125), a dark olive between the current line and the text selection (P4.2, my call) */
+  --editor-search: #2e3b16;               /* the search highlight: oklch(33% 0.06 125), a dark olive between the current line and the text selection (D-122) */
   --syntax-keyword: #d79bb7;              /* keywords: if, return, static, const; oklch(75.5% 0.08 350) */
   --syntax-function: #7fb2d1;             /* function names; oklch(74% 0.07 235) */
   --syntax-type: #82bbb3;                 /* type names; oklch(75% 0.06 185) */

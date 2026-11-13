@@ -699,10 +699,9 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   (verified, 2026-11-11)
 - Kate 26.08.2 is installed, as is KWrite, which shares its editor component.
   (verified, 2026-11-11)
-- No user editor themes exist yet. (verified, 2026-11-10)
 - With no editor theme chosen, Kate picks Breeze Dark's under a dark colour
   scheme such as Amber: its editor area and minimap show cool greys
-  (`#232629`, `#31363b`) until the editor theme of P4.2 is chosen.
+  (`#232629`, `#31363b`) until Amber's editor theme is chosen.
   Konsole's default profile, and Kate's terminal panel, show Breeze's
   terminal colours (`#232627`). (verified, 2026-11-12, P2.3)
 - **The pane header follows the terminal colours.** In a split view
@@ -733,6 +732,39 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 - **Konsole draws bold text in the intense colours** (bold plain text in
   `ForegroundIntense`, bold red in `Color1Intense`) and faint text (SGR 2)
   in the faint ones. (verified, 2026-11-13, P4.1)
+- **An editor theme file** (`.theme`) is JSON: `metadata` (`name`,
+  `revision`, `copyright`, `license`), `text-styles` (31 styles, each with
+  `text-color`, `selected-text-color`, `bold`, `italic`, `underline`,
+  `strike-through`), `editor-colors` (28 colours) and `custom-styles`. The
+  keys are the enums `TextStyle` and `EditorColorRole` of
+  `libKF6SyntaxHighlighting.so.6.31.0`, where they were read; the built-in
+  themes are compiled into the library. A file written so was loaded by
+  `ksyntaxhighlighter6` and by Kate. (verified, 2026-11-13, P4.2)
+- **An editor theme can be tried without changing a setting:**
+  KSyntaxHighlighting finds `org.kde.syntax-highlighting/themes/<name>.theme`
+  in a folder first in `XDG_DATA_DIRS`, which must be an absolute path (a
+  relative one is ignored). `ksyntaxhighlighter6 -t <name> <file>` writes
+  the file as HTML in that theme, one `color` per span, which `sample
+  compare-editor` reads. The nested session's Kate takes the theme from its
+  own `katerc`: `[KTextEditor Renderer]` `Color Theme=<name>` with `Auto
+  Color Theme Selection=false`. (verified, 2026-11-13, P4.2)
+- **What Kate's C++ highlighting colours** (verified, 2026-11-13, P4.2,
+  with `ksyntaxhighlighter6 --syntax-trace format`): `static`, `const` and
+  `int` are data types, `constexpr` a keyword, `for`, `if`, `continue` and
+  `return` control flow, Qt classes an extension, `u'.'` a character,
+  punctuation an operator, and both kinds of `#include` target an import.
+  A user's function names and constants are plain text; standard and Qt
+  functions (`std::min`, `qDebug`, `tr`, `connect`) are functions.
+- **What Kate draws beside the text** (seen, 2026-11-13, P4.2): a line 1 px
+  wide at the gutter's right edge, full height, in the theme's `Separator`;
+  the current line's tone in both the gutter and the code; indentation
+  lines and the word wrap marker, off by default, in their own colours; a
+  modified or saved line as a bar 5 px wide in the gutter. Each line is
+  drawn over the current line's tone. While the search bar has focus the
+  code shows no current line, and Escape clears the search highlights. The
+  caret is drawn by inverting the pixels under it (`#dadde0` over tone 2,
+  `#171c25` over text): the theme has no caret colour. The minimap takes
+  the theme's colours, its view area tinted.
 - **Driving Konsole from outside:** `KMainWindow.activateAction
   split-view-left-right` on `/konsole/MainWindow_1` splits a live session,
   but not one held after its command ended (`--hold`). `Session.runCommand`
