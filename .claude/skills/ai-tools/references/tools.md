@@ -308,7 +308,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 
 | Command | Does |
 | --- | --- |
-| `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); exits 1 when there is one |
+| `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--token-blends] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); `--token-blends` excuses blends of two tokens, such as anti-aliased ANSI blue text; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `lines <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]` | Lists the straight lines 1 or 2 px thick and at least 32 px long in a whole picture, such as a window, needing no surface; the blended row where two tones meet at a fractional scale is not a line, and so a seam whose colour lies between its sides (tone 1 between tones 0 and 2) is missed unless `--blends` is given; exits 1 when there is one |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
@@ -320,6 +320,9 @@ node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/dolphin.png --r
 
 # Konsole without its terminal area, which the terminal colours (P4.1) own (P3.9): "no cool grey" and "left out: 1 region", exits 0
 node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/p3.9-T-main.png --leave-out 0,90,1909,1000
+
+# Konsole's terminal area with Amber's terminal colours (P4.1): "no cool grey" and "blends of tokens: 1338 colours, 10606 px", exits 0
+node tools/src/bin/image.mjs greys tmp/check-colour-scheme/shots/T-amber-sample.png --region 278,268,1350,756 --token-blends
 
 # A push button drawn on magenta by the P3.2 probe: e.g. "top: line #d1b072 1 px", "top left: rounded", exits 1
 node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/push-button-hovered.png --surface '#ff00ff'
@@ -361,6 +364,13 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --c
   `#161515`. A grey with r = g = b is still reported: no rounding explains it.
   Text should be drawn with greyscale anti-aliasing: subpixel fringes are
   coloured and are reported.
+- **`--token-blends`** (P4.1). Text in a hue that leans cool, such as ANSI
+  blue or cyan, anti-aliased over a dark tone, passes through colours of low
+  chroma that are cool greys by the rule. With `--token-blends` a grey within
+  2 a channel of the straight sRGB line between two opaque colour tokens is
+  excused and only counted. Use it where text of token colours is drawn, such
+  as a terminal or an editor; a real grey that happens to lie on such a line
+  is excused too, so look at the shot as well.
 - **Fully transparent pixels** are skipped; any other pixel is judged by its
   colour alone.
 - **`--region x,y,width,height`** in whole pixels from the top left corner.
@@ -398,7 +408,7 @@ node tools/src/bin/image.mjs states tmp/check-colour-scheme/shots/p3.5-amber --c
     a band, such as a focus bar or a block marker, and is not a line.
   - Colours are read without their alpha: a part-transparent pixel counts as
     its own colour. Draw on an opaque surface, as the probe does.
-- **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], marked }`;
+- **`--json`**: `greys` prints `{ greys: [{ hex, count, box, why }], blends, marked }`, `blends` only with `--token-blends`;
   `colours` prints `[{ hex, count, token? }]`.
   `frame` prints `{ drawn, box, corners, sides, lines }`, each corner
   `square`, `rounded` or `not judged`, each side `clear`, `line` or

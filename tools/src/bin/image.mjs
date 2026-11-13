@@ -50,7 +50,7 @@ main({
   summary: 'Reads the colours of a PNG picture: cool greys, colours named as tokens, rounded corners and lines.',
   commands: {
     greys: {
-      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--mark <out.png>] [--json]',
+      usage: '<png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--token-blends] [--mark <out.png>] [--json]',
       summary: 'Lists the cool greys of the picture; exits 1 when there is one',
       help: `A cool grey is a colour that is not a hue (OKLCH chroma below
 0.05) and is neither warm (hue 30 to 110) nor black: the rule of the
@@ -60,25 +60,42 @@ ${REGION_HELP}
 --leave-out x,y,width,height skips that rectangle; give it once for each
 part of the picture that is not to be judged, such as a terminal area. It
 may reach past the picture's edge.
+--token-blends excuses a grey that lies within 2 a channel of a blend of two
+opaque colour tokens, as text in a cool hue (ANSI blue, ANSI cyan) is
+anti-aliased over a tone; the excused colours are counted, not listed.
 --mark <out.png> writes a copy of the picture with those pixels in magenta.
 It must be inside the repository, such as tmp/; it is the only thing written.`,
-      options: { region: { type: 'string' }, 'leave-out': { type: 'string', multiple: true }, mark: { type: 'string' }, json: { type: 'boolean' } },
+      options: {
+        region: { type: 'string' },
+        'leave-out': { type: 'string', multiple: true },
+        'token-blends': { type: 'boolean' },
+        mark: { type: 'string' },
+        json: { type: 'boolean' }
+      },
       run(values, positionals) {
         const region = parseRegion(values.region);
         const leaveOut = (values['leave-out'] ?? []).map(text => parseRegion(text, '--leave-out'));
         const out = values.mark === undefined ? undefined : markPath(values.mark);
         const picture = readPicture(positionals);
-        const found = coolGreys(picture, { region, leaveOut });
+        const blendsOf = values['token-blends']
+          ? [ ...tokenNames(loadTokens()).keys() ].map(hex => [ 1, 3, 5 ].map(i => parseInt(hex.slice(i, i + 2), 16)))
+          : [];
+        const found = coolGreys(picture, { region, leaveOut, blendsOf });
+        const { blends } = found;
         if (out) {
           writeFileSync(out, encodePng(markPixels(picture, found.map(f => f.hex))));
         }
         const marked = out ? relative(root, out) : undefined;
-        print(values.json, { greys: found, marked, leftOut: leaveOut }, () => {
+        print(values.json, { greys: found, blends: values['token-blends'] ? blends : undefined, marked, leftOut: leaveOut }, () => {
           const lines = found.length
             ? [ table(found.map(({ hex, count, box: b }) => [ hex, `${count} px`, `at ${b.x},${b.y} ${b.width}×${b.height}` ])) ]
             : [ 'no cool grey' ];
           if (leaveOut.length) {
             lines.push(`left out: ${leaveOut.length} region${leaveOut.length === 1 ? '' : 's'}`);
+          }
+          if (values['token-blends']) {
+            const pixels = blends.reduce((sum, b) => sum + b.count, 0);
+            lines.push(`blends of tokens: ${blends.length} colour${blends.length === 1 ? '' : 's'}, ${pixels} px`);
           }
           if (marked) {
             lines.push(`marked: ${marked}`);

@@ -90,6 +90,22 @@ describe('coolGreys', () => {
   it('skips a fully transparent pixel', () => {
     assert.deepEqual(coolGreys(picture([ hex('#80808000') ])), []);
   });
+
+  it('skips a blend of two of the given colours, as anti-aliased blue text is (P4.1)', () => {
+    // ANSI blue over the terminal at 40 %: a hue mixed down to a cool grey.
+    const [ fr, fg, fb ] = rgba('ansi-blue');
+    const [ br, bg, bb ] = rgba('terminal');
+    const blend = [ fr * 0.4 + br * 0.6, fg * 0.4 + bg * 0.6, fb * 0.4 + bb * 0.6, 255 ].map(Math.round);
+    const image = picture([ rgba('terminal'), blend ]);
+    assert.equal(coolGreys(image).length, 1);
+    assert.deepEqual(coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal') ] }), []);
+  });
+
+  it('still reports a grey that is no blend of the given colours (P4.1)', () => {
+    const image = picture([ hex('#808080'), hex('#2b2d31') ]);
+    const found = coolGreys(image, { blendsOf: [ rgba('ansi-blue'), rgba('terminal'), rgba('text') ] });
+    assert.deepEqual(found.map(f => f.hex), [ '#2b2d31', '#808080' ]);
+  });
 });
 
 describe('colourCounts', () => {

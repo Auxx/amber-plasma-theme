@@ -32,6 +32,17 @@ describe('image tool', () => {
   writeFileSync(join(folder, 'warm.png'), row('#151413', '#25221f', '#e8e3da'));
   writeFileSync(join(folder, 'grey.png'), row('#151413', '#151413', '#25221f', '#25221f', '#808080'));
 
+  it('passes blends of tokens with --token-blends, and still fails a grey (P4.1)', () => {
+    // #3f494f: ANSI blue over the terminal, about 40 %, as Konsole drew it.
+    writeFileSync(join(folder, 'blue-text.png'), row('#1c1a18', '#3f494f'));
+    assert.equal(image('greys', path('blue-text.png')).status, 1);
+    const { status, stdout } = image('greys', path('blue-text.png'), '--token-blends');
+    assert.equal(status, 0);
+    assert.match(stdout, /no cool grey/);
+    assert.match(stdout, /blends of tokens: 1 colour/);
+    assert.equal(image('greys', path('grey.png'), '--token-blends').status, 1);
+  });
+
   it('finds no cool grey in a warm picture', () => {
     const { status, stdout } = image('greys', path('warm.png'));
     assert.equal(status, 0);
