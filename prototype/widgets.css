@@ -978,6 +978,21 @@
   width: 180px;
 }
 
+/* A combo box list is a menu with no tick column and no padding above or
+   below, as Qt draws it: its text starts where the combo box's does, and its
+   current value takes the hovered tone (P3.8, D-114, D-115). */
+.combo-open .menu {
+  padding: 0;
+}
+
+.combo-open .menu-item {
+  padding: 0 12px;
+}
+
+.combo-open .menu-item.is-current:enabled {
+  background-color: var(--tone-4);
+}
+
 /* A tooltip shows 400 ms after its anchor is hovered or takes keyboard
    focus, and hides at once. */
 .tooltip-anchor {

@@ -1025,12 +1025,14 @@ describe('the Union style\'s popups (P3.8)', () => {
     assert.equal(value(i, 'spacing'), '6px');
     assert.equal(value(i, 'inset'), '0px');
     assert.equal(value(i, 'border-radius'), '0px');
-    for (const part of [ 'shortcuttext', 'arrow' ]) {
-      const p = child(i, part);
-      assert.equal(value(p, 'color'), 'var(--text-dim)', part);
-      assert.equal(value(child(p, '&:hovered, &:highlighted'), 'color'), 'var(--text)', part);
-      assert.equal(value(child(p, '&:disabled'), 'color'), 'var(--text-dim)', part);
-    }
+    const p = child(i, 'shortcuttext');
+    assert.equal(value(p, 'color'), 'var(--text-dim)');
+    assert.equal(value(child(p, '&:hovered, &:highlighted'), 'color'), 'var(--text)');
+    assert.equal(value(child(p, '&:disabled'), 'color'), 'var(--text-dim)');
+    // A submenu arrow takes the item's icon colour, text: no rule on the arrow reaches it, and the item's
+    // icon-color would dim its own icon too (review of P3.8). The arrow sets no colour that would not be drawn.
+    const arrow = child(i, 'arrow');
+    assert.deepEqual(below(arrow).flatMap(b => b.declarations).filter(d => /color/.test(d.property)).map(d => d.property), []);
   });
 
   it('draws a menu item\'s tick and dot in accent with no box, dim when disabled', () => {
@@ -1071,10 +1073,13 @@ describe('the Union style\'s popups (P3.8)', () => {
     const t = child(s, '&.with-title');
     assert.equal(value(t, 'background-color'), 'transparent');
     assert.equal(value(t, 'color'), 'var(--text-dim)');
-    assert.equal(value(t, 'height'), '26px');
+    // The 8 px gap above the title is its top padding, and the title row below it 26 px (review of P3.8). The
+    // shorthand inset of a separator would push the title 4 px past the labels: its sides are 0.
+    assert.equal(value(t, 'height'), '34px');
     assert.equal(value(t, 'font-weight'), 'normal');
     assert.equal(value(t, 'border-bottom'), 'none');
-    assert.deepEqual([ 'top', 'bottom', 'left' ].map(e => value(t, `padding-${e}`)), [ '0px', '0px', '28px' ]);
+    assert.deepEqual([ 'top', 'bottom', 'left' ].map(e => value(t, `padding-${e}`)), [ '8px', '0px', '28px' ]);
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(e => value(t, `inset-${e}`)), [ '0px', '0px', '0px', '0px' ]);
   });
 
   it('draws a combo box list as a menu, its items with no inset that would show the window through it', () => {

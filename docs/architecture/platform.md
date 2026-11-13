@@ -231,7 +231,10 @@ Verified on 2026-11-10 unless marked.
     `:visual-focus`. An item whose submenu is open stays `:highlighted`.
     `:pressed`, `:checked`, `:disabled`, `.with-submenu`, `height`,
     `padding-*` and `inset` reach it, and `shortcuttext` and `arrow` are
-    drawn by Union.
+    drawn by Union. `shortcuttext` takes its own `color`; a submenu arrow
+    takes the item's `color` or `icon-color`, which colour the item's own
+    icon too, and no rule on `arrow` or `indicatorarrowright` reaches it.
+    (verified, 2026-11-13, P3.8, in `render()`)
   - A checkable item's mark is `menuitem > indicator`, but an item with an
     icon, and a disabled one, draw it as a `checkbox` or `radiobutton`
     inside `menu`: only `menu checkbox …` and `menu radiobutton …` reach
@@ -239,11 +242,14 @@ Verified on 2026-11-10 unless marked.
   - A label starts after the item's icon when it has one, and at the
     item's padding when it has none, so labels of one menu need not line
     up (a known gap, D-115).
-  - A `menuseparator` is as high as its `height` and its `inset`, and only
-    the shorthand `inset` counts: `height: 0px; inset: 4px` is an 8 px gap
-    that draws nothing; with `inset-top` and `inset-bottom` it was 0 px.
-    Breeze's drew a 1 px line. `.with-title` (`QMenu::addSection`) takes
-    background, `color`, `height`, `padding-*` and `font-weight`.
+  - A `menuseparator` is as high as its `height` and its `inset`:
+    `height: 0px; inset: 4px` is an 8 px gap that draws nothing. Set alone,
+    `inset-top` and `inset-bottom` added nothing to a plain separator (0 px
+    high). Breeze's drew a 1 px line. `.with-title` (`QMenu::addSection`)
+    takes background, `color`, `height`, `padding-*` and `font-weight`; it
+    inherits the separator's `inset`, whose sides push its title 4 px past
+    the labels unless its own `inset-*` are 0, and its top padding is a gap
+    above its title.
   - **No `box-shadow` is drawn under a popup**: not on `menu`, `popup` or
     `tooltip`, under Wayland or X11, and KWin draws none of its own.
   - **A combo box's list is a clear window that no rule fills** (`popup`,

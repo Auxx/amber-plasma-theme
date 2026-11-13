@@ -73,8 +73,6 @@ Amber is in early development and nothing can be installed yet.
   reach: a settings dialog's page list is tone 2 on the dialog's tone 1
   body, and a header past its last section shows tone 1. (seen in P3.7;
   D-113)
-- **No shadow under a popup** in Qt Widgets applications: Union draws no
-  `box-shadow` there. Qt Quick applications show it. (seen in P3.8; D-74)
 - **Menu labels need not line up.** A menu item's label starts after its
   icon, or at its padding when it has none. (seen in P3.8; D-115)
 - **A message has a line at its foot.** A message such as Dolphin's "does

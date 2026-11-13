@@ -199,10 +199,12 @@ background / text, and the block marker or tick where the widget has one.
   right. Menu separators are an 8 px gap: no line and no band of tone.
   A menu section's title is dim text at the item's weight, where an item's
   label starts, with no line; an item whose submenu is open keeps its
-  hovered tone; a combo box's list is a menu, its items menu items and its
-  current value ticked. (my call, D-114) In Qt Widgets Union draws that
-  value no tick, so it shows in the hovered tone; a list's text lines up
-  with its combo box's, as Breeze's does (decided, D-115).
+  hovered tone; a combo box's list is a menu with no tick column and no
+  padding above or below, its current value in the hovered tone, as Qt
+  draws it (my call, D-114); its text lines up with its combo box's, as
+  Breeze's does (decided, D-115). In Qt Widgets a submenu arrow is text,
+  not dim text: the Union style cannot colour it apart from the item's
+  icon (my call, D-114).
 - **Tooltips** (my call, P1.5) are popups: they show 400 ms after their
   anchor is hovered or takes keyboard focus, and hide at once.
 - **A dialog** is a window, with a title bar, window outline and window

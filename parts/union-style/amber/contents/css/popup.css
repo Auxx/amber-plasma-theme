@@ -99,13 +99,8 @@ menuitem
         height: var(--icon-size-small);
         layout-alignment: content end center 1;
         icon-name: "arrow-right-symbolic";
-        color: var(--text-dim);
-        &:hovered, &:highlighted {
-            color: var(--text);
-        }
-        &:disabled {
-            color: var(--text-dim);
-        }
+        /* The arrow takes the item's icon colour, text: no rule on it is
+         * drawn (P3.8, review). */
     }
 
     indicator
@@ -175,17 +170,21 @@ menuseparator {
     inset: 4px;
     background-color: transparent;
 
+    /* A section's title: an 8 px gap above it as its top padding, then a
+     * 26 px row; no side inset, so the title starts where labels do. */
     &.with-title {
-        height: 26px;
+        height: 34px;
         text-alignment: content start center 0;
         layout-alignment-horizontal: fill;
         background-color: transparent;
-        padding-top: 0px;
+        padding-top: 8px;
         padding-bottom: 0px;
         padding-left: 28px;
         padding-right: 12px;
         inset-top: 0px;
+        inset-right: 0px;
         inset-bottom: 0px;
+        inset-left: 0px;
         font-weight: normal;
 
         color: var(--text-dim);
