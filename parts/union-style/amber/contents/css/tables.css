@@ -131,6 +131,11 @@ headerviewdelegate
 
     border-bottom: none;
     border-right: none;
+    /* At a fractional scale a section's edges fall mid-pixel and the header's
+     * own tone showed as a line: the fill reaches 1 px past them (P3.9). */
+    inset-right: -1px;
+    inset-bottom: -1px;
+    inset-left: -1px;
 
     /* A clear section shows the header's Button tone 3: it paints the view's tone 2 itself (P3.7). */
     background-color: var(--tone-2);
