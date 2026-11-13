@@ -916,11 +916,31 @@
   height: 8px;
 }
 
-.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) {
+/* An exclusive item's mark is the radio's dot, in accent with no box (P3.8,
+   D-114). A dot is a round widget, not a rounded corner. */
+.menu-dot {
+  stroke: none;
+  fill: var(--mark);
+}
+
+/* A menu section's title (P3.8, D-114): dim, at the item's weight, where an
+   item's label starts, with no line. */
+.menu-section {
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px 0 28px;
+  display: flex;
+  align-items: center;
+  color: var(--text-dim);
+}
+
+/* Pressed is drawn as hovered, and an item whose submenu is open keeps the
+   hovered tone (P3.8, D-114). */
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused, :active, .is-pressed, .is-open) {
   background-color: var(--tone-4);
 }
 
-.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused) :is(.menu-shortcut, .menu-arrow) {
+.menu-item:enabled:is(:hover, .is-hovered, :focus-visible, .is-focused, :active, .is-pressed, .is-open) :is(.menu-shortcut, .menu-arrow) {
   color: var(--text);
 }
 
@@ -930,6 +950,20 @@
 
 .menu-item:disabled {
   color: var(--text-dim);
+}
+
+/* A disabled checked item's tick is dim text, as a disabled toggle's mark
+   is (P3.8, D-114). */
+.menu-item.is-checked:disabled {
+  --mark: var(--text-dim);
+}
+
+/* A tooltip shown in the gallery, out of its anchor. */
+.popup.tooltip.is-shown {
+  position: relative;
+  top: auto;
+  left: auto;
+  visibility: visible;
 }
 
 .live-row .toolbar-strip {

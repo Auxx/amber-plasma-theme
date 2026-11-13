@@ -217,17 +217,36 @@ const WIDGETS = {
       disabled: [ 'transparent', 'text-dim' ]
     }
   },
+  // A menu item (P3.8, D-114): pressed is drawn as hovered, an open submenu
+  // keeps the hovered tone, and a disabled tick is dim text.
   'menu-item': {
-    control: '.menu-item',
+    control: '.menu-item.is-state',
     read: [ 'background-color', 'color', '--mark' ],
     states: {
       rest: [ 'transparent', 'text', 'transparent' ],
       hovered: [ 'tone-4', 'text', 'transparent' ],
       focused: [ 'tone-4', 'text', 'transparent' ],
+      pressed: [ 'tone-4', 'text', 'transparent' ],
       checked: [ 'transparent', 'text', 'accent' ],
-      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+      'checked-hovered': [ 'tone-4', 'text', 'accent' ],
+      'checked-exclusive': [ 'transparent', 'text', 'accent' ],
+      'submenu-open': [ 'tone-4', 'text', 'transparent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ],
+      'checked-disabled': [ 'transparent', 'text-dim', 'text-dim' ]
     }
-  }
+  },
+  'menu-section': { control: '.menu-section', states: { rest: [ 'transparent', 'text-dim' ] } },
+  // A combo box list is a menu; its current value carries the tick (P3.8).
+  'combo-list': {
+    control: '.menu-item.is-state',
+    read: [ 'background-color', 'color', '--mark' ],
+    states: {
+      rest: [ 'transparent', 'text', 'transparent' ],
+      hovered: [ 'tone-4', 'text', 'transparent' ],
+      current: [ 'transparent', 'text', 'accent' ]
+    }
+  },
+  tooltip: { control: '.tooltip', states: { rest: [ 'popup', 'text' ] } }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
@@ -239,7 +258,8 @@ const FORCED = {
   checked: 'is-checked',
   selected: 'is-selected',
   sorted: 'is-sorted',
-  open: 'is-open'
+  open: 'is-open',
+  current: 'is-checked'
 };
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 
@@ -923,8 +943,8 @@ describe('prototype gallery', () => {
       return pixel(page, x + width / 2, y + height - 1);
     };
     const offences = [];
-    const combo = rgb((await coloursOf(page, '.combo-open .combo'))[0]);
-    const comboFoot = await footOf('.combo-open .combo');
+    const combo = rgb((await coloursOf(page, '.live .combo-open .combo'))[0]);
+    const comboFoot = await footOf('.live .combo-open .combo');
     if (comboFoot.some((channel, i) => Math.abs(channel - combo[i]) > 1)) {
       offences.push(`combo box foot ${comboFoot}, expected its tone ${combo}`);
     }
@@ -981,8 +1001,8 @@ describe('prototype gallery', () => {
   withChrome('keeps the combo list against its combo box', async () => {
     // A gap of surface between the two lighter boxes would read as a line.
     const { page } = await gallery();
-    const combo = await page.locator('.combo-open .combo').boundingBox();
-    const list = await page.locator('.combo-open .popup').boundingBox();
+    const combo = await page.locator('.live .combo-open .combo').boundingBox();
+    const list = await page.locator('.live .combo-open .popup').boundingBox();
     assert.equal(list.y, combo.y + combo.height);
   });
 

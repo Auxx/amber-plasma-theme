@@ -209,6 +209,24 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A small window that opens over a window and closes when it is done: a
   menu, a combo box's list, a tooltip. A dialog is a window, not a popup.
 
+**Menu**
+: A popup of menu items, opened from a menu title, a button or a right
+  click. A combo box's list is drawn as a menu.
+
+**Menu item**
+: One entry of a menu. It may carry a tick, a shortcut or an arrow to a
+  submenu. _Avoid_ "action", Qt's name for what it runs.
+
+**Menu section**
+: A run of menu items under a dim title, set apart by a gap. _Avoid_
+  "separator with title", Union's `menuseparator.with-title`, except when
+  naming Union's selector.
+
+**Message**
+: A strip inside a window that tells the result of something: positive,
+  neutral or negative. _Avoid_ "message widget", `KMessageWidget`, except
+  when naming the class.
+
 **Sample**
 : A mock terminal or editor in the prototype, filled with realistic content,
   that shows the terminal colours or the editor theme.
