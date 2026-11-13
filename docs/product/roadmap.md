@@ -286,6 +286,6 @@ are in the README.
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | todo |
+| P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | in progress |
 | P6.2 README | How to install, select (with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
 | P6.3 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
