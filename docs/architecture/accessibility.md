@@ -91,12 +91,12 @@ Disabled controls are exempt in WCAG, and are exempt here.
    window behind it, and reaches 2:1 against tones 0 to 2, the tones a
    window shows at its edge. (decided, D-62; the minimum of the pairs is
    my call, D-63) It is not measured against the window glow (decided,
-   D-62), against which it reaches 1.84:1 over tone 0, nor against the
+   D-62), against which it reaches 1.92:1 over tone 0, nor against the
    desktop, which may be any wallpaper. The window glow marks the active
    window, as the dim title text of an inactive window marks the same
    state. The glow is a faint indicator and has no contrast minimum and
-   no pair (decided, D-60): at accent 14 % it measures 1.29:1, 1.31:1 and
-   1.33:1 over tones 0, 1 and 2 (2026-11-12). The shadow shows no state
+   no pair (decided, D-60): at accent 12 % (D-132) it measures 1.24:1,
+   1.26:1 and 1.27:1 over tones 0, 1 and 2 (2026-11-13). The shadow shows no state
    and has no pair.
 6. **A pair that passes by less than 2 % is close** and is reported as a
    warning.

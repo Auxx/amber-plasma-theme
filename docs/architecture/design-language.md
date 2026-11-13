@@ -299,14 +299,18 @@ token holds the plain colour (D-47).
 - A window has a window outline. (decided, D-25) It runs along every edge,
   square at the corners, the same for active and inactive windows. It is
   one pixel wide and `#585248`, which reaches 2:1 against tones 0 to 2.
-  (decided, D-62) A maximised window has none (my call).
+  (decided, D-62) A maximised window has none (my call, seen right by the
+  owner in P5.3, D-132).
 - No other line: none between the title bar and the content.
 - The active window has a window glow: a soft light in accent on every
   side, outside the window outline. An inactive window has a dark shadow
   in its place. (decided, D-26) A maximised window has neither.
-  - The window glow is a faint indicator: accent at 14 % at the window
-    outline, fading to nothing over 48 px, the same on every side. It has
-    no contrast minimum. (decided, D-60)
+  - The window glow is a faint indicator: accent at 12 % where its fade
+    starts, fading to nothing over 48 px, set a little lower than the
+    window as Breeze's shadow is: its fade starts 12 px inside the window
+    at the top and 6 px at the sides, so that 36 px show above the window,
+    42 px beside it and 48 px below it. It has no contrast minimum.
+    (decided, D-60, D-132)
   - The shadow is that of Breeze: black at 55 %, on a fade 36 px long
     that starts inside the window, so that 9 px of it show above the
     window, 19 px beside it and 32 px below it. (decided, D-59)
@@ -314,15 +318,22 @@ token holds the plain colour (D-47).
     shadow: level for the first 6 % of the length, then falling fast and
     running out slowly. Its 13 stops are written in
     `prototype/window.css` (my call, D-61).
-- Tokens of the decoration (decided, D-59, D-60 and D-62):
+- A tiled window is a window like any other: it keeps its window outline
+  on every edge, at the screen's edge too, and its light. Two windows
+  tiled side by side show their two outlines side by side, the inactive
+  one under the active one's glow (seen in P5.3).
+- Tokens of the decoration (decided, D-59, D-60, D-62 and D-132):
 
   | Token | Value | Used for |
   |---|---|---|
   | `--outline` | `#585248` | the window outline |
   | `--outline-width` | `1px` | its width |
   | `--title-bar-height` | `30px` | the title bar's height, below the window outline (my call, P5.1) |
-  | `--glow` | accent at 14 % | the window glow, at the window outline |
+  | `--glow` | accent at 12 % | the window glow, where its fade starts |
   | `--glow-size` | `48px` | how far the window glow fades to nothing |
+  | `--glow-inset-top` | `12px` | how far inside the window the glow's fade starts at the top |
+  | `--glow-inset-side` | `6px` | the same at the sides |
+  | `--glow-inset-bottom` | `0px` | the same at the foot |
   | `--shadow` | black at 55 % | the shadow of an inactive window and of a popup, where its fade starts |
   | `--shadow-size` | `36px` | how long the shadow's fade is |
   | `--shadow-inset-top` | `27px` | how far inside the window the fade starts at the top |
@@ -332,9 +343,12 @@ token holds the plain colour (D-47).
 - The prototype draws the window glow and the shadow as gradients from the
   window outline outwards, straight on the edges and round on the corners,
   as the Aurorae frame draws them (see [platform](platform.md), P0.6). It
-  uses no `box-shadow`. Whether Aurorae draws the eased curve and a fade
-  that starts inside the window is unverified until P5.3 (see
-  [platform](platform.md)).
+  uses no `box-shadow`. The decoration draws the same, on the same curve,
+  within 0.004 of the tokens at scale 1 (D-131); the gallery's "Windows"
+  shows both lights on known backdrops, and `image light` compares a shot
+  with the tokens. At a fractional scale the one device pixel beside the
+  window outline on a straight edge is a little weaker than the fade, a
+  known gap (D-133).
 - Window buttons are flat and never glow, like every widget (D-4). Each is
   a square `--title-bar-height` across, with a 16 px glyph stroked 1.5 px
   with square ends, drawn in `prototype/window.css` and the gallery's

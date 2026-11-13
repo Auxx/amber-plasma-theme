@@ -119,6 +119,12 @@ Amber is in early development and nothing can be installed yet.
   outline stays whole at a fractional scale: at scale 1 a 1 px strip of
   the title bar's tone shows between the two, and at 1.49 a dark blended
   row. (seen in P5.2; D-130)
+- **A faint seam beside the window outline at a fractional scale.** At a
+  scale such as 1.49, the one device pixel just outside the window outline
+  on each straight edge is a little weaker than the rest of the window
+  glow or the shadow, so it reads as a faint line; the corners are even.
+  Aurorae draws the stretched edges so, whatever the theme draws. At scale
+  1 it is even. (seen in P5.3; D-133)
 - **Kate's caret is a cool grey.** Kate draws the text caret by inverting
   the pixels under it, so on the editor's warm tone it is `#dadde0`. The
   editor theme has no caret colour. (seen in P4.2; D-124)

@@ -674,13 +674,64 @@ Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
   the one pointer, so it hovers and presses the decoration of Wayland and
   X11 windows alike.
 
+### Amber's glow and shadow — P5.3, 2026-11-13
+
+Verified on 2026-11-13 with `parts/decoration/amber/` and probe copies of it
+in the nested KWin, at scale 1 and on a virtual output at 1.49.
+
+- **Aurorae draws a light of many stops as written**, from the frame's
+  edge and corner elements in the room of `Padding*`. Measured with
+  `image light` over a backdrop of one colour, the window glow and the
+  shadow were within 0.004 alpha of the tokens on every side and at every
+  corner, at scale 1, on the eased curve of `--light-fade`.
+- **An element may reach inside the window.** Edge and corner elements
+  thicker than the padding and the borders are drawn reaching inwards over
+  the title bar and under the application; the title bar, the buttons and
+  the application stay where the `rc` file puts them, and the reach can
+  differ by side. Amber's elements reach as far in as the shadow's fade
+  starts (27 px at the top, 17 at the sides, 4 at the foot), filled with
+  tone 0 there, so that a corner can fade round the corner of the window
+  shrunk by the insets, as the prototype does. The Aurorae copy of
+  Breeze's shadow (`ActiveAccentDawn`) does the same. Both frames reach
+  equally.
+- **A corner drawn as one radial gradient over the whole element shows a
+  dark band** where it meets the edge: the light is the distance to the
+  shrunk window, radial only beyond its corner and straight beside it.
+- **A translucent application shows nothing of the frame under it**: in
+  Konsole at an opacity of 0.8 only the desktop and the windows behind
+  showed through, not the tone 0 the elements hold there.
+- **A click in the light goes to what lies behind.** Clicks 4 and 10 px
+  outside the window outline activated the window behind; drags 1 and
+  2 px out did nothing, and a drag on the outline resized the window, as
+  with no padding.
+- **`Shadow=false` in the `rc` file changed nothing** that was seen: the
+  title and the light were the same pixel for pixel. Amber keeps `true`.
+- **A maximised window needs no element of its own**: with only the
+  `decoration-*` and `decoration-inactive-*` frames it shows no padding,
+  no light and no window outline; its title bar is tone 0 from the
+  output's top row, and close, at the output's top right pixel, is
+  hovered there. The fill's inset of D-130 leaves 1 px of tone 0 above
+  and right of a hovered close.
+- **A tiled window keeps every edge**: tiled to a half or a quarter, it
+  showed its window outline on every edge, at the output's edges too, and
+  its light on the inner sides. Two windows side by side show their two
+  outlines next to each other, the inactive one tinted by the active
+  one's glow (`#695f4e`). No other line.
+- **At a fractional scale the device pixel beside the outline on a
+  straight edge is weaker than the fade**: at 1.49 by 0.021 (glow) to
+  0.028 (shadow) alpha, so that `image lines` reports a 1 px line beside
+  the active window's top and sides. The corners, which Aurorae does not
+  stretch, are even. The light's colour under the outline, or the light's
+  rectangle reaching under it, changed nothing. A known gap (D-133).
+- In the nested session, the output of a KWin script's `print()` does not
+  reach the log; the state is read from shots instead. Konsole's opacity
+  is a key of the terminal colours (`Opacity` in `[General]`), not of the
+  profile.
+
 ### Unverified
 
 | Question | Tested in |
 |---|---|
-| What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
-| Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype draws the window glow and the shadow this way since P1.7 (D-59 to D-61). | P5.3 |
-| Is there a line at the edge of a tiled window? | P5.3 |
 | Does KWin draw a disabled minimise or close (a window that cannot be minimised or closed, as through a window rule), and with which element? Amber's button files have no `deactivated` element. Only maximise on a window of fixed size was seen: KWin left it out. | P6.3 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the
