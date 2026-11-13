@@ -40,9 +40,9 @@
 .window.is-active {
   --light: var(--glow);
   --light-size: var(--glow-size);
-  --light-inset-top: 0px;
-  --light-inset-side: 0px;
-  --light-inset-bottom: 0px;
+  --light-inset-top: var(--glow-inset-top);
+  --light-inset-side: var(--glow-inset-side);
+  --light-inset-bottom: var(--glow-inset-bottom);
 }
 
 .window:not(.is-active),
@@ -217,4 +217,15 @@
 .window-button.is-close.is-pressed {
   background: var(--danger);
   color: var(--on-danger);
+}
+
+/* A maximised window fills the screen: no window outline, no window glow and
+   no shadow, as Aurorae draws it (P0.6, P5.3); its maximise button shows
+   restore (P5.2). */
+.window.is-maximised {
+  outline: none;
+}
+
+.window.is-maximised::before {
+  content: none;
 }

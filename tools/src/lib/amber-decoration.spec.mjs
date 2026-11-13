@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { srgb8 } from './colour.mjs';
-import { BUTTON_STATES, GLYPHS } from './decoration.mjs';
+import { BUTTON_STATES, FADE, GLYPHS } from './decoration.mjs';
 import { PARTS } from './generate.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
@@ -47,15 +47,21 @@ describe('Amber decoration', () => {
 
   it("matches the prototype's window", () => {
     const svg = generate()['decoration.svg'];
-    const fill = id => svg.match(new RegExp(`id="${id}"[^>]*fill="(#[0-9a-f]{6})"`))[1];
+    /** The fills of the rects of one element (a group). */
+    const fills = id => [ ...svg.match(new RegExp(`<g id="${id}">([\\s\\S]*?)</g>`))[1].matchAll(/fill="([^"]+)"/g) ].map(m => m[1]);
     const titleBar = hexOf(windowToken('.title-bar', 'background'));
     const outline = hexOf(windowToken('.window', 'outline'));
     for (const prefix of [ 'decoration', 'decoration-inactive' ]) {
-      assert.equal(fill(`${prefix}-center`), titleBar, `${prefix}-center`);
-      assert.equal(fill(`${prefix}-top`), outline, `${prefix}-top`);
-      assert.equal(fill(`${prefix}-bottomright`), outline, `${prefix}-bottomright`);
+      assert.deepEqual(fills(`${prefix}-center`), [ titleBar ], `${prefix}-center`);
+      assert.ok(fills(`${prefix}-top`).includes(outline), `${prefix}-top`);
+      assert.ok(fills(`${prefix}-bottomright`).includes(outline), `${prefix}-bottomright`);
     }
+    // The light of each state is the prototype's: --light of .window.is-active and of an inactive window (P5.3).
+    const stopColour = id => svg.match(new RegExp(`<linearGradient id="${id}"[^>]*><stop [^>]*stop-color="(#[0-9a-f]{6})"`))[1];
+    assert.equal(stopColour('active-top'), hexOf(windowToken('.window.is-active', '--light')));
+    assert.equal(stopColour('inactive-top'), hexOf(windowToken('.window:not(.is-active),\n.popup', '--light')));
   });
+
 
   it('generates every window button', () => {
     assert.deepEqual(Object.keys(generate()).sort(),
@@ -97,6 +103,32 @@ describe('Amber decoration', () => {
     const names = { minimize: 'minimise', maximize: 'maximise', restore: 'restore', close: 'close' };
     for (const [ button, name ] of Object.entries(names)) {
       assert.equal(GLYPHS[button], gallery[name], button);
+    }
+  });
+
+  it("fades on the prototype's curve (P5.3)", () => {
+    const css = readFileSync(WINDOW_CSS, 'utf8');
+    const body = css.match(/--light-fade:([^;]*);/)[1];
+    const share = percent => Math.round(Number(percent) * 10) / 1000;
+    const stops = body.split(/,\s*\n/).map(s => s.trim()).filter(Boolean).map(stop => {
+      if (stop === 'transparent') {
+        return [ 1, 0 ];
+      }
+      const full = stop.match(/^var\(--light\) ([\d.]+)%$/);
+      if (full) {
+        return [ share(full[1]), 1 ];
+      }
+      const mixed = stop.match(/^color-mix\(in srgb, var\(--light\) ([\d.]+)%, transparent\) ([\d.]+)%$/);
+      assert.ok(mixed, `window.css: a stop of --light-fade not understood: ${stop}`);
+      return [ share(mixed[2]), share(mixed[1]) ];
+    });
+    assert.deepEqual(FADE, stops);
+  });
+
+  it('shifts the glow by the tokens the prototype reads (P5.3)', () => {
+    for (const side of [ 'top', 'side', 'bottom' ]) {
+      assert.equal(windowToken('.window.is-active', `--light-inset-${side}`), `glow-inset-${side}`);
+      assert.equal(windowToken('.window:not(.is-active),\n.popup', `--light-inset-${side}`), `shadow-inset-${side}`);
     }
   });
 });

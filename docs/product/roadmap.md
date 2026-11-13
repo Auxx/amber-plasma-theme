@@ -244,7 +244,7 @@ current line and its inverted caret are known gaps (D-124).
 |---|---|---|---|
 | P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | done |
 | P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | done |
-| P5.3 Glow, shadow and window states | Window glow for the active window, shadow for an inactive one; maximised and tiled windows | Matches the prototype; no line but the window outline appears at any window edge in any state; a maximised window shows no outline, glow or shadow | todo |
+| P5.3 Glow, shadow and window states | Window glow for the active window, shadow for an inactive one; maximised and tiled windows | Matches the prototype; no line but the window outline appears at any window edge in any state; a maximised window shows no outline, glow or shadow | done |
 
 P5.1 generated `decoration.svg` and `amberrc` of the Aurorae theme
 `parts/decoration/amber/` from the tokens with `generate decoration`, and
@@ -268,6 +268,19 @@ keep off the window outline, so that the outline stays whole at 1.49; a
 hovered or pressed button then shows a seam at the outline, a known gap
 (D-130). For P5.3: a maximised window shows restore at rest and no window
 outline. For P6.2: the README need not change KWin's button settings.
+
+P5.3 generated the window glow and the shadow into the frame, after a probe
+in the nested KWin showed that an element may reach inside the window
+(D-131). The gallery's "Windows" shows both lights on known backdrops,
+and the new `image light` compares a shot with the tokens: KWin matched
+them within 0.004 at scale 1. Maximised windows need nothing more; tiled
+windows keep every edge; a click in the light goes to what lies behind.
+Live, the owner chose a fainter glow set a little lower, with three new
+tokens (D-132), and a faint seam beside the outline at a fractional scale
+is a known gap (D-133). For P6.1: the theme is still the six files of
+`parts/decoration/amber/` and `metadata.desktop`. For P6.2: the border
+size must still be "Tiny"; the known gaps of D-126, D-127, D-130 and D-133
+are in the README.
 
 ## Step 6 — Packaging
 

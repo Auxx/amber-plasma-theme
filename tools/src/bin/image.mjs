@@ -4,9 +4,11 @@ import { join } from 'node:path';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UsageError, main, print, table } from '../lib/cli.mjs';
-import { colourCounts, coolGreys, fill, frame, lines, markPixels, profile, tokenNames } from '../lib/image.mjs';
+import { cornerFade, fade, lights } from '../lib/decoration.mjs';
+import { colourCounts, coolGreys, fill, frame, lightAlphas, lines, markPixels, profile, tokenNames } from '../lib/image.mjs';
 import { decodePng, encodePng } from '../lib/png.mjs';
-import { loadTokens } from '../lib/tokens.mjs';
+import { srgb8 } from '../lib/colour.mjs';
+import { loadTokens, resolveToken } from '../lib/tokens.mjs';
 
 const root = fileURLToPath(new URL('../../..', import.meta.url));
 
@@ -134,6 +136,93 @@ across the edge of a window (P5.1). --json prints { colour, token, length, at }.
         print(values.json, runs, () =>
           table(runs.map(({ colour, token, length, at }) => [ colour, token ?? '-', `${length} px`, `at ${at.x},${at.y}` ])));
         return 0;
+      }
+    },
+    light: {
+      usage: '<png> --from x,y --to x,y --over <hex|token> --state active|inactive (--side <side> | --corner <corner>) [--scale 1] [--tolerance 0.02] [--json]',
+      summary: 'Compares the window glow or the shadow along a line of a shot with the tokens; exits 1 beyond the tolerance',
+      help: `Reads the light of a window from --from, the first device pixel
+outside the window outline, outwards to --to, along a row or column (--side
+top, left, right or bottom) or a 45° diagonal (--corner topleft, topright,
+bottomleft or bottomright). Each pixel's alpha is recovered against --over,
+the colour behind the window, and compared with the light the tokens give:
+the window glow for --state active, the shadow for inactive (D-59, D-60),
+at (n + 0.5) / scale logical px from the outline, or √2 times that along a
+diagonal. Prints one line a pixel (n, measured, expected, difference), then
+the largest difference (P5.3).`,
+      options: {
+        from: { type: 'string' }, to: { type: 'string' }, over: { type: 'string' }, state: { type: 'string' },
+        side: { type: 'string' }, corner: { type: 'string' }, scale: { type: 'string' }, tolerance: { type: 'string' },
+        json: { type: 'boolean' }
+      },
+      run(values, positionals) {
+        const point = (text, option) => {
+          if (text === undefined || !/^\d+,\d+$/.test(text)) {
+            throw new UsageError(`${option} must be x,y in whole pixels: ${text ?? '(missing)'}`);
+          }
+          const [ x, y ] = text.split(',').map(Number);
+          return { x, y };
+        };
+        const number = (text, option, fallback) => {
+          if (text === undefined) {
+            return fallback;
+          }
+          const value = Number(text);
+          if (!Number.isFinite(value) || value <= 0) {
+            throw new UsageError(`${option} must be a number above 0: ${text}`);
+          }
+          return value;
+        };
+        const from = point(values.from, '--from');
+        const to = point(values.to, '--to');
+        if (values.over === undefined) {
+          throw new UsageError('--over must name the colour behind the window, as a hex or a token.');
+        }
+        if (![ 'active', 'inactive' ].includes(values.state)) {
+          throw new UsageError(`--state must be active or inactive: ${values.state ?? '(missing)'}`);
+        }
+        const sides = [ 'top', 'left', 'right', 'bottom' ];
+        const corners = [ 'topleft', 'topright', 'bottomleft', 'bottomright' ];
+        if ((values.side === undefined) === (values.corner === undefined)
+          || (values.side !== undefined && !sides.includes(values.side))
+          || (values.corner !== undefined && !corners.includes(values.corner))) {
+          throw new UsageError(`Give one of --side (${sides.join(', ')}) or --corner (${corners.join(', ')}).`);
+        }
+        const scale = number(values.scale, '--scale', 1);
+        const tolerance = number(values.tolerance, '--tolerance', 0.02);
+        const tokens = loadTokens();
+        const rgbOf = text => {
+          if (/^#[0-9a-f]{6}$/i.test(text)) {
+            return Object.fromEntries([ 'r', 'g', 'b' ].map((c, i) => [ c, parseInt(text.slice(1 + 2 * i, 3 + 2 * i), 16) ]));
+          }
+          try {
+            const { r, g, b } = srgb8(resolveToken(tokens, text).colour);
+            return { r, g, b };
+          } catch (error) {
+            throw new UsageError(`--over: ${error.message}`);
+          }
+        };
+        const over = rgbOf(values.over);
+        const light = lights(tokens)[values.state];
+        let measured;
+        try {
+          measured = lightAlphas(readPicture(positionals), from, to, over, light.colour);
+        } catch (error) {
+          throw new UsageError(error.message);
+        }
+        const rows = measured.map((a, n) => {
+          const expected = values.side
+            ? fade(light, values.side, (n + 0.5) / scale)
+            : cornerFade(light, values.corner, Math.SQRT2 * (n + 0.5) / scale);
+          return { n, measured: a, expected, difference: a - expected };
+        });
+        const max = Math.max(...rows.map(r => Math.abs(r.difference)));
+        const f = v => v.toFixed(3);
+        print(values.json, { rows, max, tolerance }, () => [
+          ...rows.map(r => `${r.n}  ${f(r.measured)}  ${f(r.expected)}  ${r.difference < 0 ? '' : ' '}${f(r.difference)}`),
+          `max ${f(max)} (tolerance ${tolerance})`
+        ].join('\n'));
+        return max <= tolerance ? 0 : 1;
       }
     },
     lines: {

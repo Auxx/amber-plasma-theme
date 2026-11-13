@@ -205,3 +205,45 @@ body {
 .text-colour.is-positive { color: var(--positive); }
 .text-colour.is-neutral { color: var(--neutral); }
 .text-colour.is-negative { color: var(--negative); }
+
+/* "Windows" (P5.3): each window on a backdrop of one colour, with room for
+   its light, so that a shot of it can be compared with the tokens
+   (image light). The active window sits on tone 0, where the window glow
+   shows; the inactive one on text, where the shadow shows. */
+.state-row.window-row {
+  grid-template-columns: repeat(3, max-content);
+  align-items: start;
+}
+
+.window-box {
+  position: relative;
+  width: calc(240px + 2 * 56px);
+  height: calc(120px + 2 * 56px);
+}
+
+.window-box.on-tone-0 { background: var(--tone-0); }
+.window-box.on-text { background: var(--text); }
+.window-box.is-maximised { background: var(--tone-0); }
+
+.window-box .window {
+  left: 56px;
+  top: 56px;
+  width: 240px;
+  height: 120px;
+}
+
+/* The application: tone 2, over the part of the light that starts inside the window. */
+.window-box .window-body {
+  flex: 1;
+  background: var(--tone-2);
+}
+
+.window-box.is-maximised {
+  width: 240px;
+  height: 120px;
+}
+
+.window-box.is-maximised .window {
+  left: 0;
+  top: 0;
+}

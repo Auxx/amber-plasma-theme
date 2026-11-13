@@ -51,6 +51,30 @@ describe('image tool', () => {
     assert.equal(image('profile', path('grey.png'), '--from', '0,0', '--to', '9,0').status, 2);
   });
 
+  it('passes a window glow that matches the tokens, and fails one that does not (P5.3)', async () => {
+    const { fade, lights } = await import('../lib/decoration.mjs');
+    const { loadTokens } = await import('../lib/tokens.mjs');
+    const { active } = lights(loadTokens());
+    const over = [ 0x15, 0x14, 0x13 ];
+    const glow = [ active.colour.r, active.colour.g, active.colour.b ];
+    const column = times => {
+      const pixels = new Uint8Array(50 * 4);
+      for (let n = 0; n < 50; n++) {
+        const a = Math.min(1, times * fade(active, 'top', n + 0.5));
+        pixels.set(over.map((v, i) => Math.round(v + a * (glow[i] - v))).concat(255), n * 4);
+      }
+      return encodePng({ width: 1, height: 50, pixels });
+    };
+    writeFileSync(join(folder, 'glow.png'), column(1));
+    writeFileSync(join(folder, 'glow-twice.png'), column(2));
+    const args = [ '--from', '0,0', '--to', '0,49', '--over', 'tone-0', '--state', 'active', '--side', 'top' ];
+    const good = image('light', path('glow.png'), ...args);
+    assert.equal(good.status, 0, good.stdout + good.stderr);
+    assert.match(good.stdout.trim().split('\n').at(-1), /^max /);
+    assert.equal(image('light', path('glow-twice.png'), ...args).status, 1);
+    assert.equal(image('light', path('glow.png'), '--from', '0,0', '--to', '0,49', '--state', 'active', '--side', 'top').status, 2);
+  });
+
   it('finds no cool grey in a warm picture', () => {
     const { status, stdout } = image('greys', path('warm.png'));
     assert.equal(status, 0);

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { openPage, pageUrl } from './browser.mjs';
+import { GLYPHS } from './decoration.mjs';
 
 /**
  * The title bar of the prototype's windows draws what KWin draws with Amber's
@@ -66,6 +67,34 @@ describe('prototype window', () => {
     for (const { outer, icon } of boxes) {
       assert.deepEqual(outer, [ 30, 30 ]);
       assert.deepEqual(icon, [ 26, 26, 2, 2 ]);
+    }
+  });
+
+  it('draws the windows of the gallery on known backdrops (P5.3)', () => {
+    const gallery = source('prototype/gallery.html');
+    for (const state of [ 'active', 'inactive', 'maximised' ]) {
+      assert.match(gallery, new RegExp(`data-window="${state}"`), state);
+    }
+  });
+
+  withChrome('draws a maximised window with no outline, no light and restore (P5.3)', async () => {
+    const { browser, page } = await openPage(pageUrl('prototype/gallery.html'));
+    try {
+      const seen = await page.$eval('[data-window="maximised"] .window', w => ({
+        outline: getComputedStyle(w).outlineStyle,
+        light: getComputedStyle(w, '::before').content,
+        glyphs: [ ...w.querySelectorAll('.window-button path') ].map(p => p.getAttribute('d')),
+        box: [ w.getBoundingClientRect(), w.parentElement.getBoundingClientRect() ].map(r => [ r.left, r.top, r.width, r.height ])
+      }));
+      assert.equal(seen.outline, 'none');
+      assert.equal(seen.light, 'none');
+      assert.ok(seen.glyphs.includes(GLYPHS.restore));
+      assert.ok(!seen.glyphs.includes(GLYPHS.maximize));
+      assert.deepEqual(seen.box[0], seen.box[1]);
+      const active = await page.$eval('[data-window="active"] .window', w => getComputedStyle(w).outlineStyle);
+      assert.equal(active, 'solid');
+    } finally {
+      await browser.close();
     }
   });
 });
