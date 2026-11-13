@@ -464,3 +464,38 @@ export function lines(image, { region, leaveOut = [], minLength = 32, blends = f
   scan('vertical', ry, ry + rh, rx, rx + rw, (a, c) => [ c, a ]);
   return found;
 }
+
+/**
+ * The pixels from `from` to `to`, both included and in that order, as runs of
+ * one colour: `{ colour, token, length, at }`, where `at` is the run's first
+ * pixel in that order and `token` names the colour when `names` (from
+ * `tokenNames`) has it. The two points share a row or a column. Alpha is
+ * ignored. Used to read the edges of a window (P5.1).
+ */
+export function profile(image, from, to, names = new Map()) {
+  if (from.x !== to.x && from.y !== to.y) {
+    throw new Error(`the two points must share the same row or column: ${from.x},${from.y} and ${to.x},${to.y}`);
+  }
+  for (const { x, y } of [ from, to ]) {
+    if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0 || x >= image.width || y >= image.height) {
+      throw new Error(`${x},${y} lies outside the picture (${image.width}×${image.height})`);
+    }
+  }
+  const dx = Math.sign(to.x - from.x);
+  const dy = Math.sign(to.y - from.y);
+  const steps = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y));
+  const runs = [];
+  for (let i = 0; i <= steps; i++) {
+    const x = from.x + i * dx;
+    const y = from.y + i * dy;
+    const o = (y * image.width + x) * 4;
+    const colour = toHex(image.pixels[o], image.pixels[o + 1], image.pixels[o + 2]);
+    const last = runs.at(-1);
+    if (last && last.colour === colour) {
+      last.length++;
+    } else {
+      runs.push({ colour, token: names.get(colour), length: 1, at: { x, y } });
+    }
+  }
+  return runs;
+}

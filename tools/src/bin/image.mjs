@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UsageError, main, print, table } from '../lib/cli.mjs';
-import { colourCounts, coolGreys, fill, frame, lines, markPixels, tokenNames } from '../lib/image.mjs';
+import { colourCounts, coolGreys, fill, frame, lines, markPixels, profile, tokenNames } from '../lib/image.mjs';
 import { decodePng, encodePng } from '../lib/png.mjs';
 import { loadTokens } from '../lib/tokens.mjs';
 
@@ -104,6 +104,36 @@ It must be inside the repository, such as tmp/; it is the only thing written.`,
           return lines.join('\n');
         });
         return found.length ? 1 : 0;
+      }
+    },
+    profile: {
+      usage: '<png> --from x,y --to x,y [--json]',
+      summary: 'Reads one row or column of the picture as runs of colour, named as tokens',
+      help: `Walks from --from to --to, both included, which share a row or a
+column, and prints one line for each run of one colour: its hex, the token
+that has exactly that hex (or -), its length and its first pixel. Used to read
+across the edge of a window (P5.1). --json prints { colour, token, length, at }.`,
+      options: { from: { type: 'string' }, to: { type: 'string' }, json: { type: 'boolean' } },
+      run(values, positionals) {
+        const point = (text, option) => {
+          if (text === undefined || !/^\d+,\d+$/.test(text)) {
+            throw new UsageError(`${option} must be x,y in whole pixels: ${text ?? '(missing)'}`);
+          }
+          const [ x, y ] = text.split(',').map(Number);
+          return { x, y };
+        };
+        const from = point(values.from, '--from');
+        const to = point(values.to, '--to');
+        const picture = readPicture(positionals);
+        let runs;
+        try {
+          runs = profile(picture, from, to, tokenNames(loadTokens()));
+        } catch (error) {
+          throw new UsageError(error.message);
+        }
+        print(values.json, runs, () =>
+          table(runs.map(({ colour, token, length, at }) => [ colour, token ?? '-', `${length} px`, `at ${at.x},${at.y}` ])));
+        return 0;
       }
     },
     lines: {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { srgb8 } from './colour.mjs';
-import { colourCounts, coolGreys, fill, frame, lines, markPixels } from './image.mjs';
+import { colourCounts, coolGreys, fill, frame, lines, markPixels, profile, tokenNames } from './image.mjs';
 import { loadTokens, resolveToken } from './tokens.mjs';
 
 const tokens = loadTokens();
@@ -127,6 +127,35 @@ describe('colourCounts', () => {
   it('counts only inside the region', () => {
     const counts = colourCounts(picture([ hex('#151413'), hex('#123456') ]), { region: { x: 1, y: 0, width: 1, height: 1 } });
     assert.deepEqual(counts, [ { hex: '#123456', count: 1 } ]);
+  });
+});
+
+describe('profile', () => {
+  const strip = picture([ '#000000', '#585248', '#151413', '#151413', '#151413', '#25221f' ].map(hex));
+  /** The same six pixels as one column. */
+  const column = { width: 1, height: 6, pixels: strip.pixels };
+
+  it('reads a row as runs, named as tokens (P5.1)', () => {
+    const runs = profile(strip, { x: 0, y: 0 }, { x: 5, y: 0 }, tokenNames(tokens));
+    assert.deepEqual(runs.map(r => r.length), [ 1, 1, 3, 1 ]);
+    assert.equal(runs[1].colour, '#585248');
+    assert.equal(runs[1].token, 'outline');
+    assert.deepEqual(runs[2].at, { x: 2, y: 0 });
+  });
+
+  it('reads a column upwards, each run at its first pixel in that order (P5.1)', () => {
+    const runs = profile(column, { x: 0, y: 5 }, { x: 0, y: 0 });
+    assert.deepEqual(runs.map(r => r.colour), [ '#25221f', '#151413', '#585248', '#000000' ]);
+    assert.deepEqual(runs.map(r => r.at.y), [ 5, 4, 1, 0 ]);
+    assert.equal(runs[0].token, undefined);
+  });
+
+  it('refuses a diagonal (P5.1)', () => {
+    assert.throws(() => profile(column, { x: 0, y: 0 }, { x: 1, y: 1 }), /same row or column/);
+  });
+
+  it('refuses a point outside the picture (P5.1)', () => {
+    assert.throws(() => profile(strip, { x: 0, y: 0 }, { x: 6, y: 0 }), /outside the picture/);
   });
 });
 

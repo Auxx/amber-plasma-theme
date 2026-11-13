@@ -43,6 +43,14 @@ describe('image tool', () => {
     assert.equal(image('greys', path('grey.png'), '--token-blends').status, 1);
   });
 
+  it('prints a profile of a row, one run a line (P5.1)', () => {
+    const { status, stdout } = image('profile', path('grey.png'), '--from', '0,0', '--to', '4,0');
+    assert.equal(status, 0);
+    assert.match(stdout.split('\n')[0], /^#151413 +tone-0 +2 px +at 0,0/);
+    assert.equal(image('profile', path('grey.png'), '--from', '0,0').status, 2);
+    assert.equal(image('profile', path('grey.png'), '--from', '0,0', '--to', '9,0').status, 2);
+  });
+
   it('finds no cool grey in a warm picture', () => {
     const { status, stdout } = image('greys', path('warm.png'));
     assert.equal(status, 0);

@@ -345,6 +345,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--token-blends] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); `--token-blends` excuses blends of two tokens, such as anti-aliased ANSI blue text; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `lines <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]` | Lists the straight lines 1 or 2 px thick and at least 32 px long in a whole picture, such as a window, needing no surface; the blended row where two tones meet at a fractional scale is not a line, and so a seam whose colour lies between its sides (tone 1 between tones 0 and 2) is missed unless `--blends` is given; exits 1 when there is one |
+| `profile <png> --from x,y --to x,y [--json]` | Reads one row or column, from `--from` to `--to`, as runs of one colour, each with its token (or `-`), length and first pixel; used to read across the edge of a window, such as outside → window outline → title bar (P5.1); points that share no row or column, or lie outside the picture, are a usage error |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
 | `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
 
@@ -363,6 +364,9 @@ node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/pus
 
 # The hairlines in a shot of Dolphin (P3.9): rows such as "vertical  #1c1a18  1 px  at 209,66  1080 long", exits 1
 node tools/src/bin/image.mjs lines tmp/check-colour-scheme/shots/p3.9-D-main-icons.png
+
+# Down through the top edge of a window in the nested KWin (P5.1): "#585248  outline  1 px  at 400,99", then "#151413  tone-0  30 px  at 400,100", then the client
+node tools/src/bin/image.mjs profile tmp/check-colour-scheme/shots/P-frame-1.png --from 400,90 --to 400,140
 
 # The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
 node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
