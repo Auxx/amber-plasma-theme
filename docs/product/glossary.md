@@ -245,6 +245,13 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
   _Avoid_ "intense", Konsole's word for bright, except when naming Konsole's
   keys.
 
+**Faint**
+: Text a program asks to be drawn dim (SGR 2). Konsole's word, kept since
+  Amber has no other. _Avoid_ "dim" for it: that is the `text-dim` token.
+
+**Pane header**
+: The title strip Konsole draws above each pane of a split view.
+
 **Syntax colour**
 : A colour of the editor theme that marks one kind of code, such as a
   keyword, a string or a comment.
