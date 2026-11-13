@@ -93,7 +93,7 @@ It must be inside the repository, such as tmp/; it is the only thing written.`,
       summary: 'Lists the straight lines 1 or 2 px thick in a picture, such as a window; exits 1 when there is one',
       help: `A line is a run of one colour, 1 or 2 px thick and at least
 --min-length px long (32 by default, longer than a stroke of text), whose
-pixels on both sides differ from it. The row where two tones meet, blended
+pixels on both sides differ from it by more than 3 a channel. The row where two tones meet, blended
 at a fractional scale, is not a line, nor is a band 3 px or more thick, such
 as a focus bar. Unlike frame, it needs no surface and judges a whole window.
 ${REGION_HELP}

@@ -413,6 +413,11 @@ describe('lines (P3.9)', () => {
     assert.equal(lines(image, { minLength: 16 }).length, 1);
   });
 
+  it('finds no line within 3 a channel of both its sides, too faint to see', () => {
+    assert.deepEqual(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#23211d' ] ])), []);
+    assert.equal(lines(board(80, 20, TONE_2, [ [ 0, 10, 80, 1, '#211e1b' ] ])).length, 1);
+  });
+
   it('looks only inside the region, and skips each region left out', () => {
     const image = board(80, 40, TONE_2, [ [ 0, 10, 80, 1, TONE_1 ], [ 0, 30, 80, 1, TONE_1 ] ]);
     assert.deepEqual(lines(image, { region: { x: 0, y: 0, width: 80, height: 20 } }).map(l => l.y), [ 10 ]);

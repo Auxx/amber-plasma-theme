@@ -329,12 +329,16 @@ export function frame(image, { surface, region } = {}) {
   return { drawn: true, box: { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }, corners, sides, lines };
 }
 
+/** Whether two colours are within 3 a channel: a line that close to both its sides cannot be seen. (my call) */
+const faint = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3);
+
 /** Whether `c` lies between `a` and `b` on every channel, give or take 1: a blend at an edge. */
 const between = (c, a, b) => c.every((v, i) => v >= Math.min(a[i], b[i]) - 1 && v <= Math.max(a[i], b[i]) + 1);
 
 /**
  * Every straight line 1 or 2 px thick and at least `minLength` px long (P3.9):
- * a run of one colour whose pixels on both sides differ from it, which is not
+ * a run of one colour whose pixels on both sides differ from it by more than
+ * 3 a channel, which is not
  * a blend of its two sides, as the row where two tones meet at a fractional
  * scale is. A band 3 px or more thick is not a line; nor is a short stroke of
  * text. `region` limits the search, and `leaveOut` skips rectangles in it.
@@ -366,7 +370,7 @@ export function lines(image, { region, leaveOut = [], minLength = 32 } = {}) {
             const second = thickness === 2 ? rgb(...pixel(a, c + 1)) : here;
             const before = rgb(...pixel(a, c - 1));
             const after = rgb(...pixel(a, c + thickness));
-            on = near(here, second) && !near(here, before) && !near(here, after) && !between(here, before, after)
+            on = near(here, second) && !faint(here, before) && !faint(here, after) && !between(here, before, after)
               && (thickness === 1 || !near(second, after));
           }
           if (on && start !== null && !near(here, colour)) {
