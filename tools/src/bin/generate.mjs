@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { main } from '../lib/cli.mjs';
+import { UsageError, main } from '../lib/cli.mjs';
 import { PARTS, differs, writePart } from '../lib/generate.mjs';
+import { loadTokens, parseOverrides } from '../lib/tokens.mjs';
 
 const root = fileURLToPath(new URL('../../..', import.meta.url));
 
@@ -11,15 +12,26 @@ function partCommand(name, summary) {
   const { file, generate } = PARTS[name];
   const path = relative(root, file);
   return {
-    usage: '[--write] [--json]',
+    usage: '[--write | --set token=value...] [--json]',
     summary,
     help: `Prints ${path} as it would be generated now. Nothing is written
 without --write; with it, the file is written only when it differs, and the
-output says "written" or "unchanged". --json prints { part, file, changed,
-written, content }.`,
-    options: { write: { type: 'boolean' }, json: { type: 'boolean' } },
+output says "written" or "unchanged". --set token=value, given once for each
+token, prints the part with those trial values, as tokens try does; it cannot
+be combined with --write. --json prints { part, file, changed, written,
+content }.`,
+    options: { write: { type: 'boolean' }, set: { type: 'string', multiple: true }, json: { type: 'boolean' } },
     run(values) {
-      const content = generate();
+      if (values.set && values.write) {
+        throw new UsageError('--set prints a trial and cannot be combined with --write');
+      }
+      let overrides;
+      try {
+        overrides = parseOverrides(values.set ?? []);
+      } catch (error) {
+        throw new UsageError(error.message);
+      }
+      const content = generate(loadTokens({ overrides }));
       const { changed } = values.write ? writePart(file, content) : { changed: differs(file, content) };
       const written = Boolean(values.write) && changed;
       if (values.json) {

@@ -266,6 +266,15 @@ node tools/src/bin/generate.mjs colour-scheme --write
 - **The same each time.** The file holds no date or path; groups and keys are
   sorted as KConfig sorts them. The format and the computed disabled amount
   are in [colour-scheme](../../../../docs/architecture/colour-scheme.md#generating).
+- **`--set token=value`** (P4.1), once for each token, prints the part with
+  trial values, as `tokens try` does, so that a candidate can be tried in a
+  real application before it becomes a token. It cannot be combined with
+  `--write` (exit 2): a trial never reaches a committed part.
+
+  ```shell
+  # A trial of a lighter ANSI white, into the nested session's data folder
+  node tools/src/bin/generate.mjs terminal-colours --set ansi-white=#c2bdb5 > tmp/check-colour-scheme/data/konsole/Amber-A.colorscheme
+  ```
 - **The terminal colours** refuse a missing or unknown key, an unknown token
   and a token that is not opaque, each problem on its own line starting with
   the key. A spec checks that every key's token has a contrast pair on the
