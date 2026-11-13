@@ -385,6 +385,7 @@ Kate's editor area, reviewed by the owner in P1.7 (D-82):
 | `--editor-gutter` | `var(--tone-1)` | the gutter, a tone below the code, as a sidebar is |
 | `--editor-current-line` | `var(--tone-3)` | the current line, a tone above the code |
 | `--editor-selection` | `#473e30` | the text selection: accent 20 % over tone 2 (decided, D-82) |
+| `--editor-search` | `#2e3b16` | the search highlight: OKLCH 33 % 0.06 125, a dark olive between the current line and the text selection (decided, D-122) |
 | `--syntax-keyword` | `#d79bb7` | keywords; OKLCH 75.5 % 0.08 350 |
 | `--syntax-function` | `#7fb2d1` | function names; OKLCH 74 % 0.07 235 |
 | `--syntax-type` | `#82bbb3` | type names; OKLCH 75 % 0.06 185 |
@@ -395,15 +396,20 @@ Kate's editor area, reviewed by the owner in P1.7 (D-82):
 
 - **The syntax colours are the editor's own**, separate from the terminal
   colours. (decided, D-79) The editor has a fixed background, changed only
-  by the current line and the text selection, so its colours are tuned
+  by the current line, the text selection and the search highlight, so its colours are tuned
   as text alone; a terminal colour must also serve as a background. They
   share the terminal's hues, at a lightness of 74 to 76 %. Plain code is text. Line numbers are dim text; the current line's number is text.
-- **No line.** The gutter is told from the code by tone alone. Kate can
-  draw indentation lines and a word wrap marker; those are hairlines, and
-  P4.2 finds out whether the editor theme can leave them out. How
-  KSyntaxHighlighting's text styles and its other editor colours (search
-  highlight, bracket matching, spelling, markers) map onto these tokens is
-  settled in P4.2.
+- **No line.** The gutter is told from the code by tone alone. The line
+  Kate draws between them takes the gutter's tone, and its indentation
+  lines and word wrap marker take the code's, so none of them shows, except
+  across the current line, where a seam 1 px wide is a known gap (decided,
+  D-124).
+- **Text styles and editor colours** each take a token from
+  `parts/editor-theme/styles.json` (D-121): no style is bold or italic; a
+  match of a search is the search highlight, a matched bracket tone 4, and
+  the gutter's marks are syntax colours (breakpoints and errors the number
+  colour, modified lines and warnings the preprocessor colour, saved lines
+  the string colour).
 - The text selection stands apart from the current line (1.29:1) so that
   the two are not mistaken for each other. (decided, D-82) Every syntax
   colour but the comment keeps 4.5:1 on it; a comment inside a selection
@@ -411,7 +417,8 @@ Kate's editor area, reviewed by the owner in P1.7 (D-82):
   little lighter than the other hues so that they pass there (D-83).
 - The editor stays on tone 2 while the terminal is tone 1: the step to
   the gutter tells the code from it. (decided, D-82)
-- The prototype shows the editor on `prototype/samples.html`.
+- The prototype shows the editor on `prototype/samples.html`, as Kate's C++
+  highlighting draws it (decided, D-123; its `std::min` line is my call).
 
 ## What must not appear
 

@@ -118,6 +118,10 @@
   background: var(--editor-selection);
 }
 
+.search-highlight {
+  background: var(--editor-search);
+}
+
 .syn-keyword { color: var(--syntax-keyword); }
 .syn-function { color: var(--syntax-function); }
 .syn-type { color: var(--syntax-type); }

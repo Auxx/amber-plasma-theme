@@ -209,7 +209,7 @@ P2.3's nested session, which finds it through `XDG_DATA_DIRS`, as the
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | done |
-| P4.2 Editor theme | Kate theme generated from the tokens | Kate shows it; it matches the prototype's sample | todo |
+| P4.2 Editor theme | Kate theme generated from the tokens | Kate shows it; it matches the prototype's sample | done |
 
 P4.1 generated `parts/terminal-colours/Amber.colorscheme` from the tokens
 and `keys.json`, which gives every Konsole key a token (D-118), with
@@ -225,6 +225,18 @@ over the background, falls just short of a hue and is a known gap (D-120).
 `image greys --token-blends` excuses anti-aliased
 text of token colours, such as ANSI blue and cyan, which P4.2's editor
 will need too.
+
+P4.2 generated `parts/editor-theme/Amber.theme` from the tokens and
+`styles.json`, which gives each text style and editor colour a token
+(D-121), with `generate editor-theme`. `sample editor` prints the
+prototype's code, and `sample compare-editor` checks the colours that
+`ksyntaxhighlighter6` gives it with the theme, the library Kate uses; a
+spec runs both. Kate's C++ highlighting leaves a user's function names
+and constants as plain text, so the owner had the sample show what Kate
+draws (D-123). A new token, the olive search highlight, was chosen by the
+owner among candidates (D-122). In the nested session Kate drew the
+sample in the same tokens as the browser. The seam Kate draws across the
+current line and its inverted caret are known gaps (D-124).
 
 ## Step 5 — Window decoration
 

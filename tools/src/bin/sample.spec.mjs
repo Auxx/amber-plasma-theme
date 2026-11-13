@@ -22,4 +22,19 @@ describe('sample tool', () => {
     assert.equal(status, 1);
     assert.match(stderr, /ansi-pink/);
   });
+
+  it('prints the editor sample', () => {
+    const { status, stdout } = sample('editor');
+    assert.equal(status, 0);
+    assert.equal(stdout.split('\n')[0], '// Counts the files in a folder, skipping hidden ones.');
+    assert.ok(stdout.includes('#include <QDir>'));
+    assert.ok(stdout.endsWith('}\n'));
+  });
+
+  it('compares a highlighted sample', () => {
+    const { status, stdout } = sample('compare-editor', 'tools/src/bin/fixtures/highlighted-sample.html', '--file', 'tools/src/bin/fixtures/editor-sample.html', '--json');
+    assert.equal(status, 1);
+    const runs = JSON.parse(stdout);
+    assert.deepEqual(runs.map(run => run.text), [ 'countFiles' ]);
+  });
 });

@@ -57,6 +57,7 @@ main({
   commands: {
     'colour-scheme': partCommand('colour-scheme', 'The colour scheme, parts/colour-scheme/Amber.colors, from the tokens and roles.json'),
     'union-style-tokens': partCommand('union-style-tokens', "The Union style's tokens, parts/union-style/amber/contents/css/tokens.css, from the tokens"),
-    'terminal-colours': partCommand('terminal-colours', 'The terminal colours, parts/terminal-colours/Amber.colorscheme, from the tokens and keys.json')
+    'terminal-colours': partCommand('terminal-colours', 'The terminal colours, parts/terminal-colours/Amber.colorscheme, from the tokens and keys.json'),
+    'editor-theme': partCommand('editor-theme', 'The editor theme, parts/editor-theme/Amber.theme, from the tokens and styles.json')
   }
 });

@@ -101,6 +101,14 @@ Amber is in early development and nothing can be installed yet.
   short of a hue. Konsole mixes it itself. It can be turned off in the
   Konsole profile: Scrolling → Highlight scrolled lines. (seen in P4.1;
   D-120)
+- **Kate shows a seam across the current line.** Kate draws a line 1 px
+  wide between the gutter and the code. It takes the gutter's tone and
+  vanishes, except across the current line, where the gutter is a tone
+  lighter. The indentation lines and the word wrap marker, off by default,
+  do the same. (seen in P4.2; D-124)
+- **Kate's caret is a cool grey.** Kate draws the text caret by inverting
+  the pixels under it, so on the editor's warm tone it is `#dadde0`. The
+  editor theme has no caret colour. (seen in P4.2; D-124)
 
 ## Licence
 

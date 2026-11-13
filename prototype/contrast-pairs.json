@@ -1,7 +1,7 @@
 [
   {
     "foreground": "text",
-    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-hover", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection", "text-selection"],
+    "on": ["tone-0", "tone-1", "tone-2", "tone-3", "tone-4", "well", "well-hover", "raised-focus", "well-focus", "surface-focus", "selected", "popup", "editor", "editor-gutter", "editor-current-line", "editor-selection", "editor-search", "text-selection"],
     "minimum": 4.5,
     "why": "Accessibility rule 1: primary text and icons reach 4.5:1 on every tone"
   },
@@ -229,39 +229,39 @@
   },
   {
     "foreground": "syntax-keyword",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-function",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-type",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-string",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-number",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-preprocessor",
-    "on": ["editor", "editor-current-line", "editor-selection"],
+    "on": ["editor", "editor-current-line", "editor-selection", "editor-search"],
     "minimum": 4.5,
-    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line and the text selection (D-53)"
+    "why": "Accessibility rule 3: syntax colours are text, on the editor, the current line, the text selection and the search highlight (D-53)"
   },
   {
     "foreground": "syntax-comment",
@@ -271,9 +271,9 @@
   },
   {
     "foreground": "syntax-comment",
-    "on": ["editor-selection"],
+    "on": ["editor-selection", "editor-search"],
     "minimum": 4,
-    "why": "Accessibility rule 3: a comment inside a text selection is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84)."
+    "why": "Accessibility rule 3: a comment inside a text selection or a search highlight is low-priority text, and the owner gave up its 4.5:1 for a selection that stands apart from the current line (D-82). 4 is a floor (D-84); the search highlight is as dark as the selection (D-122)."
   },
   {
     "foreground": "editor-selection",
@@ -286,6 +286,42 @@
     "on": ["editor"],
     "minimum": 1.1,
     "why": "The current line is told from the editor by tone; its text carries the 4.5:1. 1.1 is a floor that keeps it from fading (my call)."
+  },
+  {
+    "foreground": "editor-search",
+    "on": ["editor", "editor-current-line", "editor-selection"],
+    "minimum": 1.1,
+    "why": "The search highlight is told from the editor, the current line and the text selection by tone and hue; its text carries the 4.5:1. 1.1 is a floor that keeps it from fading (P4.2, my call)."
+  },
+  {
+    "foreground": "syntax-number",
+    "on": ["editor-gutter"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: in the gutter, the editor theme marks a breakpoint, an error mark and a misspelling in this colour (P4.2)"
+  },
+  {
+    "foreground": "syntax-preprocessor",
+    "on": ["editor-gutter"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: in the gutter, the editor theme marks a modified line, a reached breakpoint and a warning mark in this colour (P4.2)"
+  },
+  {
+    "foreground": "syntax-string",
+    "on": ["editor-gutter"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: in the gutter, the editor theme marks a saved line in this colour (P4.2)"
+  },
+  {
+    "foreground": "syntax-function",
+    "on": ["editor-gutter"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: in the gutter, the editor theme marks a bookmark in this colour (P4.2)"
+  },
+  {
+    "foreground": "syntax-type",
+    "on": ["editor-gutter"],
+    "minimum": 3,
+    "why": "Accessibility rule 2: in the gutter, the editor theme marks the execution mark in this colour (P4.2)"
   },
   {
     "foreground": "link",

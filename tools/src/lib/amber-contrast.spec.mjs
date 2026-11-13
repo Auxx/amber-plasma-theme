@@ -23,7 +23,7 @@ describe('Amber contrast pairs', () => {
   const results = checkPairs(tokens, pairs);
 
   it('finds the pairs', () => {
-    assert.equal(pairs.length, 147);
+    assert.equal(pairs.length, 163);
   });
 
   it('resolves every token of every pair', () => {

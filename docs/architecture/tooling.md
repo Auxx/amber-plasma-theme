@@ -38,8 +38,8 @@ version.
 | `colour` | `convert`, `contrast <fg> <bg...> [--min]`, `solve` | P0.2 |
 | `tokens` | `list [filter]`, `resolve <token...> [--set]`, `pairs [filter] [--failing] [--close] [--set]`, `try <token=value...>` | P1.1 |
 | `browser` | `shot <page> [--selector] [--hover] [--focus] [--press] [--scrollbars] [--wait]`, `check <page>`, `colours <page> <selector>`, `states <page> --widget --selector` | P0.7; `--scrollbars` P1.4; `--wait` P1.5; `states` P3.3; placeholder P3.4 |
-| `generate` | one command per part, each printing the result and writing with `--write`: `colour-scheme [--write]`, `union-style-tokens [--write]`, `terminal-colours [--write]`; `--set token=value` prints a trial | P2.2, then each later step; `union-style-tokens` P3.2; `terminal-colours`, `--set` P4.1 |
-| `sample` | `terminal [--file]`: the prototype's terminal sample with ANSI escapes | P4.1 |
+| `generate` | one command per part, each printing the result and writing with `--write`: `colour-scheme [--write]`, `union-style-tokens [--write]`, `terminal-colours [--write]`, `editor-theme [--write]`; `--set token=value` prints a trial | P2.2, then each later step; `union-style-tokens` P3.2; `terminal-colours`, `--set` P4.1; `editor-theme` P4.2 |
+| `sample` | `terminal [--file]`: the prototype's terminal sample with ANSI escapes; `editor [--file]`: its editor sample as plain text; `compare-editor <html>`: the highlighter's colours of it against the prototype's tokens | P4.1; `editor`, `compare-editor` P4.2 |
 | `image` | `greys <png> [--region] [--leave-out]... [--token-blends] [--mark]`, `colours <png> [--region] [--top]`, `frame <png> --surface [--region]`, `lines <png> [--region] [--leave-out]... [--min-length] [--blends]`, `states <folder> --case --expect [--alias] [--ignore] [--foot --bar --bar-states]` | P2.3; `frame` P3.2; `states` P3.3; `--foot`, `--bar`, `--ignore` P3.4; `--leave-out`, `lines` P3.9; `--token-blends` P4.1 |
 
 The `browser` tool opens the prototype in the installed Google Chrome through
