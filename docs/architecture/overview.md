@@ -79,7 +79,7 @@ parts/
   colour-scheme/      roles.json: the token or rule of each role (P2.1); Amber.colors, generated (P2.2)
   union-style/        amber/: the Union style, from the Breeze style 6.8.2 (P3.1); contents/css/tokens.css, generated (P3.2)
   decoration/
-  terminal-colours/
+  terminal-colours/   keys.json: the token of each key (P4.1); Amber.colorscheme, generated (P4.1)
   editor-theme/
 tools/                command-line tools and their tests
 scripts/              install and uninstall

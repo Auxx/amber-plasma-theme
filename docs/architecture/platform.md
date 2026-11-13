@@ -705,10 +705,33 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   (`#232629`, `#31363b`) until the editor theme of P4.2 is chosen.
   Konsole's default profile, and Kate's terminal panel, show Breeze's
   terminal colours (`#232627`). (verified, 2026-11-12, P2.3)
-- In a split view Konsole draws a title header above each pane in
-  `#1f2121`, a cool dark near Breeze's terminal background; no rule of the
-  style reaches it (seen, 2026-11-13, P3.9). That it comes from the
-  terminal colours is unverified, and checked in P4.1.
+- **The pane header follows the terminal colours.** In a split view
+  Konsole draws a pane header above each pane: the focused pane's in the
+  terminal colours' `Background`, the other's a little darker, which
+  Konsole derives. Under Breeze's terminal colours that was the cool dark
+  `#1f2121` P3.9 saw; under Amber's it is tone 1 and `#191815`, warm. No
+  rule of the style reaches it. (verified, 2026-11-13, P4.1)
+- **A Konsole colour scheme file** (`.colorscheme`) is INI: groups
+  `[Background]`, `[Foreground]` and `[Color0]` to `[Color7]`, each also
+  with a `Faint` and an `Intense` variant, every one holding
+  `Color=r,g,b`, and `[General]` with `Description`, `Opacity`, `Blur`,
+  `ColorRandomization` and `Wallpaper`. Konsole 26.08.2 has no such files
+  on disk: its built-in schemes, Breeze among them (background
+  `35,38,39`), are compiled into `libkonsoleprivate.so.26.08.2`, where
+  they were read. (verified, 2026-11-13, P4.1)
+- **A colour scheme can be tried in one Konsole** without changing a
+  setting: Konsole finds `konsole/<name>.colorscheme` in a folder put first
+  in `XDG_DATA_DIRS`, and `konsole --separate -p ColorScheme=<name>`
+  starts one window with it. In the nested session neither `konsolerc`
+  nor a profile changed. (verified, 2026-11-13, P4.1)
+- **Konsole draws bold text in the intense colours** (bold plain text in
+  `ForegroundIntense`, bold red in `Color1Intense`) and faint text (SGR 2)
+  in the faint ones. (verified, 2026-11-13, P4.1)
+- **Driving Konsole from outside:** `KMainWindow.activateAction
+  split-view-left-right` on `/konsole/MainWindow_1` splits a live session,
+  but not one held after its command ended (`--hold`). `Session.runCommand`
+  is refused: Konsole's "security sensitive" D-Bus calls are off by
+  default. (verified, 2026-11-13, P4.1)
 
 ## Spike findings
 

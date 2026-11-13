@@ -208,8 +208,21 @@ P2.3's nested session, which finds it through `XDG_DATA_DIRS`, as the
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | todo |
+| P4.1 Terminal colours | `Amber.colorscheme` generated from the tokens | Konsole shows it; it matches the prototype's sample | | done |
 | P4.2 Editor theme | Kate theme generated from the tokens | Kate shows it; it matches the prototype's sample | todo |
+
+P4.1 generated `parts/terminal-colours/Amber.colorscheme` from the tokens
+and `keys.json`, which gives every Konsole key a token (D-118), with
+`generate terminal-colours`. The new `sample terminal` prints the
+prototype's terminal sample with escape sequences, and in the nested session
+Konsole drew it with the same tokens as the browser. On trying it the owner
+had the greys made four steps, the bright colours lighter and cyan more
+saturated, choosing among candidates tried in Konsole through `generate
+--set` (D-119). White on a normal colour is 2.3:1, which the owner accepted.
+Konsole's pane header, the cool dark P3.9 left here, follows the terminal
+colours and is warm now. `image greys --token-blends` excuses anti-aliased
+text of token colours, such as ANSI blue and cyan, which P4.2's editor
+will need too.
 
 ## Step 5 — Window decoration
 
