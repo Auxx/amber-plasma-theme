@@ -289,7 +289,9 @@ token holds the plain colour (D-47).
 
 ## Window decoration
 
-- Title bar in tone 0; square corners.
+- Title bar in tone 0, `--title-bar-height` high below the window outline;
+  square corners. The title is centred, in text, or in dim text when the
+  window is inactive.
 - A window has a window outline. (decided, D-25) It runs along every edge,
   square at the corners, the same for active and inactive windows. It is
   one pixel wide and `#585248`, which reaches 2:1 against tones 0 to 2.
@@ -314,6 +316,7 @@ token holds the plain colour (D-47).
   |---|---|---|
   | `--outline` | `#585248` | the window outline |
   | `--outline-width` | `1px` | its width |
+  | `--title-bar-height` | `30px` | the title bar's height, below the window outline (my call, P5.1) |
   | `--glow` | accent at 14 % | the window glow, at the window outline |
   | `--glow-size` | `48px` | how far the window glow fades to nothing |
   | `--shadow` | black at 55 % | the shadow of an inactive window and of a popup, where its fade starts |

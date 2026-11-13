@@ -45,6 +45,28 @@ describe('generate tool', () => {
     assert.ok(stdout.includes('Description=Amber'));
   });
 
+  it('prints the decoration, each file under a heading (P5.1)', () => {
+    const { status, stdout } = generate('decoration');
+    assert.equal(status, 0);
+    assert.ok(stdout.includes('==> parts/decoration/amber/decoration.svg <=='));
+    assert.ok(stdout.includes('==> parts/decoration/amber/amberrc <=='));
+    assert.ok(stdout.includes('<svg'));
+  });
+
+  it('reports each file of the decoration in JSON (P5.1)', async () => {
+    const { PARTS } = await import('../lib/generate.mjs');
+    const { status, stdout } = generate('decoration', '--json');
+    assert.equal(status, 0);
+    const report = JSON.parse(stdout);
+    assert.equal(report.part, 'decoration');
+    const expected = PARTS.decoration.generate();
+    assert.deepEqual(report.files.map(f => f.file), Object.keys(expected).map(name => `parts/decoration/amber/${name}`));
+    for (const f of report.files) {
+      assert.equal(f.content, expected[f.file.split('/').at(-1)]);
+      assert.equal(f.written, false);
+    }
+  });
+
   it('prints the editor theme', () => {
     const { status, stdout } = generate('editor-theme');
     assert.equal(status, 0);

@@ -106,6 +106,14 @@ Amber is in early development and nothing can be installed yet.
   vanishes, except across the current line, where the gutter is a tone
   lighter. The indentation lines and the word wrap marker, off by default,
   do the same. (seen in P4.2; D-124)
+- **The window outline is uneven at a fractional scale.** At a scale such
+  as 1.25, 1.49 or 1.5 it is 1 or 2 device pixels wide depending on the
+  edge, and under Xwayland one edge of a window can lose it: Aurorae and
+  KWin round it, and the theme's sizes are logical pixels. At scale 1, 1.75
+  and 2 it is even. (seen in P5.1; D-126)
+- **GTK applications that draw their own title bar**, such as zenity, keep
+  their own rounded frame: Amber's window decoration does not reach them.
+  (seen in P5.1; D-127)
 - **Kate's caret is a cool grey.** Kate draws the text caret by inverting
   the pixels under it, so on the editor's warm tone it is `#dadde0`. The
   editor theme has no caret colour. (seen in P4.2; D-124)

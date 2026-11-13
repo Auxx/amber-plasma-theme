@@ -245,6 +245,7 @@ a test fails when it differs from what the generator makes now (D-92).
 | `union-style-tokens [--write] [--json]` | `parts/union-style/amber/contents/css/tokens.css`: every token a widget uses, as Union CSS custom properties of the same names, from `prototype/tokens.css` (P3.2, D-97) |
 | `terminal-colours [--write] [--json]` | `parts/terminal-colours/Amber.colorscheme`, Konsole's file, from `prototype/tokens.css` and `parts/terminal-colours/keys.json`, which gives each of the 30 colour keys a token (P4.1) |
 | `editor-theme [--write] [--json]` | `parts/editor-theme/Amber.theme`, the KSyntaxHighlighting theme Kate reads, from `prototype/tokens.css` and `parts/editor-theme/styles.json`, which gives each of the 31 text styles and 28 editor colours a token (P4.2) |
+| `decoration [--write] [--json]` | `decoration.svg` and `amberrc` of the Aurorae theme in `parts/decoration/amber/`, from `prototype/tokens.css`: the frame of each window state, its edges one `outline-width` thick in `outline` and its centre, the title bar, in `tone-0`; the title's colours and the layout. `metadata.desktop` beside them is written by hand (P5.1) |
 
 ```shell
 # Print the colour scheme as it would be generated now; writes nothing, exits 0
@@ -256,8 +257,11 @@ node tools/src/bin/generate.mjs colour-scheme --write
 
 - **Output.** Without `--write`, the file's text exactly, so it can be piped
   or compared with `cmp`. With `--write`, one line: `written`, or `unchanged`
-  when the file already holds that text, which is then left alone.
-- **`--json`** prints `{ part, file, changed, written, content }`. Without
+  when the file already holds that text, which is then left alone. A part of
+  several files, such as `decoration`, prints each file after a heading
+  `==> <path> <==`, and with `--write` one line for each file.
+- **`--json`** prints `{ part, file, changed, written, content }`; for a part of
+  several files, `{ part, files: [{ file, changed, written, content }] }`. Without
   `--write`, `changed` says whether the file on disk differs and `written` is
   false.
 - **Refusals.** The generator writes nothing and exits 1 when the table has a
@@ -345,6 +349,7 @@ with one of Amber's parts. The PNG is decoded with `node:zlib` alone.
 | `greys <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--token-blends] [--mark <out.png>] [--json]` | Lists the cool greys, each with its pixel count and the box that holds them, skipping each `--leave-out` rectangle (such as a terminal area); `--token-blends` excuses blends of two tokens, such as anti-aliased ANSI blue text; exits 1 when there is one |
 | `colours <png> [--region x,y,w,h] [--top 20] [--json]` | Lists the most common colours, named after a token when one has exactly that hex |
 | `lines <png> [--region x,y,w,h] [--leave-out x,y,w,h]... [--min-length 32] [--blends] [--json]` | Lists the straight lines 1 or 2 px thick and at least 32 px long in a whole picture, such as a window, needing no surface; the blended row where two tones meet at a fractional scale is not a line, and so a seam whose colour lies between its sides (tone 1 between tones 0 and 2) is missed unless `--blends` is given; exits 1 when there is one |
+| `profile <png> --from x,y --to x,y [--json]` | Reads one row or column, from `--from` to `--to`, as runs of one colour, each with its token (or `-`), length and first pixel; used to read across the edge of a window, such as outside → window outline → title bar (P5.1); points that share no row or column, or lie outside the picture, are a usage error |
 | `frame <png> --surface <hex> [--region x,y,w,h] [--json]` | Finds rounded corners and lines 1 or 2 px thick on a widget drawn on a known surface; exits 1 when there is one |
 | `states <folder> --case <name> --expect <json> [--alias probe=expected]... [--region x,y,w,h] [--surface <hex>] [--ignore <hex>]... [--foot <px> [--bar <hex> --bar-states <state,...>]] [--json]` | Compares the fill and text of each state of one probe case (from the folder's `manifest.json`) with the states `browser states --json` wrote, and with `--foot` the focus bar; exits 1 on a mismatch |
 
@@ -363,6 +368,9 @@ node tools/src/bin/image.mjs frame tmp/check-colour-scheme/shots/p3.2-breeze/pus
 
 # The hairlines in a shot of Dolphin (P3.9): rows such as "vertical  #1c1a18  1 px  at 209,66  1080 long", exits 1
 node tools/src/bin/image.mjs lines tmp/check-colour-scheme/shots/p3.9-D-main-icons.png
+
+# Down through the top edge of a window in the nested KWin (P5.1): "#585248  outline  1 px  at 400,99", then "#151413  tone-0  30 px  at 400,100", then the client
+node tools/src/bin/image.mjs profile tmp/check-colour-scheme/shots/P-frame-1.png --from 400,90 --to 400,140
 
 # The ten most common colours of a selected item: "#d1b072  4120 px  accent" and so on
 node tools/src/bin/image.mjs colours tmp/check-colour-scheme/shots/dolphin.png --region 220,120,600,24 --top 10
