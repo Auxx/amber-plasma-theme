@@ -271,4 +271,51 @@ describe('scripts/install.sh and scripts/uninstall.sh', () => {
     assert.equal(run('install', home, { env: { AMBER_PARTS: parts } }).code, 0);
     assert.equal(readFileSync(join(home, '.local/share/color-schemes/Amber.colors'), 'utf8'), 'changed');
   });
+
+  it('uninstalls an install that was killed during a copy', () => {
+    const { root, home } = makeRoot();
+    const before = snapshot(root);
+    // A file-size limit of 8 KiB kills cp halfway through the first larger file.
+    const r = spawnSync('bash', ['-c', `ulimit -f 8; exec bash "$0"`, join(REPO, 'scripts/install.sh')], {
+      cwd: root, env: { PATH: process.env.PATH, HOME: home }, encoding: 'utf8',
+    });
+    assert.notEqual(r.status, 0);
+    const again = run('install', home);
+    assert.equal(again.code, 0, again.stderr);
+    const out = run('uninstall', home);
+    assert.equal(out.code, 0, out.stderr);
+    assert.doesNotMatch(out.stdout, /did not install/);
+    assert.deepEqual(snapshot(root), before);
+  });
+
+  it('refuses a data home with a newline in its path', () => {
+    const { root, home } = makeRoot();
+    const before = snapshot(root);
+    for (const script of ['install', 'uninstall']) {
+      const r = run(script, home, { env: { XDG_DATA_HOME: join(root, 'da\nta') } });
+      assert.equal(r.code, 1, script);
+      assert.match(r.stderr, /newline/);
+    }
+    assert.deepEqual(snapshot(root), before);
+  });
+
+  it('keeps a trailing space of a path in the record', () => {
+    const { root, home } = makeRoot();
+    const env = { XDG_DATA_HOME: join(root, 'data ') };
+    const before = snapshot(root);
+    assert.equal(run('install', home, { env }).code, 0);
+    assert.equal(run('uninstall', home, { env }).code, 0);
+    assert.deepEqual(snapshot(root), before);
+  });
+
+  it("finds Amber's cache file when XDG_DATA_HOME ends in a slash", () => {
+    const { root, home } = makeRoot();
+    mkdirSync(join(root, 'cache'));
+    const env = { XDG_DATA_HOME: `${join(root, 'data')}//`, XDG_CACHE_HOME: `${join(root, 'cache')}/` };
+    const before = snapshot(root);
+    assert.equal(run('install', home, { env }).code, 0);
+    put(join(root, 'cache/union', cacheName(join(root, 'data/union/styles/amber'))), 'amber');
+    assert.equal(run('uninstall', home, { env }).code, 0);
+    assert.deepEqual(snapshot(root), before);
+  });
 });

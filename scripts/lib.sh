@@ -8,13 +8,21 @@ amber_repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 amber_parts=${AMBER_PARTS:-$amber_repo/parts}
 
 # An XDG folder is used only when it is an absolute path, as the XDG
-# specification asks; otherwise the default under $HOME.
+# specification asks; otherwise the default under $HOME. The path is cleaned
+# (no doubled or trailing slash, links kept), as Qt gives it to Union, so
+# that Amber's cache file is named from the same path.
 amber_xdg() {
-  if [[ ${1:-} == /* ]]; then printf '%s' "$1"; else printf '%s' "$HOME/$2"; fi
+  local p
+  if [[ ${1:-} == /* ]]; then p=$1; else p=$HOME/$2; fi
+  realpath -s -m -- "$p"
 }
 amber_data=$(amber_xdg "${XDG_DATA_HOME:-}" .local/share)
 amber_cache=$(amber_xdg "${XDG_CACHE_HOME:-}" .cache)
 amber_config=$(amber_xdg "${XDG_CONFIG_HOME:-}" .config)
+if [[ $amber_data == *$'\n'* || $amber_cache == *$'\n'* ]]; then
+  echo "$(basename "$0"): the data or cache home has a newline in its path; nothing was changed" >&2
+  exit 1
+fi
 amber_record=$amber_data/amber/installed
 amber_style=$amber_data/union/styles/amber
 
@@ -53,9 +61,10 @@ amber_cache_name() {
 # rmdir only, so a folder holding a file Amber did not install stays; each
 # such file is printed unless $1 is "quiet".
 amber_remove() {
-  local quiet=${1:-} kind path
+  local quiet=${1:-} line kind path
   local -a dirs=() absent=()
-  while IFS=' ' read -r kind path; do
+  while IFS= read -r line; do
+    kind=${line%% *} path=${line#* }
     case $kind in
       file) rm -f -- "$path" ;;
       dir) dirs+=("$path") ;;

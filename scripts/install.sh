@@ -14,7 +14,7 @@ Installs Amber's parts into $amber_data. Run it again to update them." "$@"
 # What the record of an earlier install lists, so that its files may be replaced.
 declare -A ours=()
 if [[ -f $amber_record ]]; then
-  while IFS=' ' read -r kind path; do [[ $kind == file ]] && ours[$path]=1; done < "$amber_record"
+  while IFS= read -r line; do [[ $line == 'file '* ]] && ours[${line#file }]=1; done < "$amber_record"
 fi
 
 # Refuse before writing anything: a part missing from the repository, or a
@@ -40,7 +40,9 @@ make_dir() {
   local p=$1
   local -a missing=()
   while [[ ! -d $p ]]; do missing=("$p" "${missing[@]}"); p=$(dirname "$p"); done
-  for p in "${missing[@]}"; do mkdir -- "$p"; printf 'dir %s\n' "$p"; done
+  # Each line is written before its folder is made, so that an install
+  # killed halfway leaves nothing its record does not list.
+  for p in "${missing[@]}"; do printf 'dir %s\n' "$p"; mkdir -- "$p"; done
 }
 
 lines=$(make_dir "$(dirname "$amber_record")")
@@ -51,8 +53,8 @@ for row in "${amber_table[@]}"; do
   IFS='|' read -r label src dst <<<"$row"
   while IFS=$'\t' read -r from to; do
     make_dir "$(dirname "$to")" >> "$amber_record"
-    cp -- "$from" "$to"
     printf 'file %s\n' "$to" >> "$amber_record"
+    cp -- "$from" "$to"
   done < <(amber_files "$src" "$dst")
   printf '%s → %s\n' "$label" "$amber_data/$dst"
 done
