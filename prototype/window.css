@@ -128,9 +128,12 @@
 }
 
 /* The window decoration draws the same: the title bar below the window outline (P5.1). */
+/* KWin's default buttons: the menu button, the application's icon, at the
+   left, and the title centred between it and the window buttons, as KWin
+   centres it (P5.2, decided by the owner). */
 .title-bar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   height: var(--title-bar-height);
   flex: none;
@@ -139,7 +142,27 @@
 
 .title {
   grid-column: 2;
+  justify-self: center;
+  max-width: 100%;
+  overflow: hidden;
   white-space: nowrap;
+}
+
+/* The application's icon as KWin draws it: 26 px, 2 px in from each edge of
+   a square button. A stand-in folder in the tone Breeze's folder icons take
+   under Amber's colour scheme (D-110; my call, P5.2). */
+.menu-button {
+  grid-column: 1;
+  display: grid;
+  place-items: center;
+  width: var(--title-bar-height);
+  height: var(--title-bar-height);
+}
+
+.menu-button svg {
+  width: calc(var(--title-bar-height) - 4px);
+  height: calc(var(--title-bar-height) - 4px);
+  fill: var(--text-selection);
 }
 
 .window:not(.is-active) .title {
