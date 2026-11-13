@@ -90,6 +90,14 @@ body {
   background: var(--tone-0);
 }
 
+/* A stretch of title bar, tone 0, for the window buttons to sit on (P5.2). */
+.title-bar-strip {
+  align-self: start;
+  display: flex;
+  padding: 4px 0 4px 16px;
+  background: var(--tone-0);
+}
+
 /* Candidates: a tone 1 band, each vignette a patch of the tone 2 surface.
    No page shows any since P3.7; the rules stay for the next time a value is
    put to the owner. */

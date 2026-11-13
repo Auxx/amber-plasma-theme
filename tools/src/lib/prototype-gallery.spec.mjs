@@ -16,6 +16,7 @@ import { loadTokens } from './tokens.mjs';
 
 const GALLERY = 'prototype/gallery.html';
 const SOURCE = fileURLToPath(new URL(`../../../${GALLERY}`, import.meta.url));
+const INDEX = fileURLToPath(new URL('../../../prototype/index.html', import.meta.url));
 const SCROLLBARS_CSS = fileURLToPath(new URL('../../../prototype/scrollbars.css', import.meta.url));
 
 const RAISED = {
@@ -45,6 +46,25 @@ const TOGGLE_ON = {
   hovered: [ 'accent-hover', 'on-accent' ],
   focused: [ 'accent-hover', 'on-accent' ],
   disabled: [ 'toggle', 'text-dim' ]
+};
+
+// Window buttons (P5.2) on a strip of tone 0: at rest they have no fill of
+// their own; an inactive window dims the glyph.
+const WINDOW_BUTTON = {
+  rest: [ 'transparent', 'text' ],
+  hovered: [ 'tone-1', 'text' ],
+  pressed: [ 'tone-2', 'text' ],
+  inactive: [ 'transparent', 'text-dim' ],
+  'inactive-hovered': [ 'tone-1', 'text-dim' ],
+  'inactive-pressed': [ 'tone-2', 'text-dim' ]
+};
+
+const WINDOW_CLOSE = {
+  ...WINDOW_BUTTON,
+  hovered: [ 'danger', 'on-danger' ],
+  pressed: [ 'danger', 'on-danger' ],
+  'inactive-hovered': [ 'danger', 'on-danger' ],
+  'inactive-pressed': [ 'danger', 'on-danger' ]
 };
 
 const MARKED = [ 'background-color', '--mark' ];
@@ -246,7 +266,11 @@ const WIDGETS = {
       current: [ 'tone-4', 'text' ]
     }
   },
-  tooltip: { control: '.tooltip', states: { rest: [ 'popup', 'text' ] } }
+  tooltip: { control: '.tooltip', states: { rest: [ 'popup', 'text' ] } },
+  'window-minimise': { control: '.window-button', states: WINDOW_BUTTON },
+  'window-maximise': { control: '.window-button', states: WINDOW_BUTTON },
+  'window-restore': { control: '.window-button', states: WINDOW_BUTTON },
+  'window-close': { control: '.window-button', states: WINDOW_CLOSE }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
@@ -446,6 +470,19 @@ describe('prototype gallery', () => {
       offences.push('.scroll-area:focus-visible::-webkit-scrollbar-thumb: expected var(--text-dim)');
     }
     assert.deepEqual(offences, []);
+  });
+
+  it('draws the window buttons as the title bar does', () => {
+    const glyphs = source => Object.fromEntries(
+      [ ...source.matchAll(/class="window-button is-(\w+)[^"]*"[^>]*><svg[^>]*><path d="([^"]+)"/g) ].map(([ , name, d ]) => [ name, d ])
+    );
+    const window = glyphs(readFileSync(INDEX, 'utf8'));
+    const gallery = glyphs(readFileSync(SOURCE, 'utf8'));
+    assert.deepEqual(Object.keys(window).sort(), [ 'close', 'maximise', 'minimise' ]);
+    for (const [ name, d ] of Object.entries(window)) {
+      assert.equal(gallery[name], d, name);
+    }
+    assert.ok(gallery.restore, 'the gallery draws restore');
   });
 
   it('names the scroll area', () => {

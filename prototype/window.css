@@ -152,16 +152,20 @@
   display: flex;
 }
 
-/* Flat, and never a glow: hovered minimise and maximise move up a tone, close turns danger. */
+/* Flat, and never a glow (D-4). The states are those of P5.2: hovered
+   minimise, maximise and restore move up a tone, pressed one more; close
+   turns danger, hovered or pressed; an inactive window dims the glyph. The
+   decoration's button files are generated to match (decoration.mjs). */
 .window-button {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: var(--title-bar-height);
+  height: var(--title-bar-height);
   color: var(--text);
 }
 
-.window:not(.is-active) .window-button {
+.window:not(.is-active) .window-button,
+.window-button.is-inactive {
   color: var(--text-dim);
 }
 
@@ -174,12 +178,20 @@
   stroke-linecap: square;
 }
 
-.window-button.is-minimise:hover,
-.window-button.is-maximise:hover {
+.window-button:not(.is-close):hover,
+.window-button:not(.is-close).is-hovered {
   background: var(--tone-1);
 }
 
-.window-button.is-close:hover {
+.window-button:not(.is-close):active,
+.window-button:not(.is-close).is-pressed {
+  background: var(--tone-2);
+}
+
+.window-button.is-close:hover,
+.window-button.is-close.is-hovered,
+.window-button.is-close:active,
+.window-button.is-close.is-pressed {
   background: var(--danger);
   color: var(--on-danger);
 }
