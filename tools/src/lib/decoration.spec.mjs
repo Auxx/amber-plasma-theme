@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { SIDES, formatDecorationRc, formatDecorationSvg } from './decoration.mjs';
+import { BUTTON_STATES, GLYPHS, SIDES, formatButtonSvg, formatDecorationRc, formatDecorationSvg } from './decoration.mjs';
 import { parseTokens } from './tokens.mjs';
 
 const tokensWith = (extra = '') => parseTokens(`:root {
@@ -10,6 +10,10 @@ const tokensWith = (extra = '') => parseTokens(`:root {
   --text-dim: #a9a297;
   --outline-width: 1px;
   --title-bar-height: 30px;
+  --tone-1: #1c1a18;
+  --tone-2: #25221f;
+  --danger: #b5442f;
+  --on-danger: #fbf3e6;
 ${extra}
 }`);
 
@@ -133,6 +137,100 @@ describe('decoration', () => {
   it('is the same each time, and ends with one newline', () => {
     for (const [ text, again ] of [ [ svg, formatDecorationSvg(tokensWith()) ], [ rc, formatDecorationRc(tokensWith()) ] ]) {
       assert.equal(text, again);
+      assert.ok(text.endsWith('\n') && !text.endsWith('\n\n'));
+    }
+  });
+});
+
+const BUTTONS = [ 'minimize', 'maximize', 'restore', 'close' ];
+const PREFIXES = [ 'active', 'hover', 'pressed', 'inactive', 'hover-inactive', 'pressed-inactive' ];
+
+/** Each `<g id="…-center">` of a button file as { id, rect: {…}, path: {…} }, in order. */
+function states(svg) {
+  const attributes = text => Object.fromEntries([ ...text.matchAll(/([a-z-]+)="([^"]*)"/g) ].map(([ , k, v ]) => [ k, v ]));
+  return [ ...svg.matchAll(/<g id="([^"]+)">\s*<rect ([^>]*)\/>\s*<path ([^>]*)\/>\s*<\/g>/g) ].map(([ , id, rect, path ]) => ({
+    id, rect: attributes(rect), path: attributes(path)
+  }));
+}
+
+describe('window buttons', () => {
+  const files = Object.fromEntries(BUTTONS.map(button => [ button, formatButtonSvg(tokensWith(), button) ]));
+  const state = (button, id) => states(files[button]).find(s => s.id === id);
+
+  it('draws every state of a button', () => {
+    assert.deepEqual(BUTTON_STATES.map(s => s.prefix), PREFIXES);
+    for (const button of BUTTONS) {
+      assert.deepEqual(states(files[button]).map(s => s.id), PREFIXES.map(p => `${p}-center`), button);
+    }
+  });
+
+  it('fills each state', () => {
+    assert.equal(state('minimize', 'active-center').rect.fill, '#151413');
+    assert.equal(state('minimize', 'hover-center').rect.fill, '#1c1a18');
+    assert.equal(state('minimize', 'pressed-center').rect.fill, '#25221f');
+    assert.equal(state('minimize', 'pressed-inactive-center').rect.fill, '#25221f');
+    assert.equal(state('close', 'active-center').rect.fill, '#151413');
+    for (const id of [ 'hover-center', 'pressed-center', 'hover-inactive-center', 'pressed-inactive-center' ]) {
+      assert.equal(state('close', id).rect.fill, '#b5442f', id);
+      assert.equal(state('close', id).path.stroke, '#fbf3e6', id);
+    }
+  });
+
+  it('dims the inactive glyph', () => {
+    assert.equal(state('maximize', 'active-center').path.stroke, '#e6dfd3');
+    assert.equal(state('maximize', 'inactive-center').path.stroke, '#a9a297');
+    assert.equal(state('maximize', 'hover-inactive-center').path.stroke, '#a9a297');
+    assert.equal(state('close', 'inactive-center').path.stroke, '#a9a297');
+  });
+
+  it('sizes the button by the title bar', () => {
+    const tall = formatButtonSvg(tokensWith().set('title-bar-height', { length: { value: 36, unit: 'px' } }), 'close');
+    for (const { rect, path } of states(tall)) {
+      assert.deepEqual([ rect.width, rect.height ], [ '36', '36' ]);
+      const [ , dx, dy ] = path.transform.match(/translate\(([\d.]+) ([\d.]+)\)/);
+      assert.equal(Number(dx) - Number(rect.x), 10);
+      assert.equal(Number(dy) - Number(rect.y), 10);
+    }
+  });
+
+  it('lays the states side by side without overlap', () => {
+    for (const button of BUTTONS) {
+      const xs = states(files[button]).map(s => Number(s.rect.x));
+      xs.slice(1).forEach((x, i) => assert.equal(x - xs[i], 30 + 8, button));
+    }
+  });
+
+  it('draws the glyph as the prototype', () => {
+    for (const button of BUTTONS) {
+      for (const { path } of states(files[button])) {
+        assert.equal(path.d, GLYPHS[button], button);
+        assert.equal(path['stroke-width'], '1.5');
+        assert.equal(path['stroke-linecap'], 'square');
+        assert.equal(path.fill, 'none');
+      }
+    }
+  });
+
+  it('keeps the buttons at the top', () => {
+    assert.equal(key(formatDecorationRc(tokensWith()), 'Layout', 'ButtonMarginTop'), '0');
+  });
+
+  it('refuses a fill that is not opaque', () => {
+    const tokens = tokensWith('  --half: color-mix(in srgb, var(--tone-0) 50%, transparent);').set('danger', { ref: 'half' });
+    assert.throws(() => formatButtonSvg(tokens, 'close'), /danger: .*not opaque/);
+  });
+
+  it('refuses a button Aurorae does not know', () => {
+    assert.throws(() => formatButtonSvg(tokensWith(), 'shade'), /shade/);
+  });
+
+  it('holds no double hyphen in a comment, is the same each time and ends with one newline', () => {
+    for (const button of BUTTONS) {
+      const text = files[button];
+      for (const [ , comment ] of text.matchAll(/<!--([\s\S]*?)-->/g)) {
+        assert.ok(!comment.includes('--'), comment);
+      }
+      assert.equal(text, formatButtonSvg(tokensWith(), button));
       assert.ok(text.endsWith('\n') && !text.endsWith('\n\n'));
     }
   });

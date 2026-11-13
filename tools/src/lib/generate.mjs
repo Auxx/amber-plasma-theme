@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { formatColourScheme, loadRoles } from './colour-scheme.mjs';
-import { formatDecorationRc, formatDecorationSvg } from './decoration.mjs';
+import { GLYPHS, formatButtonSvg, formatDecorationRc, formatDecorationSvg } from './decoration.mjs';
 import { formatEditorTheme, loadStyles } from './editor-theme.mjs';
 import { formatTerminalColours, loadKeys } from './terminal-colours.mjs';
 import { loadTokens } from './tokens.mjs';
@@ -36,7 +36,8 @@ export const PARTS = {
     folder: fileURLToPath(new URL('../../../parts/decoration/amber', import.meta.url)),
     generate: (tokens = loadTokens()) => ({
       'decoration.svg': formatDecorationSvg(tokens),
-      amberrc: formatDecorationRc(tokens)
+      amberrc: formatDecorationRc(tokens),
+      ...Object.fromEntries(Object.keys(GLYPHS).map(button => [ `${button}.svg`, formatButtonSvg(tokens, button) ]))
     })
   }
 };

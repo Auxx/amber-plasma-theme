@@ -16,6 +16,7 @@ BorderBottom=1
 BorderLeft=1
 BorderRight=1
 ButtonHeight=30
+ButtonMarginTop=0
 ButtonSpacing=0
 ButtonWidth=30
 PaddingBottom=0

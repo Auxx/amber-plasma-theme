@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov -->
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Generated from prototype/tokens.css by tools/src/lib/decoration.mjs. -->
+<!-- Do not edit: run node tools/src/bin/generate.mjs decoration with the write option -->
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="30" viewBox="0 0 220 30">
+  <g id="active-center">
+    <rect x="0" y="0" width="30" height="30" fill="#151413"/>
+    <path transform="translate(7 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+  <g id="hover-center">
+    <rect x="38" y="0" width="30" height="30" fill="#1c1a18"/>
+    <path transform="translate(45 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+  <g id="pressed-center">
+    <rect x="76" y="0" width="30" height="30" fill="#25221f"/>
+    <path transform="translate(83 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#e8e3da" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+  <g id="inactive-center">
+    <rect x="114" y="0" width="30" height="30" fill="#151413"/>
+    <path transform="translate(121 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+  <g id="hover-inactive-center">
+    <rect x="152" y="0" width="30" height="30" fill="#1c1a18"/>
+    <path transform="translate(159 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+  <g id="pressed-inactive-center">
+    <rect x="190" y="0" width="30" height="30" fill="#25221f"/>
+    <path transform="translate(197 7)" d="M3.5 6h6.5v6.5h-6.5zM6 6V3.5h6.5V10H10" fill="none" stroke="#a9a297" stroke-width="1.5" stroke-linecap="square"/>
+  </g>
+</svg>

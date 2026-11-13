@@ -59,6 +59,7 @@ describe('generate tool', () => {
     assert.equal(status, 0);
     const report = JSON.parse(stdout);
     assert.equal(report.part, 'decoration');
+    assert.equal(report.files.length, 6);
     const expected = PARTS.decoration.generate();
     assert.deepEqual(report.files.map(f => f.file), Object.keys(expected).map(name => `parts/decoration/amber/${name}`));
     for (const f of report.files) {
