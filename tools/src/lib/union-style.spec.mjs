@@ -514,7 +514,7 @@ describe('the Union style\'s toggles and ranges (P3.5)', () => {
   const chain = block => (block ? [ block, ...chain(block.parent) ] : []);
   const TOGGLE = /(^|[\s,>(])(checkbox|radiobutton|checkdelegate|radiodelegate|switch|switchdelegate)(?![\w-])/;
   const RANGE = /(^|[\s,>(])(slider|rangeslider|dial|progressbar|busyindicator)(?![\w-])/;
-  const OTHER = /\.changed|scrollbar|menuitem/;
+  const OTHER = /\.changed|scrollbar/;
   const of = (all, file, test) => all.filter(b => chain(b).some(c => test.test(c.selector)) && !chain(b).some(c => OTHER.test(c.selector)))
     .map(b => [ file, b ]);
   const family = [ ...of(check, 'check.css', TOGGLE), ...of(bars, 'bars.css', RANGE) ];
@@ -552,7 +552,7 @@ describe('the Union style\'s toggles and ranges (P3.5)', () => {
     assert.equal(value(child(child(t, '&:disabled'), '& > indicator'), 'background-color'), 'var(--toggle)');
     assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-color'), 'var(--toggle)');
     assert.equal(value(child(t, '&:checked:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
-    const marks = check.filter(b => !b.parent && !/menuitem/.test(b.selector) && /checkbox|radiobutton/.test(b.selector))
+    const marks = check.filter(b => !b.parent && !/menuitem|^menu /.test(b.selector) && /checkbox|radiobutton/.test(b.selector))
       .flatMap(b => b.children.filter(c => /:checked > indicator$|indeterminate > indicator$/.test(c.selector)))
       .map(c => value(c, 'background-image')).filter(Boolean);
     assert.deepEqual([ ...new Set(marks.map(m => m.replace(/^url\("\.\.\/images\/[a-z]+\.svg"\) mask /, ''))) ], [ 'var(--on-accent)' ]);
@@ -933,6 +933,215 @@ describe('the Union style\'s views (P3.7)', () => {
       const ranks = b.children.filter(c => value(c, 'background-color') || value(c, 'color'))
         .map(c => (/:highlighted:disabled/.test(c.selector) ? 4.5
           : /:highlighted:visual-focus/.test(c.selector) ? 3.5 : rank(c.selector))).filter(r => r >= 0);
+      return ranks.some((r, i) => i && r < ranks[i - 1]) ? [ `${file}: ${b.selector}` ] : [];
+    });
+    assert.deepEqual(offending, []);
+  });
+
+  it('writes no padding with two or more values, which Union reads swapped', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'padding' && d.value.trim().split(/\s+/).length > 1)
+      .map(d => `${file}:${d.line} padding: ${d.value}`));
+    assert.deepEqual(offending, []);
+  });
+});
+
+describe('the Union style\'s popups (P3.8)', () => {
+  const files = {
+    'popup.css': /^(menu|popup|overlay(\.modal)?|menuitem|menuseparator|dialog|dialogbuttonbox|tooltip|popup\.combobox (itemviewitem|menuitem))$/,
+    'check.css': /^(menuitem(\.exclusive)?|menu (checkbox|radiobutton))$/,
+    'button.css': /^popup\.combobox$/
+  };
+  const all = Object.fromEntries(Object.keys(files).map(f => [ f, blocks(read(f)) ]));
+  const below = block => [ block, ...block.children.flatMap(below) ];
+  const family = Object.entries(files).flatMap(([ file, test ]) => all[file]
+    .filter(b => !b.parent && parts(b.selector).every(p => test.test(p)))
+    .flatMap(below).map(b => [ file, b ]));
+  const top = (file, selector) => {
+    const found = all[file].filter(b => !b.parent && parts(b.selector).join(', ') === selector);
+    assert.equal(found.length, 1, `${file}: one block ${selector} expected, found ${found.length}`);
+    return found[0];
+  };
+  const child = (block, selector) => block?.children.find(c => parts(c.selector).join(', ') === selector);
+  const value = (block, property) => block?.declarations.filter(d => d.property === property).at(-1)?.value;
+  const tokenVar = new RegExp(`^var\\(--(${UNION_TOKENS.join('|')})\\)$`);
+  // Black at a part strength: the dimming of Qt Quick's overlays, which darkens a warm tone without a hue.
+  const BLACK = /^rgba\(0, 0, 0, 0\.\d+\)$/;
+  const colourOf = d => (/^border(-(top|right|bottom|left))?$/.test(d.property) ? d.value.split(/\s+/).slice(2).join(' ') || null
+    : /(^|-)color$/.test(d.property) ? d.value
+      : d.property === 'background-image' && / mask (.+)$/.test(d.value) ? d.value.match(/ mask (.+)$/)[1] : null);
+  // A popup's shadow (D-67) is drawn in Qt Quick only: Union draws no box-shadow in Qt Widgets (P3.8, Task 1).
+  // The tokens of the Union style are opaque, so it is written with --shadow's own value, black at 55 %.
+  const shadowAlpha = Number(readFileSync(fileURLToPath(new URL('../../../prototype/tokens.css', import.meta.url)), 'utf8')
+    .match(/--shadow:\s*rgb\(0 0 0 \/ (\d+)%\)/)[1]) / 100;
+  const SHADOW = `0px 12px 20px 0px rgba(0, 0, 0, ${shadowAlpha})`;
+  const TOOLTIP_SHADOW = `0px 4px 7px 0px rgba(0, 0, 0, ${shadowAlpha})`;
+
+  it('finds every popup block', () => {
+    assert.deepEqual([ ...new Set(family.filter(([ , b ]) => !b.parent).map(([ f, b ]) => `${f} ${b.selector.replace(/\s+/g, ' ')}`)) ].sort(), [
+      'button.css popup.combobox', 'check.css menu checkbox', 'check.css menu checkbox, menu radiobutton', 'check.css menu radiobutton',
+      'check.css menuitem', 'check.css menuitem.exclusive',
+      'popup.css dialog', 'popup.css dialogbuttonbox', 'popup.css menu', 'popup.css menu, popup', 'popup.css menuitem',
+      'popup.css menuseparator', 'popup.css overlay', 'popup.css overlay.modal',
+      'popup.css popup.combobox itemviewitem, popup.combobox menuitem', 'popup.css tooltip' ]);
+  });
+
+  it('colours a popup only with the tokens, and an overlay with black', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => colourOf(d) !== null && d.value !== 'none')
+      .filter(d => !tokenVar.test(colourOf(d)) && colourOf(d) !== 'transparent'
+        && !(/^overlay/.test(b.selector) && BLACK.test(colourOf(d))))
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+    assert.deepEqual(family.flatMap(([ file, b ]) => b.declarations.filter(d => /custom-color\(|mix\(|modify-color\(/.test(d.value))
+      .map(d => `${file}:${d.line} ${d.property}: ${d.value}`)), []);
+  });
+
+  it('gives a menu the popup tone, square, with 4 px above and below its items', () => {
+    const m = top('popup.css', 'menu, popup');
+    assert.equal(value(m, 'background-color'), 'var(--popup)');
+    assert.equal(value(m, 'color'), 'var(--text)');
+    assert.equal(value(m, 'border-radius'), '0px');
+    assert.equal(value(child(m, '&:disabled'), 'background-color'), 'var(--popup)');
+    assert.equal(value(child(m, '&:disabled'), 'color'), 'var(--text-dim)');
+    const pad = top('popup.css', 'menu');
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(pad, `padding-${e}`)), [ '4px', '4px', '0px', '0px' ]);
+  });
+
+  it('gives a menu item the tones and sizes of the prototype; pressed and an open submenu as hovered', () => {
+    const i = top('popup.css', 'menuitem');
+    const tone = (selector, background, color) => {
+      const b = selector ? child(i, selector) : i;
+      assert.equal(value(b, 'background-color'), background, selector || 'at rest');
+      assert.equal(value(b, 'color'), color, selector || 'at rest');
+    };
+    tone('', 'transparent', 'var(--text)');
+    // A keyboard highlight is :highlighted alone, and an item whose submenu is open stays :highlighted (Task 1).
+    tone('&:hovered, &:highlighted', 'var(--tone-4)', 'var(--text)');
+    tone('&:pressed', 'var(--tone-4)', 'var(--text)');
+    tone('&:disabled', 'transparent', 'var(--text-dim)');
+    assert.equal(value(i, 'height'), '26px');
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(i, `padding-${e}`)), [ '0px', '0px', '6px', '12px' ]);
+    assert.equal(value(i, 'spacing'), '6px');
+    assert.equal(value(i, 'inset'), '0px');
+    assert.equal(value(i, 'border-radius'), '0px');
+    const p = child(i, 'shortcuttext');
+    assert.equal(value(p, 'color'), 'var(--text-dim)');
+    assert.equal(value(child(p, '&:hovered, &:highlighted'), 'color'), 'var(--text)');
+    assert.equal(value(child(p, '&:disabled'), 'color'), 'var(--text-dim)');
+    // A submenu arrow takes the item's icon colour, text: no rule on the arrow reaches it, and the item's
+    // icon-color would dim its own icon too (review of P3.8). The arrow sets no colour that would not be drawn.
+    const arrow = child(i, 'arrow');
+    assert.deepEqual(below(arrow).flatMap(b => b.declarations).filter(d => /color/.test(d.property)).map(d => d.property), []);
+  });
+
+  it('draws a menu item\'s tick and dot in accent with no box, dim when disabled', () => {
+    const i = top('check.css', 'menuitem');
+    const box = child(i, '& > indicator');
+    assert.equal(value(box, 'background-color'), 'transparent');
+    assert.equal(value(box, 'border'), 'none');
+    assert.equal(value(box, 'border-radius'), '0px');
+    assert.deepEqual([ 'width', 'height' ].map(p => value(box, p)), [ '16px', '16px' ]);
+    assert.equal(value(child(i, '&:checked > indicator'), 'background-image'), 'url("../images/checkmark.svg") mask var(--accent)');
+    assert.equal(value(child(i, '&:checked > indicator'), 'background-color'), 'transparent');
+    assert.equal(value(child(i, '&.indeterminate > indicator'), 'background-image'), 'url("../images/indeterminate.svg") mask var(--accent)');
+    assert.equal(value(child(i, '&:checked:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
+    assert.equal(value(child(i, '&:checked:disabled > indicator'), 'background-color'), 'transparent');
+    assert.equal(value(child(top('check.css', 'menuitem.exclusive'), '&:checked > indicator'), 'background-image'),
+      'url("../images/radio.svg") mask var(--accent)');
+    // The mark of an item with an icon, and of a disabled item, is drawn as a check box or radio button inside
+    // the menu (Task 4): the toggles' box, tone 0 or accent, is cleared in each state they set.
+    const d = top('check.css', 'menu checkbox, menu radiobutton');
+    const STATES = [ '', ':hovered', ':visual-focus', ':checked', ':checked:hovered', ':checked:visual-focus', '.indeterminate',
+      '.indeterminate:hovered', '.indeterminate:visual-focus', ':disabled', ':checked:disabled', '.indeterminate:disabled' ];
+    const clear = child(d, STATES.map(state => `&${state} > indicator`).join(', '));
+    assert.equal(value(clear, 'background-color'), 'transparent');
+    assert.equal(value(clear, 'border'), 'none');
+    assert.equal(value(child(d, '&:checked:disabled > indicator, &.indeterminate:disabled > indicator'), 'background-image-mask-color'), 'var(--text-dim)');
+    assert.equal(value(child(top('check.css', 'menu checkbox'), '&:checked > indicator'), 'background-image'), 'url("../images/checkmark.svg") mask var(--accent)');
+    assert.equal(value(child(top('check.css', 'menu checkbox'), '&.indeterminate > indicator'), 'background-image'), 'url("../images/indeterminate.svg") mask var(--accent)');
+    assert.equal(value(child(top('check.css', 'menu radiobutton'), '&:checked > indicator'), 'background-image'), 'url("../images/radio.svg") mask var(--accent)');
+  });
+
+  it('divides a menu with an 8 px gap and no line, and gives a section a dim title with no line', () => {
+    const s = top('popup.css', 'menuseparator');
+    // Union sizes a separator as its height and its insets (Task 1): 0 + 4 + 4. It counts the shorthand
+    // `inset` only: with inset-top and inset-bottom the separator was 0 px high (Task 4).
+    assert.equal(value(s, 'background-color'), 'transparent');
+    assert.deepEqual([ 'height', 'inset' ].map(p => value(s, p)), [ '0px', '4px' ]);
+    assert.deepEqual([ 'inset-top', 'inset-bottom' ].map(p => value(s, p)), [ undefined, undefined ]);
+    const t = child(s, '&.with-title');
+    assert.equal(value(t, 'background-color'), 'transparent');
+    assert.equal(value(t, 'color'), 'var(--text-dim)');
+    // The 8 px gap above the title is its top padding, and the title row below it 26 px (review of P3.8). The
+    // shorthand inset of a separator would push the title 4 px past the labels: its sides are 0.
+    assert.equal(value(t, 'height'), '34px');
+    assert.equal(value(t, 'font-weight'), 'normal');
+    assert.equal(value(t, 'border-bottom'), 'none');
+    assert.deepEqual([ 'top', 'bottom', 'left' ].map(e => value(t, `padding-${e}`)), [ '8px', '0px', '28px' ]);
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(e => value(t, `inset-${e}`)), [ '0px', '0px', '0px', '0px' ]);
+  });
+
+  it('draws a combo box list as a menu, its items with no inset that would show the window through it', () => {
+    const c = top('popup.css', 'popup.combobox itemviewitem, popup.combobox menuitem');
+    // The list's own window is clear and no rule fills it (Task 1): a clear item shows the window behind (Task 4).
+    assert.equal(value(c, 'background-color'), 'var(--popup)');
+    assert.equal(value(c, 'color'), 'var(--text)');
+    assert.equal(value(c, 'height'), '26px');
+    // Union draws an item's text from its edge whatever the padding, and an inset would clear the fill: the
+    // spacing before the text is what moves it, and 8 px puts it where the combo box's own text starts (owner,
+    // after Task 4).
+    assert.equal(value(c, 'spacing'), '8px');
+    // At a fractional scale an item's edge falls mid-pixel and the clear list showed through it as a seam
+    // (after Task 4): the fill reaches 1 px past the top, the foot and the right. The left stays 0, since an
+    // inset there moves the text.
+    assert.deepEqual([ 'top', 'right', 'bottom', 'left' ].map(side => value(c, `inset-${side}`)), [ '-1px', '-1px', '-1px', '0px' ]);
+    // The current value is :highlighted when the list opens; Union draws it no tick, so it shows as hovered.
+    assert.equal(value(child(c, '&:hovered, &:highlighted, &:visual-focus, &:highlighted:visual-focus'), 'background-color'), 'var(--tone-4)');
+    assert.equal(value(child(c, '&:disabled'), 'color'), 'var(--text-dim)');
+    assert.equal(value(child(c, '&:disabled'), 'background-color'), 'var(--popup)');
+  });
+
+  it('gives a tooltip the popup tone, square', () => {
+    const t = top('popup.css', 'tooltip');
+    assert.equal(value(t, 'background-color'), 'var(--popup)');
+    assert.equal(value(t, 'color'), 'var(--text)');
+    assert.equal(value(t, 'border-radius'), '0px');
+    assert.deepEqual([ 'top', 'bottom', 'left', 'right' ].map(e => value(t, `padding-${e}`)), [ '4px', '4px', '8px', '8px' ]);
+  });
+
+  it('gives a Qt Quick dialog the body of a dialog window, tone 1, square', () => {
+    const d = top('popup.css', 'dialog');
+    assert.equal(value(d, 'background-color'), 'var(--tone-1)');
+    assert.equal(value(d, 'color'), 'var(--text)');
+    assert.equal(value(d, 'border-radius'), '0px');
+  });
+
+  it('casts the shadow of an inactive window from a popup, and a third of it from a tooltip', () => {
+    assert.equal(value(top('popup.css', 'menu, popup'), 'box-shadow'), SHADOW);
+    assert.equal(value(top('popup.css', 'dialog'), 'box-shadow'), SHADOW);
+    assert.equal(value(top('popup.css', 'tooltip'), 'box-shadow'), TOOLTIP_SHADOW);
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => d.property === 'box-shadow' && ![ 'none', SHADOW, TOOLTIP_SHADOW ].includes(d.value))
+      .map(d => `${file}:${d.line} ${b.selector} { box-shadow: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('draws every popup square, with no line', () => {
+    const offending = family.flatMap(([ file, b ]) => b.declarations
+      .filter(d => (/radius$/.test(d.property) && d.value !== '0px' && !d.comment.startsWith('round widget'))
+        || (/^(width|height)$/.test(d.property) && /^(1|2)px$/.test(d.value))
+        || (/^border(-(top|right|bottom|left))?$/.test(d.property) && d.value !== 'none'))
+      .map(d => `${file}:${d.line} ${b.selector} { ${d.property}: ${d.value} }`));
+    assert.deepEqual(offending, []);
+  });
+
+  it('orders the states of each block so that the later wins: hovered, focused, pressed, checked, disabled', () => {
+    const rank = selector => [ /:hovered|:highlighted/, /:visual-focus/, /:pressed/, /:checked|\.indeterminate/, /:disabled/ ]
+      .reduce((found, r, i) => (r.test(selector) ? i : found), -1);
+    const offending = family.filter(([ , b ]) => !/:/.test(b.selector)).flatMap(([ file, b ]) => {
+      const ranks = b.children.filter(c => [ 'background-color', 'color', 'background-image', 'background-image-mask-color' ]
+        .some(p => value(c, p))).map(c => rank(c.selector)).filter(r => r >= 0);
       return ranks.some((r, i) => i && r < ranks[i - 1]) ? [ `${file}: ${b.selector}` ] : [];
     });
     assert.deepEqual(offending, []);

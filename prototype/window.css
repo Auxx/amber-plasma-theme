@@ -96,8 +96,8 @@
  * rectangle and everything above its top edge are cut out of the shadow, so
  * it never paints over the popup or over what the popup opens from. A
  * tooltip is small, so its shadow is a third of the size.
- * Whether Union draws a shadow under a popup in a Qt Widgets application is
- * the question of P3.8 (D-49).
+ * Union draws none under a popup in a Qt Widgets application, only in
+ * Qt Quick (P3.8, D-74).
  */
 .popup {
   position: relative;

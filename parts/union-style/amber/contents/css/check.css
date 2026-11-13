@@ -7,19 +7,6 @@
  * Checkable controls like checkboxes and radio buttons.
  */
 
-:root
-{
-    /* A menu item's check keeps Breeze's colours until P3.8. */
-    --checkable-indicator-active-background-color: var(--button-active-background-color);
-    --checkable-indicator-active-text-color: var(--button-active-text-color);
-    --checkable-indicator-active-highlight-color: var(--button-active-highlight-color);
-    --checkable-indicator-active-highlight-border-color: var(--button-active-border-highlight-color);
-
-    --checkable-disabled-text-color: var(--window-disabled-text-color);
-    --checkable-indicator-disabled-background-color: var(--button-disabled-background-color);
-    --checkable-indicator-disabled-text-color: var(--button-disabled-text-color);
-}
-
 checkbox,
 radiobutton,
 switch
@@ -164,64 +151,43 @@ radiodelegate
     }
 }
 
-/* A menu item's check keeps Breeze's rules until P3.8; it shares the tick's shape. */
+/*
+ * A menu item's mark (P3.8, D-114): the tick, or an exclusive item's dot, in
+ * accent with no box, as the prototype's menu draws it; dim text when the
+ * item is disabled. An unchecked item shows nothing in its tick column.
+ */
 menuitem
 {
     width: var(--medium-element-size);
     height: var(--medium-element-size);
     & > indicator
     {
-        width: var(--icon-size-small);
-        height: var(--icon-size-small);
+        width: 16px;
+        height: 16px;
 
         layout-alignment-container: content;
         layout-alignment-horizontal: start;
         layout-alignment-order: -1;
 
-        background-color: var(--checkable-indicator-active-background-color);
+        background-color: transparent;
         border: none;
-        color: var(--checkable-indicator-active-text-color);
-        border-radius: var(--corner-radius);
-    }
-
-    &:hovered > indicator
-    {
-        border-color: var(--checkable-indicator-active-highlight-border-color);
+        border-radius: 0px;
     }
 
     &:checked > indicator
     {
-        background-color: var(--checkable-indicator-active-highlight-color);
-        border-color: var(--checkable-indicator-active-highlight-border-color);
-        background-image: url("../images/checkmark.svg") mask var(--checkable-indicator-active-text-color);
+        background-color: transparent;
+        background-image: url("../images/checkmark.svg") mask var(--accent);
     }
 
-    &:visual-focus > indicator
-    {
-        outline: none;
-        border-color: var(--checkable-indicator-active-highlight-border-color);
-    }
-
-    &:disabled
-    {
-        color: var(--checkable-disabled-text-color);
-
-        & > indicator
-        {
-            border: none;
-            color: var(--checkable-indicator-disabled-text-color);
-            background-color: var(--checkable-indicator-disabled-background-color);
-        }
+    &.indeterminate > indicator {
+        background-image: url("../images/indeterminate.svg") mask var(--accent);
     }
 
     &:checked:disabled > indicator
     {
-        background-color: var(--checkable-indicator-disabled-background-color);
-        background-image-mask-color: var(--checkable-indicator-disabled-text-color);
-    }
-
-    &.indeterminate > indicator {
-        background-image: url("../images/indeterminate.svg") mask var(--checkable-indicator-active-text-color);
+        background-color: transparent;
+        background-image-mask-color: var(--text-dim);
     }
 }
 
@@ -229,7 +195,59 @@ menuitem.exclusive
 {
     &:checked > indicator
     {
-        background-image: url("../images/radio.svg") mask var(--checkable-indicator-active-text-color);
+        background-image: url("../images/radio.svg") mask var(--accent);
+    }
+}
+
+/* The mark of an item with an icon, and of a disabled item, is drawn as a
+ * check box or a radio button inside the menu (P3.8, Task 4). It is a menu
+ * item's mark: no box in any state, the tick or dot in accent, dim text when
+ * disabled. */
+menu checkbox,
+menu radiobutton
+{
+    & > indicator,
+    &:hovered > indicator,
+    &:visual-focus > indicator,
+    &:checked > indicator,
+    &:checked:hovered > indicator,
+    &:checked:visual-focus > indicator,
+    &.indeterminate > indicator,
+    &.indeterminate:hovered > indicator,
+    &.indeterminate:visual-focus > indicator,
+    &:disabled > indicator,
+    &:checked:disabled > indicator,
+    &.indeterminate:disabled > indicator
+    {
+        background-color: transparent;
+        border: none;
+    }
+
+    &:checked:disabled > indicator,
+    &.indeterminate:disabled > indicator
+    {
+        background-image-mask-color: var(--text-dim);
+    }
+}
+
+menu checkbox
+{
+    &:checked > indicator
+    {
+        background-image: url("../images/checkmark.svg") mask var(--accent);
+    }
+
+    &.indeterminate > indicator
+    {
+        background-image: url("../images/indeterminate.svg") mask var(--accent);
+    }
+}
+
+menu radiobutton
+{
+    &:checked > indicator
+    {
+        background-image: url("../images/radio.svg") mask var(--accent);
     }
 }
 

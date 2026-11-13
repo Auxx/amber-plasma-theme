@@ -103,7 +103,7 @@ background / text, and the block marker or tick where the widget has one.
 | Item (list, tree, table, sidebar) | no fill / text | tone 3 / text | raised focus / text | as hovered (my call, D-112) | selected: selected / text, no marker (decided, D-111) | no fill / dim text; selected: selected / dim text (my call, D-112) |
 | Header section | no fill / dim text | tone 3 / text | — | tone 1 / text | sorted: no fill / text, sort arrow | no fill / dim text (my call, D-112) |
 | Menu title, on a tone 0 menu bar (my call, D-108) | no fill / text | tone 3 / text | tone 3 / text | — | open: popup / text | no fill / dim text |
-| Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | — | checked: no fill / text, accent tick | no fill / dim text |
+| Menu item, in a popup | no fill / text | tone 4 / text | tone 4 / text | as hovered (my call, D-114) | checked: no fill / text, accent tick; exclusive: accent dot (my call, D-114) | no fill / dim text; checked: dim tick (my call, D-114) |
 
 - **Precedence:** pressed wins over focused, and focused over hovered. A
   disabled widget never changes. (my call)
@@ -197,10 +197,20 @@ background / text, and the block marker or tick where the widget has one.
   tone, since Qt does not tell the two apart. A checked item carries a tick
   in accent in a 28 px column on its left, and a shortcut is dim text on the
   right. Menu separators are an 8 px gap: no line and no band of tone.
+  A menu section's title is dim text at the item's weight, where an item's
+  label starts, with no line; an item whose submenu is open keeps its
+  hovered tone; a combo box's list is a menu with no tick column and no
+  padding above or below, its current value in the hovered tone, as Qt
+  draws it (my call, D-114); its text lines up with its combo box's, as
+  Breeze's does (decided, D-115). In Qt Widgets a submenu arrow is text,
+  not dim text: the Union style cannot colour it apart from the item's
+  icon (my call, D-114).
 - **Tooltips** (my call, P1.5) are popups: they show 400 ms after their
   anchor is hovered or takes keyboard focus, and hide at once.
 - **A dialog** is a window, with a title bar, window outline and window
-  glow; no line sits above its buttons.
+  glow; no line sits above its buttons. Its body is tone 1. A Qt Quick
+  dialog, drawn inside its window, has the same body and a popup's shadow
+  (my call, D-114).
 - **Ranges** (my call, P1.4): a fill is accent on a 6 px track below the
   surface; a disabled fill is dim text. A slider's thumb is 10 × 20 px.
   A progress bar has no text on it.
@@ -259,15 +269,16 @@ token holds the plain colour (D-47).
 - A shadow under a popup, menu or inactive window is dark, soft and offset
   downwards. The active window has a window glow in its place; see "Window
   decoration".
-  Whether Union draws one under menus and popups is unverified; see
-  [platform](platform.md).
+  Union draws none under a popup in a Qt Widgets application, only in
+  Qt Quick (see [platform](platform.md#union)).
 - A popup has the shadow of an inactive window: the same tokens, fade
   and insets. (decided, D-67) The popup's own rectangle and everything
   above its top edge are cut out of it, so it never darkens the popup or
   what it opens from. A tooltip is small, so its shadow is a third of the
-  size (my call). A combo box's list meets its combo box with no gap. If Union
-  cannot draw it, a popup has no shadow: the owner accepts that. (decided,
-  D-74)
+  size (my call). A combo box's list meets its combo box with no gap. Union
+  cannot draw it in Qt Widgets, so a popup has no shadow there: the owner
+  accepts that. (decided, D-74) In Qt Quick the Union style draws it as one
+  shadow, `0px 12px 20px 0px` in `--shadow` (my call, D-114).
 
   | Token | Value | Used for |
   |---|---|---|

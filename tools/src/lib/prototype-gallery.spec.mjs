@@ -217,17 +217,36 @@ const WIDGETS = {
       disabled: [ 'transparent', 'text-dim' ]
     }
   },
+  // A menu item (P3.8, D-114): pressed is drawn as hovered, an open submenu
+  // keeps the hovered tone, and a disabled tick is dim text.
   'menu-item': {
-    control: '.menu-item',
+    control: '.menu-item.is-state',
     read: [ 'background-color', 'color', '--mark' ],
     states: {
       rest: [ 'transparent', 'text', 'transparent' ],
       hovered: [ 'tone-4', 'text', 'transparent' ],
       focused: [ 'tone-4', 'text', 'transparent' ],
+      pressed: [ 'tone-4', 'text', 'transparent' ],
       checked: [ 'transparent', 'text', 'accent' ],
-      disabled: [ 'transparent', 'text-dim', 'transparent' ]
+      'checked-hovered': [ 'tone-4', 'text', 'accent' ],
+      'checked-exclusive': [ 'transparent', 'text', 'accent' ],
+      'submenu-open': [ 'tone-4', 'text', 'transparent' ],
+      disabled: [ 'transparent', 'text-dim', 'transparent' ],
+      'checked-disabled': [ 'transparent', 'text-dim', 'text-dim' ]
     }
-  }
+  },
+  'menu-section': { control: '.menu-section', states: { rest: [ 'transparent', 'text-dim' ] } },
+  // A combo box list is a menu with no tick column: its text starts where the combo box's does, and its
+  // current value is the hovered tone, as Qt draws it (P3.8, D-114, D-115).
+  'combo-list': {
+    control: '.menu-item.is-state',
+    states: {
+      rest: [ 'transparent', 'text' ],
+      hovered: [ 'tone-4', 'text' ],
+      current: [ 'tone-4', 'text' ]
+    }
+  },
+  tooltip: { control: '.tooltip', states: { rest: [ 'popup', 'text' ] } }
 };
 
 const TOGGLES = [ 'check-box', 'check-box-on', 'radio', 'radio-on' ];
@@ -239,7 +258,8 @@ const FORCED = {
   checked: 'is-checked',
   selected: 'is-selected',
   sorted: 'is-sorted',
-  open: 'is-open'
+  open: 'is-open',
+  current: 'is-current'
 };
 const LIVE = { hovered: 'hover', focused: 'focus', pressed: 'press' };
 
@@ -887,18 +907,22 @@ describe('prototype gallery', () => {
     const rgb = text => text.match(/\d+/g).slice(0, 3).map(Number);
     const tones = {
       popup: rgb((await coloursOf(page, '.family .popup >> nth=0'))[0]),
+      'tone-4': rgb(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--tone-4').trim())
+        .then(hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`)),
       'tone-2': rgb(await page.evaluate(() => getComputedStyle(document.body).backgroundColor))
     };
     const offences = [];
     const popups = page.locator('.family .popup:not(.tooltip)');
     for (let index = 0; index < (await popups.count()); index++) {
       const popup = popups.nth(index);
-      await popup.scrollIntoViewIfNeeded();
+      // Centred, so that the rows under its foot are on screen too, not cut at the viewport's edge.
+      await popup.evaluate(element => element.scrollIntoView({ block: 'center' }));
       const { x, y, width, height } = await popup.boundingBox();
       const label = `${await popup.evaluate(element => element.getAttribute('aria-label'))} ${index}`;
+      // A combo box list has no padding above its first item, which may be its current value in tone 4.
       const top = await pixel(page, x + width / 2, y + 1);
-      if (top.some((channel, i) => Math.abs(channel - tones.popup[i]) > 1)) {
-        offences.push(`${label}: top row ${top}, expected the popup tone ${tones.popup}`);
+      if (![ tones.popup, tones['tone-4'] ].some(tone => top.every((channel, i) => Math.abs(channel - tone[i]) <= 1))) {
+        offences.push(`${label}: top row ${top}, expected the popup tone ${tones.popup} or tone 4`);
       }
       for (const below of [ 1, 3 ]) {
         const shade = await pixel(page, x + width / 2, y + height + below);
@@ -923,8 +947,8 @@ describe('prototype gallery', () => {
       return pixel(page, x + width / 2, y + height - 1);
     };
     const offences = [];
-    const combo = rgb((await coloursOf(page, '.combo-open .combo'))[0]);
-    const comboFoot = await footOf('.combo-open .combo');
+    const combo = rgb((await coloursOf(page, '.live .combo-open .combo'))[0]);
+    const comboFoot = await footOf('.live .combo-open .combo');
     if (comboFoot.some((channel, i) => Math.abs(channel - combo[i]) > 1)) {
       offences.push(`combo box foot ${comboFoot}, expected its tone ${combo}`);
     }
@@ -981,9 +1005,21 @@ describe('prototype gallery', () => {
   withChrome('keeps the combo list against its combo box', async () => {
     // A gap of surface between the two lighter boxes would read as a line.
     const { page } = await gallery();
-    const combo = await page.locator('.combo-open .combo').boundingBox();
-    const list = await page.locator('.combo-open .popup').boundingBox();
+    const combo = await page.locator('.live .combo-open .combo').boundingBox();
+    const list = await page.locator('.live .combo-open .popup').boundingBox();
     assert.equal(list.y, combo.y + combo.height);
+  });
+
+  withChrome('lines up a combo box list\'s text with its combo box\'s, in every list', async () => {
+    // Qt draws a combo box list with no tick column: its text starts where the combo box's does (D-115).
+    const { page } = await gallery();
+    const offences = await page.evaluate(() => [ ...document.querySelectorAll('.combo-open') ].flatMap(open => {
+      const value = open.querySelector('.combo-value').getBoundingClientRect().left;
+      return [ ...open.querySelectorAll('.menu-label') ]
+        .filter(label => Math.abs(label.getBoundingClientRect().left - value) > 0.5)
+        .map(label => `${label.textContent}: ${label.getBoundingClientRect().left - value} px from the combo box's text`);
+    }));
+    assert.deepEqual(offences, []);
   });
 
   withChrome('shows a tooltip on hover and on focus', async () => {
