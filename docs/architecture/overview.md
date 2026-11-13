@@ -78,7 +78,7 @@ prototype/            index.html, gallery.html, samples.html, tokens.css, contra
 parts/
   colour-scheme/      roles.json: the token or rule of each role (P2.1); Amber.colors, generated (P2.2)
   union-style/        amber/: the Union style, from the Breeze style 6.8.2 (P3.1); contents/css/tokens.css, generated (P3.2)
-  decoration/
+  decoration/         amber/: the Aurorae theme; metadata.desktop by hand, decoration.svg and amberrc generated (P5.1)
   terminal-colours/   keys.json: the token of each key (P4.1); Amber.colorscheme, generated (P4.1)
   editor-theme/       styles.json: the token of each key (P4.2); Amber.theme, generated (P4.2)
 tools/                command-line tools and their tests

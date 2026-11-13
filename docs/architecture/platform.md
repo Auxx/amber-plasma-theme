@@ -478,8 +478,10 @@ Verified on 2026-11-11 unless marked; see
   own.** The edge and corner elements of the frame are made 1 px thick in
   the window outline's colour, the centre element in the title bar's colour, and
   the theme's left, right and bottom borders are set to 1. At the top the
-  window outline is drawn inside the title bar, in its first row. What shows on
-  the other three edges depends on KWin's border size:
+  window outline is drawn inside the title bar, in its first row, unless
+  `TitleEdgeTop` is 1, which puts it above the title bar (verified,
+  2026-11-13, P5.1). What shows on the other three edges depends on KWin's
+  border size:
   - "Tiny": the window outline alone, 1 px on every edge at scale 1. At scale 1.49
     it is 2 device pixels on the top, left and bottom and 1 on the right.
   - the default: the window outline, then a band 3 px wide in the title bar's
@@ -521,6 +523,8 @@ Verified on 2026-11-11 unless marked; see
   bar.
 - KWin selects an Aurorae theme with `library=org.kde.kwin.aurorae` and
   `theme=__aurorae__svg__<id>` in `[org.kde.kdecoration2]` of `kwinrc`.
+  KWin 6.8.2 rewrites the library to `org.kde.kwin.aurorae.v2` when it
+  starts. (verified, 2026-11-13, P5.1)
 - A changed theme shows as soon as KWin starts again; no cache had to be
   emptied.
 - **A decoration can be tried without changing a system setting**, in a
@@ -566,15 +570,64 @@ Verified on 2026-11-11 unless marked; see
   more than 55 device pixels from the window at scale 1.49 and is deeper
   below the window than above it.
 
+### Amber's frame — P5.1, 2026-11-13
+
+Verified on 2026-11-13 with `parts/decoration/amber/` in the nested KWin.
+
+- **KWin finds an Aurorae theme in `aurorae/themes/` of any folder of
+  `XDG_DATA_DIRS`**, through a link to the repository's folder, so a theme
+  can be tried without installing it. The `[Desktop Entry]` of
+  `metadata.desktop` with `Name`, `Comment` and the `X-KDE-PluginInfo-`
+  keys `Author`, `Name`, `Version`, `Website` and `License` is enough.
+- **A `decoration.svg` that is not valid XML draws no frame**, while the
+  title text, from the `rc` file, is still drawn, and nothing is logged.
+  An XML comment holding `--` was enough to cause it.
+- The `rc` file's `ActiveTextColor` and `InactiveTextColor` are read as
+  `r,g,b,a`; `TitleAlignment=Center` centres the title on the title bar,
+  within half a pixel when there are no buttons.
+- The title is drawn in KWin's window title font. With no font set, it is
+  Noto Sans 10 pt regular, as in the prototype: same height and place;
+  Qt's hinting makes it about 3 % narrower than Chrome draws it.
+- A title longer than the title bar is elided in the middle. With
+  `TitleBorderLeft` and `TitleBorderRight` at 0 it runs to within 1 or
+  2 px of the window outline, never over it.
+- **No theme key recommends a border size.** Neither Aurorae plugin
+  (`org.kde.kwin.aurorae.so`, `org.kde.kwin.aurorae.v2.so`) holds one, so
+  the owner chooses "Tiny"; at the default a 3 px band in tone 0 sits
+  between the window outline and the application.
+- **At a fractional scale the window outline is 1 or 2 device pixels wide,
+  edge by edge.** Measured on a virtual output whose scale was set with
+  `kscreen-doctor output.Virtual-0.scale.<s>`, the same at two window
+  positions (device px, at the title bar / beside the application):
+
+  | Scale | Left | Right | Top | Bottom |
+  |---|---|---|---|---|
+  | 1 | 1 / 1 | 1 / 1 | 1 | 1 |
+  | 1.25 | 2 / 1 | 2 / 2 | 2 | 1 |
+  | 1.49 | 2 / 1 | 2 / 2 | 2 | 2 |
+  | 1.5 | 2 / 2 | 1 / 1 | 2 | 1 |
+  | 1.75 and 2 | 2 / 2 | 2 / 2 | 2 | 2 |
+
+  Part comes from how Aurorae draws the frame, part from KWin placing the
+  application over the outline's inner pixel. Qt Widgets and Qt Quick
+  applications under Wayland are alike. Under Xwayland at 1.49 a Qt
+  window's right edge shows no window outline at all. No theme setting
+  changes it: Aurorae's sizes are logical pixels, and
+  `shape-rendering="crispEdges"` changed nothing. A known gap (D-126).
+- **A GTK application under Xwayland, such as zenity, draws its own title
+  bar and rounded frame**, so Amber's decoration does not reach it.
+- In the nested KWin, `kwin_wayland --virtual --scale <s>` only makes the
+  output larger; `kscreen-doctor` sets its scale. A KWin script loaded over
+  D-Bus (`gdbus call … org.kde.kwin.Scripting.loadScript`, then `start`)
+  can place, restore and size windows.
+
 ### Unverified
 
 | Question | Tested in |
 |---|---|
-| Can the window outline be made the same width on every edge at scale 1.49? | P5.1 |
 | What does `Shadow=false` in the `rc` file change? P0.6 only ran with `Shadow=true`. | P5.3 |
 | Does Aurorae draw a gradient of many stops whose start lies inside the window, so that a shadow or glow fades on a curve and is deeper below a window than above it? An Aurorae copy of Breeze's shadow does it this way (nclarius, Plasma-window-decorations, `ActiveAccentDawn/decoration.svg`, read on 2026-11-12: 13 stops over 71 px for the active window and 36 px for an inactive one, starting 27 px inside the window at the top, 17 px at the sides and 4 px at the foot), but it was not run on this machine. The prototype draws the window glow and the shadow this way since P1.7 (D-59 to D-61). | P5.3 |
 | Is there a line at the edge of a tiled window? | P5.3 |
-| Can the theme choose the border size, so that the owner need not set it by hand? Breeze's decoration recommends a border size to KWin; nothing like it was found for an Aurorae theme. | P5.1 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the
 owner's say. (my call)
@@ -924,9 +977,9 @@ owner's display.
   beside selecting the decoration. For the window outline alone it is
   "Tiny". Left at its default, a band 3 px wide in tone 0 sits between the
   window outline and the content.
-- P5.1 to P5.3 can try the decoration in a nested KWin as above. P5.1 can
-  start from nine plain rectangles per window state, and must settle the
-  uneven window outline at scale 1.49.
+- P5.1 to P5.3 can try the decoration in a nested KWin as above. P5.1
+  started from nine plain rectangles per window state; the uneven window
+  outline at fractional scales is a known gap (D-126).
 
 ### P0.6 Window shadow and glow — 2026-11-11
 

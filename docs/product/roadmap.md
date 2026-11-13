@@ -242,9 +242,20 @@ current line and its inverted caret are known gaps (D-124).
 
 | Plan | Result | Done when | Status |
 |---|---|---|---|
-| P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | in progress |
+| P5.1 Frame and title bar | Square frame with a tone 0 title bar and the window outline | Matches the prototype for active and inactive windows | done |
 | P5.2 Window buttons | Minimise, maximise, close in every state | Matches the prototype | todo |
 | P5.3 Glow, shadow and window states | Window glow for the active window, shadow for an inactive one; maximised and tiled windows | Matches the prototype; no line but the window outline appears at any window edge in any state; a maximised window shows no outline, glow or shadow | todo |
+
+P5.1 generated `decoration.svg` and `amberrc` of the Aurorae theme
+`parts/decoration/amber/` from the tokens with `generate decoration`, and
+the new `image profile` read each edge of a window against the prototype.
+The owner saw the frame live and confirmed it matches (D-125). The window
+outline is 1 or 2 device pixels wide at fractional scales, and one edge can
+lose it under Xwayland: a known gap (D-126). No theme key recommends a
+border size, so the README of P6.2 must have the owner choose "Tiny". For
+P5.2: the frame has no button, `ButtonsOnLeft` was emptied in the nested
+KWin, and with no button the title runs to within 2 px of the outline. For
+P5.3: the frame has no padding, and maximised windows were not looked at.
 
 ## Step 6 — Packaging
 
