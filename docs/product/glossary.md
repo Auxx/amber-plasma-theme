@@ -82,6 +82,11 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 : A place where Amber cannot meet its own rules because the platform or an
   application prevents it. Known gaps are listed in the README.
 
+**Install record**
+: The file `amber/installed` in the data home, written by the install
+  script, that lists every file it wrote and every folder it created, so
+  that the uninstall script removes those and nothing else.
+
 ## The platform
 
 **Union**

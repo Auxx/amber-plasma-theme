@@ -7,7 +7,9 @@ gets no outline and no glow.
 
 ## Status
 
-Amber is in early development and nothing can be installed yet.
+Amber is in development. `scripts/install.sh` installs every part into
+your home folder, and `scripts/uninstall.sh` removes them; neither changes a
+setting. How to select the parts comes with the rest of this README.
 
 ## Documentation
 

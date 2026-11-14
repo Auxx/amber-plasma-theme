@@ -56,10 +56,15 @@ are used as the [glossary](../product/glossary.md) defines them.
 | Part | Format | Installed to | Selected in |
 |---|---|---|---|
 | Colour scheme | `Amber.colors` (INI) | `~/.local/share/color-schemes/` | System Settings → Colours |
-| Union style | folder: `metadata.json`, `contents/css/` | by `union-styletool install` | see [platform](platform.md) |
+| Union style | folder: `metadata.json`, `contents/css/` | `~/.local/share/union/styles/amber/` | see [platform](platform.md) |
 | Window decoration | Aurorae theme folder | `~/.local/share/aurorae/themes/` | System Settings → Window Decorations |
 | Terminal colours | `Amber.colorscheme` (INI) | `~/.local/share/konsole/` | Konsole profile → Appearance |
 | Editor theme | `.theme` (JSON) | `~/.local/share/org.kde.syntax-highlighting/themes/` | Kate → Settings → Colour Themes |
+
+`scripts/install.sh` copies every part to its folder, under `XDG_DATA_HOME`
+when that is set, and writes the [install record](../product/glossary.md);
+`scripts/uninstall.sh` removes what the record lists, and Amber's Union
+cache file (D-134 to D-136).
 
 Every part is shown to the user as "Amber". The colour scheme and the
 terminal colours are identified by their file names; the parts that carry an
