@@ -252,7 +252,7 @@ the new `image profile` read each edge of a window against the prototype.
 The owner saw the frame live and confirmed it matches (D-125). The window
 outline is 1 or 2 device pixels wide at fractional scales, and one edge can
 lose it under Xwayland: a known gap (D-126). No theme key recommends a
-border size, so the README of P6.2 must have the owner choose "Tiny". For
+border size, so the README of P6.3 must have the owner choose "Tiny". For
 P5.2: the frame has no button, `ButtonsOnLeft` was emptied in the nested
 KWin, and with no button the title runs to within 2 px of the outline. For
 P5.3: the frame has no padding, and maximised windows were not looked at.
@@ -267,7 +267,7 @@ review the owner tried two drawings live and chose that a button's fill
 keep off the window outline, so that the outline stays whole at 1.49; a
 hovered or pressed button then shows a seam at the outline, a known gap
 (D-130). For P5.3: a maximised window shows restore at rest and no window
-outline. For P6.2: the README need not change KWin's button settings.
+outline. For P6.3: the README need not change KWin's button settings.
 
 P5.3 generated the window glow and the shadow into the frame, after a probe
 in the nested KWin showed that an element may reach inside the window
@@ -278,7 +278,7 @@ windows keep every edge; a click in the light goes to what lies behind.
 Live, the owner chose a fainter glow set a little lower, with three new
 tokens (D-132), and a faint seam beside the outline at a fractional scale
 is a known gap (D-133). For P6.1: the theme is still the six files of
-`parts/decoration/amber/` and `metadata.desktop`. For P6.2: the border
+`parts/decoration/amber/` and `metadata.desktop`. For P6.3: the border
 size must still be "Tiny"; the known gaps of D-126, D-127, D-130 and D-133
 are in the README.
 
@@ -287,8 +287,9 @@ are in the README.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | done |
-| P6.2 README | How to install, select (with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
-| P6.3 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
+| P6.2 Activate on install | An optional argument of the install script, `--activate`, that selects every part, KWin's border size "Tiny" included; uninstall puts back each setting it changed | After `install.sh --activate` in the nested session, Dolphin, Kate and Konsole show every part with no setting changed by hand; after `uninstall.sh`, every setting is as it was before install | todo |
+| P6.3 README | How to install, select (by `--activate` or by hand, with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
+| P6.4 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
 
 P6.1 added `scripts/install.sh` and `scripts/uninstall.sh`, which copy the
 parts under the data home and remove them by the install record (D-134,
@@ -296,7 +297,20 @@ D-135); a spec runs both in a throwaway home and compares the whole tree.
 In the nested session every application found its installed part with no
 link to the repository, and a part changed and installed again showed on
 restart. The owner's round trip on the real home folder left no
-difference. For P6.2: the two commands; that `XDG_DATA_HOME` is honoured;
+difference. For P6.3: the two commands; that `XDG_DATA_HOME` is honoured;
 that install refuses a file Amber did not write; that uninstall names a
 setting still selecting Amber and changes none (D-136); and that a part
 changed and installed again shows when an application starts again.
+
+P6.2 was added after P6.1, at the owner's request, so that one command can
+also select Amber (D-137). It changes the owner's settings, so its plan
+tries every write in the nested session's own configuration first, never
+in `~/.config`, and the owner runs it on the real system. Uninstall then
+restores what activation changed, so that the vision's "uninstalling
+leaves the system as it was" still holds. Open for its plan: which key
+selects the Union style for the whole system (platform); how each
+setting is written (KDE's own tools, such as `plasma-apply-colorscheme`
+and `kwriteconfig6`, or the files), and whether a running KWin, Konsole
+and Kate pick a change up; which Konsole profile takes the terminal
+colours; and what uninstall does with a setting the owner changed again
+after install.

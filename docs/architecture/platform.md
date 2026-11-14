@@ -751,8 +751,8 @@ in the nested KWin, at scale 1 and on a virtual output at 1.49.
 
 | Question | Tested in |
 |---|---|
-| Does a shaded window draw whole? Its inside, the title bar alone, is 30 px, less than the 31 px the top and bottom corner elements reach in together. Neither a script's `shade` nor KWin's shade action shaded a window in the nested session (P5.3). | P6.3 |
-| Does KWin draw a disabled minimise or close (a window that cannot be minimised or closed, as through a window rule), and with which element? Amber's button files have no `deactivated` element. Only maximise on a window of fixed size was seen: KWin left it out. | P6.3 |
+| Does a shaded window draw whole? Its inside, the title bar alone, is 30 px, less than the 31 px the top and bottom corner elements reach in together. Neither a script's `shade` nor KWin's shade action shaded a window in the nested session (P5.3). | P6.4 |
+| Does KWin draw a disabled minimise or close (a window that cannot be minimised or closed, as through a window rule), and with which element? Amber's button files have no `deactivated` element. Only maximise on a window of fixed size was seen: KWin left it out. | P6.4 |
 
 A compiled decoration, or Breeze's own decoration, is not used without the
 owner's say. (my call)
@@ -828,7 +828,7 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   applications**: with a blue accent written there, Dolphin's selection stayed
   `accent`. Plasma's colour settings page applies an accent by rewriting the
   colour groups of `kdeglobals`, which was not tried, since it changes a
-  system setting. (unverified; P6.2 tells the owner to leave the accent
+  system setting. (unverified; P6.3 tells the owner to leave the accent
   to the colour scheme)
 - **KWin's Breeze decoration does not read `[WM]`**: it takes the Header
   set's `BackgroundNormal` for the title bar (a magenta `activeBackground`
@@ -868,8 +868,8 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 
 | Question | Tested in |
 |---|---|
-| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2 |
-| Is a positive message Breeze's green, as a warning is Breeze's orange (P3.9)? No application showed one. Is the negative message's red the colour scheme's tint or Breeze's fixed red? | P6.3 |
+| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2, P6.3 |
+| Is a positive message Breeze's green, as a warning is Breeze's orange (P3.9)? No application showed one. Is the negative message's red the colour scheme's tint or Breeze's fixed red? | P6.4 |
 
 ## Konsole and Kate
 
@@ -1098,7 +1098,7 @@ owner's display.
   [design language](design-language.md). The window outline's colour and width
   were open question O-4, closed on 2026-11-12 (D-62).
 - What shows at a window's edge depends on KWin's border size, which is a
-  system setting, so the owner sets it; P6.2 must say so in the README,
+  system setting, so the owner sets it, or P6.2's activation; P6.3 must say so in the README,
   beside selecting the decoration. For the window outline alone it is
   "Tiny". Left at its default, a band 3 px wide in tone 0 sits between the
   window outline and the content.
