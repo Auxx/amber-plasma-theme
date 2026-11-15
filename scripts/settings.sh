@@ -140,6 +140,7 @@ amber_restore() {
   local -a lines=() created=()
   local line kind file group key before after now i name hash
   local -A restored=() scheme_kept=()
+  local announce=
   while IFS= read -r line; do
     case $line in
       set$'\t'* | cset$'\t'*) lines+=("$line") ;;
@@ -163,8 +164,15 @@ amber_restore() {
     now=$(amber_ini_state "$file" "$group" "$key")
     if [[ $kind == cset ]]; then
       [[ -n ${scheme_kept[$file]:-} ]] && continue
-      amber_kwrite "$file" "$group" "$key" "$before"
       restored[$file]=$((${restored[$file]:-0} + 1))
+      # The scheme's name goes back last, announced, so that KDE's GTK
+      # settings service writes GTK's colours again (D-141).
+      if [[ $group == General && $key == ColorScheme && $before == =* &&
+        $file == "$amber_config/kdeglobals" && -n ${DBUS_SESSION_BUS_ADDRESS:-} ]]; then
+        announce=$before
+        continue
+      fi
+      amber_kwrite "$file" "$group" "$key" "$before"
     elif [[ $now == "$after" ]]; then
       amber_kwrite "$file" "$group" "$key" "$before"
       restored[$file]=$((${restored[$file]:-0} + 1))
@@ -174,6 +182,11 @@ amber_restore() {
       echo "kept $file [$group] $key${now}: changed since install"
     fi
   done
+  if [[ -n $announce ]]; then
+    XDG_CONFIG_HOME=$amber_config kwriteconfig6 --file kdeglobals --notify \
+      --group General --key ColorScheme -- "${announce#=}" 2>/dev/null ||
+      amber_kwrite "$amber_config/kdeglobals" General ColorScheme "$announce"
+  fi
   for file in "${!restored[@]}"; do echo "restored ${restored[$file]} settings in $file"; done | LC_ALL=C sort
   for file in "${created[@]}"; do
     if [[ -f $file && -z $(amber_ini_dump "$file") ]] && ! grep -q '[^[:space:]]' <(grep -v '^\[' "$file"); then

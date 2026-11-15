@@ -326,7 +326,35 @@ describe('scripts/install.sh --activate', () => {
     }
     assert.equal(r.stdout.split('\n').filter((l) => l.startsWith('kept')).length, 1, r.stdout);
     assert.match(r.stdout, /^kept .*kdeglobals colour scheme BreezeDark/m);
-    void root;
+  });
+
+  it("announces the restored colour scheme so that GTK's colours follow", () => {
+    const { root, home } = makeRoot();
+    const cfg = join(home, '.config');
+    put(join(cfg, 'kdeglobals'), '[General]\nColorScheme=BreezeDark\n');
+    const before = settings(cfg);
+    const bin = join(root, 'bin');
+    const calls = join(root, 'kwrite-calls');
+    const real = spawnSync('bash', ['-c', 'command -v kwriteconfig6'], { encoding: 'utf8' }).stdout.trim();
+    put(join(bin, 'kwriteconfig6'),
+      `#!/bin/bash\nprintf '%s|%s\\n' "\${XDG_CONFIG_HOME-unset}" "$*" >> '${calls}'\nexec '${real}' "$@"\n`);
+    chmodSync(join(bin, 'kwriteconfig6'), 0o755);
+    const PATH = `${bin}:${process.env.PATH}`;
+
+    assert.equal(run('install', home, { env: { PATH }, args: ['--activate'] }).code, 0);
+    writeFileSync(calls, '');
+    assert.equal(run('uninstall', home, { env: { PATH } }).code, 0);
+    assert.doesNotMatch(readFileSync(calls, 'utf8'), /--notify/);
+    assert.deepEqual(settings(cfg), before);
+
+    const env = { PATH, DBUS_SESSION_BUS_ADDRESS: 'unix:path=/nonexistent' };
+    assert.equal(run('install', home, { env, args: ['--activate'] }).code, 0);
+    writeFileSync(calls, '');
+    assert.equal(run('uninstall', home, { env }).code, 0);
+    const log = readFileSync(calls, 'utf8').trim().split('\n');
+    assert.equal(log.filter((l) => l.includes('--notify')).length, 1, log.join('\n'));
+    assert.equal(log.at(-1), `${cfg}|--file kdeglobals --notify --group General --key ColorScheme -- BreezeDark`);
+    assert.deepEqual(settings(cfg), before);
   });
 
   it('rejects arguments', () => {

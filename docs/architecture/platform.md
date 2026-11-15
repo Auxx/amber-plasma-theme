@@ -842,6 +842,16 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   `kwriteconfig6` is seen by an open application after
   `notifyChange int32:0 int32:0` on `/KGlobalSettings`. (verified,
   2026-11-15, P6.2)
+- **GTK's colours follow `ColorScheme` in `[General]` of `kdeglobals`.**
+  The `gtkconfig` module of `kded6` writes `gtk-3.0/colors.css` and
+  `gtk-4.0/colors.css` from the colour scheme when it hears KConfig's change
+  signal for that key: applying a scheme with `plasma-apply-colorscheme` on
+  a session bus sends it. `kwriteconfig6 --notify` sends it only under the
+  plain name (`--file kdeglobals`, found through `XDG_CONFIG_HOME`); with an
+  absolute path, or with `notifyChange` on `/KGlobalSettings`, the GTK
+  files stayed as they were. A value written unchanged sends nothing.
+  (verified, 2026-11-15, P6.2, with `kded6` in the nested session; on the
+  owner's system an uninstall without it left GTK on Amber's colours)
 - **`AccentColor` in `[General]` of `kdeglobals` is not applied by the
   applications**: with a blue accent written there, Dolphin's selection stayed
   `accent`. Plasma's colour settings page applies an accent by rewriting the
