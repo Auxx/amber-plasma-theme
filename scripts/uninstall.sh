@@ -2,14 +2,16 @@
 # SPDX-FileCopyrightText: 2026 Aleksandr 'Aux' Ivanov
 # SPDX-License-Identifier: MIT
 #
-# Removes what install.sh wrote, as its install record lists it, and Amber's
-# Union cache file. Changes no setting: a setting that still names Amber is
-# reported, for the owner to change in System Settings.
+# Puts back every setting that install.sh --activate changed, then removes
+# what install.sh wrote, as its install record lists it, and Amber's Union
+# cache file. A setting that selected Amber before install is reported, for
+# the owner to change in System Settings.
 set -euo pipefail
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 amber_usage_args "Usage: uninstall.sh [--help]
-Removes Amber's parts from $amber_data." "$@"
+Removes Amber's parts from $amber_data, and puts back the settings
+that install.sh --activate changed." "$@"
 
 report() {
   local file=$amber_config/$1 line=$2 what=$3
@@ -27,6 +29,10 @@ else
       printf 'removed %s: %s\n' "$label" "$amber_data/$dst"
     fi
   done
+  if grep -qE $'^c?set\t' "$amber_record"; then
+    amber_restore
+    amber_notify palette
+  fi
   amber_remove
 fi
 report kdeglobals ColorScheme=Amber "colour scheme"

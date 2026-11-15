@@ -84,8 +84,14 @@ Terms are grouped by area and listed in a logical order, not alphabetically.
 
 **Install record**
 : The file `amber/installed` in the data home, written by the install
-  script, that lists every file it wrote and every folder it created, so
-  that the uninstall script removes those and nothing else.
+  script, that lists every file it wrote and every folder it created, and
+  every setting that activation changed, so that the uninstall script
+  removes those, puts the settings back, and touches nothing else.
+
+**Activation**
+: What `install.sh --activate` does: selecting every part in the owner's
+  settings, with each setting's earlier value kept in the install record so
+  that uninstall puts it back.
 
 ## The platform
 

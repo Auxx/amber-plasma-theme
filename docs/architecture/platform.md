@@ -459,14 +459,12 @@ Verified on 2026-11-10 unless marked.
 - Environment variables found in the Union libraries: `UNION_STYLE_NAME`,
   `UNION_DISABLE_STYLE_CACHE`, `UNION_FORCE_RECREATE_STYLE_CACHE`,
   `UNION_FORCE_PLATFORM`, `UNION_DISABLE_INPUT_PLUGINS`.
-- A `unionStyle` configuration key was reported in the Union library by the
-  design reviewer. **Unverified.**
-
-### Unverified
-
-| Question | Tested in |
-|---|---|
-| Which key selects the style for the whole system? | P6.2 |
+- **`unionStyle=<id>` in `[KDE]` of `kdeglobals`**, with
+  `widgetStyle=Union`, selects a style for every application, with no
+  `UNION_STYLE_NAME`: Dolphin drew Amber's style with `unionStyle=amber`
+  and Breeze's without it. An application already open keeps its style
+  until it starts again; `notifyChange` with the style argument changed
+  nothing. (verified, 2026-11-15, P6.2)
 
 The glow cannot be drawn in Qt Widgets applications (P0.3, P0.5). The owner
 decided on 2026-11-11 that Amber has none: D-4 in the
@@ -543,6 +541,12 @@ Verified on 2026-11-11 unless marked; see
   starts. (verified, 2026-11-13, P5.1)
 - A changed theme shows as soon as KWin starts again; no cache had to be
   emptied.
+- **A running KWin reads `[org.kde.kdecoration2]` again on the signal
+  `dbus-send --session --type=signal /KWin org.kde.KWin.reloadConfig`**:
+  the theme and the border size changed at once, both ways. The method
+  `org.kde.KWin.reconfigure` did not apply a border size. Writing
+  `library=org.kde.kwin.aurorae.v2` directly loads the decoration, and KWin
+  keeps it. (verified, 2026-11-15, P6.2)
 - **A decoration can be tried without changing a system setting**, in a
   nested KWin with its own configuration, cache and D-Bus session:
   `XDG_CONFIG_HOME=<folder> XDG_CACHE_HOME=<folder> dbus-run-session --
@@ -824,6 +828,30 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   equals the set's background: the Breeze style's 1 px border under the
   header toolbar is tone 0, the Header background; with 0.2 it is a lighter
   line (`#353330`).
+- **`plasma-apply-colorscheme <name>` writes what System Settings writes**
+  into `kdeglobals` of `XDG_CONFIG_HOME`: every group of the scheme, but
+  `[Colors:Header][Inactive]`'s `BackgroundNormal` and `DecorationHover`
+  derived (`28,26,24` for Amber, where the file says `21,20,19`, the same
+  as the owner's System Settings wrote), and `ColorSchemeHash`, the SHA-1
+  of the `.colors` file. It skips a scheme whose name is already set (exit
+  0), and an unknown one exits 255. With no display it aborts unless
+  `QT_QPA_PLATFORM=offscreen`; with no session bus it still writes. On a
+  bus it repaints open applications itself. With `AccentColor` in
+  `[General]` it tints the scheme's Selection with the accent
+  (`0,0,255` gave Selection `11,10,187`). A key written with
+  `kwriteconfig6` is seen by an open application after
+  `notifyChange int32:0 int32:0` on `/KGlobalSettings`. (verified,
+  2026-11-15, P6.2)
+- **GTK's colours follow `ColorScheme` in `[General]` of `kdeglobals`.**
+  The `gtkconfig` module of `kded6` writes `gtk-3.0/colors.css` and
+  `gtk-4.0/colors.css` from the colour scheme when it hears KConfig's change
+  signal for that key: applying a scheme with `plasma-apply-colorscheme` on
+  a session bus sends it. `kwriteconfig6 --notify` sends it only under the
+  plain name (`--file kdeglobals`, found through `XDG_CONFIG_HOME`); with an
+  absolute path, or with `notifyChange` on `/KGlobalSettings`, the GTK
+  files stayed as they were. A value written unchanged sends nothing.
+  (verified, 2026-11-15, P6.2, with `kded6` in the nested session; on the
+  owner's system an uninstall without it left GTK on Amber's colours)
 - **`AccentColor` in `[General]` of `kdeglobals` is not applied by the
   applications**: with a blue accent written there, Dolphin's selection stayed
   `accent`. Plasma's colour settings page applies an accent by rewriting the
@@ -868,7 +896,7 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
 
 | Question | Tested in |
 |---|---|
-| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? It is applied by rewriting `kdeglobals`, which a check may not do. | P6.2, P6.3 |
+| Does an accent colour chosen in System Settings replace the scheme's Selection and DecorationFocus? Applying a scheme with `AccentColor` set does (P6.2, above); whether System Settings' accent page then rewrites it again was not tried. | P6.3 |
 | Is a positive message Breeze's green, as a warning is Breeze's orange (P3.9)? No application showed one. Is the negative message's red the colour scheme's tint or Breeze's fixed red? | P6.4 |
 
 ## Konsole and Kate
@@ -943,6 +971,12 @@ day, in Dolphin, Kate and Konsole under the Breeze Union style:
   caret is drawn by inverting the pixels under it (`#dadde0` over tone 2,
   `#171c25` over text): the theme has no caret colour. The minimap takes
   the theme's colours, its view area tinted.
+- **Konsole started with no argument uses the profile `DefaultProfile`
+  names in `[Desktop Entry]` of `konsolerc`**, found in `konsole/` of the
+  data home: `Amber.profile` there, with `ColorScheme=Amber` in
+  `[Appearance]`, gave the terminal colours. KWrite takes its editor theme
+  from its own `kwriterc`, with the keys Kate reads from `katerc`.
+  (verified, 2026-11-15, P6.2)
 - **Driving Konsole from outside:** `KMainWindow.activateAction
   split-view-left-right` on `/konsole/MainWindow_1` splits a live session,
   but not one held after its command ended (`--hold`). `Session.runCommand`

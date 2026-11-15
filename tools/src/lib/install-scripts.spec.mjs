@@ -1,11 +1,10 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { dirname, join, relative } from 'node:path';
-import { after, describe, it } from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { describe, it } from 'node:test';
+import { PARTS, REPO, makeRoot, put, run, snapshot } from './install-fixtures.mjs';
 
 /**
  * The install and uninstall scripts (roadmap P6.1). Each case runs them in a
@@ -13,53 +12,6 @@ import { fileURLToPath } from 'node:url';
  * must leave the home as it was, and neither script may write outside its
  * data home, its cache home or its install record.
  */
-
-const REPO = fileURLToPath(new URL('../../..', import.meta.url));
-const PARTS = join(REPO, 'parts');
-const roots = [];
-after(() => roots.forEach((r) => rmSync(r, { recursive: true, force: true })));
-
-/** A temporary folder holding `home/` (or the name given). */
-function makeRoot(homeName = 'home') {
-  const root = mkdtempSync(join(tmpdir(), 'amber-install-'));
-  roots.push(root);
-  const home = join(root, homeName);
-  mkdirSync(home);
-  return { root, home };
-}
-
-/** Every entry under `dir`, sorted, as [relative path, sha256 of a file or "dir"]. */
-function snapshot(dir) {
-  const out = [];
-  const walk = (d) => {
-    for (const name of readdirSync(d).sort()) {
-      const p = join(d, name);
-      if (statSync(p).isDirectory()) {
-        out.push([relative(dir, p), 'dir']);
-        walk(p);
-      } else {
-        out.push([relative(dir, p), createHash('sha256').update(readFileSync(p)).digest('hex')]);
-      }
-    }
-  };
-  walk(dir);
-  return out;
-}
-
-/** Runs a script with an environment of PATH, HOME and `env` alone. */
-function run(script, home, { env = {}, cwd = dirname(home), args = [] } = {}) {
-  const r = spawnSync('bash', [join(REPO, 'scripts', `${script}.sh`), ...args], {
-    cwd,
-    env: { PATH: process.env.PATH, HOME: home, ...env },
-    encoding: 'utf8',
-  });
-  return { code: r.status, stdout: r.stdout, stderr: r.stderr };
-}
-
-function put(file, text) {
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, text);
-}
 
 /** Every file of the parts, as [source, target relative to the data home]. */
 function targets() {

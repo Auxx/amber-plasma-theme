@@ -83,6 +83,18 @@ amber_remove() {
   return 0
 }
 
+# Makes a folder and its missing parents, printing a "dir" line for each one
+# made. Each line is printed before its folder is made, so that a run killed
+# halfway leaves nothing its record does not list.
+amber_make_dir() {
+  local p=$1
+  local -a missing=()
+  while [[ ! -d $p ]]; do missing=("$p" "${missing[@]}"); p=$(dirname "$p"); done
+  for p in "${missing[@]}"; do printf 'dir %s\n' "$p"; mkdir -- "$p"; done
+}
+
+. "$(dirname "${BASH_SOURCE[0]}")/settings.sh"
+
 amber_usage_args() {
   local usage=$1; shift
   case ${1:-} in
