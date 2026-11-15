@@ -287,7 +287,7 @@ are in the README.
 | Plan | Result | Done when | Status |
 |---|---|---|---|
 | P6.1 Install and uninstall | One command each | Uninstall leaves no file behind | done |
-| P6.2 Activate on install | An optional argument of the install script, `--activate`, that selects every part, KWin's border size "Tiny" included; uninstall puts back each setting it changed | After `install.sh --activate` in the nested session, Dolphin, Kate and Konsole show every part with no setting changed by hand; after `uninstall.sh`, every setting is as it was before install | in progress |
+| P6.2 Activate on install | An optional argument of the install script, `--activate`, that selects every part, KWin's border size "Tiny" included; uninstall puts back each setting it changed | After `install.sh --activate` in the nested session, Dolphin, Kate and Konsole show every part with no setting changed by hand; after `uninstall.sh`, every setting is as it was before install | done |
 | P6.3 README | How to install, select (by `--activate` or by hand, with KWin's border size), change a token; known gaps | A reader can do all three from the README alone | todo |
 | P6.4 Acceptance check | Every line of "What success looks like" in the vision checked | Each line is confirmed or recorded as a known gap | todo |
 
@@ -325,6 +325,9 @@ since, which it names in a `kept` line. An accent colour is removed while
 Amber is selected. Uninstall announces the restored colour scheme so that GTK's colours follow (D-141). KWin redraws at once; an application shows the style,
 and Konsole, Kate and KWrite their parts, when it starts again. In the
 nested session every application showed every part with no setting
-changed by hand, and uninstall restored every key. For P6.3: the argument,
+changed by hand, and uninstall restored every key. On the real system, from
+Breeze, the owner's round trip showed every part and left `kdeglobals`,
+`kwinrc`, `konsolerc`, `katerc`, `kwriterc`, the Konsole profile and the
+GTK settings with no difference (2026-11-15). For P6.3: the argument,
 what it changes, the `kept` lines, the accent colour, and that
 applications must start again.
