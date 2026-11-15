@@ -28,7 +28,7 @@ if [[ -f $amber_record ]]; then
   while IFS= read -r line; do
     case $line in
       'file '*) ours[${line#file }]=1 ;;
-      set$'\t'* | 'created '*) carried+=("$line") ;;
+      set$'\t'* | cset$'\t'* | scheme$'\t'* | 'created '*) carried+=("$line") ;;
       "dir $amber_config" | "dir $amber_config/"*) carried+=("$line") ;;
     esac
   done < "$amber_record"

@@ -8,8 +8,11 @@
 # A setting's record line is tab-separated:
 #   set <file> <group> <key> <before> <after>
 # where <before> and <after> are "=" followed by the value, or "-" for a
-# missing key. "created <file>" names a configuration file that activation
-# made; uninstall removes it when no key is left in it.
+# missing key. The colour scheme's keys are "cset" lines of the same form,
+# restored together only while "scheme <file> <ColorScheme> <ColorSchemeHash>"
+# (the values activation left) still holds. "created <file>" names a
+# configuration file that activation made; uninstall removes it when no key
+# is left in it.
 
 # Prints a key's value and returns 0, or returns 1 when the key or the file
 # is missing. kreadconfig6 cannot tell an empty value from a missing key.
@@ -52,10 +55,20 @@ amber_ini_state() {
   if v=$(amber_ini_get "$1" "$2" "$3"); then printf '=%s' "$v"; else printf -- '-'; fi
 }
 
-# True when the record already holds a set line for this key: a later
-# activation keeps the value from before the first one.
-amber_recorded() {
-  [[ -f $amber_record ]] && grep -qF -- "$(printf 'set\t%s\t%s\t%s\t' "$1" "$2" "$3")" "$amber_record"
+# Records one key's change. When the record already holds a line for the key,
+# only its <after> is updated: a later activation keeps the value from before
+# the first one, and uninstall still finds the value written last.
+amber_record_set() {
+  local kind=$1 file=$2 group=$3 key=$4 before=$5 after=$6 tmp
+  if awk -F'\t' -v f="$file" -v g="$group" -v k="$key" \
+    '($1 == "set" || $1 == "cset") && $2 == f && $3 == g && $4 == k { found = 1 } END { exit !found }' "$amber_record"; then
+    tmp=$amber_record.new
+    awk -F'\t' -v OFS='\t' -v f="$file" -v g="$group" -v k="$key" -v a="$after" \
+      '($1 == "set" || $1 == "cset") && $2 == f && $3 == g && $4 == k { $6 = a } { print }' "$amber_record" > "$tmp"
+    mv -- "$tmp" "$amber_record"
+  else
+    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$kind" "$file" "$group" "$key" "$before" "$after" >> "$amber_record"
+  fi
 }
 
 # Before the first write to a configuration file: the folders and the file
@@ -74,8 +87,7 @@ amber_set() {
   now=$(amber_ini_state "$file" "$group" "$key")
   [[ $now == "$want" ]] && return 0
   amber_prepare_file "$file"
-  amber_recorded "$file" "$group" "$key" ||
-    printf 'set\t%s\t%s\t%s\t%s\t%s\n' "$file" "$group" "$key" "$now" "$want" >> "$amber_record"
+  amber_record_set set "$file" "$group" "$key" "$now" "$want"
   amber_kwrite "$file" "$group" "$key" "$want"
 }
 
@@ -93,11 +105,13 @@ amber_apply_colour_scheme() {
   if [[ ${before[General$'\t'ColorScheme]:-} == Amber && ${before[General$'\t'ColorSchemeHash]:-} != "$hash" ]]; then
     amber_kwrite "$file" General ColorScheme -
   fi
-  if ! XDG_CONFIG_HOME=$amber_config XDG_DATA_HOME=$amber_data QT_QPA_PLATFORM=offscreen \
-    plasma-apply-colorscheme Amber > /dev/null; then
-    echo "install.sh: plasma-apply-colorscheme Amber failed; uninstall.sh undoes what was done" >&2
-    exit 1
-  fi
+  # With no session bus given, the tool must not find the owner's own one
+  # through $XDG_RUNTIME_DIR/bus, which libdbus falls back to.
+  local -a bus=()
+  [[ -n ${DBUS_SESSION_BUS_ADDRESS:-} ]] || bus=(env -u XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS=unix:path=/nonexistent)
+  local failed=0
+  XDG_CONFIG_HOME=$amber_config XDG_DATA_HOME=$amber_data QT_QPA_PLATFORM=offscreen \
+    "${bus[@]}" plasma-apply-colorscheme Amber > /dev/null || failed=1
   while IFS= read -r line; do after[${line%$'\t'*}]=${line##*$'\t'}; done < <(amber_ini_dump "$file")
   local -A ids=()
   for id in "${!before[@]}" "${!after[@]}"; do ids[$id]=1; done
@@ -106,9 +120,17 @@ amber_apply_colour_scheme() {
     [[ -v before[$id] ]] && b="=${before[$id]}"
     [[ -v after[$id] ]] && a="=${after[$id]}"
     [[ $b == "$a" ]] && continue
-    amber_recorded "$file" "${id%%$'\t'*}" "${id#*$'\t'}" ||
-      printf 'set\t%s\t%s\t%s\t%s\t%s\n' "$file" "${id%%$'\t'*}" "${id#*$'\t'}" "$b" "$a" >> "$amber_record"
+    amber_record_set cset "$file" "${id%%$'\t'*}" "${id#*$'\t'}" "$b" "$a"
   done
+  local tmp=$amber_record.new
+  grep -v -F -- "$(printf 'scheme\t%s\t' "$file")" "$amber_record" > "$tmp" || true
+  mv -- "$tmp" "$amber_record"
+  printf 'scheme\t%s\t%s\t%s\n' "$file" "$(amber_ini_state "$file" General ColorScheme)" \
+    "$(amber_ini_state "$file" General ColorSchemeHash)" >> "$amber_record"
+  if ((failed)); then
+    echo "install.sh: plasma-apply-colorscheme Amber failed; uninstall.sh undoes what was done" >&2
+    exit 1
+  fi
 }
 
 # Puts back every setting the record lists, newest first. A key the owner
@@ -116,18 +138,34 @@ amber_apply_colour_scheme() {
 amber_restore() {
   [[ -f $amber_record ]] || return 0
   local -a lines=() created=()
-  local line kind file group key before after now i
-  local -A restored=()
+  local line kind file group key before after now i name hash
+  local -A restored=() scheme_kept=()
   while IFS= read -r line; do
     case $line in
-      set$'\t'*) lines+=("$line") ;;
+      set$'\t'* | cset$'\t'*) lines+=("$line") ;;
       'created '*) created+=("${line#created }") ;;
+      scheme$'\t'*)
+        IFS=$'\t' read -r kind file name hash <<<"$line"
+        if [[ $(amber_ini_state "$file" General ColorScheme) != "$name" ||
+          $(amber_ini_state "$file" General ColorSchemeHash) != "$hash" ]]; then
+          scheme_kept[$file]=1
+        fi ;;
     esac
   done < "$amber_record"
+  # A colour scheme is one unit: if the owner chose another since install,
+  # all of its keys are the owner's.
+  for file in "${!scheme_kept[@]}"; do
+    now=$(amber_ini_state "$file" General ColorScheme)
+    echo "kept $file colour scheme ${now#=}: changed since install"
+  done
   for ((i = ${#lines[@]} - 1; i >= 0; i--)); do
     IFS=$'\t' read -r kind file group key before after <<<"${lines[i]}"
     now=$(amber_ini_state "$file" "$group" "$key")
-    if [[ $now == "$after" ]]; then
+    if [[ $kind == cset ]]; then
+      [[ -n ${scheme_kept[$file]:-} ]] && continue
+      amber_kwrite "$file" "$group" "$key" "$before"
+      restored[$file]=$((${restored[$file]:-0} + 1))
+    elif [[ $now == "$after" ]]; then
       amber_kwrite "$file" "$group" "$key" "$before"
       restored[$file]=$((${restored[$file]:-0} + 1))
     elif [[ $now == - ]]; then

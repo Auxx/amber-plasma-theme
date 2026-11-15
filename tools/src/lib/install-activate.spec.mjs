@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { PARTS, ini, makeRoot, put, run, snapshot } from './install-fixtures.mjs';
@@ -255,6 +255,78 @@ describe('scripts/install.sh --activate', () => {
     assert.equal(globals.get('Colors:Selection\tBackgroundNormal'), applied.get('Colors:Selection\tBackgroundNormal'));
     assert.equal(run('uninstall', home).code, 0);
     assert.deepEqual(settings(cfg), before);
+  });
+
+  it('activates again after the colour scheme changed', () => {
+    const { root, home } = makeRoot();
+    const cfg = join(home, '.config');
+    put(join(cfg, 'kdeglobals'), '[General]\nColorScheme=BreezeDark\n');
+    const before = settings(cfg);
+    assert.equal(run('install', home, { args: ['--activate'] }).code, 0);
+    const parts = join(root, 'parts');
+    cpSync(PARTS, parts, { recursive: true });
+    const colors = join(parts, 'colour-scheme/Amber.colors');
+    writeFileSync(colors, readFileSync(colors, 'utf8').replace(/(\[Colors:Button\]\n(?:.*\n)*?BackgroundNormal=).*/, '$110,20,30'));
+    const again = run('install', home, { env: { AMBER_PARTS: parts }, args: ['--activate'] });
+    assert.equal(again.code, 0, again.stderr);
+    assert.equal(ini(join(cfg, 'kdeglobals')).get('Colors:Button\tBackgroundNormal'), '10,20,30');
+    const r = run('uninstall', home);
+    assert.equal(r.code, 0, r.stderr);
+    assert.doesNotMatch(r.stdout, /^kept/m);
+    assert.deepEqual(settings(cfg), before);
+  });
+
+  it('records what it did when the colour scheme tool fails', () => {
+    const { root, home } = makeRoot();
+    const cfg = join(home, '.config');
+    put(join(cfg, 'kdeglobals'), '[General]\nAccentColor=0,0,255\nColorScheme=Amber\nColorSchemeHash=0000\n');
+    const before = settings(cfg);
+    const bin = join(root, 'bin');
+    put(join(bin, 'plasma-apply-colorscheme'), '#!/bin/bash\nexit 1\n');
+    chmodSync(join(bin, 'plasma-apply-colorscheme'), 0o755);
+    const r = run('install', home, { env: { PATH: `${bin}:${process.env.PATH}` }, args: ['--activate'] });
+    assert.equal(r.code, 1);
+    assert.equal(run('uninstall', home).code, 0);
+    assert.deepEqual(settings(cfg), before);
+  });
+
+  it('keeps the session bus away from the colour scheme tool', () => {
+    const { root, home } = makeRoot();
+    const bin = join(root, 'bin');
+    const seen = join(root, 'seen');
+    const real = spawnSync('bash', ['-c', 'command -v plasma-apply-colorscheme'], { encoding: 'utf8' }).stdout.trim();
+    put(join(bin, 'plasma-apply-colorscheme'),
+      `#!/bin/bash\nprintf '%s|%s\\n' "\${DBUS_SESSION_BUS_ADDRESS-unset}" "\${XDG_RUNTIME_DIR-unset}" >> '${seen}'\nexec '${real}' "$@"\n`);
+    chmodSync(join(bin, 'plasma-apply-colorscheme'), 0o755);
+    const env = { PATH: `${bin}:${process.env.PATH}`, XDG_RUNTIME_DIR: join(root, 'runtime') };
+    assert.equal(run('install', home, { env, args: ['--activate'] }).code, 0);
+    assert.equal(readFileSync(seen, 'utf8').trim(), 'unix:path=/nonexistent|unset');
+  });
+
+  it('keeps a colour scheme the owner chose after install, whole', () => {
+    const { root, home } = makeRoot();
+    const cfg = join(home, '.config');
+    mkdirSync(cfg);
+    const apply = (name) => {
+      const r = spawnSync('plasma-apply-colorscheme', [name], {
+        env: { PATH: process.env.PATH, HOME: home, XDG_CONFIG_HOME: cfg, QT_QPA_PLATFORM: 'offscreen' }, encoding: 'utf8',
+      });
+      assert.equal(r.status, 0, r.stderr);
+    };
+    apply('BreezeLight');
+    assert.equal(run('install', home, { args: ['--activate'] }).code, 0);
+    apply('BreezeDark');
+    const chosen = ini(join(cfg, 'kdeglobals'));
+    const r = run('uninstall', home);
+    assert.equal(r.code, 0, r.stderr);
+    const globals = ini(join(cfg, 'kdeglobals'));
+    for (const [k, v] of chosen) {
+      if (k.startsWith('KDE\t')) continue;
+      assert.equal(globals.get(k), v, k);
+    }
+    assert.equal(r.stdout.split('\n').filter((l) => l.startsWith('kept')).length, 1, r.stdout);
+    assert.match(r.stdout, /^kept .*kdeglobals colour scheme BreezeDark/m);
+    void root;
   });
 
   it('rejects arguments', () => {

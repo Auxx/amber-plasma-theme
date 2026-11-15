@@ -29,7 +29,7 @@ else
       printf 'removed %s: %s\n' "$label" "$amber_data/$dst"
     fi
   done
-  if grep -q $'^set\t' "$amber_record"; then
+  if grep -qE $'^c?set\t' "$amber_record"; then
     amber_restore
     amber_notify palette
   fi
