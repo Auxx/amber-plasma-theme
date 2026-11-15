@@ -55,16 +55,18 @@ are used as the [glossary](../product/glossary.md) defines them.
 
 | Part | Format | Installed to | Selected in |
 |---|---|---|---|
-| Colour scheme | `Amber.colors` (INI) | `~/.local/share/color-schemes/` | System Settings → Colours |
-| Union style | folder: `metadata.json`, `contents/css/` | `~/.local/share/union/styles/amber/` | see [platform](platform.md) |
-| Window decoration | Aurorae theme folder | `~/.local/share/aurorae/themes/` | System Settings → Window Decorations |
-| Terminal colours | `Amber.colorscheme` (INI) | `~/.local/share/konsole/` | Konsole profile → Appearance |
-| Editor theme | `.theme` (JSON) | `~/.local/share/org.kde.syntax-highlighting/themes/` | Kate → Settings → Colour Themes |
+| Colour scheme | `Amber.colors` (INI) | `~/.local/share/color-schemes/` | System Settings → Colours, or `install.sh --activate` |
+| Union style | folder: `metadata.json`, `contents/css/` | `~/.local/share/union/styles/amber/` | `unionStyle=amber` in `kdeglobals` ([platform](platform.md)), or `install.sh --activate` |
+| Window decoration | Aurorae theme folder | `~/.local/share/aurorae/themes/` | System Settings → Window Decorations, or `install.sh --activate` |
+| Terminal colours | `Amber.colorscheme` (INI) | `~/.local/share/konsole/` | Konsole profile → Appearance, or `install.sh --activate` |
+| Editor theme | `.theme` (JSON) | `~/.local/share/org.kde.syntax-highlighting/themes/` | Kate → Settings → Colour Themes, or `install.sh --activate` |
 
 `scripts/install.sh` copies every part to its folder, under `XDG_DATA_HOME`
 when that is set, and writes the [install record](../product/glossary.md);
 `scripts/uninstall.sh` removes what the record lists, and Amber's Union
-cache file (D-134 to D-136).
+cache file (D-134 to D-136). `install.sh --activate` also selects every
+part, KWin's border size "Tiny" included, and records each earlier value;
+uninstall puts them back (D-137 to D-140).
 
 Every part is shown to the user as "Amber". The colour scheme and the
 terminal colours are identified by their file names; the parts that carry an

@@ -314,3 +314,17 @@ and `kwriteconfig6`, or the files), and whether a running KWin, Konsole
 and Kate pick a change up; which Konsole profile takes the terminal
 colours; and what uninstall does with a setting the owner changed again
 after install.
+
+P6.2 added `install.sh --activate` (D-137 to D-140). It applies the colour
+scheme with `plasma-apply-colorscheme`, sets the Union style
+(`unionStyle=amber`), the decoration with border size "Tiny", the
+terminal colours in Konsole's default profile (or a new `Amber.profile`),
+and the editor theme for Kate and KWrite; each earlier value goes into the
+install record, and uninstall restores it unless the owner changed it
+since, which it names in a `kept` line. An accent colour is removed while
+Amber is selected. KWin redraws at once; an application shows the style,
+and Konsole, Kate and KWrite their parts, when it starts again. In the
+nested session every application showed every part with no setting
+changed by hand, and uninstall restored every key. For P6.3: the argument,
+what it changes, the `kept` lines, the accent colour, and that
+applications must start again.

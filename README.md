@@ -8,8 +8,10 @@ gets no outline and no glow.
 ## Status
 
 Amber is in development. `scripts/install.sh` installs every part into
-your home folder, and `scripts/uninstall.sh` removes them; neither changes a
-setting. How to select the parts comes with the rest of this README.
+your home folder, and `scripts/uninstall.sh` removes them.
+`scripts/install.sh --activate` also selects every part, and uninstall then
+puts back each setting it changed. How to select the parts by hand comes
+with the rest of this README.
 
 ## Documentation
 
